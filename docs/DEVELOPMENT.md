@@ -165,7 +165,7 @@ The layout rules (braces, indentation, line length, spacing) are applied automat
 pre-commit run clang-format --files app_program/*/*
 ```
 
-clang-format only handles layout. Naming, types and magic numbers are still checked by review. The template's example code is not in this style; the hook reformats a file the first time it is committed.
+clang-format only handles layout. Naming, types and magic numbers are still checked by review.
 
 The hook covers `app_program/` only. The kernel sources in `kernel/`, `lib/`, `device/` and `include/` keep their upstream style. Do not reformat them.
 

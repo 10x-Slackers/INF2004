@@ -1,0 +1,31 @@
+{
+  "name": "Pico Development",
+  "image": "ghcr.io/commit2main/universal:latest",
+  "features": {
+    "./pico-tools": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "marus25.cortex-debug",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cpptools",
+        "ms-vscode.makefile-tools",
+        "ms-vscode.vscode-serial-monitor",
+        "raspberry-pi.raspberry-pi-pico"
+      ]
+    }
+  },
+  "mounts": [
+    "source=/dev/bus/usb,target=/dev/bus/usb,type=bind",
+    "source=/dev,target=/host-dev,type=bind"
+  ],
+  "runArgs": [
+    "--group-add=keep-groups"
+  ],
+  "remoteEnv": {
+    "PICO_SDK_PATH": "${containerWorkspaceFolder}/.pico-sdk"
+  },
+  "postCreateCommand": "pre-commit install && [ -d $PICO_SDK_PATH ] || (git clone -b master https://github.com/raspberrypi/pico-sdk.git $PICO_SDK_PATH && git -C $PICO_SDK_PATH submodule update --init lib/tinyusb lib/cyw43-driver lib/lwip)"
+  // "remoteUser": "root"
+}

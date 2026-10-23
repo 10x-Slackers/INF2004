@@ -1,4 +1,62 @@
-# micro T-Kernel 3.0 project for Raspberry Pi Pico W
+# INF2004 Embedded Systems Programming Project
+
+> [!NOTE]
+> WIP, remove this note when project is ready.
+
+Autonomous Robotic Car Challenge based on µT-Kernel 3.0 (RP2040 dual-core SMP Port).
+Project documentation is in [docs/](docs/README.md); who owns which subsystem, pin and priority is in [TEAM.md](TEAM.md).
+
+## Getting Started (Dev Container)
+
+### Prerequisites
+
+- [Git](https://github.com/git-guides/install-git) (fully set-up)
+- [Docker/Podman](https://docs.docker.com/engine/install/)
+- [VS Code](https://code.visualstudio.com/download)
+  - [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
+
+> [!WARNING]
+> Do not use GitHub Desktop! All interactions (files, git, runtime, etc.) should be done through the Dev Container within VS Code.
+
+### Installation
+
+1. Clone the repo and open it in VS Code
+
+   ```sh
+   git clone git@github.com:10x-Slackers/INF2004.git
+   code INF2004/
+   ```
+
+2. Click on the "Re-open in Dev Container" prompt. The container installs the compiler and `picotool`, clones the [Pico SDK](https://github.com/raspberrypi/pico-sdk) into `.pico-sdk/` and sets `PICO_SDK_PATH`, so section 1 below can be skipped.
+3. Install the pre-commit hooks
+
+   ```sh
+   pre-commit install
+   ```
+
+4. Build from the repository root with `make -C build_make -j$(nproc)` (or the VS Code `Build` task), then flash with `picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2` (or the `Flash` task) while the Pico W is in BOOTSEL mode. Build options are in section 3.
+
+### Developer Tooling
+
+- Dev Containers
+  - Standardised developer environment
+- Pre-Commit
+  - Run linting and formatting for all files during git commit
+
+### Template upstream
+
+This repository is based on the course's [INF2004_ProjectTemplate](https://github.com/sirfonzie/INF2004_ProjectTemplate). To pull in template updates:
+
+```sh
+git remote add upstream https://github.com/sirfonzie/INF2004_ProjectTemplate  # once
+git pull upstream main
+```
+
+The rest of this file is the template's own guide.
+
+---
+
+## micro T-Kernel 3.0 project for Raspberry Pi Pico W
 
 A starting point for your project: micro T-Kernel 3.0 running on **both cores**
 of the Pico W's RP2040, with a USB serial console and the WiFi driver built in.
@@ -9,7 +67,7 @@ command below inside the WSL Ubuntu terminal.
 
 ---
 
-## 1. Set up the Pico C SDK and the compiler
+## 1. Set up the Pico C SDK and the compiler (not needed in the Dev Container)
 
 You need two separate things:
 

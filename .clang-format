@@ -1,0 +1,18 @@
+# Layout rules of the Barr Group Embedded C Coding Standard.
+BasedOnStyle: LLVM
+ColumnLimit: 80
+IndentWidth: 4
+UseTab: Never
+BreakBeforeBraces: Allman
+InsertBraces: true
+IndentCaseLabels: true
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: false
+PointerAlignment: Middle
+SpaceBeforeParens: ControlStatements
+AlignConsecutiveMacros: Consecutive
+SortIncludes:
+  Enabled: false

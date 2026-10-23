@@ -1,0 +1,7 @@
+{
+  "id": "pico-tools",
+  "version": "1.0.0",
+  "name": "Pico Tools",
+  "description": "Install picotool and serial/USB utilities for Raspberry Pi Pico development on Debian-based Linux.",
+  "entrypoint": "/usr/local/share/pico-tools-entrypoint.sh"
+}

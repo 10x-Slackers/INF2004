@@ -1,0 +1,42 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "make -C build_make -j$(nproc)",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Build (tests)",
+            "type": "shell",
+            "command": "make -C build_make TEST=1 -j$(nproc)",
+            "group": "build",
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Build (crash report)",
+            "type": "shell",
+            "command": "make -C build_make CRASH_REPORT=1 -j$(nproc)",
+            "group": "build",
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "make -C build_make clean",
+            "problemMatcher": []
+        },
+        {
+            "label": "Flash",
+            "type": "shell",
+            "command": "picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2",
+            "dependsOn": "Build",
+            "problemMatcher": []
+        }
+    ]
+}

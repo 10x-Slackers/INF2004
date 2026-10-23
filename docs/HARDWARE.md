@@ -23,10 +23,10 @@ The assignment agreed in the design review. The owner column is the only task al
 | ---- | --------------- | --------------------------- | ----------------------- | ----------------------- |
 | GP0  | `RANGE_TRIG`    | HC-SR04 TRIG                | GPIO out                | Ultrasonic Scan         |
 | GP1  | `RANGE_ECHO`    | HC-SR04 ECHO, level shifted | Timed GPIO in           | Ultrasonic Scan         |
-| GP2  | `IMU_SDA`       | GY-511 SDA                  | I2C1 SDA                | IMU and Terrain Monitor |
-| GP3  | `IMU_SCL`       | GY-511 SCL                  | I2C1 SCL                | IMU and Terrain Monitor |
-| GP4  | `ENC_L_A`       | Left motor pin 02           | GPIO in, edge interrupt | Wheel Motion Control    |
-| GP5  | `ENC_L_B`       | Left motor pin 03           | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP2  | `ENC_L_A`       | Left motor pin 02           | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP3  | `ENC_L_B`       | Left motor pin 03           | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP4  | `IMU_SDA`       | GY-511 SDA                  | I2C0 SDA                | IMU and Terrain Monitor |
+| GP5  | `IMU_SCL`       | GY-511 SCL                  | I2C0 SCL                | IMU and Terrain Monitor |
 | GP6  | `LINE_LEFT`     | Left IR module DO           | GPIO in                 | Line Following          |
 | GP7  | `LINE_RIGHT`    | Right IR module DO          | GPIO in                 | Line Following          |
 | GP8  | `MOTOR_L_A`     | M1A (on board)              | PWM / GPIO out          | Wheel Motion Control    |
@@ -43,8 +43,8 @@ Where each signal lands on the Robo Pico:
 | Grove port | GPIOs      | Used for                            |
 | ---------- | ---------- | ----------------------------------- |
 | 1          | GP0, GP1   | HC-SR04                             |
-| 2          | GP2, GP3   | GY-511 (shared with the Maker port) |
-| 3          | GP4, GP5   | Left encoder                        |
+| 2          | GP2, GP3   | Left encoder (also on Maker port)   |
+| 3          | GP4, GP5   | GY-511                              |
 | 4          | GP16, GP17 | Right encoder                       |
 | 5          | GP6, GP26  | Left line sensor, barcode sensor    |
 | 6          | GP26, GP27 | GP26 is the same pin as on port 5   |
@@ -74,14 +74,14 @@ By default the kernel leaves every application pin in its reset state. A few bui
 | What | Where | Default |
 | --- | --- | --- |
 | UART0 console copy and crash report | `make CRASH_REPORT=1` or `CONSOLE=uart` | Off. When on, it takes GP0 and GP1 |
-| Kernel I2C driver pins | `DEVCNF_USE_IIC` in `config/config_device.h`, pins in `device/i2c/sysdepend/rp2040/i2c_cnf_sysdep.h` | Off. When on, it registers I2C0 only (`iica`, in `kernel/sysdepend/pico_rp2040/devinit.c`) and muxes its pins, GP8 and GP9 by default |
+| Kernel I2C driver pins | `DEVCNF_USE_IIC` in `config/config_device.h`, pins in `device/i2c/sysdepend/rp2040/i2c_cnf_sysdep.h` | On. It registers I2C0 only (`iica`, in `kernel/sysdepend/pico_rp2040/devinit.c`) and muxes GP4, GP5 for the GY-511 |
 | Kernel ADC driver pins | `DEVCONF_ADC_PIN_INIT_n` in `device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` | None claimed |
 | PWM block reset release | `kernel/sysdepend/pico_rp2040/hw_setting.c`, gated by `USE_PTMR` in `config/config.h` | Off |
 
 Things that clash with this pin map:
 
 - `CRASH_REPORT=1` takes GP0 and GP1, which carry the HC-SR04. Unplug the sensor before using a crash-report build.
-- Switching the kernel I2C driver on as shipped muxes GP8 and GP9, the left motor, to I2C0. The GY-511 is on I2C1 (GP2, GP3), which the driver does not register. Using the kernel driver for it means registering unit 1 in `devinit.c` and setting `DEVCNF_I2C1_SDA_PIN` to 2 and `DEVCNF_I2C1_SCL_PIN` to 3.
+- The GY-511 sits on Grove 3 (GP4, GP5) because those are the Robo Pico's I2C0 pins, the only I2C unit the kernel driver registers. The template's default I2C0 pins (GP8, GP9) are the left motor, so `DEVCNF_I2C0_SDA_PIN` and `DEVCNF_I2C0_SCL_PIN` must stay at 4 and 5.
 - The ADC channel for the barcode sensor (GP26, channel 0) needs `DEVCONF_ADC_PIN_INIT_0` set to `TRUE`.
 
 ## Power
@@ -120,8 +120,8 @@ Each motor is driven by two GPIOs. Put PWM on one input and hold the other low t
 | Pin | Function        | Connect to                           |
 | --- | --------------- | ------------------------------------ |
 | 01  | Encoder ground  | GND                                  |
-| 02  | Encoder phase A | Left: GP4. Right: GP16               |
-| 03  | Encoder phase B | Left: GP5. Right: GP17               |
+| 02  | Encoder phase A | Left: GP2. Right: GP16               |
+| 03  | Encoder phase B | Left: GP3. Right: GP17               |
 | 04  | Encoder supply  | 3.3 V                                |
 | 05  | Motor +         | M1 or M2 terminal                    |
 | 06  | Motor −         | The other terminal of the same motor |

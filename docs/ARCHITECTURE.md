@@ -53,7 +53,7 @@ The periods are design targets, not measurements.
 | Wheel encoders                     | Encoder ISR, feeding Wheel Motion Control |
 | Left and right line IR sensors     | Line Following                            |
 | Auxiliary barcode IR sensor (ADC0) | Barcode Decoder                           |
-| GY-511 IMU (I2C1)                  | IMU and Terrain Monitor                   |
+| GY-511 IMU (I2C0)                  | IMU and Terrain Monitor                   |
 | HC-SR04 and SG90 servo             | Ultrasonic Scan                           |
 | Pico W radio and network stack     | Wi-Fi and MQTT Telemetry                  |
 

@@ -50,10 +50,10 @@ fixed.
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
 | GP0 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
 | GP1 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP2 | | |
-| GP3 | | |
-| GP4 | | |
-| GP5 | | |
+| GP2 | Motion (Buddy 2) | left encoder phase A (Grove 2) |
+| GP3 | Motion (Buddy 2) | left encoder phase B (Grove 2) |
+| GP4 | IMU (Buddy 4) | GY-511 SDA, I2C0 (Grove 3) |
+| GP5 | IMU (Buddy 4) | GY-511 SCL, I2C0 (Grove 3) |
 | GP6 | | |
 | GP7 | | |
 | GP8 | | |
@@ -106,7 +106,7 @@ the drivers have no locking to stop it.
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
 | UART1 | | | |
-| I2C0 | | | |
+| I2C0 | IMU (Buddy 4) | | GP4, GP5 (kernel driver `iica`, `DEVCNF_USE_IIC` = 1) |
 | I2C1 | | | |
 | SPI0 | | | |
 | SPI1 | | | |

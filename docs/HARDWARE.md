@@ -74,14 +74,14 @@ By default the kernel leaves every application pin in its reset state. A few bui
 | What | Where | Default |
 | --- | --- | --- |
 | UART0 console copy and crash report | `make CRASH_REPORT=1` or `CONSOLE=uart` | Off. When on, it takes GP0 and GP1 |
-| Kernel I2C driver pins | `DEVCNF_USE_IIC` in `config/config_device.h`, pins in `device/i2c/sysdepend/rp2040/i2c_cnf_sysdep.h` | Off. Pins default to GP8, GP9 (I2C0) and GP6, GP7 (I2C1) |
+| Kernel I2C driver pins | `DEVCNF_USE_IIC` in `config/config_device.h`, pins in `device/i2c/sysdepend/rp2040/i2c_cnf_sysdep.h` | Off. When on, it registers I2C0 only (`iica`, in `kernel/sysdepend/pico_rp2040/devinit.c`) and muxes its pins, GP8 and GP9 by default |
 | Kernel ADC driver pins | `DEVCONF_ADC_PIN_INIT_n` in `device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` | None claimed |
 | PWM block reset release | `kernel/sysdepend/pico_rp2040/hw_setting.c`, gated by `USE_PTMR` in `config/config.h` | Off |
 
 Things that clash with this pin map:
 
 - `CRASH_REPORT=1` takes GP0 and GP1, which carry the HC-SR04. Unplug the sensor before using a crash-report build.
-- If the kernel I2C driver is used for the GY-511, set `DEVCNF_I2C1_SDA_PIN` to 2 and `DEVCNF_I2C1_SCL_PIN` to 3. The defaults (GP6, GP7 and GP8, GP9) are the left line sensor, the right line sensor and the left motor.
+- Switching the kernel I2C driver on as shipped muxes GP8 and GP9, the left motor, to I2C0. The GY-511 is on I2C1 (GP2, GP3), which the driver does not register. Using the kernel driver for it means registering unit 1 in `devinit.c` and setting `DEVCNF_I2C1_SDA_PIN` to 2 and `DEVCNF_I2C1_SCL_PIN` to 3.
 - The ADC channel for the barcode sensor (GP26, channel 0) needs `DEVCONF_ADC_PIN_INIT_0` set to `TRUE`.
 
 ## Power

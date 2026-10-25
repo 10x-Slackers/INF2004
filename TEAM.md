@@ -103,7 +103,7 @@ the drivers have no locking to stop it.
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
 | UART1 | | | |
-| I2C0 | IMU (Buddy 4) | | GP4, GP5 (kernel driver `iica`, `DEVCNF_USE_IIC` = 1) |
+| I2C0 | IMU (Buddy 4) | `imu_task` | GP4, GP5 (kernel driver `iica`, `DEVCNF_USE_IIC` = 1) |
 | I2C1 | | | |
 | SPI0 | | | |
 | SPI1 | | | |
@@ -146,7 +146,7 @@ change it only by team agreement. Write down every task you create.
 | 1 | 12–13 | |
 | 2 | 14–15 | |
 | 3 | 16–17 | |
-| 4 | 18–19 | |
+| 4 | 18–19 | imu_task – 18 – any |
 | 5 | 20–21 | |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
@@ -171,7 +171,7 @@ limit there. Fill in each subsystem's usage.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | | | | | |
+| Task | 32 | | | | 1 | |
 | Semaphore | 16 | | | | | |
 | Event flag | 16 | | | | | |
 | Mailbox | 12 | | | | | |

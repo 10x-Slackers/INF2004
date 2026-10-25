@@ -25,5 +25,6 @@ EXPORT ER subsystem4_init(void)
 
 EXPORT ER subsystem4_start(void)
 {
-    return E_OK;
+    ID tid = app_start_task(imu_task, S4_PRI_IMU, 0, "imu_task");
+    return (tid < E_OK) ? tid : E_OK;
 }

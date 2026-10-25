@@ -1,6 +1,6 @@
 /*
  *      subsystem5.c
- *      Subsystem 5 -- <name>.  EMPTY TEMPLATE.
+ *      Subsystem 5 -- Ultrasonic scanning and obstacle avoidance.
  *
  *      subsystem5_init():  create this subsystem's kernel objects
  *                          (semaphores, mailboxes, ...).  Do not start

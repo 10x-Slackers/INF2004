@@ -81,7 +81,7 @@ EXPORT ER subsystem2_start(void)
 
 The third argument pins the task to a core: `TP_PRC1` (core 0), `TP_PRC2` (core 1) or `0` for any. Take each task's priority from the table in [ARCHITECTURE.md](ARCHITECTURE.md#tasks), inside the subsystem's band in `TEAM.md`. A lower number is a higher priority.
 
-The subsystems in `app_program/` are the template's worked examples. Together they use every kernel object below; replace them with the car's subsystems.
+The upstream template (`upstream` remote) has a worked example in subsystems 1–4 that uses every kernel object below.
 
 ### Things to know
 

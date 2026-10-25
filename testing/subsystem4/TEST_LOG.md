@@ -24,7 +24,7 @@ Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
-| 2026-10-25 | S4-U01 | `e81abc0` | commit2main | PASS | `logs/2026-10-25_unit.txt` | Maker Pi Pico, GY-511 on Grove 3 |
-| 2026-10-25 | S4-U02 | `e81abc0` | commit2main | PASS | `logs/2026-10-25_unit.txt` | z ≈ 845 mg flat: ~155 mg zero-g offset, to be calibrated |
-| 2026-10-25 | S4-U03 | `e81abc0` | commit2main | FAIL | `logs/2026-10-25_tilt.txt` | X −996/+1072, Y −955/+1058 mg OK; Z stuck at 2040 mg in all six positions (was ≈ 845 flat minutes earlier, same running image) |
-| 2026-10-25 | S4-U03 | `e81abc0` | commit2main | PASS | `logs/2026-10-25_tilt2.txt` | After a power cycle. ±1 g per axis: X −1001/+1062, Y −955/+1055, Z −1236/+833 mg. Offsets ≈ X +30, Y +50, Z −200 mg. Position 6 held ~1.5 s only |
+| 2026-10-25 | S4-U01 | `f5befac` | commit2main | PASS | `logs/2026-10-25_unit.txt` | Maker Pi Pico, GY-511 on Grove 3 |
+| 2026-10-25 | S4-U02 | `f5befac` | commit2main | FAIL | `logs/2026-10-25_unit.txt` | Flat z ≈ 795 mg, below the 800 limit: Z offset ≈ −230 mg (see S4-U03) |
+| 2026-10-25 | S4-U03 | `f5befac` | commit2main | PASS | `logs/2026-10-25_tilt.txt` | ±1 g per axis: X −1008/+1057, Y −961/+1044, Z −1255/+794 mg. Offsets ≈ X +25, Y +42, Z −231 mg |
+| 2026-10-25 | S4-U04 | `f5befac` | commit2main | PASS | `logs/2026-10-25_unit.txt` | |

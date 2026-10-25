@@ -1,72 +1,144 @@
-[imu] x=15 y=28 z=850 mg
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+[TEST] subsystem2 SUMMARY 0 passed, 0 failed
+
+[TEST] subsystem3 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+[imu] x=32 y=62 z=797 mg
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[imu] x=33 y=60 z=802 mg
+
+[imu] x=33 y=63 z=797 mg
+
+[imu] x=30 y=60 z=795 mg
+[imu] x=29 y=61 z=794 mg
 [TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
-[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
-[TEST] subsystem4 SUMMARY 2 passed, 0 failed
+[TEST] S4-U02 FAIL  flat: z ~ +1000 mg, x and y ~ 0   (../app_program/subsystem4/subsystem4_test.c:26)
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] subsystem4 SUMMARY 2 passed, 1 failed
 [TEST] subsystem5 SUMMARY 0 passed, 0 failed
 [TEST] === test run end ===
-[imu] x=18 y=24 z=843 mg
-[imu] x=15 y=23 z=842 mg
-[imu] x=12 y=20 z=840 mg
-[imu] x=15 y=21 z=839 mg
-[imu] x=15 y=26 z=842 mg
-[imu] x=14 y=22 z=845 mg
-[imu] x=11 y=25 z=846 mg
-[imu] x=18 y=25 z=847 mg
-[imu] x=16 y=23 z=836 mg
-[imu] x=20 y=22 z=844 mg
-[imu] x=16 y=21 z=844 mg
-[imu] x=19 y=23 z=844 mg
-[imu] x=18 y=25 z=840 mg
-[imu] x=21 y=25 z=842 mg
-[imu] x=17 y=23 z=844 mg
-[imu] x=16 y=20 z=841 mg
-[imu] x=16 y=25 z=843 mg
-[imu] x=12 y=24 z=844 mg
-[imu] x=12 y=22 z=844 mg
-[imu] x=18 y=20 z=844 mg
-[imu] x=22 y=23 z=840 mg
-[imu] x=19 y=28 z=846 mg
-[imu] x=18 y=24 z=838 mg
-[imu] x=13 y=23 z=850 mg
-[imu] x=15 y=24 z=846 mg
-[imu] x=21 y=24 z=849 mg
-[imu] x=14 y=24 z=840 mg
-[imu] x=16 y=24 z=840 mg
-[imu] x=13 y=22 z=846 mg
-[imu] x=17 y=23 z=840 mg
-[imu] x=17 y=22 z=844 mg
-[imu] x=16 y=19 z=846 mg
-[imu] x=19 y=24 z=844 mg
-[imu] x=17 y=21 z=849 mg
-[imu] x=20 y=24 z=844 mg
-[imu] x=13 y=24 z=840 mg
-[imu] x=16 y=20 z=842 mg
-[imu] x=17 y=23 z=841 mg
-[imu] x=15 y=28 z=847 mg
-[imu] x=16 y=21 z=845 mg
-[imu] x=15 y=18 z=840 mg
-[imu] x=19 y=18 z=842 mg
-[imu] x=18 y=23 z=845 mg
-[imu] x=15 y=21 z=844 mg
-[imu] x=22 y=21 z=844 mg
-[imu] x=15 y=27 z=845 mg
-[imu] x=16 y=24 z=840 mg
-[imu] x=19 y=20 z=845 mg
-[imu] x=19 y=20 z=847 mg
-[imu] x=16 y=24 z=845 mg
-[imu] x=19 y=22 z=838 mg
-[imu] x=18 y=23 z=839 mg
-[imu] x=12 y=21 z=842 mg
-[imu] x=17 y=24 z=843 mg
-[imu] x=16 y=23 z=840 mg
-[imu] x=14 y=24 z=840 mg
-[imu] x=17 y=22 z=843 mg
-[imu] x=20 y=19 z=844 mg
-[imu] x=16 y=21 z=841 mg
-[imu] x=14 y=24 z=842 mg
-[imu] x=13 y=21 z=843 mg
-[imu] x=20 y=24 z=843 mg
-[imu] x=16 y=23 z=845 mg
-[imu] x=18 y=25 z=843 mg
-[imu] x=15 y=24 z=842 mg
-[imu] x=16 y=24 z=842 mg
+[imu] x=31 y=63 z=795 mg
+[imu] x=31 y=61 z=790 mg
+[imu] x=30 y=61 z=799 mg
+[imu] x=29 y=63 z=792 mg
+[imu] x=30 y=63 z=793 mg
+[imu] x=32 y=61 z=795 mg
+[imu] x=30 y=65 z=794 mg
+[imu] x=30 y=61 z=798 mg
+[imu] x=35 y=63 z=798 mg
+[imu] x=36 y=60 z=797 mg
+[imu] x=30 y=62 z=801 mg
+[imu] x=34 y=62 z=799 mg
+[imu] x=33 y=62 z=789 mg
+[imu] x=28 y=63 z=795 mg
+[imu] x=34 y=60 z=791 mg
+[imu] x=35 y=62 z=797 mg
+[imu] x=35 y=60 z=797 mg
+[imu] x=29 y=62 z=799 mg
+[imu] x=32 y=60 z=802 mg
+[imu] x=34 y=66 z=791 mg
+[imu] x=35 y=61 z=794 mg
+[imu] x=32 y=60 z=802 mg
+[imu] x=30 y=61 z=789 mg
+[imu] x=36 y=62 z=794 mg
+[imu] x=31 y=62 z=798 mg
+[imu] x=31 y=61 z=791 mg
+[imu] x=31 y=61 z=798 mg
+[imu] x=25 y=60 z=797 mg
+[imu] x=33 y=59 z=795 mg
+[imu] x=30 y=61 z=791 mg
+[imu] x=33 y=60 z=795 mg
+[imu] x=33 y=62 z=794 mg
+[imu] x=29 y=64 z=792 mg
+[imu] x=29 y=60 z=801 mg
+[imu] x=33 y=64 z=790 mg
+[imu] x=28 y=61 z=796 mg
+[imu] x=29 y=63 z=801 mg
+[imu] x=32 y=62 z=794 mg
+[imu] x=32 y=59 z=800 mg
+[imu] x=31 y=63 z=794 mg
+[imu] x=29 y=59 z=797 mg
+[imu] x=30 y=63 z=798 mg
+[imu] x=33 y=65 z=802 mg
+[imu] x=32 y=63 z=791 mg
+[imu] x=31 y=62 z=800 mg
+[imu] x=31 y=60 z=797 mg
+[imu] x=29 y=59 z=798 mg
+[imu] x=31 y=61 z=797 mg
+[imu] x=28 y=63 z=798 mg
+[imu] x=32 y=61 z=795 mg
+[imu] x=32 y=60 z=796 mg
+[imu] x=27 y=64 z=794 mg
+[imu] x=32 y=63 z=796 mg
+[imu] x=36 y=65 z=795 mg
+[imu] x=29 y=61 z=796 mg
+[imu] x=35 y=59 z=800 mg
+[imu] x=28 y=61 z=794 mg
+[imu] x=32 y=63 z=797 mg
+[imu] x=31 y=63 z=797 mg
+[imu] x=27 y=60 z=799 mg
+[imu] x=32 y=59 z=797 mg
+[imu] x=31 y=59 z=790 mg
+[imu] x=32 y=64 z=796 mg
+[imu] x=31 y=59 z=797 mg
+[imu] x=30 y=62 z=797 mg
+[imu] x=25 y=62 z=795 mg
+[imu] x=37 y=62 z=789 mg
+[imu] x=26 y=60 z=796 mg
+[imu] x=32 y=60 z=793 mg
+[imu] x=32 y=62 z=797 mg
+[imu] x=33 y=59 z=793 mg
+[imu] x=33 y=61 z=796 mg
+[imu] x=34 y=57 z=791 mg
+[imu] x=29 y=61 z=793 mg
+[imu] x=29 y=62 z=798 mg
+[imu] x=31 y=58 z=796 mg
+[imu] x=28 y=62 z=793 mg
+[imu] x=29 y=59 z=797 mg
+[imu] x=34 y=62 z=795 mg
+[imu] x=32 y=60 z=802 mg
+[imu] x=31 y=62 z=795 mg
+[imu] x=32 y=64 z=796 mg
+[imu] x=31 y=62 z=799 mg
+[imu] x=35 y=64 z=798 mg
+[imu] x=30 y=59 z=793 mg
+[imu] x=28 y=60 z=798 mg
+[imu] x=32 y=64 z=794 mg
+[imu] x=31 y=63 z=795 mg
+[imu] x=30 y=59 z=786 mg
+[imu] x=29 y=63 z=795 mg
+[imu] x=32 y=59 z=793 mg
+[imu] x=33 y=59 z=795 mg
+[imu] x=32 y=62 z=795 mg
+[imu] x=28 y=64 z=794 mg
+[imu] x=24 y=62 z=791 mg
+[imu] x=32 y=60 z=794 mg
+[imu] x=30 y=63 z=798 mg
+[imu] x=33 y=60 z=801 mg

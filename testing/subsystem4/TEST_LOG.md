@@ -23,4 +23,5 @@ Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
-| YYYY-MM-DD | S4-U01 | `abc1234` | | PASS / FAIL | `logs/YYYY-MM-DD_….txt` | |
+| 2026-10-25 | S4-U01 | `e81abc0` | commit2main | PASS | `logs/2026-10-25_unit.txt` | Maker Pi Pico, GY-511 on Grove 3 |
+| 2026-10-25 | S4-U02 | `e81abc0` | commit2main | PASS | `logs/2026-10-25_unit.txt` | z ≈ 845 mg flat: ~155 mg zero-g offset, to be calibrated |

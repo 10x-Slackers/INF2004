@@ -174,6 +174,7 @@ The hook covers `app_program/` only. The kernel sources in `kernel/`, `lib/`, `d
 - Respect [hardware ownership](ARCHITECTURE.md#hardware-ownership). If your task needs another task's device, ask for the data through an interface.
 - Only Wheel Motion Control writes motor pins.
 - Claim pins, peripherals, priorities and interfaces in `TEAM.md` before coding them.
+- Size application data to its range and record each field in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md).
 - Automate unit tests in `subsystemN_test.c` with `TEST_CHECK` and record every test in `testing/` (see `testing/README.md`). Measurements and calibration values are assessed evidence (NFR8).
 
 ## Troubleshooting

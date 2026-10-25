@@ -1,0 +1,22 @@
+Minimum-bit change: RAM before and after (subsystem 4)
+Tool: arm-none-eabi-size / arm-none-eabi-nm -S on mtk3pico_smp1_usb_cdc_wifi.elf (normal build, SMP=1)
+
+BEFORE  commit b9c4474
+   text    data     bss     dec     hex filename
+ 277268      88   24524  301880   49b38 mtk3pico_smp1_usb_cdc_wifi.elf
+2000600c 00000004 b dd_i2c
+20006010 00000004 B s4_reads_ok
+20006018 0000000c B s4_accel
+
+AFTER   branch feat/imu-min-bits
+   text    data     bss     dec     hex filename
+ 278712      88   24516  303316   4a0d4 mtk3pico_smp1_usb_cdc_wifi.elf
+2000600c 00000004 b dd_i2c
+20006010 00000004 B s4_mtx_accel
+20006014 00000008 b accel
+
+Summary
+  latest reading + counter   16 B -> 8 B   (3 x 32-bit W + 32-bit UW  ->  3 x 12-bit + 8-bit bit-fields)
+  mutex ID added             +4 B          (needed to share packed data safely across cores)
+  .data + .bss total         24612 B -> 24604 B  (-8 B)
+  .text                      +1444 B       (kernel mutex calls now linked, bit-field shifts and masks)

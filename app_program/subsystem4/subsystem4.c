@@ -18,9 +18,17 @@
 
 #include "subsystem4.h"
 
+EXPORT ID s4_mtx_accel;
+
 EXPORT ER subsystem4_init(void)
 {
-    return E_OK;
+    T_CMTX cmtx = {0};
+
+    /* The reading's bit-fields share memory words, so a reader on the
+       other core must never see a half-written update */
+    cmtx.mtxatr = TA_INHERIT;
+    s4_mtx_accel = tk_cre_mtx(&cmtx);
+    return (s4_mtx_accel < E_OK) ? s4_mtx_accel : E_OK;
 }
 
 EXPORT ER subsystem4_start(void)

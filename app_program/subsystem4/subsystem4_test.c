@@ -11,19 +11,33 @@
 
 EXPORT void subsystem4_test(void)
 {
-    UW before = s4_reads_ok;
+    S4_ACCEL a, b;
+    S4_ACCEL t = {0};
 
     TEST_INIT();
 
+    s4_get_accel(&a);
     tk_dly_tsk(5 * S4_IMU_MS); /* let imu_task take a few readings */
-    TEST_CHECK("S4-U01", s4_reads_ok >= before + 3,
+    s4_get_accel(&b);
+    TEST_CHECK("S4-U01", (UB)(b.count - a.count) >= 3,
                "GY-511 answers on I2C0 and readings arrive");
 
     /* Board lying flat, component side up: gravity on +Z only */
     TEST_CHECK("S4-U02",
-               s4_accel.z > 800 && s4_accel.z < 1200 && s4_accel.x > -200 &&
-                   s4_accel.x < 200 && s4_accel.y > -200 && s4_accel.y < 200,
+               b.z > 800 && b.z < 1200 && b.x > -200 && b.x < 200 &&
+                   b.y > -200 && b.y < 200,
                "flat: z ~ +1000 mg, x and y ~ 0");
+
+    /* The packed fields hold the sensor's full range; count wraps */
+    t.x = -2048;
+    t.y = 2047;
+    t.z = -1;
+    t.count = 255;
+    t.count++;
+    TEST_CHECK("S4-U04",
+               sizeof(S4_ACCEL) == 8 && t.x == -2048 && t.y == 2047 &&
+                   t.z == -1 && t.count == 0,
+               "packed reading keeps -2048..2047 per axis in 8 bytes");
 
     TEST_SUMMARY("subsystem4");
 }

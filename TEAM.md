@@ -175,7 +175,7 @@ limit there. Fill in each subsystem's usage.
 | Semaphore | 16 | | | | | |
 | Event flag | 16 | | | | | |
 | Mailbox | 12 | | | | | |
-| Mutex | 12 | | | | | |
+| Mutex | 12 | | | | 1 | |
 | Message buffer | 12 | | | | | |
 | Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |

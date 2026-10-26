@@ -29,7 +29,7 @@ OBJS += \
 ./mtkernel_3/kernel/tkernel/time_calls.o \
 ./mtkernel_3/kernel/tkernel/timer.o \
 ./mtkernel_3/kernel/tkernel/tkinit.o \
-./mtkernel_3/kernel/tkernel/wait.o 
+./mtkernel_3/kernel/tkernel/wait.o
 
 C_DEPS += \
 ./mtkernel_3/kernel/tkernel/cpuctl.d \
@@ -58,9 +58,9 @@ C_DEPS += \
 ./mtkernel_3/kernel/tkernel/time_calls.d \
 ./mtkernel_3/kernel/tkernel/timer.d \
 ./mtkernel_3/kernel/tkernel/tkinit.d \
-./mtkernel_3/kernel/tkernel/wait.d 
+./mtkernel_3/kernel/tkernel/wait.d
 
-mtkernel_3/kernel/tkernel/%.o: ../kernel/tkernel/%.c
+mtkernel_3/kernel/tkernel/%.o: $(ROOT)/kernel/tkernel/%.c
 	@echo 'Building file: $<'
 	$(GCC) $(CFLAGS) -D$(TARGET) $(INCPATH) -MF"$(@:%.o=%.d)" -MT"$(@)" -c -o "$@" "$<"
 	@echo 'Finished building: $<'

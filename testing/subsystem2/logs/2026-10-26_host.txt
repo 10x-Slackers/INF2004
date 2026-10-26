@@ -1,0 +1,24 @@
+Date: 2026-10-26 (Asia/Singapore)
+Base revision: e6efda951f11eb678a7cacc70d01313f098c25b4 + uncommitted working tree
+Application/build/config/host-test source SHA-256: 1f9fb6ca80ce4a185c2ba88728a8f0f8178e19b84233f02a4594316bd6dce9b3
+Fingerprint: sorted relative path + NUL + file bytes + NUL, for app_program/**/*.[ch], build_make/**/*.mk, build_make/makefile, Makefile, config/*.h and testing/subsystem2/host/*.c and *.py.
+Toolchain: arm-none-eabi-gcc (Arm GNU Toolchain 15.3.Rel2 (Build arm-15.181)) 15.3.1 20260627
+Host: Apple clang version 17.0.0 (clang-1700.3.19.1)
+Pico SDK: 2.2.0, a1438dff1d38bd9c65dbd693f0e5db4b9ae91779
+
+cc -std=c99 -Wall -Wextra -Werror -pedantic -pthread  -O2 app_program/subsystem2/motion_control.c app_program/subsystem2/ctrl_math.c app_program/subsystem2/console_motion.c testing/subsystem2/host/test_motion.c \
+	 -o build/host/test_motion
+./build/host/test_motion
+representation bytes: config=24 status=44 pid=4 encoder=12 wire=36 reference_status=60 reference_config=60
+host packing roundtrip: 623.9 ns/op (100000 iterations); hardware timing pending
+host active control fixture: 22.0 ns/tick (100000 iterations); not RP2040 WCET
+PASS: 11244 assertions
+python3 testing/subsystem2/host/compare_representation.py
+FULL-WIDTH REFERENCE: identical algorithms, unsigned fields widened to uint32_t; not a historical firmware baseline.
+representation bytes: config=60 status=60 pid=8 encoder=16 wire=36 reference_status=60 reference_config=60
+host packing roundtrip: 603.4 ns/op (100000 iterations); hardware timing pending
+host active control fixture: 20.4 ns/tick (100000 iterations); not RP2040 WCET
+PASS: 11244 assertions
+python3 testing/subsystem2/host/check_source.py
+PASS: Buddy 2 layout, signed-field, keyword, allocation and header checks
+Manual BARR-C review and documented port deviations remain necessary.

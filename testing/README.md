@@ -35,17 +35,16 @@ Test IDs never change and are never reused, even if a test is dropped.
    scope shows 1 kHz) is a *manual* test. Write its steps in the table instead.
 3. **Build the test image and flash it.**
    ```sh
-   cd build_make
-   make TEST=1 -j8        # -> mtk3pico_smp1_usb_cdc_wifi_test.uf2
+   make TEST=1 -j8        # -> build/<test1-profile>/*_test.uf2
    ```
    The test image runs every subsystem's tests at power-up and prints one
    `[TEST] <ID> PASS|FAIL` line per check. (A normal `make` leaves the tests out.)
 4. **Save the console output** to `logs/`, named `YYYY-MM-DD_<what>.txt`:
    ```sh
    # macOS (find the port name with: ls /dev/cu.usbmodem*)
-   cat /dev/cu.usbmodem1101 | tee ../testing/subsystem1/logs/2026-10-14_unit.txt
+   cat /dev/cu.usbmodem1101 | tee testing/subsystem1/logs/2026-10-14_unit.txt
    # Linux / WSL with usbipd
-   cat /dev/ttyACM0 | tee ../testing/subsystem1/logs/2026-10-14_unit.txt
+   cat /dev/ttyACM0 | tee testing/subsystem1/logs/2026-10-14_unit.txt
    ```
    Start the command first, then reset the Pico. Press Ctrl-C when it is done.
    On Windows with PuTTY, use *Session → Logging → All session output*.
@@ -72,3 +71,13 @@ the test's result row. `videos/README.md` explains how.
 - **A FAIL needs a note** saying what went wrong and, later, which commit fixed it.
 - Before merging a change into `main`, re-run your subsystem's unit tests.
   Before a demo or hand-in, run every test and record the full set.
+
+## Native Buddy 2 tests
+
+From the repository root, `make test` runs the portable motion fixture, its
+full-width reference and focused source checks without hardware. `make TEST=1`
+builds on-target tests in a separate profile; it does not run them on the host.
+Buddy 2's [test log](subsystem2/TEST_LOG.md) separates software evidence from
+[PID tuning and motion accuracy](subsystem2/CALIBRATION.md) on the real robot.
+When changes must remain uncommitted, record the base revision and a tested
+source fingerprint rather than claiming that revision contains the changes.

@@ -1,22 +1,16 @@
 # Development Guide
 
-How to build, flash and add code. Environment setup is in the [root README](../README.md#getting-started-dev-container). Every build option (`SMP`, `CONSOLE`, `WIFI`, `TEST`, `CRASH_REPORT`, `NET`, `MQTT`) is explained in section 3 of the same README.
+How to build, flash and add code. Environment setup is in the [root README](../README.md#native-build-macos-or-linux). Build options (`SMP`, `CONSOLE`, `WIFI`, `TEST`, `CRASH_REPORT`, `NET`, `MQTT`)
+are listed by `make help` and defined in `build_make/pico_rp2040.mk`.
+`make test` runs host tests; `make TEST=1` builds the on-target test firmware.
 
-## Build, flash, console
+## Build and test
 
-Run from the repository root, inside the Dev Container.
-
-| Step       | Command                                                                                                      |
-| ---------- | ------------------------------------------------------------------------------------------------------------ |
-| Build      | `make -C build_make -j$(nproc)`                                                                              |
-| Test build | `make -C build_make TEST=1 -j$(nproc)`                                                                       |
-| Clean      | `make -C build_make clean`                                                                                   |
-| Flash      | Hold **BOOTSEL** while plugging in USB, then `picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2` |
-| Console    | `screen /dev/ttyACM0 115200`                                                                                 |
-
-The same steps exist as the VS Code tasks `Build`, `Build (tests)`, `Build (crash report)`, `Clean` and `Flash` (`Flash` runs the default `Build` first).
-
-Check that both the normal and the `TEST=1` build still succeed without new warnings after every change.
+Use the [root README](../README.md#native-build-macos-or-linux) for native
+setup, firmware output paths, flashing and USB console commands. `make help`
+lists profile options; the shared VS Code tasks call the same root Makefile.
+Run both `make` and `make TEST=1` without new warnings after changes, and
+`make test` for Buddy 2 host checks.
 
 ### Building with MQTT
 
@@ -26,62 +20,23 @@ Check that both the normal and the `TEST=1` build still succeed without new warn
    cp config/wifi_secrets.example.h config/wifi_secrets.h
    ```
 
-2. Build with `make -C build_make NET=lwip MQTT=1 -j$(nproc)`.
+2. Build with `make NET=lwip MQTT=1 -j8`.
 
 `config/wifi_secrets.h` is gitignored. Never commit it.
-
-## Repository layout
-
-| Path                             | Contents                                                                 |
-| -------------------------------- | ------------------------------------------------------------------------ |
-| `app_program/`                   | **Application code.** `app_main.c`, `app.h` and one folder per subsystem |
-| `TEAM.md`                        | Owners, pins, peripherals, task priorities, interfaces, object budget    |
-| `testing/`                       | Test logs per subsystem, integration and system level                    |
-| `videos/`                        | Links to test and demo videos                                            |
-| `config/`                        | Kernel configuration (`config.h`, `config_device.h`) and `wifi_secrets`  |
-| `build_make/`                    | Makefiles and build output                                               |
-| `device/`                        | Kernel device drivers: serial, I2C, ADC                                  |
-| `include/`                       | Kernel, BSP and T-Monitor headers                                        |
-| `kernel/`                        | µT-Kernel itself and RP2040 start-up                                     |
-| `lib/libbsp/`                    | Board helpers: GPIO and PWM                                              |
-| `lib/libtm/`                     | Console (`tm_printf`)                                                    |
-| `lib/libwifi/`, `lib/liblwip/`   | CYW43439 radio service, lwIP port and MQTT client                        |
-| `docs/`                          | This documentation                                                       |
-
-Every `.c` file in `app_program/` and in its subfolders is compiled automatically. No makefile edit is needed.
 
 ## Writing a task
 
 `usermain()` in `app_program/app_main.c` is the entry point. It calls every `subsystemN_init()` (create kernel objects), then every `subsystemN_start()` (start tasks), then sleeps forever; it must not return.
 
-Each subsystem lives in `app_program/subsystemN/`. `subsystemN.h` is its public interface (object IDs, message formats, priorities); everything else stays `LOCAL` in its `.c` files. Device drivers go in the owning subsystem's folder as `drv_<name>.c` / `drv_<name>.h`. A task is started with `app_start_task()` from `app.h`:
+Each subsystem lives in `app_program/subsystemN/`, with drivers named
+`drv_<name>.c` / `.h`. The build discovers application C files at the root
+and one subdirectory level automatically. Expose only the interfaces other
+subsystems need; Buddy 2's public API is `motion_control.h`.
 
-```c
-#define S2_PRI_RANGE 14 /* from the subsystem's band in TEAM.md */
-#define RANGE_MS     60
-
-LOCAL void range_task(INT stacd, void * exinf)
-{
-    (void)stacd;
-    (void)exinf;
-
-    while (1)
-    {
-        /* read sensor, publish result */
-        tk_dly_tsk(RANGE_MS);
-    }
-}
-
-EXPORT ER subsystem2_start(void)
-{
-    ID tid = app_start_task(range_task, S2_PRI_RANGE, 0, "range_task");
-    return (tid < E_OK) ? tid : E_OK;
-}
-```
-
-The third argument pins the task to a core: `TP_PRC1` (core 0), `TP_PRC2` (core 1) or `0` for any. Take each task's priority from the table in [ARCHITECTURE.md](ARCHITECTURE.md#tasks), inside the subsystem's band in `TEAM.md`. A lower number is a higher priority.
-
-The upstream template (`upstream` remote) has a worked example in subsystems 1–4 that uses every kernel object below.
+Start tasks with `app_start_task()` from `app.h`. Use priorities and hardware
+ownership from [TEAM.md](../TEAM.md), not copied example values. Affinity is
+`TP_PRC1` (core 0), `TP_PRC2` (core 1), or `0` for either core. A lower
+priority number runs first.
 
 ### Things to know
 
@@ -94,7 +49,8 @@ The upstream template (`upstream` remote) has a worked example in subsystems 1�
 
 ### Passing data between tasks
 
-Use a kernel object for every interface in the architecture and record it in `TEAM.md` section 5; do not share globals unguarded.
+Record each synchronized interface in `TEAM.md` section 5. Use the kernel
+objects below, or the documented motion APIs; do not share globals unguarded.
 
 | Need                                 | Object            | Calls                      |
 | ------------------------------------ | ----------------- | -------------------------- |
@@ -106,7 +62,8 @@ Use a kernel object for every interface in the architecture and record it in `TE
 | Run code at a fixed period           | Cyclic handler    | `tk_cre_cyc`, `tk_sta_cyc` |
 | React to a pin edge                  | Interrupt handler | `tk_def_int`               |
 
-The full API is in the [µT-Kernel 3.0 specification](https://tron-forum.github.io/mtkernel_3/). Both cores run tasks at once: `volatile` is not synchronisation between cores, use a kernel object.
+Motion-specific locking, commands and data contracts are in
+[MOTION_CONTROL.md](MOTION_CONTROL.md). The full API is in the [µT-Kernel 3.0 specification](https://tron-forum.github.io/mtkernel_3/). Both cores run tasks at once: `volatile` alone is not synchronization.
 
 ## Using hardware
 

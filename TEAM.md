@@ -15,7 +15,7 @@ subsystem, ask its owner or open a pull request for them to review.
 | # | Subsystem (what it does) | Student ID | GitHub username | Code | Tests |
 |---|---|---|---|---|---|
 | 1 | Wi-Fi, command and telemetry | | | `app_program/subsystem1/` | `testing/subsystem1/` |
-| 2 | Motion control | | | `app_program/subsystem2/` | `testing/subsystem2/` |
+| 2 | Motion control | 2503068 | | `app_program/subsystem2/` | `testing/subsystem2/` |
 | 3 | Line following and barcodes | | | `app_program/subsystem3/` | `testing/subsystem3/` |
 | 4 | IMU and terrain | | | `app_program/subsystem4/` | `testing/subsystem4/` |
 | 5 | Ultrasonic scanning and obstacle avoidance | | | `app_program/subsystem5/` | `testing/subsystem5/` |
@@ -53,16 +53,16 @@ fixed.
 | GP5 | IMU (Buddy 4) | GY-511 SCL, I2C0 (Grove 3) |
 | GP6 | | |
 | GP7 | | |
-| GP8 | | |
-| GP9 | | |
-| GP10 | | |
-| GP11 | | |
+| GP8 | Motion (Buddy 2) | left motor A, PWM4A |
+| GP9 | Motion (Buddy 2) | left motor B, PWM4B |
+| GP10 | Motion (Buddy 2) | right motor A, PWM5A |
+| GP11 | Motion (Buddy 2) | right motor B, PWM5B |
 | GP12 | | |
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
-| GP16 | | |
-| GP17 | | |
+| GP16 | Motion (Buddy 2) | right encoder A |
+| GP17 | Motion (Buddy 2) | right encoder B |
 | GP18 | | |
 | GP19 | | |
 | GP20 | | |
@@ -94,7 +94,7 @@ changes shared configuration, so record it in the table below first.
 task*.** That task can be in any subsystem, and one subsystem may own
 several peripherals (one owning task each, or one task owning all of them).
 Every other task, in the same subsystem or another one, asks the owning task
-through a kernel object (section 5) and never touches that peripheral itself.
+through the synchronized interface (section 5) and never touches that peripheral itself.
 
 *Why:* this port runs tasks on both cores at the same time. If two tasks
 drive the same I2C or UART block at once, their transfers get mixed up, and
@@ -108,7 +108,9 @@ the drivers have no locking to stop it.
 | SPI0 | | | |
 | SPI1 | | | |
 | ADC | | | GP26–GP28 |
-| PWM slices (list) | | | |
+| PWM4, PWM5 | Motion (Buddy 2) | `subsystem2_motion_task` | GP8–GP11 |
+| IRQ13, core 0 | Motion dispatcher | `drv_motion_gpio_isr` | GP2/3, GP16/17; Buddy 5 callback registration |
+| SIO locks 3/4 | Motion (Buddy 2) | task state / encoder snapshot | No pins; kernel reserves locks 0–2 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -134,32 +136,37 @@ What students *can* do:
   reads it with `TMO_POL` (never blocking) and publishes it.
   Because this changes shared library code, **agree it with the team and
   the instructor first**, and record it as an interface in section 5.
-  It needs the `NET=lwip MQTT=1` build (README section 3).
+  It needs the `NET=lwip MQTT=1` build (`make help`).
 
 ## 4. Task priorities
 
-1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). Each subsystem gets its own band by default;
-change it only by team agreement. Write down every task you create.
+1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). Application priorities follow the architecture order below.
+Safety reserves 5; Vehicle Controller reserves 9. Write down each task.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
-| 1 | 12–13 | |
-| 2 | 14–15 | |
-| 3 | 16–17 | |
+| 1 | 23–24 | telemetry reservation |
+| 2 | 6, 22 | `subsystem2_motion_task` – 6 – core 0; `subsystem2_console_task` – 22 – core 0 |
+| 3 | 7–8 | barcode / line reservations |
 | 4 | 18–19 | imu_task – 18 – any |
-| 5 | 20–21 | |
+| 5 | 10–11 | avoidance / scan reservations |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
 
 ## 5. Interfaces between subsystems
 
-Every arrow between two subsystems is listed here. The **provider** creates
-the kernel object and publishes its ID in its own `subsystemN.h`; the **user** only
-sends to it or waits on it. Agree on the data format before coding.
+Every arrow between two subsystems is listed here. Providers expose synchronized APIs or create the kernel objects used by
+consumers. Motion uses short, locked single-slot commands and coherent
+per-consumer snapshots; no dynamic queue allocation is required. Data formats
+and units are defined in the owning public header and technical guide.
 
 | ID | From → To | Mechanism | Object ID name | Data / meaning | Agreed by |
 |---|---|---|---|---|---|
-| IF-01 | | | | | |
+| I3 | Controller → Motion | locked single command slot | `motion_control_*()` | asynchronous mm / deci-degree commands | Buddy 2 contract |
+| I4 | Motion → Controller | coherent snapshot | `motion_control_get_status()` | state, completion, faults | Buddy 2 contract |
+| I5 | Motion → Buddies 3/4/5, Safety | independent coherent copies | `motion_control_get_status()` | signed counts, mm, mm/s; timestamp µs | Buddy 2 contract |
+| I11 | Safety → Motion | latched locked update | `motion_control_safety_stop()` | fault mask, disarm, active command invalidation | Buddy 2 contract |
+| Motion telemetry | Motion → Buddy 1 | explicit bit stream | `motion_control_pack()` | 36 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).
@@ -171,7 +178,7 @@ limit there. Fill in each subsystem's usage.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | | | | 1 | |
+| Task | 32 | | 2 | | 1 | |
 | Semaphore | 16 | | | | | |
 | Event flag | 16 | | | | | |
 | Mailbox | 12 | | | | | |

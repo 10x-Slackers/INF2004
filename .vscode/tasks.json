@@ -4,7 +4,7 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "make -C build_make -j$(nproc)",
+            "command": "make -j8",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -14,27 +14,27 @@
         {
             "label": "Build (tests)",
             "type": "shell",
-            "command": "make -C build_make TEST=1 -j$(nproc)",
+            "command": "make TEST=1 -j8",
             "group": "build",
             "problemMatcher": "$gcc"
         },
         {
             "label": "Build (crash report)",
             "type": "shell",
-            "command": "make -C build_make CRASH_REPORT=1 -j$(nproc)",
+            "command": "make CRASH_REPORT=1 -j8",
             "group": "build",
             "problemMatcher": "$gcc"
         },
         {
             "label": "Clean",
             "type": "shell",
-            "command": "make -C build_make clean",
+            "command": "make clean",
             "problemMatcher": []
         },
         {
             "label": "Flash",
             "type": "shell",
-            "command": "picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2",
+            "command": "picotool load -v -x build/smp1-usb_cdc-cyw43-none-mqtt0-crash0-test0/mtk3pico_smp1_usb_cdc_wifi.uf2",
             "dependsOn": "Build",
             "problemMatcher": []
         }

@@ -76,7 +76,7 @@ By default the kernel leaves every application pin in its reset state. A few bui
 | UART0 console copy and crash report | `make CRASH_REPORT=1` or `CONSOLE=uart` | Off. When on, it takes GP0 and GP1 |
 | Kernel I2C driver pins | `DEVCNF_USE_IIC` in `config/config_device.h`, pins in `device/i2c/sysdepend/rp2040/i2c_cnf_sysdep.h` | On. It registers I2C0 only (`iica`, in `kernel/sysdepend/pico_rp2040/devinit.c`) and muxes GP4, GP5 for the GY-511 |
 | Kernel ADC driver pins | `DEVCONF_ADC_PIN_INIT_n` in `device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` | None claimed |
-| PWM block reset release | `kernel/sysdepend/pico_rp2040/hw_setting.c`, gated by `USE_PTMR` in `config/config.h` | Off |
+| PWM block reset release | `kernel/sysdepend/pico_rp2040/hw_setting.c`, gated by `USE_PTMR` in `config/config.h` | Off in the kernel. `usermain()` in `app_program/app_main.c` releases it before any subsystem starts |
 
 Things that clash with this pin map:
 
@@ -196,6 +196,8 @@ A minimal setup:
 3. Read six bytes starting at `0xA8`. Setting the top bit of the register address (`0x28 | 0x80`) turns on address auto-increment for a multi-byte read.
 
 Each axis is a 16-bit two's complement value, left-justified. In high-resolution mode shift right by 4 to get a 12-bit value at 1 mg per LSB (±2 g range).
+
+On the car the module lies flat, chips up, with −Y pointing forward, +X to the left and +Z up (found by tilting the car). If Z sits at full scale (about 2040 mg) whatever the orientation while X and Y still work, the module is faulty: replace it. The firmware does not check for this, and start-up calibration accepts the stuck value.
 
 ### Magnetometer registers
 

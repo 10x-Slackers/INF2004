@@ -47,5 +47,5 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-28 | S4-U02 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault_unit.txt` | Only x and y are meaningful: Z is stuck at full scale (faulty module), and calibration absorbs it |
 | 2026-10-28 | S4-U14 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault_unit.txt` | |
 | 2026-10-28 | S4-U17 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault.txt` | No fault. Pitch briefly reached 26.9° while handling, but not for 0.5 s |
-| 2026-10-28 | S4-U15 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault.txt` | A knock jumped X by about 355 mg in one sample, then larger; beep heard. The module then rested leaning at −26°, which correctly latched the tilt fault too |
+| 2026-10-28 | S4-U15 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault.txt` | Beep heard. The triggering sample falls between printed lines (printed every 100 ms); around it X swung from +355 to −541 mg. The module then rested leaning at −26°, which correctly latched the tilt fault too |
 | 2026-10-28 | S4-U16 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault.txt` | Held at about 30° (X 506 mg; roll read 28.8°); fault about 0.5 s after passing 25° |

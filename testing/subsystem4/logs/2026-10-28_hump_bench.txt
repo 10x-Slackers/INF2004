@@ -1,10 +1,24 @@
 # S4-U09 bench hump test, 2026-10-28, with the 200 ms minimum duration. Module handled by hand: flat, sideways on the 6 deg ramp right side up, then flat.
 [imu] calibrated: offsets x=62 y=42 z=1040 mg
 [imu] x=3 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
-[imu] x=2 y=-1 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
-[imu] x=1 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
-[imu] x=5 y=2 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
-... 171 readings omitted (x -331..68 ~-94, y -111..157 ~-2, z 1000..1000 ~1000, pitch -78..13 ~0, roll -121..4 ~-56, h 0..24 ~11)
+[imu] x=-208 y=116 z=1000 mg pitch=-42 roll=-73 (0.1 deg) h=14 mm
+[imu] x=-130 y=-4 z=1000 mg pitch=-18 roll=-67 (0.1 deg) h=13 mm
+[imu] x=-331 y=122 z=1000 mg pitch=-10 roll=-69 (0.1 deg) h=13 mm
+[imu] x=-112 y=60 z=1000 mg pitch=-31 roll=-81 (0.1 deg) h=16 mm
+[imu] x=-88 y=40 z=1000 mg pitch=-12 roll=-59 (0.1 deg) h=11 mm
+[imu] x=-286 y=28 z=1000 mg pitch=-5 roll=-121 (0.1 deg) h=24 mm
+[imu] x=-115 y=-13 z=1000 mg pitch=11 roll=-97 (0.1 deg) h=19 mm
+[imu] x=-14 y=-111 z=1000 mg pitch=13 roll=-65 (0.1 deg) h=12 mm
+[imu] x=-54 y=-3 z=1000 mg pitch=2 roll=-20 (0.1 deg) h=4 mm
+[imu] x=-113 y=-4 z=1000 mg pitch=0 roll=-50 (0.1 deg) h=9 mm
+[imu] x=-62 y=-3 z=1000 mg pitch=-9 roll=-51 (0.1 deg) h=10 mm
+[imu] x=-110 y=65 z=1000 mg pitch=-32 roll=-76 (0.1 deg) h=15 mm
+[imu] x=-166 y=101 z=1000 mg pitch=-38 roll=-100 (0.1 deg) h=20 mm
+[imu] x=-107 y=19 z=1000 mg pitch=-39 roll=-85 (0.1 deg) h=17 mm
+[imu] x=-121 y=-9 z=1000 mg pitch=0 roll=-68 (0.1 deg) h=13 mm
+[imu] x=68 y=157 z=1000 mg pitch=-78 roll=-67 (0.1 deg) h=13 mm
+[imu] x=-121 y=-7 z=1000 mg pitch=-63 roll=-57 (0.1 deg) h=11 mm
+[imu] x=-104 y=10 z=1000 mg pitch=-12 roll=-68 (0.1 deg) h=13 mm
 [imu] x=-128 y=75 z=1000 mg pitch=-3 roll=-43 (0.1 deg) h=8 mm
 [imu] x=-165 y=-76 z=1000 mg pitch=0 roll=-39 (0.1 deg) h=7 mm
 [imu] x=-170 y=123 z=1000 mg pitch=-17 roll=-59 (0.1 deg) h=11 mm
@@ -14,7 +28,9 @@
 [imu] x=1 y=28 z=1000 mg pitch=-33 roll=-4 (0.1 deg) h=0 mm
 [imu] x=-96 y=81 z=1000 mg pitch=-50 roll=-5 (0.1 deg) h=1 mm
 [imu] x=2 y=60 z=1000 mg pitch=-42 roll=-6 (0.1 deg) h=1 mm
-[imu] x=-18 y=38 z=1000 mg pitch=-28 roll=-8 (0.1 deg) h=1 mm
-... 303 readings omitted (x -34..82 ~2, y -38..44 ~-20, z 1000..1000 ~1000, pitch -24..19 ~11, roll -20..6 ~1, h -1..4 ~0)
-[imu] x=-2 y=-19 z=1000 mg pitch=11 roll=1 (0.1 deg) h=0 mm
-[imu] x=-3 y=-16 z=1000 mg pitch=10 roll=0 (0.1 deg) h=0 mm
+[imu] x=8 y=-23 z=1000 mg pitch=-8 roll=1 (0.1 deg) h=0 mm
+[imu] x=82 y=17 z=1000 mg pitch=-10 roll=0 (0.1 deg) h=0 mm
+[imu] x=11 y=15 z=1000 mg pitch=-8 roll=6 (0.1 deg) h=-1 mm
+[imu] x=-27 y=-6 z=1000 mg pitch=5 roll=-20 (0.1 deg) h=4 mm
+[imu] x=-33 y=44 z=1000 mg pitch=6 roll=3 (0.1 deg) h=0 mm
+[imu] x=-22 y=-33 z=1000 mg pitch=14 roll=-4 (0.1 deg) h=0 mm

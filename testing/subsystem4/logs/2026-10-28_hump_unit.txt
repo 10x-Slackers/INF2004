@@ -12,10 +12,6 @@ wifi: cyw43_init() returned, bringing interface up ...
 [imu] calibrated: offsets x=58 y=30 z=1040 mg
 [TEST] S4-U05 PASS  start-up calibration ends within 3 s
 [imu] x=2 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
-[imu] x=-3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
-[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
-[imu] x=3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
-[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
 [TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
 [TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
 [TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
@@ -25,9 +21,3 @@ wifi: cyw43_init() returned, bringing interface up ...
 [TEST] subsystem5 SUMMARY 0 passed, 0 failed
 [TEST] === test run end ===
 [imu] x=0 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
-[imu] x=4 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
-[imu] x=0 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
-[imu] x=2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
-... 92 readings omitted (x -7..6 ~0, y -4..5 ~1, z 1000..1000 ~1000, pitch -1..0 ~0, roll -1..1 ~0, h 0..0 ~0)
-[imu] x=-5 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
-[imu] x=3 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm

@@ -22,8 +22,10 @@
 #define S4_HUMP_ON_MM  3   /* right wheel this high: on a hump */
 #define S4_HUMP_MIN_MS 200 /* ...for at least this long */
 #define S4_HUMP_OFF_MM 1   /* back below this: the hump is over */
+#define S4_ACCEL_MG    50  /* forward push beyond this: accelerating... */
+#define S4_ACCEL_MS    100 /* ...for at least this long */
 
-#define S4_BUZZER_PIN 18   /* Maker Pi Pico buzzer; the Robo Pico's is 22 */
+#define S4_BUZZER_PIN 22   /* Robo Pico buzzer; 18 on the Maker Pi Pico */
 #define S4_BEEP_HZ    4000 /* beep when calibration is done */
 #define S4_BEEP_MS    200
 #define S4_ALARM_MS   1000 /* beep on a fault */
@@ -74,11 +76,31 @@ typedef struct
     unsigned int on : 1;
 } S4_HUMP;
 
-IMPORT ID s4_mtx_accel; /* guards the reading, tilt, faults and humps */
-IMPORT void s4_get_accel(S4_ACCEL * out); /* copy it under the mutex */
-IMPORT void s4_get_tilt(S4_TILT * out);   /* copy it under the mutex */
-IMPORT void s4_get_fault(S4_FAULT * out); /* copy it under the mutex */
-IMPORT void s4_get_hump(S4_HUMP * out);   /* copy it under the mutex */
+/* Current motion class, highest first: impact (latched with the fault),
+   climbing or descending a hump, accelerating or braking, steady (parked
+   or cruising: telling them apart needs encoder speed).  3 bits, stored
+   in 4 bytes. */
+enum
+{
+    S4_STEADY,
+    S4_ACCELERATING,
+    S4_BRAKING,
+    S4_CLIMBING,
+    S4_DESCENDING,
+    S4_IMPACT
+};
+
+typedef struct
+{
+    unsigned int cls : 3;
+} S4_MOTION;
+
+IMPORT ID s4_mtx_accel; /* guards the reading, tilt, faults, humps, motion */
+IMPORT void s4_get_accel(S4_ACCEL * out);   /* copy it under the mutex */
+IMPORT void s4_get_tilt(S4_TILT * out);     /* copy it under the mutex */
+IMPORT void s4_get_fault(S4_FAULT * out);   /* copy it under the mutex */
+IMPORT void s4_get_hump(S4_HUMP * out);     /* copy it under the mutex */
+IMPORT void s4_get_motion(S4_MOTION * out); /* copy it under the mutex */
 IMPORT void imu_task(INT stacd, void * exinf);
 
 #endif /* SUBSYSTEM4_H */

@@ -255,6 +255,7 @@ Impact or excessive tilt is checked in every monitoring state, not only the one 
 - Humps pass under the right wheel only; the left side carries the barcode sensors. The car rests on three points (two drive wheels and a front caster), so it tips about the line from the left wheel to the caster, and the right wheel's height is the track width × sin(roll). No encoder travel is needed (FR5).
 - **On Hump** tracks the highest height until the wheel is back on flat ground.
 - **Log and Report** updates the run maximum and queues the hump event for telemetry.
+- The task also publishes one current motion class, highest first: impact, climbing or descending a hump, accelerating or braking, steady. Steady covers both parked and cruising: the accelerometer cannot tell them apart, so stationary and turning need odometry (I5).
 - Impact is a jump of more than 800 mg in X or Y away from its smoothed value; excessive tilt is pitch or roll beyond 25° for 500 ms. Both latch. These replace the review's 2.5 g and 30° for 100 ms; at ±2 g full scale the sensor cannot report 2.5 g.
 - A start threshold that must hold for a minimum time, above a lower end threshold, on low-pass filtered data, rejects vibration and jolts. Turning pushes sideways on the sensor and looks like roll, so cornering is the main source of false humps (A4).
 

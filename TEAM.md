@@ -63,11 +63,11 @@ fixed.
 | GP15 | | |
 | GP16 | Motion (Buddy 2) | left encoder phase A (Grove 4) |
 | GP17 | Motion (Buddy 2) | left encoder phase B (Grove 4) |
-| GP18 | IMU (Buddy 4) | Maker Pi Pico buzzer, beeps when calibration is done (PWM slice 1 A). On the Robo Pico this pin is the NeoPixel and the buzzer is GP22 |
+| GP18 | | |
 | GP19 | | |
 | GP20 | | |
 | GP21 | Motion (Buddy 2) | Robo Pico button: starts the motion bench sequence (`TEST=1` only) |
-| GP22 | | |
+| GP22 | IMU (Buddy 4) | Robo Pico buzzer: beeps when calibration is done and on a fault (PWM slice 3 A) |
 | GP26 | | (ADC0 capable) |
 | GP27 | | (ADC1 capable) |
 | GP28 | | (ADC2 capable) |
@@ -110,7 +110,7 @@ the drivers have no locking to stop it.
 | ADC | | | GP26–GP28 |
 | PWM4, PWM5 | Motion (Buddy 2) | `s2_motion` (`motion_control_stop()` may brake from any task) | GP8–GP11 |
 | IRQ13 (GPIO bank 0), core 0 | Motion (Buddy 2) | `drv_motion_gpio_isr` | GP2/3, GP16/17. Other GPIO edge users register a callback with `drv_motion_gpio_register()` |
-| PWM slices (list) | IMU (Buddy 4) | `imu_task` | Slice 1 A: GP18 buzzer |
+| PWM slices (list) | IMU (Buddy 4) | `imu_task` | Slice 3 A: GP22 buzzer |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special

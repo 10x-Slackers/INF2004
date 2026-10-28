@@ -241,25 +241,22 @@ Tasks: IMU and Terrain Monitor, Vehicle Controller, Safety Monitor.
 ```mermaid
 stateDiagram-v2
     [*] --> LevelMonitoring: power on
-    LevelMonitoring --> AscentDetected: pitch exceeds incline angle
-    AscentDetected --> CrestSampling: apex reached (pitch levels off)
-    CrestSampling --> DescentDetected: pitch falls below negative threshold
-    DescentDetected --> LogAndReport: flat ground reacquired
+    LevelMonitoring --> OnHump: right wheel height reaches the start threshold
+    OnHump --> LogAndReport: height back below the end threshold
     LogAndReport --> LevelMonitoring: peak logged
-    AscentDetected --> ImpactTiltFault: shock impact / excessive tilt
-    DescentDetected --> ImpactTiltFault: shock impact / excessive tilt
+    OnHump --> ImpactTiltFault: shock impact / excessive tilt
     ImpactTiltFault --> SafeStop: emergency event
     SafeStop --> LevelMonitoring: fault cleared / reset
 ```
 
-Impact or excessive tilt is checked in every monitoring state, not only the two drawn.
+Impact or excessive tilt is checked in every monitoring state, not only the one drawn.
 
-- **Level Monitoring** calibrates the flat-ground baseline, then tracks filtered pitch and acceleration.
-- **Ascent Detected** integrates the slope: height is estimated from pitch together with encoder travel (FR5).
-- **Crest Sampling** records the estimate at the apex.
+- **Level Monitoring** calibrates the start-surface baseline, then tracks filtered pitch, roll and acceleration.
+- Humps pass under the right wheel only; the left side carries the barcode sensors. The car rests on three points (two drive wheels and a front caster), so it tips about the line from the left wheel to the caster, and the right wheel's height is the track width × sin(roll). No encoder travel is needed (FR5).
+- **On Hump** tracks the highest height until the wheel is back on flat ground.
 - **Log and Report** updates the run maximum and queues the hump event for telemetry.
-- Requiring the full ascent, crest, descent sequence is what rejects acceleration noise as a false hump.
 - Impact is a jump of more than 800 mg in X or Y away from its smoothed value; excessive tilt is pitch or roll beyond 25° for 500 ms. Both latch. These replace the review's 2.5 g and 30° for 100 ms; at ±2 g full scale the sensor cannot report 2.5 g.
+- A start threshold that must hold for a minimum time, above a lower end threshold, on low-pass filtered data, rejects vibration and jolts. Turning pushes sideways on the sensor and looks like roll, so cornering is the main source of false humps (A4).
 
 The review's diagram mentions gyro data. The GY-511 has no gyroscope, so everything here comes from the accelerometer, and turn rate comes from odometry.
 

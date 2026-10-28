@@ -18,6 +18,11 @@
 #define S4_CAL_N   200 /* start-up calibration samples (2 s, car still) */
 #define S4_CAL_MG  100 /* a sample this far from the mean restarts it */
 
+#define S4_TRACK_MM    114 /* distance between the drive wheel centres */
+#define S4_HUMP_ON_MM  3   /* right wheel this high: on a hump */
+#define S4_HUMP_MIN_MS 200 /* ...for at least this long */
+#define S4_HUMP_OFF_MM 1   /* back below this: the hump is over */
+
 #define S4_BUZZER_PIN 18   /* Maker Pi Pico buzzer; the Robo Pico's is 22 */
 #define S4_BEEP_HZ    4000 /* beep when calibration is done */
 #define S4_BEEP_MS    200
@@ -58,10 +63,22 @@ typedef struct
     unsigned int tilt : 1;
 } S4_FAULT;
 
-IMPORT ID s4_mtx_accel; /* guards the reading, tilt and faults */
+/* Humps under the right wheel, in mm: peak of the last one, highest of
+   the run, how many so far (wraps), and whether the car is on one now.
+   6 + 6 + 4 + 1 bits, stored in 4 bytes. */
+typedef struct
+{
+    unsigned int peak : 6;
+    unsigned int max : 6;
+    unsigned int count : 4;
+    unsigned int on : 1;
+} S4_HUMP;
+
+IMPORT ID s4_mtx_accel; /* guards the reading, tilt, faults and humps */
 IMPORT void s4_get_accel(S4_ACCEL * out); /* copy it under the mutex */
 IMPORT void s4_get_tilt(S4_TILT * out);   /* copy it under the mutex */
 IMPORT void s4_get_fault(S4_FAULT * out); /* copy it under the mutex */
+IMPORT void s4_get_hump(S4_HUMP * out);   /* copy it under the mutex */
 IMPORT void imu_task(INT stacd, void * exinf);
 
 #endif /* SUBSYSTEM4_H */

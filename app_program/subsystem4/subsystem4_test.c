@@ -15,6 +15,7 @@ EXPORT void subsystem4_test(void)
     S4_ACCEL t = {0};
     S4_TILT tilt;
     S4_FAULT fault;
+    S4_HUMP hump = {0};
     INT i;
 
     TEST_INIT();
@@ -61,6 +62,12 @@ EXPORT void subsystem4_test(void)
     s4_get_fault(&fault);
     TEST_CHECK("S4-U14", sizeof(S4_FAULT) == 4 && !fault.impact && !fault.tilt,
                "no impact or tilt fault on a still board");
+    hump.peak = 63;
+    hump.count = 15;
+    hump.count++;
+    TEST_CHECK("S4-U13",
+               sizeof(S4_HUMP) == 4 && hump.peak == 63 && hump.count == 0,
+               "packed hump record keeps 0..63 mm and a wrapping count");
 
     TEST_SUMMARY("subsystem4");
 }

@@ -197,6 +197,8 @@ A minimal setup:
 
 Each axis is a 16-bit two's complement value, left-justified. In high-resolution mode shift right by 4 to get a 12-bit value at 1 mg per LSB (±2 g range).
 
+On the car the module lies flat, chips up, with −Y pointing forward, +X to the left and +Z up (found by tilting the car). If Z sits at full scale (about 2040 mg) whatever the orientation while X and Y still work, the module is faulty: replace it. The firmware does not check for this, and start-up calibration accepts the stuck value.
+
 ### Magnetometer registers
 
 | Register                   | Address          | Purpose                                                       |

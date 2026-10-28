@@ -14,6 +14,7 @@ EXPORT void subsystem4_test(void)
     S4_ACCEL a, b;
     S4_ACCEL t = {0};
     S4_TILT tilt;
+    S4_FAULT fault;
     INT i;
 
     TEST_INIT();
@@ -55,6 +56,11 @@ EXPORT void subsystem4_test(void)
                sizeof(S4_ACCEL) == 8 && t.x == -2048 && t.y == 2047 &&
                    t.z == -1 && t.count == 0,
                "packed reading keeps -2048..2047 per axis in 8 bytes");
+
+    /* Board still since power-on: no fault latched */
+    s4_get_fault(&fault);
+    TEST_CHECK("S4-U14", sizeof(S4_FAULT) == 4 && !fault.impact && !fault.tilt,
+               "no impact or tilt fault on a still board");
 
     TEST_SUMMARY("subsystem4");
 }

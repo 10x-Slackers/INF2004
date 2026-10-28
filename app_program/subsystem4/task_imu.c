@@ -9,6 +9,11 @@
  *      the small-angle rule angle [rad] ~ acceleration [g]: within 0.2
  *      degree up to 15 degrees, reading low beyond about 25 degrees.
  *      Sensor axes on the car: -Y forward, +X left, +Z up.
+ *
+ *      Faults, latched until reset: impact when X or Y jumps more than
+ *      S4_IMPACT_MG from its smoothed value (slow changes such as tilt do
+ *      not count), tilt when pitch or roll stays beyond S4_TILT_MAX for
+ *      S4_TILT_MS.  Each prints a line and sounds the buzzer.
  */
 
 #include "subsystem4.h"
@@ -16,11 +21,19 @@
 
 LOCAL S4_ACCEL accel; /* written only by imu_task, under s4_mtx_accel */
 LOCAL S4_TILT tilt;   /* likewise */
+LOCAL S4_FAULT fault; /* likewise */
 
 EXPORT void s4_get_accel(S4_ACCEL * out)
 {
     tk_loc_mtx(s4_mtx_accel, TMO_FEVR);
     *out = accel;
+    tk_unl_mtx(s4_mtx_accel);
+}
+
+EXPORT void s4_get_fault(S4_FAULT * out)
+{
+    tk_loc_mtx(s4_mtx_accel, TMO_FEVR);
+    *out = fault;
     tk_unl_mtx(s4_mtx_accel);
 }
 
@@ -36,11 +49,15 @@ LOCAL W clamp(W v, W lim)
     return (v > lim) ? lim : (v < -lim) ? -lim : v;
 }
 
+LOCAL BOOL beyond(W v, W lim)
+{
+    return (v > lim) || (v < -lim);
+}
+
 /* TRUE if v is more than S4_CAL_MG from the mean so far, sum / n */
 LOCAL BOOL moved(W v, W sum, W n)
 {
-    W d = (n > 0) ? v - sum / n : 0;
-    return (d > S4_CAL_MG) || (d < -S4_CAL_MG);
+    return (n > 0) && beyond(v - sum / n, S4_CAL_MG);
 }
 
 /* Start a square wave on the buzzer (PWM clock 125 MHz, divider 1) */
@@ -64,6 +81,9 @@ EXPORT void imu_task(INT stacd, void * exinf)
     W n = 0, sx = 0, sy = 0, sz = 0; /* calibration count and sums */
     W ox = 0, oy = 0, oz = 0;        /* offsets, in mg */
     W fx = 0, fy = 0;                /* filtered x and y, 8 x mg */
+    W pitch, roll;                   /* 0.1 degree */
+    W tilted = 0;                    /* samples in a row beyond S4_TILT_MAX */
+    BOOL jolt, new_impact, new_tilt;
     UB print = 0;
     UB beep = 0; /* samples left until the buzzer stops */
     ER er;
@@ -119,18 +139,37 @@ EXPORT void imu_task(INT stacd, void * exinf)
         x -= ox;
         y -= oy;
         z -= oz;
+        jolt = beyond(x - fx / 8, S4_IMPACT_MG) ||
+               beyond(y - fy / 8, S4_IMPACT_MG); /* far from the smoothed */
         fx += x - fx / 8; /* low-pass, time constant ~8 samples (80 ms) */
         fy += y - fy / 8;
+        pitch = clamp(-fy * 573 / 8000, 900); /* 0.1 deg per mg */
+        roll = clamp(fx * 573 / 8000, 900);
+        tilted = (beyond(pitch, S4_TILT_MAX) || beyond(roll, S4_TILT_MAX))
+                     ? tilted + 1
+                     : 0;
 
         tk_loc_mtx(s4_mtx_accel, TMO_FEVR);
         accel.x = clamp(x, 2047);
         accel.y = clamp(y, 2047);
         accel.z = clamp(z, 2047);
         accel.count++;
-        tilt.pitch = clamp(-fy * 573 / 8000, 900); /* 0.1 deg per mg */
-        tilt.roll = clamp(fx * 573 / 8000, 900);
+        tilt.pitch = pitch;
+        tilt.roll = roll;
         tilt.cal = 1;
+        new_impact = jolt && !fault.impact;
+        new_tilt = (tilted >= S4_TILT_MS / S4_IMU_MS) && !fault.tilt;
+        fault.impact |= new_impact; /* latched until reset */
+        fault.tilt |= new_tilt;
         tk_unl_mtx(s4_mtx_accel);
+
+        if (new_impact || new_tilt)
+        {
+            tm_printf((UB *)"[imu] FAULT: %s\n",
+                      new_impact ? "impact" : "tilt");
+            beep_on();
+            beep = S4_ALARM_MS / S4_IMU_MS;
+        }
 
         if (++print == 100 / S4_IMU_MS)
         {

@@ -21,6 +21,11 @@
 #define S4_BUZZER_PIN 18   /* Maker Pi Pico buzzer; the Robo Pico's is 22 */
 #define S4_BEEP_HZ    4000 /* beep when calibration is done */
 #define S4_BEEP_MS    200
+#define S4_ALARM_MS   1000 /* beep on a fault */
+
+#define S4_IMPACT_MG 800 /* jump from the smoothed X or Y: impact */
+#define S4_TILT_MAX  250 /* pitch or roll beyond 25.0 degrees... */
+#define S4_TILT_MS   500 /* ...for this long: excessive tilt */
 
 /* Private to subsystem 4.  Latest calibrated reading, packed to its range:
    each axis is -2048..2047 mg (the sensor's 12-bit range at +-2 g); count
@@ -44,9 +49,19 @@ typedef struct
     unsigned int cal : 1;
 } S4_TILT;
 
-IMPORT ID s4_mtx_accel; /* guards the latest reading and tilt */
+/* Faults, each latched until reset: a sudden impact, excessive tilt.
+   2 bits, stored in 4 bytes.  They move into the team's shared fault
+   bitmask once that is agreed. */
+typedef struct
+{
+    unsigned int impact : 1;
+    unsigned int tilt : 1;
+} S4_FAULT;
+
+IMPORT ID s4_mtx_accel; /* guards the reading, tilt and faults */
 IMPORT void s4_get_accel(S4_ACCEL * out); /* copy it under the mutex */
 IMPORT void s4_get_tilt(S4_TILT * out);   /* copy it under the mutex */
+IMPORT void s4_get_fault(S4_FAULT * out); /* copy it under the mutex */
 IMPORT void imu_task(INT stacd, void * exinf);
 
 #endif /* SUBSYSTEM4_H */

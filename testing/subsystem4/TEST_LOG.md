@@ -18,6 +18,10 @@ Define a test here before running it. Test IDs never change.
 | S4-U06 | a reading every 10 ms | NFR6 | auto | `subsystem4_test.c` | `[TEST] S4-U06 PASS` (45..55 readings in 500 ms) |
 | S4-U07 | pitch and roll match a known slope | FR10, A4 | manual | 1. Flash normal image with the module flat and still until `[imu] calibrated`. 2. Put the module on the 6° ramp nose up, nose down, left side up, right side up, ~3 s each. 3. Read `pitch` and `roll` in the `[imu]` lines. | Signs: nose up and left up positive. Half the difference between opposite readings (which cancels any calibration lean) is 60 ± 5 (0.1 degree) for pitch and for roll |
 | S4-U08 | buzzer beeps when calibration is done | FR10 | manual | 1. Buzzer mute switch off. 2. Flash normal image, board flat and still. 3. Listen. | a short beep about 2 s after boot, at the `[imu] calibrated` line |
+| S4-U14 | no impact or tilt fault on a still board; fault record is 4 bytes | FR10 | auto | `subsystem4_test.c` | `[TEST] S4-U14 PASS` |
+| S4-U15 | a sharp knock latches the impact fault | FR10, A4 | manual | 1. Flash normal image, module flat and still until `[imu] calibrated`. 2. Rap the table hard next to the module, or flick the module sideways. | `[imu] FAULT: impact` and a 1 s beep; nothing more on further knocks (latched) |
+| S4-U16 | holding past 25° latches the tilt fault | FR10 | manual | 1. Reset and calibrate as above. 2. Tilt the module to about 45° and hold it still for 1 s. | `[imu] FAULT: tilt` and a 1 s beep after about 0.5 s |
+| S4-U17 | the 6° ramp and gentle handling raise no fault | FR10, A4 | manual | 1. Reset and calibrate as above. 2. Gently move the module onto the 6° ramp nose up, nose down and sideways, ~3 s each. | no `[imu] FAULT` line |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).
@@ -39,3 +43,9 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-28 | S4-U04 | `fdaed62` | commit2main | PASS | `logs/2026-10-28_unit.txt` | |
 | 2026-10-28 | S4-U07 | `fdaed62` | commit2main | PASS | `logs/2026-10-28_ramp.txt` | Pitch +6.6/−5.3 → slope 5.95°, roll +6.8/−5.4 → slope 6.1°; calibration lean ≈ 0.7°. Z was stuck at full scale during this run (loose jumper wires); X and Y unaffected |
 | 2026-10-28 | S4-U08 | `327d98d` | commit2main | PASS | Heard by tester | Maker Pi Pico buzzer on GP18 |
+| 2026-10-28 | S4-U05, S4-U01, S4-U06, S4-U04 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault_unit.txt` | |
+| 2026-10-28 | S4-U02 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault_unit.txt` | Only x and y are meaningful: Z is stuck at full scale (faulty module), and calibration absorbs it |
+| 2026-10-28 | S4-U14 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault_unit.txt` | |
+| 2026-10-28 | S4-U17 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault.txt` | No fault. Pitch briefly reached 26.9° while handling, but not for 0.5 s |
+| 2026-10-28 | S4-U15 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault.txt` | Beep heard. The triggering sample falls between printed lines (printed every 100 ms); around it X swung from +355 to −541 mg. The module then rested leaning at −26°, which correctly latched the tilt fault too |
+| 2026-10-28 | S4-U16 | `6fc6db2` | commit2main | PASS | `logs/2026-10-28_fault.txt` | Held at about 30° (X 506 mg; roll read 28.8°); fault about 0.5 s after passing 25° |

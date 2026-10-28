@@ -1,43 +1,17 @@
-
-
-
-
 microT-Kernel Version 3.00
-
-
-
-
-
 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
-
 dual-core (SMP) build, usermain on core 0
-
 all subsystems started
-
-
-
 [TEST] === test run start ===
-
 [TEST] subsystem1 SUMMARY 0 passed, 0 failed
-
 [TEST] subsystem2 SUMMARY 0 passed, 0 failed
-
 [TEST] subsystem3 SUMMARY 0 passed, 0 failed
-
 wifi: cyw43_utk_task starting (proc 1)
-
 wifi: cyw43_init() ...
-
 wifi: cyw43_init() returned, bringing interface up ...
-
 [imu] calibrated: offsets x=16 y=36 z=-171 mg
 [TEST] S4-U05 PASS  start-up calibration ends within 3 s
 [imu] x=-1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-3 y=1 z=997 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=4 z=1001 mg pitch=0 roll=-1 (0.1 deg)
-[imu] x=0 y=-2 z=1001 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-3 y=2 z=1001 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=1 y=6 z=997 mg pitch=0 roll=0 (0.1 deg)
 [TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
 [TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
 [TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
@@ -46,129 +20,3 @@ wifi: cyw43_init() returned, bringing interface up ...
 [TEST] subsystem5 SUMMARY 0 passed, 0 failed
 [TEST] === test run end ===
 [imu] x=-3 y=3 z=994 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=0 z=1005 mg pitch=0 roll=-1 (0.1 deg)
-[imu] x=2 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=1 y=1 z=1004 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=0 z=993 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-3 y=3 z=997 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-3 y=-1 z=1003 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-3 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=1 y=-2 z=1003 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=5 z=999 mg pitch=-1 roll=-1 (0.1 deg)
-[imu] x=-2 y=3 z=1001 mg pitch=-1 roll=-1 (0.1 deg)
-[imu] x=1 y=4 z=1001 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=1 y=0 z=999 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=2 y=3 z=1003 mg pitch=0 roll=1 (0.1 deg)
-[imu] x=-1 y=-2 z=996 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-1 y=-2 z=1000 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=2 y=0 z=1002 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=6 z=1002 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=3 y=0 z=1005 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=2 y=2 z=999 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=2 z=997 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=1 z=1001 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=0 y=4 z=993 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=1 y=1 z=1003 mg pitch=-2 roll=0 (0.1 deg)
-[imu] x=3 y=-1 z=1007 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-2 y=0 z=999 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=2 y=4 z=1001 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=-2 z=1000 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-2 y=1 z=1001 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-1 y=6 z=1001 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=2 y=-3 z=992 mg pitch=0 roll=1 (0.1 deg)
-[imu] x=1 y=-2 z=996 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-4 y=3 z=999 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=1 y=-1 z=1001 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=2 y=-1 z=1002 mg pitch=0 roll=1 (0.1 deg)
-[imu] x=1 y=-1 z=1004 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-2 y=2 z=1003 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=0 y=4 z=999 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=1 z=998 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=1 z=1001 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=2 y=-1 z=992 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=1 y=3 z=996 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=1 y=0 z=997 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=1 y=2 z=1002 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=-3 z=998 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=1 z=997 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=-5 z=1002 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=3 y=0 z=1002 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=3 y=4 z=997 mg pitch=0 roll=1 (0.1 deg)
-[imu] x=2 y=0 z=998 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=1 z=1004 mg pitch=0 roll=-1 (0.1 deg)
-[imu] x=0 y=-3 z=1003 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=-1 z=1004 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-2 y=2 z=996 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-3 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=-1 z=997 mg pitch=0 roll=-1 (0.1 deg)
-[imu] x=-1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-4 y=3 z=1003 mg pitch=-1 roll=-1 (0.1 deg)
-[imu] x=2 y=0 z=1002 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=4 y=4 z=995 mg pitch=-1 roll=1 (0.1 deg)
-[imu] x=0 y=1 z=997 mg pitch=-1 roll=1 (0.1 deg)
-[imu] x=-2 y=0 z=997 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=-2 z=1003 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=-2 z=1002 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=5 z=1002 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-4 y=-4 z=998 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-4 y=2 z=1000 mg pitch=0 roll=-1 (0.1 deg)
-[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=1 y=-1 z=1006 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=2 z=999 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=2 y=-5 z=1002 mg pitch=0 roll=1 (0.1 deg)
-[imu] x=0 y=1 z=1004 mg pitch=-1 roll=1 (0.1 deg)
-[imu] x=1 y=-2 z=1005 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-2 y=5 z=1005 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=1 z=995 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-2 y=1 z=996 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=3 z=1003 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-3 y=2 z=1006 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-3 y=1 z=1003 mg pitch=0 roll=-1 (0.1 deg)
-[imu] x=-2 y=0 z=998 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=3 y=2 z=998 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=8 y=-3 z=1004 mg pitch=0 roll=1 (0.1 deg)
-[imu] x=-6 y=2 z=1000 mg pitch=0 roll=1 (0.1 deg)
-[imu] x=2 y=-3 z=1004 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=-2 z=995 mg pitch=0 roll=-1 (0.1 deg)
-[imu] x=-2 y=1 z=1001 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=1 z=996 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=1 z=997 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=-4 z=999 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=3 y=1 z=995 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-2 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=2 y=-1 z=1005 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-4 y=1 z=997 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=2 y=0 z=1002 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=-1 z=997 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=3 y=1 z=999 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=1 y=2 z=996 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=-1 z=992 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=4 y=3 z=998 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=2 y=4 z=1005 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-2 y=2 z=999 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-3 y=0 z=996 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=3 z=997 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-1 y=-2 z=995 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=4 y=4 z=1003 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-1 y=1 z=997 mg pitch=-2 roll=0 (0.1 deg)
-[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=-2 y=1 z=1002 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-1 y=-3 z=995 mg pitch=0 roll=-1 (0.1 deg)
-[imu] x=1 y=4 z=998 mg pitch=0 roll=0 (0.1 deg)
-[imu] x=3 y=1 z=1003 mg pitch=-1 roll=0 (0.1 deg)
-[imu] x=-3 y=3 z=998 mg pitch=-2 roll=0 (0.1 deg)
-[imu] x=-1 y=5 z=1000 mg pitch=-2 roll=0 (0.1 deg)

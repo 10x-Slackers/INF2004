@@ -76,7 +76,7 @@ By default the kernel leaves every application pin in its reset state. A few bui
 | UART0 console copy and crash report | `make CRASH_REPORT=1` or `CONSOLE=uart` | Off. When on, it takes GP0 and GP1 |
 | Kernel I2C driver pins | `DEVCNF_USE_IIC` in `config/config_device.h`, pins in `device/i2c/sysdepend/rp2040/i2c_cnf_sysdep.h` | On. It registers I2C0 only (`iica`, in `kernel/sysdepend/pico_rp2040/devinit.c`) and muxes GP4, GP5 for the GY-511 |
 | Kernel ADC driver pins | `DEVCONF_ADC_PIN_INIT_n` in `device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` | None claimed |
-| PWM block reset release | `kernel/sysdepend/pico_rp2040/hw_setting.c`, gated by `USE_PTMR` in `config/config.h` | Off |
+| PWM block reset release | `kernel/sysdepend/pico_rp2040/hw_setting.c`, gated by `USE_PTMR` in `config/config.h` | Off in the kernel. `usermain()` in `app_program/app_main.c` releases it before any subsystem starts |
 
 Things that clash with this pin map:
 

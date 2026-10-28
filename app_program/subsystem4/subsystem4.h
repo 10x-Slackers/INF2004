@@ -18,6 +18,10 @@
 #define S4_CAL_N   200 /* start-up calibration samples (2 s, car still) */
 #define S4_CAL_MG  100 /* a sample this far from the mean restarts it */
 
+#define S4_BUZZER_PIN 18   /* Maker Pi Pico buzzer; the Robo Pico's is 22 */
+#define S4_BEEP_HZ    4000 /* beep when calibration is done */
+#define S4_BEEP_MS    200
+
 /* Private to subsystem 4.  Latest calibrated reading, packed to its range:
    each axis is -2048..2047 mg (the sensor's 12-bit range at +-2 g); count
    is a wrapping 8-bit sample counter.  36 + 8 bits, stored in 8 bytes. */

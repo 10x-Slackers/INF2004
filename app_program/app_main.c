@@ -81,6 +81,14 @@ EXPORT INT usermain(void)
     tm_printf((UB *)"single-core build\n");
 #endif
 
+    /* The kernel leaves the PWM block in reset (USE_PTMR = 0 in
+       config/config.h).  Release it once here for every PWM pin: motors,
+       servo, buzzer. */
+    clr_w(RESETS_RESET, RESETS_RESET_PWM);
+    while ((in_w(RESETS_RESET_DONE) & RESETS_RESET_PWM) == 0)
+    {
+    }
+
     /* Phase 1: every subsystem creates its kernel objects */
     CHECK(subsystem1_init(), "subsystem1_init");
     CHECK(subsystem2_init(), "subsystem2_init");

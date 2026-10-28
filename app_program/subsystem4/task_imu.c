@@ -43,6 +43,15 @@ LOCAL BOOL moved(W v, W sum, W n)
     return (d > S4_CAL_MG) || (d < -S4_CAL_MG);
 }
 
+/* Start a square wave on the buzzer (PWM clock 125 MHz, divider 1) */
+LOCAL void beep_on(void)
+{
+    pwm_set_pin(S4_BUZZER_PIN);
+    pwm_set_wrap(S4_BUZZER_PIN, 125000000 / S4_BEEP_HZ - 1);
+    pwm_set_cc(S4_BUZZER_PIN, 125000000 / S4_BEEP_HZ / 2);
+    pwm_set_enabled(S4_BUZZER_PIN, TRUE);
+}
+
 LOCAL void imu_tick(void * exinf)
 {
     tk_wup_tsk((ID)exinf);
@@ -56,6 +65,7 @@ EXPORT void imu_task(INT stacd, void * exinf)
     W ox = 0, oy = 0, oz = 0;        /* offsets, in mg */
     W fx = 0, fy = 0;                /* filtered x and y, 8 x mg */
     UB print = 0;
+    UB beep = 0; /* samples left until the buzzer stops */
     ER er;
 
     (void)stacd;
@@ -95,8 +105,15 @@ EXPORT void imu_task(INT stacd, void * exinf)
                 oz = sz / n - 1000;
                 tm_printf((UB *)"[imu] calibrated: offsets x=%d y=%d z=%d mg\n",
                           ox, oy, oz);
+                beep_on();
+                beep = S4_BEEP_MS / S4_IMU_MS;
             }
             continue;
+        }
+
+        if (beep > 0 && --beep == 0)
+        {
+            pwm_set_enabled(S4_BUZZER_PIN, FALSE);
         }
 
         x -= ox;

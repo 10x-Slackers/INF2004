@@ -63,7 +63,7 @@ fixed.
 | GP15 | | |
 | GP16 | | |
 | GP17 | | |
-| GP18 | | |
+| GP18 | IMU (Buddy 4) | Maker Pi Pico buzzer, beeps when calibration is done (PWM slice 1 A). On the Robo Pico this pin is the NeoPixel and the buzzer is GP22 |
 | GP19 | | |
 | GP20 | | |
 | GP21 | | |
@@ -108,7 +108,7 @@ the drivers have no locking to stop it.
 | SPI0 | | | |
 | SPI1 | | | |
 | ADC | | | GP26–GP28 |
-| PWM slices (list) | | | |
+| PWM slices (list) | IMU (Buddy 4) | `imu_task` | Slice 1 A: GP18 buzzer |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special

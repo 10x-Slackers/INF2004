@@ -24,6 +24,6 @@ wifi: cyw43_init() returned, bringing interface up ...
 [imu] x=31 y=61 z=790 mg
 [imu] x=30 y=61 z=799 mg
 [imu] x=29 y=63 z=792 mg
-... 92 readings omitted (x 24..37, y 57..66, z 786..802)
+... 92 readings omitted (x 24..37 ~31, y 57..66 ~62, z 786..802 ~796)
 [imu] x=30 y=63 z=798 mg
 [imu] x=33 y=60 z=801 mg

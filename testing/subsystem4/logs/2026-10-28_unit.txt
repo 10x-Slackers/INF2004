@@ -28,6 +28,6 @@ wifi: cyw43_init() returned, bringing interface up ...
 [imu] x=0 y=0 z=1005 mg pitch=0 roll=-1 (0.1 deg)
 [imu] x=2 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg)
 [imu] x=1 y=1 z=1004 mg pitch=0 roll=0 (0.1 deg)
-... 121 readings omitted (x -6..8, y -5..6, z 992..1007, pitch -2..0, roll -1..1)
+... 121 readings omitted (x -6..8 ~0, y -5..6 ~1, z 992..1007 ~1000, pitch -2..0 ~0, roll -1..1 ~0)
 [imu] x=-3 y=3 z=998 mg pitch=-2 roll=0 (0.1 deg)
 [imu] x=-1 y=5 z=1000 mg pitch=-2 roll=0 (0.1 deg)

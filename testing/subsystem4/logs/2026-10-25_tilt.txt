@@ -1,6 +1,6 @@
 [imu] x=29 y=65 z=794 mg
 [imu] x=34 y=62 z=793 mg
-... 198 readings omitted (x 26..38, y 56..68, z 785..801)
+... 198 readings omitted (x 26..38 ~32, y 56..68 ~62, z 785..801 ~796)
 [imu] x=29 y=62 z=797 mg
 [imu] x=32 y=62 z=797 mg
 [imu] x=33 y=62 z=797 mg
@@ -11,7 +11,7 @@
 [imu] x=31 y=61 z=794 mg
 [imu] x=34 y=64 z=798 mg
 [imu] x=31 y=59 z=795 mg
-... 16 readings omitted (x 27..35, y 58..66, z 790..801)
+... 16 readings omitted (x 27..35 ~31, y 58..66 ~61, z 790..801 ~794)
 [imu] x=31 y=57 z=796 mg
 [imu] x=30 y=60 z=795 mg
 [imu] x=35 y=61 z=796 mg
@@ -22,7 +22,7 @@
 [imu] x=32 y=60 z=795 mg
 [imu] x=29 y=63 z=797 mg
 [imu] x=29 y=61 z=794 mg
-... 69 readings omitted (x 26..37, y 58..67, z 786..802)
+... 69 readings omitted (x 26..37 ~31, y 58..67 ~62, z 786..802 ~794)
 [imu] x=35 y=61 z=796 mg
 [imu] x=33 y=58 z=796 mg
 [imu] x=32 y=65 z=795 mg
@@ -33,7 +33,7 @@
 [imu] x=32 y=62 z=797 mg
 [imu] x=30 y=59 z=792 mg
 [imu] x=31 y=64 z=794 mg
-... 16 readings omitted (x 27..38, y 56..64, z 788..800)
+... 16 readings omitted (x 27..38 ~32, y 56..64 ~61, z 788..800 ~793)
 [imu] x=28 y=60 z=794 mg
 [imu] x=32 y=63 z=796 mg
 [imu] x=24 y=64 z=795 mg
@@ -44,7 +44,7 @@
 [imu] x=32 y=65 z=800 mg
 [imu] x=31 y=59 z=795 mg
 [imu] x=33 y=58 z=793 mg
-... 453 readings omitted (x 26..39, y 48..69, z 786..805)
+... 453 readings omitted (x 26..39 ~32, y 48..69 ~62, z 786..805 ~795)
 [imu] x=28 y=64 z=801 mg
 [imu] x=36 y=61 z=795 mg
 [imu] x=30 y=61 z=795 mg
@@ -57,7 +57,7 @@
 [imu] x=2 y=-130 z=-1254 mg
 [imu] x=-6 y=-126 z=-1260 mg
 [imu] x=0 y=-130 z=-1263 mg
-... 49 readings omitted (x -12..6, y -152..-119, z -1267..-1244)
+... 49 readings omitted (x -12..6 ~-2, y -152..-119 ~-133, z -1267..-1244 ~-1256)
 [imu] x=-4 y=-135 z=-1261 mg
 [imu] x=0 y=-138 z=-1258 mg
 [imu] x=-3 y=-133 z=-1260 mg
@@ -68,7 +68,7 @@
 [imu] x=-4 y=-150 z=-1244 mg
 [imu] x=-7 y=-130 z=-1253 mg
 [imu] x=-5 y=-146 z=-1260 mg
-... 16 readings omitted (x -9..-2, y -148..-130, z -1264..-1245)
+... 16 readings omitted (x -9..-2 ~-5, y -148..-130 ~-139, z -1264..-1245 ~-1254)
 [imu] x=-5 y=-149 z=-1256 mg
 [imu] x=-6 y=-142 z=-1249 mg
 [imu] x=-9 y=-136 z=-1256 mg
@@ -79,7 +79,7 @@
 [imu] x=-10 y=-139 z=-1263 mg
 [imu] x=-4 y=-147 z=-1251 mg
 [imu] x=-9 y=-137 z=-1257 mg
-... 70 readings omitted (x -1034..22, y -1000..731, z -1265..246)
+... 70 readings omitted (x -1034..22 ~-11, y -1000..731 ~-144, z -1265..246 ~-1247)
 [imu] x=9 y=-962 z=-183 mg
 [imu] x=11 y=-960 z=-190 mg
 [imu] x=6 y=-969 z=-175 mg
@@ -90,7 +90,7 @@
 [imu] x=13 y=-955 z=-177 mg
 [imu] x=6 y=-962 z=-179 mg
 [imu] x=6 y=-976 z=-171 mg
-... 16 readings omitted (x 0..17, y -972..-952, z -183..-159)
+... 16 readings omitted (x 0..17 ~11, y -972..-952 ~-960, z -183..-159 ~-168)
 [imu] x=26 y=-952 z=-162 mg
 [imu] x=13 y=-965 z=-167 mg
 [imu] x=15 y=-965 z=-158 mg
@@ -101,7 +101,7 @@
 [imu] x=15 y=-968 z=-159 mg
 [imu] x=18 y=-960 z=-163 mg
 [imu] x=14 y=-967 z=-162 mg
-... 68 readings omitted (x -100..363, y -1017..1796, z -1260..-54)
+... 68 readings omitted (x -100..363 ~63, y -1017..1796 ~278, z -1260..-54 ~-214)
 [imu] x=83 y=1047 z=-219 mg
 [imu] x=83 y=1045 z=-216 mg
 [imu] x=79 y=1044 z=-218 mg
@@ -112,7 +112,7 @@
 [imu] x=83 y=1047 z=-210 mg
 [imu] x=82 y=1043 z=-201 mg
 [imu] x=80 y=1045 z=-205 mg
-... 16 readings omitted (x 76..86, y 1030..1049, z -211..-198)
+... 16 readings omitted (x 76..86 ~82, y 1030..1049 ~1046, z -211..-198 ~-205)
 [imu] x=80 y=1046 z=-201 mg
 [imu] x=82 y=1049 z=-204 mg
 [imu] x=84 y=1044 z=-192 mg
@@ -123,7 +123,7 @@
 [imu] x=83 y=1043 z=-196 mg
 [imu] x=77 y=1045 z=-201 mg
 [imu] x=84 y=1043 z=-199 mg
-... 66 readings omitted (x -1145..306, y -244..1130, z -1271..-156)
+... 66 readings omitted (x -1145..306 ~-433, y -244..1130 ~108, z -1271..-156 ~-247)
 [imu] x=-1003 y=75 z=-261 mg
 [imu] x=-1005 y=73 z=-257 mg
 [imu] x=-1006 y=80 z=-263 mg
@@ -134,7 +134,7 @@
 [imu] x=-1006 y=77 z=-261 mg
 [imu] x=-1005 y=78 z=-258 mg
 [imu] x=-1010 y=70 z=-256 mg
-... 16 readings omitted (x -1011..-1003, y 60..83, z -270..-256)
+... 16 readings omitted (x -1011..-1003 ~-1007, y 60..83 ~74, z -270..-256 ~-261)
 [imu] x=-1006 y=52 z=-263 mg
 [imu] x=-1012 y=53 z=-266 mg
 [imu] x=-1008 y=49 z=-263 mg
@@ -145,7 +145,7 @@
 [imu] x=-1009 y=50 z=-264 mg
 [imu] x=-1010 y=61 z=-266 mg
 [imu] x=-1010 y=51 z=-258 mg
-... 133 readings omitted (x -1052..1297, y -949..103, z -1307..-126)
+... 133 readings omitted (x -1052..1297 ~1054, y -949..103 ~66, z -1307..-126 ~-182)
 [imu] x=1055 y=68 z=-154 mg
 [imu] x=1058 y=60 z=-153 mg
 [imu] x=1052 y=52 z=-168 mg
@@ -156,7 +156,7 @@
 [imu] x=1055 y=59 z=-178 mg
 [imu] x=1055 y=63 z=-170 mg
 [imu] x=1057 y=56 z=-192 mg
-... 16 readings omitted (x 1052..1064, y 37..60, z -226..-193)
+... 16 readings omitted (x 1052..1064 ~1057, y 37..60 ~46, z -226..-193 ~-201)
 [imu] x=1053 y=40 z=-200 mg
 [imu] x=1052 y=49 z=-199 mg
 [imu] x=1056 y=45 z=-198 mg

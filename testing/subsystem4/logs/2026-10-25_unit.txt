@@ -1,41 +1,17 @@
-
-
-
-
 microT-Kernel Version 3.00
-
-
-
-
-
 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
-
 dual-core (SMP) build, usermain on core 0
-
 all subsystems started
-
-
-
 [TEST] === test run start ===
-
 [TEST] subsystem1 SUMMARY 0 passed, 0 failed
-
 [TEST] subsystem2 SUMMARY 0 passed, 0 failed
-
 [TEST] subsystem3 SUMMARY 0 passed, 0 failed
-
 wifi: cyw43_utk_task starting (proc 1)
-
 [imu] x=32 y=62 z=797 mg
-
 wifi: cyw43_init() ...
-
 wifi: cyw43_init() returned, bringing interface up ...
-
 [imu] x=33 y=60 z=802 mg
-
 [imu] x=33 y=63 z=797 mg
-
 [imu] x=30 y=60 z=795 mg
 [imu] x=29 y=61 z=794 mg
 [TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
@@ -48,97 +24,6 @@ wifi: cyw43_init() returned, bringing interface up ...
 [imu] x=31 y=61 z=790 mg
 [imu] x=30 y=61 z=799 mg
 [imu] x=29 y=63 z=792 mg
-[imu] x=30 y=63 z=793 mg
-[imu] x=32 y=61 z=795 mg
-[imu] x=30 y=65 z=794 mg
-[imu] x=30 y=61 z=798 mg
-[imu] x=35 y=63 z=798 mg
-[imu] x=36 y=60 z=797 mg
-[imu] x=30 y=62 z=801 mg
-[imu] x=34 y=62 z=799 mg
-[imu] x=33 y=62 z=789 mg
-[imu] x=28 y=63 z=795 mg
-[imu] x=34 y=60 z=791 mg
-[imu] x=35 y=62 z=797 mg
-[imu] x=35 y=60 z=797 mg
-[imu] x=29 y=62 z=799 mg
-[imu] x=32 y=60 z=802 mg
-[imu] x=34 y=66 z=791 mg
-[imu] x=35 y=61 z=794 mg
-[imu] x=32 y=60 z=802 mg
-[imu] x=30 y=61 z=789 mg
-[imu] x=36 y=62 z=794 mg
-[imu] x=31 y=62 z=798 mg
-[imu] x=31 y=61 z=791 mg
-[imu] x=31 y=61 z=798 mg
-[imu] x=25 y=60 z=797 mg
-[imu] x=33 y=59 z=795 mg
-[imu] x=30 y=61 z=791 mg
-[imu] x=33 y=60 z=795 mg
-[imu] x=33 y=62 z=794 mg
-[imu] x=29 y=64 z=792 mg
-[imu] x=29 y=60 z=801 mg
-[imu] x=33 y=64 z=790 mg
-[imu] x=28 y=61 z=796 mg
-[imu] x=29 y=63 z=801 mg
-[imu] x=32 y=62 z=794 mg
-[imu] x=32 y=59 z=800 mg
-[imu] x=31 y=63 z=794 mg
-[imu] x=29 y=59 z=797 mg
-[imu] x=30 y=63 z=798 mg
-[imu] x=33 y=65 z=802 mg
-[imu] x=32 y=63 z=791 mg
-[imu] x=31 y=62 z=800 mg
-[imu] x=31 y=60 z=797 mg
-[imu] x=29 y=59 z=798 mg
-[imu] x=31 y=61 z=797 mg
-[imu] x=28 y=63 z=798 mg
-[imu] x=32 y=61 z=795 mg
-[imu] x=32 y=60 z=796 mg
-[imu] x=27 y=64 z=794 mg
-[imu] x=32 y=63 z=796 mg
-[imu] x=36 y=65 z=795 mg
-[imu] x=29 y=61 z=796 mg
-[imu] x=35 y=59 z=800 mg
-[imu] x=28 y=61 z=794 mg
-[imu] x=32 y=63 z=797 mg
-[imu] x=31 y=63 z=797 mg
-[imu] x=27 y=60 z=799 mg
-[imu] x=32 y=59 z=797 mg
-[imu] x=31 y=59 z=790 mg
-[imu] x=32 y=64 z=796 mg
-[imu] x=31 y=59 z=797 mg
-[imu] x=30 y=62 z=797 mg
-[imu] x=25 y=62 z=795 mg
-[imu] x=37 y=62 z=789 mg
-[imu] x=26 y=60 z=796 mg
-[imu] x=32 y=60 z=793 mg
-[imu] x=32 y=62 z=797 mg
-[imu] x=33 y=59 z=793 mg
-[imu] x=33 y=61 z=796 mg
-[imu] x=34 y=57 z=791 mg
-[imu] x=29 y=61 z=793 mg
-[imu] x=29 y=62 z=798 mg
-[imu] x=31 y=58 z=796 mg
-[imu] x=28 y=62 z=793 mg
-[imu] x=29 y=59 z=797 mg
-[imu] x=34 y=62 z=795 mg
-[imu] x=32 y=60 z=802 mg
-[imu] x=31 y=62 z=795 mg
-[imu] x=32 y=64 z=796 mg
-[imu] x=31 y=62 z=799 mg
-[imu] x=35 y=64 z=798 mg
-[imu] x=30 y=59 z=793 mg
-[imu] x=28 y=60 z=798 mg
-[imu] x=32 y=64 z=794 mg
-[imu] x=31 y=63 z=795 mg
-[imu] x=30 y=59 z=786 mg
-[imu] x=29 y=63 z=795 mg
-[imu] x=32 y=59 z=793 mg
-[imu] x=33 y=59 z=795 mg
-[imu] x=32 y=62 z=795 mg
-[imu] x=28 y=64 z=794 mg
-[imu] x=24 y=62 z=791 mg
-[imu] x=32 y=60 z=794 mg
+... 92 readings omitted (x 24..37, y 57..66, z 786..802)
 [imu] x=30 y=63 z=798 mg
 [imu] x=33 y=60 z=801 mg

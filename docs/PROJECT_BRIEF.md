@@ -47,6 +47,20 @@ The car shall:
 
 The letters are the brief's example mapping. Turns must be executed with encoder-based motion control.
 
+### Course markings
+
+From the supplied barcode and line specification and sample barcodes:
+
+| Item | Value |
+| --- | --- |
+| Line width | 18 mm, black on white |
+| Barcode symbology | Code 39: one letter between `*` start and stop characters, for example `*A*` |
+| Barcode length along the track | About 141 mm |
+| Gap between barcode and line | 20 mm, beside the line |
+| Narrow bar | About 3 mm (141 mm over the 47 narrow-bar widths of a three-character Code 39 symbol, wide = 3 × narrow) |
+
+The sample barcodes use letters outside A to D (F, W, X, Y, Z), so the decoder must reject any letter not in the course's command mapping.
+
 ### Expected behaviour
 
 **Line following** must tolerate minor lighting changes, slight track imperfections and speed variation.
@@ -157,7 +171,7 @@ These IDs come from the Week 6 design review. Use them in commits, tests and rep
 | FR4  | Use encoder feedback and PID for independent wheel speeds, speed and distance estimation, straight-travel correction, and repeatable forward, reverse and turning manoeuvres | Wheel Motion Control, Encoder ISR |
 | FR5  | Detect humps from calibrated GY-511 accelerometer data; estimate height from pitch and encoder travel; report the highest valid peak of the run                              | IMU and Terrain Monitor           |
 | FR6  | Detect obstacles on or near the line; coarse scan, then fine scan around detected sectors; estimate location, width, closest point and left/right clearance                  | Ultrasonic Scan                   |
-| FR7  | Stop for profiling; choose and execute the bypass with least route deviation; reacquire the line. Reverse/retry is bounded and needs verified clearance, otherwise Safe Stop | Obstacle Avoidance and Recovery   |
+| FR7  | Stop for profiling; choose and execute the bypass with least route deviation; reacquire the line. Reverse is disabled (no rear-clearance sensing); replanning is bounded; no safe route means Safe Stop | Obstacle Avoidance and Recovery   |
 | FR8  | Coordinate navigation, line following, barcodes, wheel control, terrain monitoring, avoidance and recovery through one mission controller                                    | Vehicle Controller                |
 | FR9  | Establish Wi-Fi/MQTT, publish telemetry and heartbeat, accept permitted supervisory commands, and recover connectivity without blocking local control                        | Wi-Fi and MQTT Telemetry          |
 | FR10 | Classify stationary, accelerating, turning, climbing, descending and impact events; report odometry-derived turn rate and calibrated tilt                                    | IMU and Terrain Monitor           |

@@ -1,0 +1,34 @@
+# S4-U07 ramp test, 2026-10-28. GY-511 lying on a phone; phone level app reads 5 deg (1 deg steps) on the 6 deg ramp.
+# [imu] calibrated: offsets x=58 y=54 z=1040 mg (Z stuck at full scale during this run; pitch and roll use X and Y only)
+
+## nose down
+[imu] x=-3 y=90 z=1000 mg pitch=-52 roll=-3 (0.1 deg)
+[imu] x=-5 y=92 z=1000 mg pitch=-53 roll=-4 (0.1 deg)
+[imu] x=4 y=92 z=1000 mg pitch=-53 roll=-3 (0.1 deg)
+[imu] x=-11 y=94 z=1000 mg pitch=-54 roll=-3 (0.1 deg)
+[imu] x=-1 y=90 z=1000 mg pitch=-52 roll=-4 (0.1 deg)
+[imu] x=-5 y=93 z=1000 mg pitch=-53 roll=-3 (0.1 deg)
+
+## nose up
+[imu] x=-3 y=-114 z=1000 mg pitch=66 roll=0 (0.1 deg)
+[imu] x=2 y=-119 z=1000 mg pitch=66 roll=1 (0.1 deg)
+[imu] x=2 y=-114 z=1000 mg pitch=65 roll=1 (0.1 deg)
+[imu] x=-1 y=-117 z=1000 mg pitch=66 roll=1 (0.1 deg)
+[imu] x=3 y=-114 z=1000 mg pitch=67 roll=1 (0.1 deg)
+[imu] x=2 y=-114 z=1000 mg pitch=66 roll=1 (0.1 deg)
+
+## left side up
+[imu] x=120 y=-44 z=1000 mg pitch=23 roll=68 (0.1 deg)
+[imu] x=119 y=-38 z=1000 mg pitch=23 roll=68 (0.1 deg)
+[imu] x=119 y=-40 z=1000 mg pitch=23 roll=68 (0.1 deg)
+[imu] x=120 y=-42 z=1000 mg pitch=23 roll=68 (0.1 deg)
+[imu] x=117 y=-37 z=1000 mg pitch=23 roll=68 (0.1 deg)
+[imu] x=119 y=-40 z=1000 mg pitch=23 roll=67 (0.1 deg)
+
+## right side up
+[imu] x=-96 y=-21 z=1000 mg pitch=12 roll=-54 (0.1 deg)
+[imu] x=-98 y=-21 z=1000 mg pitch=12 roll=-55 (0.1 deg)
+[imu] x=-91 y=-23 z=1000 mg pitch=12 roll=-54 (0.1 deg)
+[imu] x=-91 y=-21 z=1000 mg pitch=12 roll=-53 (0.1 deg)
+[imu] x=-93 y=-20 z=1000 mg pitch=12 roll=-54 (0.1 deg)
+[imu] x=-94 y=-20 z=1000 mg pitch=12 roll=-54 (0.1 deg)

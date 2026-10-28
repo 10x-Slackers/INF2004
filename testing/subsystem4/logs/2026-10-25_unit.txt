@@ -11,9 +11,6 @@ wifi: cyw43_utk_task starting (proc 1)
 wifi: cyw43_init() ...
 wifi: cyw43_init() returned, bringing interface up ...
 [imu] x=33 y=60 z=802 mg
-[imu] x=33 y=63 z=797 mg
-[imu] x=30 y=60 z=795 mg
-[imu] x=29 y=61 z=794 mg
 [TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
 [TEST] S4-U02 FAIL  flat: z ~ +1000 mg, x and y ~ 0   (../app_program/subsystem4/subsystem4_test.c:26)
 [TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
@@ -21,9 +18,3 @@ wifi: cyw43_init() returned, bringing interface up ...
 [TEST] subsystem5 SUMMARY 0 passed, 0 failed
 [TEST] === test run end ===
 [imu] x=31 y=63 z=795 mg
-[imu] x=31 y=61 z=790 mg
-[imu] x=30 y=61 z=799 mg
-[imu] x=29 y=63 z=792 mg
-... 92 readings omitted (x 24..37 ~31, y 57..66 ~62, z 786..802 ~796)
-[imu] x=30 y=63 z=798 mg
-[imu] x=33 y=60 z=801 mg

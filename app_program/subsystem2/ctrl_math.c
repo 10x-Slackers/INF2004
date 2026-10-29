@@ -26,12 +26,16 @@ void ctrl_math_pid_reset(ctrl_math_pid_t * p_pid)
 
 int32_t ctrl_math_pid(ctrl_math_pid_t * p_pid, int32_t target,
                         int32_t measured, uint32_t gain_p, uint32_t gain_i,
-                        uint32_t gain_d, uint32_t limit)
+                        uint32_t gain_d, uint32_t limit,
+                        uint32_t elapsed_us)
 {
     int32_t error = target - measured;
     int32_t old_integral = (int32_t)p_pid->integral - 65535;
-    int32_t integral = ctrl_math_clamp(old_integral + error, 65535);
+    int32_t integral = ctrl_math_clamp(old_integral +
+        (int64_t)error * elapsed_us / 10000, 65535);
     int32_t previous = (int32_t)p_pid->previous_error - 4096;
+    int64_t derivative = (int64_t)(error - previous) * 10000 /
+                         elapsed_us;
     int64_t output = 0;
     int32_t bound = (int32_t)limit; /* At most 1000 permille. */
 
@@ -41,15 +45,15 @@ int32_t ctrl_math_pid(ctrl_math_pid_t * p_pid, int32_t target,
     }
     else
     {
-        /* Gains are Q8, Ki and Kd are per nominal 10 ms sample. */
+        /* Q8 gains use 10 ms units, scaled to the actual sample interval. */
         output = ((int64_t)gain_p * error + (int64_t)gain_i * integral +
-                  (int64_t)gain_d * (error - previous)) / 256;
+                  (int64_t)gain_d * derivative) / 256;
         if (((output > bound) && (error > 0)) ||
             ((output < -bound) && (error < 0)))
         {
             integral = old_integral;
             output = ((int64_t)gain_p * error + (int64_t)gain_i * integral +
-                      (int64_t)gain_d * (error - previous)) / 256;
+                      (int64_t)gain_d * derivative) / 256;
         }
         p_pid->integral = (uint32_t)(integral + 65535);
         p_pid->previous_error = (uint32_t)(error + 4096);
@@ -76,7 +80,11 @@ void drv_motion_plan(int32_t requested, int32_t * p_previous,
     }
     *p_channel_a = (duty > 0) ? (uint32_t)duty : 0u;
     *p_channel_b = (duty < 0) ? (uint32_t)(-duty) : 0u;
-    *p_previous = duty;
+    /* Explicit brake must not erase direction history before a reversal. */
+    if (0 != requested)
+    {
+        *p_previous = duty;
+    }
 }
 uint32_t drv_motion_count(uint32_t count, uint32_t old_phase,
                                  uint32_t phase,
@@ -112,6 +120,27 @@ uint32_t drv_motion_count(uint32_t count, uint32_t old_phase,
         /* Same phase or invalid transition: retain the signed count. */
     }
     return count;
+}
+
+void drv_motion_capture(volatile drv_motion_encoders_t * p_counts,
+                         uint32_t left_phase, uint32_t right_phase)
+{
+    if ((3u == (p_counts->left_phase ^ left_phase)) &&
+        (65535u != p_counts->left_invalid))
+    {
+        p_counts->left_invalid++;
+    }
+    if ((3u == (p_counts->right_phase ^ right_phase)) &&
+        (65535u != p_counts->right_invalid))
+    {
+        p_counts->right_invalid++;
+    }
+    p_counts->left = drv_motion_count(p_counts->left,
+        p_counts->left_phase, left_phase, p_counts);
+    p_counts->right = drv_motion_count(p_counts->right,
+        p_counts->right_phase, right_phase, p_counts);
+    p_counts->left_phase = left_phase;
+    p_counts->right_phase = right_phase;
 }
 
 /* End of file. */

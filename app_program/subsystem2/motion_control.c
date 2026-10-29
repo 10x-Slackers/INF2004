@@ -1,4 +1,5 @@
 #include "motion_control.h"
+#include "motion_defaults.h"
 #include "ctrl_math.h"
 #include "drv_motion.h"
 #include <string.h>
@@ -19,7 +20,8 @@ static struct
 {
     unsigned int start_left : 24;
     unsigned int start_right : 24;
-    unsigned int goal : 23;
+    unsigned int left_goal : 23;
+    unsigned int right_goal : 23;
     unsigned int last_left : 24;
     unsigned int last_right : 24;
     unsigned int invalid : 16;
@@ -52,6 +54,8 @@ static void motion_control_finish(uint32_t state, uint32_t faults)
     }
     ctrl_math_pid_reset(&g_pid[0]);
     ctrl_math_pid_reset(&g_pid[1]);
+    /* Callers hold the state lock; stop does not depend on another release. */
+    drv_motion_write(0, 0);
 }
 
 void motion_control_init(void)
@@ -61,13 +65,23 @@ void motion_control_init(void)
 
     memset(&g_status, 0, sizeof(g_status));
     memset(&g_run, 0, sizeof(g_run));
-    memset(&g_config, 0, sizeof(g_config));
-    g_config.speed_mm_s = 100u;
-    g_config.duty_limit = 200u;
-    g_config.timeout_ms = 10000u;
-    g_config.stall_ms = 500u;
-    g_config.kp_q8 = 256u;
-    g_config.ki_q8 = 16u;
+    g_config.circumference_mm = MOTION_DEFAULT_CIRCUMFERENCE_MM;
+    g_config.track_mm = MOTION_DEFAULT_TRACK_MM;
+    g_config.counts_per_rev = MOTION_DEFAULT_COUNTS_PER_REV;
+    g_config.left_counts_per_rev = MOTION_DEFAULT_LEFT_COUNTS_PER_REV;
+    g_config.right_counts_per_rev = MOTION_DEFAULT_RIGHT_COUNTS_PER_REV;
+    g_config.kp_q8 = MOTION_DEFAULT_KP_Q8;
+    g_config.ki_q8 = MOTION_DEFAULT_KI_Q8;
+    g_config.kd_q8 = MOTION_DEFAULT_KD_Q8;
+    g_config.speed_mm_s = MOTION_DEFAULT_SPEED_MM_S;
+    g_config.duty_limit = MOTION_DEFAULT_DUTY_LIMIT;
+    g_config.timeout_ms = MOTION_DEFAULT_TIMEOUT_MS;
+    g_config.stall_ms = MOTION_DEFAULT_STALL_MS;
+    g_config.motor_left_reverse = MOTION_DEFAULT_MOTOR_LEFT_REVERSE;
+    g_config.motor_right_reverse = MOTION_DEFAULT_MOTOR_RIGHT_REVERSE;
+    g_config.encoder_left_reverse = MOTION_DEFAULT_ENCODER_LEFT_REVERSE;
+    g_config.encoder_right_reverse = MOTION_DEFAULT_ENCODER_RIGHT_REVERSE;
+    g_config.confirmed = MOTION_DEFAULT_CONFIRMED;
     g_status.left_count = MOTION_CONTROL_COUNT_BIAS;
     g_status.right_count = MOTION_CONTROL_COUNT_BIAS;
     g_status.left_mm = MOTION_CONTROL_COUNT_BIAS;
@@ -78,10 +92,19 @@ void motion_control_init(void)
     g_run.last_left = MOTION_CONTROL_COUNT_BIAS;
     g_run.last_right = MOTION_CONTROL_COUNT_BIAS;
     g_run.last_us = drv_motion_time_us();
+    g_status.timestamp_us = g_run.last_us - 30001u;
     motion_control_finish(MOTION_CONTROL_IDLE,
                            ready ? 0u : MOTION_CONTROL_INIT);
     drv_motion_write(0, 0);
     drv_motion_unlock(saved);
+}
+
+static uint32_t motion_control_cpr(const motion_control_config_t * p_config,
+                                    bool right)
+{
+    uint32_t value = right ? p_config->right_counts_per_rev :
+                             p_config->left_counts_per_rev;
+    return (0u != value) ? value : p_config->counts_per_rev;
 }
 
 static bool motion_control_valid_config(
@@ -90,7 +113,8 @@ static bool motion_control_valid_config(
     return ((p_config->circumference_mm >= 50u) &&
             (p_config->circumference_mm <= 1000u) &&
             (p_config->track_mm >= 50u) && (p_config->track_mm <= 1000u) &&
-            (p_config->counts_per_rev >= 4u) &&
+            (motion_control_cpr(p_config, false) >= 4u) &&
+            (motion_control_cpr(p_config, true) >= 4u) &&
             (p_config->speed_mm_s >= 10u) &&
             (p_config->speed_mm_s <= 1000u) &&
             (p_config->duty_limit >= 1u) &&
@@ -109,7 +133,7 @@ bool motion_control_configure(const motion_control_config_t * p_config)
     uint32_t left = 0u;
     uint32_t right = 0u;
 
-    drv_motion_snapshot(&counts);
+    uint32_t sampled_us = drv_motion_sample(&counts);
     left = (0u != p_config->encoder_left_reverse) ?
            16777216u - counts.left : counts.left;
     right = (0u != p_config->encoder_right_reverse) ?
@@ -120,6 +144,7 @@ bool motion_control_configure(const motion_control_config_t * p_config)
          motion_control_valid_config(p_config)))
     {
         g_config = *p_config;
+        g_run.last_us = sampled_us;
         g_run.last_left = left;
         g_run.last_right = right;
         /* A fresh tick must apply new units/polarity before arming. */
@@ -209,13 +234,24 @@ bool motion_control_reset_faults(void)
     return accepted;
 }
 
+static bool motion_control_goal_fits(uint32_t start, int64_t ticks,
+                                     bool reverse, bool inverted)
+{
+    /* Negating raw INT24_MIN is not representable after normalization. */
+    int64_t available = reverse ? (int64_t)start - (inverted ? 1 : 0) :
+                                 16777215u - start;
+    return ((ticks > 0) && (ticks <= MOTION_CONTROL_COUNT_MAX) &&
+            (ticks <= available));
+}
+
 static bool motion_control_command(uint32_t command, uint32_t amount)
 {
     uint32_t saved = drv_motion_lock();
     bool accepted = false;
     int64_t numerator = 0;
     int64_t denominator = 1;
-    int64_t ticks = 0;
+    int64_t left_ticks = 0;
+    int64_t right_ticks = 0;
 
     if ((0u != g_status.armed) && (0u == g_status.faults) &&
         (MOTION_CONTROL_RUNNING != g_status.state) && (amount > 0u) &&
@@ -225,7 +261,7 @@ static bool motion_control_command(uint32_t command, uint32_t amount)
              (MOTION_CONTROL_BACKWARD == command)) &&
             (amount <= MOTION_CONTROL_MAX_DISTANCE))
         {
-            numerator = (int64_t)amount * g_config.counts_per_rev;
+            numerator = amount;
             denominator = g_config.circumference_mm;
         }
         else if (((MOTION_CONTROL_LEFT == command) ||
@@ -233,18 +269,28 @@ static bool motion_control_command(uint32_t command, uint32_t amount)
                  (amount <= MOTION_CONTROL_MAX_ANGLE))
         {
             /* pi ~= 355/113; wheel arc = pi * track * angle / 3600. */
-            numerator = (int64_t)g_config.track_mm * amount * 355 *
-                        g_config.counts_per_rev;
+            numerator = (int64_t)g_config.track_mm * amount * 355;
             denominator = (int64_t)3600 * 113 * g_config.circumference_mm;
         }
         else
         {
             numerator = 0;
         }
-        ticks = (numerator + denominator - 1) / denominator;
-        if ((ticks > 0) && (ticks <= MOTION_CONTROL_COUNT_MAX))
+        left_ticks = (numerator * motion_control_cpr(&g_config, false) +
+                      denominator - 1) / denominator;
+        right_ticks = (numerator * motion_control_cpr(&g_config, true) +
+                       denominator - 1) / denominator;
+        if (motion_control_goal_fits(g_status.left_count, left_ticks,
+                (MOTION_CONTROL_BACKWARD == command) ||
+                (MOTION_CONTROL_LEFT == command),
+                0u != g_config.encoder_left_reverse) &&
+            motion_control_goal_fits(g_status.right_count, right_ticks,
+                (MOTION_CONTROL_BACKWARD == command) ||
+                (MOTION_CONTROL_RIGHT == command),
+                0u != g_config.encoder_right_reverse))
         {
-            g_run.goal = (uint32_t)ticks;
+            g_run.left_goal = (uint32_t)left_ticks;
+            g_run.right_goal = (uint32_t)right_ticks;
             g_run.start_left = g_status.left_count;
             g_run.start_right = g_status.right_count;
             g_run.start_us = drv_motion_time_us();
@@ -321,6 +367,8 @@ static bool motion_control_measure(const drv_motion_encoders_t * p_counts,
         p_counts->right, g_config.encoder_right_reverse);
     int32_t old_left = motion_control_decode_count(g_run.last_left);
     int32_t old_right = motion_control_decode_count(g_run.last_right);
+    uint32_t left_cpr = motion_control_cpr(&g_config, false);
+    uint32_t right_cpr = motion_control_cpr(&g_config, true);
     int64_t left_speed = 0;
     int64_t right_speed = 0;
     int64_t left_mm = 0;
@@ -344,18 +392,18 @@ static bool motion_control_measure(const drv_motion_encoders_t * p_counts,
     {
         g_run.right_edge_us = g_status.timestamp_us;
     }
-    if (0u != g_config.counts_per_rev)
+    if ((0u != left_cpr) && (0u != right_cpr))
     {
         left_mm = (int64_t)left * g_config.circumference_mm /
-                  g_config.counts_per_rev;
+                  left_cpr;
         right_mm = (int64_t)right * g_config.circumference_mm /
-                   g_config.counts_per_rev;
+                   right_cpr;
         left_speed = ((int64_t)left - old_left) *
                      g_config.circumference_mm * 1000000 /
-                     ((int64_t)g_config.counts_per_rev * elapsed_us);
+                     ((int64_t)left_cpr * elapsed_us);
         right_speed = ((int64_t)right - old_right) *
                       g_config.circumference_mm * 1000000 /
-                      ((int64_t)g_config.counts_per_rev * elapsed_us);
+                      ((int64_t)right_cpr * elapsed_us);
     }
     if ((left_mm > 8388607) || (left_mm < -8388608) ||
         (right_mm > 8388607) || (right_mm < -8388608) ||
@@ -378,6 +426,8 @@ static void motion_control_targets(int32_t * p_left, int32_t * p_right)
     int32_t right_sign = 1;
     int32_t speed = (int32_t)g_config.speed_mm_s;
     int32_t correction = 0;
+    uint32_t left_cpr = motion_control_cpr(&g_config, false);
+    uint32_t right_cpr = motion_control_cpr(&g_config, true);
     int64_t left_progress = 0;
     int64_t right_progress = 0;
 
@@ -395,9 +445,9 @@ static void motion_control_targets(int32_t * p_left, int32_t * p_right)
                     left_sign;
     right_progress = ((int64_t)g_status.right_count - g_run.start_right) *
                      right_sign;
-    if ((left_progress < -((int64_t)g_config.counts_per_rev * 2 /
+    if ((left_progress < -((int64_t)left_cpr * 2 /
                             g_config.circumference_mm + 2)) ||
-        (right_progress < -((int64_t)g_config.counts_per_rev * 2 /
+        (right_progress < -((int64_t)right_cpr * 2 /
                              g_config.circumference_mm + 2)))
     {
         motion_control_finish(MOTION_CONTROL_FAILED, MOTION_CONTROL_ENCODER);
@@ -405,12 +455,12 @@ static void motion_control_targets(int32_t * p_left, int32_t * p_right)
     }
     /* Correct wheel mismatch in either travel direction, limited to 25%. */
     correction = ctrl_math_clamp(
-        (left_progress - right_progress) * g_config.circumference_mm * 2 /
-            g_config.counts_per_rev,
+        (left_progress * right_cpr - right_progress * left_cpr) *
+            g_config.circumference_mm * 2 / ((int64_t)left_cpr * right_cpr),
         speed / 4);
-    *p_left = (left_progress >= g_run.goal) ? 0 :
+    *p_left = (left_progress >= g_run.left_goal) ? 0 :
               left_sign * (speed - correction);
-    *p_right = (right_progress >= g_run.goal) ? 0 :
+    *p_right = (right_progress >= g_run.right_goal) ? 0 :
                right_sign * (speed + correction);
     if ((0 == *p_left) && (0 == *p_right))
     {
@@ -422,10 +472,28 @@ void motion_control_tick(uint32_t now_us)
 {
     drv_motion_encoders_t counts = {0};
     uint32_t saved = drv_motion_lock();
-    uint32_t elapsed_us = now_us - g_run.last_us;
+    uint32_t elapsed_us = 0u;
+    bool encoder_guard = (0u != g_status.armed);
     int32_t left = 0;
     int32_t right = 0;
 
+    /* Use the encoder snapshot time, not the preemptible task-entry time. */
+    now_us = drv_motion_sample(&counts);
+    elapsed_us = now_us - g_run.last_us;
+    if ((0u != counts.overflow) ||
+        (encoder_guard && (counts.invalid != g_run.invalid)))
+    {
+        motion_control_finish(MOTION_CONTROL_FAILED, MOTION_CONTROL_ENCODER);
+    }
+    g_run.invalid = counts.invalid;
+    /* A pending cyclic flag can cause an immediate second task iteration.
+     * Retain the count/time baseline and PID state for a full sample window.
+     */
+    if (elapsed_us < MOTION_CONTROL_MIN_SAMPLE_US)
+    {
+        drv_motion_unlock(saved);
+        return;
+    }
     if (elapsed_us > g_status.max_period_us)
     {
         g_status.max_period_us = elapsed_us;
@@ -444,12 +512,6 @@ void motion_control_tick(uint32_t now_us)
         }
     }
     g_status.timestamp_us = now_us;
-    drv_motion_snapshot(&counts);
-    if ((0u != counts.overflow) || (counts.invalid != g_run.invalid))
-    {
-        motion_control_finish(MOTION_CONTROL_FAILED, MOTION_CONTROL_ENCODER);
-    }
-    g_run.invalid = counts.invalid;
     if ((0u != elapsed_us) && !motion_control_measure(&counts, elapsed_us))
     {
         motion_control_finish(MOTION_CONTROL_FAILED, MOTION_CONTROL_RANGE);
@@ -484,11 +546,11 @@ void motion_control_tick(uint32_t now_us)
             left = ctrl_math_pid(&g_pid[0], left,
                 motion_control_decode_speed(g_status.left_mm_s),
                 g_config.kp_q8, g_config.ki_q8, g_config.kd_q8,
-                g_config.duty_limit);
+                g_config.duty_limit, elapsed_us);
             right = ctrl_math_pid(&g_pid[1], right,
                 motion_control_decode_speed(g_status.right_mm_s),
                 g_config.kp_q8, g_config.ki_q8, g_config.kd_q8,
-                g_config.duty_limit);
+                g_config.duty_limit, elapsed_us);
         }
         if (((0 != left) && ((now_us - g_run.left_edge_us) >=
                              g_config.stall_ms * 1000u)) ||

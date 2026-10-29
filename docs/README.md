@@ -12,3 +12,7 @@ Reference and guides for the INF2004 autonomous robotic car (µT-Kernel 3.0 on R
 | [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md) | The minimum-bit rules for application data and the table of every field's range and bits         |
 
 These describe this project and are derived from the course brief, the Week 6 design review and the component datasheets. The course template's own guide (build options, `app_program/` layout) is the [root README](../README.md); team ownership is in [TEAM.md](../TEAM.md) and test records in [testing/](../testing/README.md).
+
+Buddy 2: [builds and wiring](../testing/subsystem2/README.md),
+[verification](../testing/subsystem2/VERIFICATION.md),
+[open verification questions](../testing/subsystem2/ISSUES.md).

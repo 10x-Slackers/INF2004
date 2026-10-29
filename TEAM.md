@@ -47,8 +47,8 @@ fixed.
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
 | GP0 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
 | GP1 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP2 | Motion (Buddy 2) | left encoder phase A (Grove 2) |
-| GP3 | Motion (Buddy 2) | left encoder phase B (Grove 2) |
+| GP2 | Motion (Buddy 2) | right encoder phase A (Grove 2) |
+| GP3 | Motion (Buddy 2) | right encoder phase B (Grove 2) |
 | GP4 | IMU (Buddy 4) | GY-511 SDA, I2C0 (Grove 3) |
 | GP5 | IMU (Buddy 4) | GY-511 SCL, I2C0 (Grove 3) |
 | GP6 | | |
@@ -61,8 +61,8 @@ fixed.
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
-| GP16 | Motion (Buddy 2) | right encoder A |
-| GP17 | Motion (Buddy 2) | right encoder B |
+| GP16 | Motion (Buddy 2) | left encoder phase A (Grove 4) |
+| GP17 | Motion (Buddy 2) | left encoder phase B (Grove 4) |
 | GP18 | | |
 | GP19 | | |
 | GP20 | | |
@@ -108,7 +108,7 @@ the drivers have no locking to stop it.
 | SPI0 | | | |
 | SPI1 | | | |
 | ADC | | | GP26–GP28 |
-| PWM4, PWM5 | Motion (Buddy 2) | `subsystem2_motion_task` | GP8–GP11 |
+| PWM4, PWM5 | Motion (Buddy 2) | `subsystem2_motion_task`; locked task-context stop endpoint (zero only) | GP8–GP11 |
 | IRQ13, core 0 | Motion dispatcher | `drv_motion_gpio_isr` | GP2/3, GP16/17; Buddy 5 callback registration |
 | SIO locks 3/4 | Motion (Buddy 2) | task state / encoder snapshot | No pins; kernel reserves locks 0–2 |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
@@ -157,7 +157,10 @@ Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
 
 Every arrow between two subsystems is listed here. Providers expose synchronized APIs or create the kernel objects used by
 consumers. Motion uses short, locked single-slot commands and coherent
-per-consumer snapshots; no dynamic queue allocation is required. Data formats
+per-consumer snapshots; no dynamic queue allocation is required. Configuration supports per-wheel CPR overrides with a legacy shared fallback;
+all consumers must rebuild after config struct changes. Calibration and polarity
+require physical measurement; zero defaults are unconfirmed. Motion telemetry remains
+36 bytes. Data formats
 and units are defined in the owning public header and technical guide.
 
 | ID | From → To | Mechanism | Object ID name | Data / meaning | Agreed by |
@@ -180,13 +183,13 @@ limit there. Fill in each subsystem's usage.
 |---|---|---|---|---|---|---|
 | Task | 32 | | 2 | | 1 | |
 | Semaphore | 16 | | | | | |
-| Event flag | 16 | | | | | |
+| Event flag | 16 | | 1 | | | |
 | Mailbox | 12 | | | | | |
 | Mutex | 12 | | | | 1 | |
 | Message buffer | 12 | | | | | |
 | Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |
-| Cyclic handler | 12 | | | | | |
+| Cyclic handler | 12 | | 1 | | | |
 | Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)

@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #define MOTION_CONTROL_PERIOD_US 10000u
+#define MOTION_CONTROL_MIN_SAMPLE_US (MOTION_CONTROL_PERIOD_US / 2u)
 #define MOTION_CONTROL_PACKET_BYTES 36u
 #define MOTION_CONTROL_COUNT_BIAS 8388608u
 #define MOTION_CONTROL_SPEED_BIAS 2048u
@@ -43,6 +44,9 @@ typedef struct
     unsigned int encoder_left_reverse : 1;
     unsigned int encoder_right_reverse : 1;
     unsigned int confirmed : 1;
+    /* Zero selects legacy shared CPR; nonzero overrides that wheel. */
+    unsigned int left_counts_per_rev : 16;
+    unsigned int right_counts_per_rev : 16;
 } motion_control_config_t;
 
 typedef struct
@@ -64,7 +68,7 @@ typedef struct
     uint32_t missed_periods;
 } motion_control_status_t;
 
-/* False means rejected with no movement. APIs are task-context only. */
+/* Startup only. Command acceptance is nonblocking; check the bool result. */
 void motion_control_init(void);
 bool motion_control_configure(const motion_control_config_t * p_config);
 void motion_control_get_config(motion_control_config_t * p_config);
@@ -89,7 +93,7 @@ bool motion_control_unpack(motion_control_status_t * p_status,
                            const uint8_t * p_packet, uint32_t length);
 int32_t motion_control_decode_count(uint32_t encoded);
 int32_t motion_control_decode_speed(uint32_t encoded);
-/* Called only by Wheel Motion Control, once per release. */
+/* Task-only. Entry time is retained for ABI; driver sample time is used. */
 void motion_control_tick(uint32_t now_us);
 void motion_control_record_execution(uint32_t elapsed_us);
 

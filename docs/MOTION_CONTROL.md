@@ -1,138 +1,197 @@
 # Buddy 2 motion control
 
-## Ownership and execution
+## Requirements and boundaries
 
-Only Buddy 2 writes GP8/9 (left motor, PWM4 A/B) and GP10/11 (right,
-PWM5 A/B). Left encoder A/B is **GP2/GP3**, right is GP16/GP17. GP4/GP5
-remain Buddy 4's I2C0. Physical forward polarity must be measured; the
-Robo Pico truth table is low/low = brake, high/low = forward, low/high =
-reverse, high/high = coast. Software uses brake rather than coast.
+Sources: *Project Write-up.pdf*, pp. 1–3 and 5–6; *Project Briefing.pdf*,
+slides 3 and 5; *Change Requirement 1.docx*; BARR-C:2018. The official brief
+lists example API names, not exact C signatures, units, sampling periods,
+numeric accuracy tolerances or calibration constants. The C contract below
+preserves the team's existing interfaces. FR/NFR identifiers and the task,
+lock and safety policies are team design decisions, not extra course wording.
 
-PWM is 20 kHz: 125 MHz system clock, divider 1, TOP 6249. A whole-slice
-CC write updates both channels; a direction reversal inserts a complete
-10 ms braked cycle. Motor outputs start low before PWM is enabled.
-Changing the system clock requires changing the PWM period.
+| Source requirement | Implementation | Verification / deliverable |
+| --- | --- | --- |
+| Motor driver integration | `drv_motion.c`: M1 GP8/9, M2 GP10/11; bounded signed PWM | Actual output-register fixture; physical waveform/polarity check |
+| Encoder integration | Same driver: left GP16/17, right GP2/3; four-edge quadrature IRQ | All transitions, invalid jumps, saturation, startup phases and W1C fixture; manual CPR check |
+| Speed and distance estimation | `motion_control.c`: independent wheel CPR, mm and mm/s | Synthetic conversion/boundary/wrap tests; external distance/speed comparison |
+| PID speed control | `ctrl_math.c`: independent wheel state, Q8 gains, elapsed-time scaling, anti-windup | C tests; loaded PID tuning report |
+| Straight-line correction | Bounded correction from difference in physical wheel progress, forward and reverse | Unequal CPR/progress tests; track drift measurement |
+| Encoder-based turns | Counter-rotating arcs for left/right angles, including U-turn | Turn signs, whole-edge goals/completion; external angle evaluation |
+| Reusable motion library | Asynchronous forward/backward/left/right/stop API below | Acceptance, completion, rejection and cancellation tests |
+| Integration | I3/I4 commands/status, I5 odometry, I11 stop; telemetry packer | Host contract tests plus joint peer tests |
+| Stable motion, resource efficiency | Bounded duty, stall/timeout/range/timing faults; fixed storage | Host safety tests; target load/stack/CPU/power/stop measurements |
+| Minimum-bit application fields | Unsigned bit-fields, combined fault mask, locked shared copies | [Field table](DATA_REPRESENTATION.md), RAM/message comparison and correctness evidence |
+| Compact MQTT application data | Explicit 36-byte binary status packet for Buddy 1 | Known-bit and roundtrip tests; Buddy 1 owns MQTT transport |
+| Calibration, tuning and accuracy reports | Measured geometry, CPR, polarity and gains | [Verification record](../testing/subsystem2/VERIFICATION.md) |
 
-Wheel Motion Control runs on core 0 at priority 6, with absolute 10 ms
-release targets and tick-based sleeps. Safety has reserved priority 5.
-The diagnostics console is priority 22, also core 0. USB and radio kernel
-service priorities remain 3 and 4. The kernel tick is 10 ms; these are
-requested periods, not measured deadlines. No heap use or console output
-occurs in the control loop. Two 2048-byte task stacks are allocated at boot.
+System line following, barcode decoding, IMU processing, avoidance planning,
+MQTT transport and mission arbitration belong to teammates. Continuous
+independent wheel setpoints for line following, I10 health delivery, I11
+system stop-generation/new-Start arbitration, yaw ownership and numeric
+acceptance tolerances need team agreement. Finite motion APIs alone do not
+establish complete robot integration. Do not silently invent these contracts.
 
-SIO hardware locks 3 (application state) and 4 (encoder snapshot) are
-reserved. Task dispatch is disabled while lock 3 is held; encoder interrupts remain
-enabled. Lock 4 masks local interrupts only across encoder updates/copies.
-Both locks have memory barriers. Lock order is 3 then 4; the encoder ISR takes only 4. Public APIs
-serialize short operations and never wait for motion completion. Their
-lock acquisition can briefly spin; they are task-context APIs, not ISR APIs.
-Measure the maximum interrupt blackout and encoder capture rate under load
-before accepting the chosen encoder/speed calibration. The control tick
-includes 64-bit integer division, so host timings cannot establish this limit.
+## Hardware and execution
 
-IRQ13 (IO_IRQ_BANK0) has one core-0 dispatcher. It decodes four-edge
-quadrature, saturates signed 24-bit counts, and faults on skipped phases or
-counter exhaustion. Another GPIO user registers its pin mask and callback
-with `drv_motion_gpio_register()` during its core-0 initialisation, before task start, sets
-up its input pins, and receives an acknowledged edge pin mask. One additional
-owner is supported (Buddy 5). The callback reads levels/timestamps itself;
-it must be short, never sleep, and never acquire lock 3. Do not replace
-IRQ13, enable these pins on core 1, or register a second competing handler.
-Registration is part of single-threaded core-0 startup (including Buddy 5
-initialisation after Buddy 2), not a runtime API. Pending edges on the newly
-registered pins are cleared before enabling them; existing encoder enables
-are preserved. Initialize callback state before registering it.
+The confirmed six-pin wiring is recorded in [HARDWARE.md](HARDWARE.md).
+Motor pin 5 goes to M1B/M2B and pin 6 to M1A/M2A. Wire colours do not establish
+forward rotation. Positive *normalized* counts and wheel targets mean physical
+forward; reversal flags must be measured on each wheel.
 
-## Public API
+The [Cytron motor truth table](https://www.farnell.com/datasheets/4381243.pdf)
+is low/low brake, high/low one electrical direction, low/high the opposite,
+high/high coast. Software uses low/low to brake. At the board's 125 MHz clock,
+PWM divider 1 and TOP 6249 give 20 kHz. Each slice's A/B compare pair is written
+in one register write. Opposite nonzero duty inserts a braked control update;
+zero commands retain direction history. PWM zero applies at the next wrap
+(nominally within 50 microseconds); it is not motor power isolation.
 
-Include `app_program/subsystem2/motion_control.h`. All command calls return
-immediately after accepting/rejecting the request; no command queue exists.
-There is one active manoeuvre, and a second is rejected. Boolean results
-must be checked. Public packed configuration members must be populated only
-with values in the representation table, before assigning the bit-fields.
+The GPIO dispatcher uses IRQ13 on core 0, edge flags and one GPIO_IN read per
+wheel pair. A phase is A*2+B. Raw positive sequence is 00→01→11→10→00;
+reverse gives negative counts. A two-bit jump is ambiguous: discard its delta,
+increment invalid counters and resynchronize. Never reconstruct skipped edges.
+GPIO flags can coalesce; software tests cannot establish capture bandwidth or
+electrical signal quality. See the [RP2040 GPIO documentation](https://www.raspberrypi.com/documentation/pico-sdk/hardware.html#hardware_gpio).
+Encoder input electrical characteristics/pulls require the actual motor datasheet
+or measurement; the driver uses the board input setup without guessing them.
 
-| Function | Contract |
-| --- | --- |
-| `motion_control_configure(&config)` | Disarmed only; dimensions, gains, polarity, limits, confirmation; a fresh tick is required before arm |
-| `motion_control_get_config(&config)` | Coherent calibration copy |
-| `motion_control_set_speed(speed)` | 10–1000 mm/s; idle only; applies to the next command |
-| `motion_control_arm()` | Requires valid, confirmed calibration, fresh status and no faults |
-| `motion_control_move_forward(mm)` / `move_backward(mm)` | 1–10000 mm, also bounded by the signed encoder capacity |
-| `motion_control_turn_left(ddeg)` / `turn_right(ddeg)` | 1–3600 deci-degrees; counter-rotating wheel arcs |
-| `motion_control_stop()` | Cancel ordinary motion; preserves any existing fault latch |
-| `motion_control_disarm()` | Cancel and remove permission to move |
-| `motion_control_safety_stop(mask)` | Cancel, disarm, OR faults with the SAFETY bit; ordinary commands cannot clear it |
-| `motion_control_reset_faults()` | Disarmed, fresh inputs, no encoder overflow/init failure; still requires a new arm and command |
-| `motion_control_get_status(&status)` | Coherent counts, wheel speed, wheel/mean distances, state and timing |
-| `motion_control_test_motor(wheel,duty,ms)` | Armed bench pulse, wheel 0/1, signed ±1–200 permille, 1–1000 ms; duty limit still applies |
-| `motion_control_pack()` / `unpack()` | Explicit 36-byte integration representation; no compiler struct on a wire |
+The motion task runs at priority 6/core 0; the console at 22/core 0. A 10 ms
+cyclic handler only sets a coalescing event flag. The task has a bounded 10 ms
+notification wait; wait failure stops and terminates it. µT-Kernel's 10 ms tick
+rounds the initial release and relative timeouts. Minimum accepted sample spacing
+is 5 ms; shorter notifications preserve PID/count/time baselines, while encoder
+faults are still checked. The actual locked count-sample time drives speed,
+PID and freshness, rather than a potentially preempted task-entry timestamp.
 
-`motion_control_init()` is startup-only, invoked by `subsystem2_init()`;
-reinitialising a running subsystem is unsupported. `tick()` and
-`record_execution()` belong exclusively to the Wheel Motion Control task.
-Output braking takes effect at its next release, plus at most one PWM
-period. A stop invalidates the only active command under the same lock as
-motor updates; there is no pending command that can resume after reset.
-Measure actual end-to-end latency, including scheduler and USB/network load.
-The immediate `!` receive hook and RX overflow also discard older queued
-console commands, so a previously queued arm/reset cannot undo that stop.
-This is the motion stop endpoint; the team's Safety Monitor must still call
-it and arbitrate system-level faults and mission restart.
+Task state uses hardware lock 3 with dispatch disabled; encoder copies use
+lock 4 with local interrupts masked. Both have memory barriers; lock order is
+3 then 4, and ISR13 never acquires 3. Short public calls may spin for the lock;
+they are task-context only. No heap allocation or printing occurs in control
+or ISR paths. The two 2048-byte stacks are allocated during startup.
 
-Status values: IDLE 0, RUNNING 1, COMPLETE 2, CANCELLED 3, FAILED 4.
-Commands: NONE 0, FORWARD 1, BACKWARD 2, LEFT 3, RIGHT 4, BENCH 5.
-A completed command remains visible until another command or stop.
+Buddy 5 may register one additional GPIO callback with
+`drv_motion_gpio_register(uint32_t pins, drv_motion_gpio_callback_t p_callback_isr)`
+on core 0 during startup, before tasks run. Configure its inputs and callback
+state first. Do not replace IRQ13. The callback receives acknowledged edge pins,
+must remain short and must not block or acquire lock 3. PWM4/5 belong to Buddy 2;
+PWM6/GP12 remains available for the servo.
 
-Fault bits, independent and OR-combinable: stall 0, timeout 1, encoder 2,
-control timing 3, numeric range 4, external safety stop 5, initialisation 6,
-stale odometry 7. A fault disarms. Count overflow and initialisation failure
-require reboot/revalidation; invalid-transition history can be acknowledged
-by reset after correcting the wiring. Future events reassert the latch.
+## Public contract
 
-## Control and odometry
+Include `motion_control.h`. All command acceptance functions return immediately:
+`true` means accepted, not completed. Poll a coherent status snapshot for
+RUNNING/COMPLETE/FAILED/CANCELLED. One command is active; no pending queue exists.
+Populate bit-fields only after validating native input ranges to prevent
+truncation before `configure()`. Each consumer owns its copied snapshot.
 
-Counts represent all four quadrature edges per wheel revolution. Count zero
-is boot; no count reset is performed while moving. Calibration polarity
-normalises each wheel so forward counts and distance are positive. Distances
-are computed from total counts, preserving fractional travel across samples;
-reported millimetres truncate towards zero, rather than accumulating rounded
-deltas. Average odometry is mean signed wheel distance; it is not path length
-through a turn. Buddy 3 uses count deltas for precise barcode distances.
-Buddy 4 uses signed wheel travel and track width to derive turn rate.
+```c
+void motion_control_init(void);  /* Startup only, normally via subsystem2_init. */
+bool motion_control_configure(const motion_control_config_t * p_config);
+void motion_control_get_config(motion_control_config_t * p_config);
+bool motion_control_set_speed(uint32_t speed_mm_s);
+bool motion_control_arm(void);
+void motion_control_disarm(void);
+void motion_control_stop(void);
+void motion_control_safety_stop(uint32_t faults);
+bool motion_control_reset_faults(void);
+bool motion_control_move_forward(uint32_t distance_mm);
+bool motion_control_move_backward(uint32_t distance_mm);
+bool motion_control_turn_left(uint32_t angle_ddeg);
+bool motion_control_turn_right(uint32_t angle_ddeg);
+bool motion_control_test_motor(uint32_t wheel, int32_t duty,
+                               uint32_t duration_ms);
+void motion_control_get_status(motion_control_status_t * p_status);
+void motion_control_pack(const motion_control_status_t * p_status,
+                         uint8_t * p_packet);
+bool motion_control_unpack(motion_control_status_t * p_status,
+                           const uint8_t * p_packet, uint32_t length);
+int32_t motion_control_decode_count(uint32_t encoded);
+int32_t motion_control_decode_speed(uint32_t encoded);
+```
 
-Speed is count delta times circumference divided by actual elapsed time.
-Measurements outside ±2000 mm/s or ±8388608 mm fault rather than truncate.
-Very low-resolution encoders can quantise a single edge into a large speed
-spike: validate counts/revolution, sample noise and stall timeout on the car.
-Consumers must reject status older than 30000 us using unsigned subtraction;
-no valid zero reading should be inferred from a missing update. Timestamp
-wrap is supported for intervals shorter than half the 32-bit timer range.
+- Distances: integer mm, 1–10000; angles: deci-degrees, 1–3600 (900 = 90°).
+  Commands also must fit remaining signed count capacity. Rejected commands
+  leave the active command unchanged.
+- Speed: 10–1000 mm/s, set while idle; correction limited to 25% of speed.
+- Bench: wheel 0 left / 1 right, signed duty ±1–200 permille, 1–1000 ms;
+  normal arm/configuration, output limit and fault guards still apply.
+- Configure only disarmed. Unconfirmed fields may be staged individually.
+  Confirmation requires valid dimensions, CPR, Kp and software limits. A fresh
+  sample must follow configuration before arming. Each boot remains disarmed.
+- Stop cancels ordinary motion immediately under the output lock. Disarm also
+  removes movement permission. Safety stop ORs faults with SAFETY, disarms and
+  cancels. Reset requires fresh data, disarmed state and no sticky encoder
+  overflow or init failure; it never arms or resumes a command.
 
-Separate wheel PID states use Q8 gains: output =
-`(Kp*error + Ki*integral + Kd*(error-previous_error))/256` in permille.
-Ki/Kd are **per 10 ms sample**, not per second. Integral is limited to
-±65535 error-samples; integration freezes when it would drive saturation
-further. Zero targets clear PID memory and brake that wheel. Gains are
-shared calibration values but each wheel's feedback and state are independent.
-Encoder progress mismatch adjusts wheel targets by at most 25% for straight
-travel in either direction, and for matched turning arcs. Each wheel brakes
-when its own distance completes. There is no acceleration-ramp planner.
+`tick(uint32_t now_us)` and `record_execution(uint32_t elapsed_us)` are private
+motion-task integration hooks despite their public prototypes. The entry-time
+argument to tick is retained for compatibility; the driver supplies the sample
+time. Do not call these from teammate tasks or ISR callbacks.
 
-Targets are whole encoder edges, rounded upwards. Turns use
-`wheel_arc_mm = pi * track_mm * angle_ddeg / 3600`, pi approximated by
-355/113. Bounds and 64-bit intermediates prevent arithmetic overflow;
-unrepresentable moves are rejected. Opposite travel exceeding a two-mm
-allowance plus two edges faults. Persistent commanded duty without edges
-faults at the configured stall interval. Every move has a timeout. A running
-control period over 15 ms faults; over 30 ms is classified as stale. An
-execution lasting at least 10 ms also latches a timing fault. Execution instrumentation brakes immediately within the owning task when
-it raises an overrun fault.
+Fault bits: stall 0, timeout 1, encoder 2, control timing 3, numeric range 4,
+external safety 5, init 6, stale odometry 7. States are IDLE 0, RUNNING 1,
+COMPLETE 2, CANCELLED 3, FAILED 4; commands NONE 0, FORWARD 1, BACKWARD 2,
+LEFT 3, RIGHT 4, BENCH 5. Faults disarm and write zero immediately in task
+context. New invalid transitions fault while armed, including idle/bench;
+manual disarmed invalids are counted. Overflow remains sticky until reboot.
+
+The following are software policy limits, not official numeric requirements:
+control gaps over 15 ms fault during motion (over 30 ms classified stale),
+execution at least 10 ms faults, measured speeds outside ±2000 mm/s and
+unrepresentable signed 24-bit counts/mm fault. Consumers reject samples older
+than 30000 us using unsigned timer subtraction. Timestamps wrap at 32 bits;
+comparisons require intervals below half the timer range. Stall/timeout and duty
+limits need loaded validation. A stopped CPU or suspended motion task cannot
+police its own PWM; physical stopping and end-to-end latency need measurement.
+
+## Calibration and calculations
+
+Geometry, per-wheel CPR, polarity and gains require physical calibration.
+Zero geometry/CPR/gains and zero reversal placeholders are not measured values;
+`confirmed=0` prevents arming. Speed 100 mm/s, duty ceiling 200 permille,
+timeout 10000 ms and stall 500 ms are initial software limits, not evidence
+that the hardware operates correctly at those settings. No prior physical
+trial establishes defaults for a replacement encoder.
+
+`motion_defaults.h` is the single source of boot configuration. Console edits
+are RAM-only. Copy only reviewed, measured settings into the header; set
+confirmation only after reviewing the setup. Confirmation is an operator
+assertion, never proof of achieved accuracy or completed PID tuning.
+
+CPR means **four-edge counts per wheel-output revolution**, including gearbox
+ratio. A nonzero left/right CPR overrides shared CPR; zero selects the shared
+fallback. Both resolved CPR values must be 4–65535. Config is 28 bytes under
+GNU ARM; all consumers must rebuild if its layout changes. Never transmit it
+as raw RAM. Use zero or designated initializers.
+
+Signed distance = total normalized counts × circumference / wheel CPR.
+Speed = delta counts × circumference × 1000000 / (CPR × elapsed microseconds).
+Division truncates toward zero; distances derive from total counts rather than
+summing rounded increments. Average mm is signed mean wheel displacement,
+not path length through a turn. Counts remain available before calibration;
+mm/s and mm must not be treated as valid before calibration or during faults.
+Consumers check configuration/confirmation, freshness and faults separately;
+the existing packet has no extra validity bit.
+
+Straight goals are ceil(distance × CPR / circumference). In-place turn arcs
+are pi × track × angle_ddeg / 3600, with pi approximated by 355/113. Round each
+wheel's goal upward independently. Each wheel brakes at its own goal.
+Progress correction compares physical travel before whole-mm truncation.
+Opposite travel over a two-mm allowance plus two counts faults. Calculations
+use 64-bit intermediates and range checks before narrowing.
+
+PID gains are Q8. Integral state is bounded to ±65535 nominal error-samples;
+update by trunc(error × elapsed_us / 10000). Derivative is
+trunc((error − previous_error) × 10000 / elapsed_us). Duty is
+(Kp × error + Ki × integral + Kd × derivative) / 256, bounded by the configured
+permille ceiling. Freeze integration when it would worsen output saturation;
+zero targets reset state and brake. No floating point or acceleration planner
+is used. Tune on the actual loaded robot.
 
 ## Binary contract
 
-Version 1 is identified by the enclosing topic/interface, not inferred from
-struct size. Big-endian bit stream, first field starts at bit 0 (MSB of byte
-0); widths in order:
+The enclosing interface/topic identifies version 1. Big-endian bit stream,
+bit 0 = MSB of byte 0; never serialize compiler bit-field layout.
 
 | Field | Width | Bit offset |
 | --- | --- | --- |
@@ -144,77 +203,23 @@ struct size. Big-endian bit stream, first field starts at bit 0 (MSB of byte
 | max_execution_us / max_period_us / missed_periods | 32 each | 191 / 223 / 255 |
 | reserved zero | 1 | 287 |
 
-Counts and millimetres encode signed value + 8388608. Speeds encode signed
-value + 2048; only −2000..2000 is valid. Helpers decode these offsets.
-Unpack requires exactly 36 bytes, valid state/command/speed and a zero
-reserved bit; failure leaves the output unchanged. The caller supplies
-36-byte buffers. RAM structs are compiler-local and use unsigned bit-fields.
-I5 consumers copy status independently; no single-consumer queue can steal
-another consumer's odometry. Buddy 1 can serialize that snapshot without
-accessing hardware or implementing MQTT here.
+Counts/mm store signed value + 8388608; speed stores signed value + 2048.
+Unpack requires exactly 36 bytes, valid state/command/speed codes and reserved
+zero; failure leaves its output unchanged. Pack requires a valid snapshot and
+a 36-byte caller buffer. Transport never blocks the motion task.
 
-## Bench procedure
+## Builds and review
 
-1. Build `make -j8`; flash the default UF2. Run `make test` on the host.
-   For safe on-target checks build `make TEST=1 -j8` and use the `_test.uf2`
-   in the corresponding `test1` profile directory. These tests never arm.
-2. Lift wheels, secure the chassis, and keep the board power switch reachable.
-   Confirm GPIO wiring and encoder supply/output voltage (3.3 V). Leave
-   GP4/GP5 with the IMU. Use USB-only console; UART/crash reporting takes
-   Buddy 5's GP0/GP1. Do not run an autonomous mission during bench pulses.
-3. Open the USB terminal. `status` reports faults, signed counts, mm, wheel
-   speed, timestamp, maximum tick execution/period and missed periods.
-   Rotate each wheel manually through measured revolutions and obtain
-   **four-edge counts per revolution** and encoder sign. Measure loaded
-   wheel circumference and wheel-centre track width externally.
-4. While disarmed, enter `config circ N`, `config track N`, `config cpr N`.
-   Set `config ml 0|1`, `mr`, `el`, `er` for motor/encoder reversal. Optional
-   keys: `kp`, `ki`, `kd` (Q8 integers 0–4095, Kp nonzero), `limit`
-   (1–1000 permille), `timeout` (100–60000 ms), `stall` (100–10000 ms).
-   `speed N` selects 10–1000 mm/s. Every config edit clears confirmation;
-   finish with `config confirm 1`. Values are RAM-only and reset at boot.
-5. `arm`, then `motor 0 100 200` or `motor 1 100 200` gives one low-duty
-   200 ms pulse. Confirm direction/count sign with a suitably low power
-   setting. Use `!` or `stop` for a latched stop. Correct polarity while
-   disarmed; `reset`, reconfirm and arm before retrying. Increase duty only
-   enough to overcome stiction. Stop testing on an encoder or range fault.
-6. On clear level ground start with `forward 50`, `backward 50`, `left 300`,
-   `right 300` (angles are deci-degrees). All commands are bounded, and a
-   command in progress rejects new movement. Check `status` for completion.
-7. Record PID step response and straight/reverse/turn accuracy externally,
-   then tune Q8 gains and limits. Test stalls with a controlled bench method,
-   faults, stop latency, timer jitter and encoder loss under Wi-Fi/IMU load.
-   Capture logs and measurements in `testing/subsystem2/TEST_LOG.md`; use
-   [videos](../videos/README.md) for demonstrations. Never call a simulation
-   or host execution a robot measurement.
+[Buddy 2 testing](../testing/subsystem2/README.md) gives build paths, console
+syntax and the manual calibration procedure. `make diagnostic` uses the same
+motion C sources and safety checks, standalone startup, boot tests and a distinct
+banner. It adds no alternative capture backend or motor experiment.
 
-## BARR-C review boundaries
-
-New modules use C99, unsigned bit-fields, biased signed storage, fixed-width
-arithmetic, bounded loops, Allman braces, four-space indentation, 80-column
-lines, module-prefixed functions and guarded headers. `g_`, `p_`, `pp_` mark
-globals, pointers and pointers to pointers. Q8, PWM, ISR, IRQ, CC, CPR and
-PID mean fixed-point / pulse width / interrupt handler / interrupt number /
-compare register / counts per revolution / proportional-integral-derivative.
-
-Explicit integration deviations:
-
-- 4.1.b / 4.2.a: the existing `subsystem2_test.c` naming and per-subsystem
-  shared header follow the course's auto-discovered test convention.
-- 4.3.a: `ctrl_math.c` also implements the driver's pure quadrature/output
-  planning helpers so host and firmware exercise the same code.
-- 5.2: `unsigned int` is used only for ISO C bit-fields, as required for
-  portable C99 bit-fields; arithmetic interfaces use fixed-width integers.
-- 6.1.i / 7.1: `tm_console_receive_byte` is the generic USB port hook;
-  `_task`/`_isr` callbacks use kernel `INT`, `UINT`, `ER`, `ID` and `FP`
-  signatures. Fixed interrupt addresses belong to the RP2040 port.
-- 1.6: conversions at biased-field assignments are justified by their
-  range checks and the field table; task callback casts adapt the kernel's
-  unprototyped `FP`, and console format casts adapt its `UB` string API.
-- 6.2: short early returns reject commands and malformed packets. The
-  integration parser/control step can exceed the preferred printed-page
-  function length; splitting trivial branches would obscure the state flow.
-
-Focused source checks are not certification of every standard rule. Kernel,
-SDK and other buddies' code retain their existing conventions; in particular
-Buddy 4's existing signed bit-fields are outside the new-code review scope.
+Application code uses C99, unsigned bit-fields, fixed-width arithmetic and the
+repository formatter. ISO C bit-fields use `unsigned int`; the kernel's callback
+ABI requires `INT`/`UINT`/`FP` and fixed port names. Driver pure functions share
+`ctrl_math.c` to exercise identical code in host and firmware. Early rejection
+returns improve readability; the parser/control state flows exceed the preferred
+100-line function size to keep their ordering visible. These port/layout conventions and the course's
+`subsystem2_test.c` naming are explicit BARR review boundaries; focused automated
+checks do not certify full BARR-C compliance or approve deviations.

@@ -15,6 +15,23 @@ Pin assignments, wiring and the datasheet facts needed to write drivers. Sources
 | 3 × IR reflective sensor module           | 2 for line following, 1 for barcodes                           |
 | 5 V power bank                            | Supply                                                         |
 
+## Motor and encoder connector
+
+The confirmed six-pin connections are identical in numbering on both motors:
+
+| Motor connector pin | LEFT | RIGHT |
+| --- | --- | --- |
+| 1 | GND | GND |
+| 2, encoder A | GP16 | GP2 |
+| 3, encoder B | GP17 | GP3 |
+| 4, encoder supply | Grove 4, 3.3 V | Grove 2, 3.3 V |
+| 5, motor | M1B | M2B |
+| 6, motor | M1A | M2A |
+
+GPIO assignments do not establish physical motor/encoder polarity. Determine
+forward signs, four-edge counts per wheel revolution and geometry by calibration.
+Do not infer direction from wire colours.
+
 ## Pin map
 
 The assignment agreed in the design review. The owner column is the only task allowed to touch the pin (see [ARCHITECTURE.md](ARCHITECTURE.md#hardware-ownership)).
@@ -23,8 +40,8 @@ The assignment agreed in the design review. The owner column is the only task al
 | ---- | --------------- | --------------------------- | ----------------------- | ----------------------- |
 | GP0  | `RANGE_TRIG`    | HC-SR04 TRIG                | GPIO out                | Ultrasonic Scan         |
 | GP1  | `RANGE_ECHO`    | HC-SR04 ECHO, level shifted | Timed GPIO in           | Ultrasonic Scan         |
-| GP2  | `ENC_L_A`       | Left motor pin 02           | GPIO in, edge interrupt | Wheel Motion Control    |
-| GP3  | `ENC_L_B`       | Left motor pin 03           | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP2  | `ENC_R_A`       | Right motor pin 02           | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP3  | `ENC_R_B`       | Right motor pin 03           | GPIO in, edge interrupt | Wheel Motion Control    |
 | GP4  | `IMU_SDA`       | GY-511 SDA                  | I2C0 SDA                | IMU and Terrain Monitor |
 | GP5  | `IMU_SCL`       | GY-511 SCL                  | I2C0 SCL                | IMU and Terrain Monitor |
 | GP6  | `LINE_LEFT`     | Left IR module DO           | GPIO in                 | Line Following          |
@@ -34,8 +51,8 @@ The assignment agreed in the design review. The owner column is the only task al
 | GP10 | `MOTOR_R_A`     | M2A (on board)              | PWM / GPIO out          | Wheel Motion Control    |
 | GP11 | `MOTOR_R_B`     | M2B (on board)              | PWM / GPIO out          | Wheel Motion Control    |
 | GP12 | `SONAR_PAN_PWM` | SG90 signal (servo header)  | Servo PWM               | Ultrasonic Scan         |
-| GP16 | `ENC_R_A`       | Right motor pin 02          | GPIO in, edge interrupt | Wheel Motion Control    |
-| GP17 | `ENC_R_B`       | Right motor pin 03          | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP16 | `ENC_L_A`       | Left motor pin 02          | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP17 | `ENC_L_B`       | Left motor pin 03          | GPIO in, edge interrupt | Wheel Motion Control    |
 | GP26 | `BARCODE_AO`    | Auxiliary IR module AO      | ADC0                    | Barcode Decoder         |
 
 Where each signal lands on the Robo Pico:
@@ -43,9 +60,9 @@ Where each signal lands on the Robo Pico:
 | Grove port | GPIOs      | Used for                            |
 | ---------- | ---------- | ----------------------------------- |
 | 1          | GP0, GP1   | HC-SR04                             |
-| 2          | GP2, GP3   | Left encoder (also on Maker port)   |
+| 2          | GP2, GP3   | Right encoder (also on Maker port)   |
 | 3          | GP4, GP5   | GY-511                              |
-| 4          | GP16, GP17 | Right encoder                       |
+| 4          | GP16, GP17 | Left encoder                       |
 | 5          | GP6, GP26  | Left line sensor, barcode sensor    |
 | 6          | GP26, GP27 | GP26 is the same pin as on port 5   |
 | 7          | GP7, GP28  | Right line sensor                   |
@@ -113,22 +130,24 @@ Each motor is driven by two GPIOs. Put PWM on one input and hold the other low t
 | Low                  | High                 | Backward             |
 | High                 | High                 | Coast (outputs open) |
 
-"Forward" depends on which way the motor leads are connected. If a wheel turns the wrong way, swap its two leads or swap A and B in software. The motor test buttons on the board run a motor at full speed without any firmware, which is useful for checking wiring.
+"Forward" in the truth table is an electrical direction. Keep the confirmed
+wiring and calibrate each wheel's software reversal flag against physical forward. The motor test buttons on the board run a motor at full speed without any firmware, which is useful for checking wiring.
 
 ### Six-pin motor connector (PH2.0-6P)
 
 | Pin | Function        | Connect to                           |
 | --- | --------------- | ------------------------------------ |
 | 01  | Encoder ground  | GND                                  |
-| 02  | Encoder phase A | Left: GP2. Right: GP16               |
-| 03  | Encoder phase B | Left: GP3. Right: GP17               |
+| 02  | Encoder phase A | Left: GP16. Right: GP2               |
+| 03  | Encoder phase B | Left: GP17. Right: GP3               |
 | 04  | Encoder supply  | 3.3 V                                |
-| 05  | Motor +         | M1 or M2 terminal                    |
-| 06  | Motor −         | The other terminal of the same motor |
+| 05  | Motor winding   | LEFT M1B; RIGHT M2B                  |
+| 06  | Motor winding   | LEFT M1A; RIGHT M2A                  |
 
 Check the plug's physical orientation against the motor's own markings before connecting pins 01 to 04. The wiring slides power the encoder from 3.3 V; if you power it from anything higher, its outputs must not exceed 3.3 V at the GPIO.
 
-Encoder edges are captured by GPIO interrupt, not by polling, so edges are not missed at speed. Counts per wheel revolution are not in any supplied datasheet and must be measured (assumption A2).
+Encoder edges are captured by GPIO interrupt. Capture capacity and missed-edge
+behavior must be measured at the intended speed and system load. Counts per wheel revolution are not in any supplied datasheet and must be measured (assumption A2).
 
 ## SG90 servo
 

@@ -28,8 +28,9 @@ Transport offsets and invalid codes are in [MOTION_CONTROL.md](MOTION_CONTROL.md
 | Field(s) | Valid value / resolution | Bits each | Encoding / ownership |
 | --- | --- | --- | --- |
 | config circumference / track | 50–1000 mm, 1 mm; 0 unconfigured | 10 | direct, motion state lock |
+| config left/right_counts_per_rev | 4–65535 counts/rev; 0 selects shared fallback | 16 each | direct; confirmation validates both resolved values |
 | config counts_per_rev | 4–65535 four-edge counts, 1 count; 0 unconfigured | 16 | direct |
-| config kp / ki / kd | 0–4095, 1/256 gain; Kp must be nonzero when confirmed | 12 | Q8; Ki/Kd per 10 ms sample |
+| config kp / ki / kd | 0–4095, 1/256 gain; Kp must be nonzero when confirmed | 12 | Q8; Ki/Kd in 10 ms units, scaled by actual elapsed time |
 | config speed_mm_s | 10–1000 mm/s | 10 | direct; zero only while unconfigured |
 | config duty_limit | 1–1000 permille | 10 | direct; zero only while unconfigured |
 | config timeout_ms | 100–60000 ms | 16 | direct |
@@ -47,7 +48,7 @@ Transport offsets and invalid codes are in [MOTION_CONTROL.md](MOTION_CONTROL.md
 | PID integral, each wheel | −65535..65535 error-samples | 17 | value + 65535; all-ones reserved |
 | PID previous_error, each wheel | −3250..3250 mm/s | 13 | value + 4096; outside range reserved |
 | run start_left/right, last_left/right | normalized signed encoder range | 24 | value + 8388608 |
-| run goal | 1..8388607 edges; 0 idle | 23 | direct |
+| run left/right_goal | 1..8388607 edges; 0 idle | 23 each | direct |
 | run invalid | 0–65535 transitions | 16 | last observed ISR diagnostic |
 | run test_wheel | 0/1 | 1 | left/right |
 | run test_duty | −200..200 permille | 9 | value + 200 |
@@ -55,6 +56,7 @@ Transport offsets and invalid codes are in [MOTION_CONTROL.md](MOTION_CONTROL.md
 | run start_us, last_us, left/right_edge_us | full 32-bit µs timer | 32 | wrap-safe differences |
 | driver left/right counts | signed encoder range | 24 | value + 8388608, lock 4 |
 | driver invalid | 0–65535 transitions | 16 | saturates, then raises overflow |
+| driver left/right invalid | 0–65535 transitions each | 16 each | diagnostic saturation; aggregate retains existing fault policy |
 | driver overflow | 0/1 | 1 | latched until reboot |
 | driver left/right quadrature phase | 0–3 | 2 | A*2+B |
 | driver previous left/right duty | −1000..1000 permille | 11 | value + 1000 |
@@ -67,3 +69,17 @@ Temporary calculations use wider signed arithmetic deliberately. IDs, function
 pointers, lock addresses and bus register formats are kernel/device data.
 Host fixtures and the generated full-width reference are test data, not robot
 application storage. See the subsystem test log for measured sizes and evidence.
+
+The startup `started` flag is one logical bit and is written only during
+single-threaded startup. The console's temporary token/line buffers are local
+text data, not MQTT application payloads. Kernel object IDs, callbacks and
+hardware register values retain their native representation.
+
+Compare sizes using `make test`: the same portable control, math and console
+algorithms are compiled for ARM with packed fields and with a temporary
+full-width reference. No generated reference source becomes firmware. Actual
+RAM/message measurements, commands and limitations belong in
+[verification](../testing/subsystem2/VERIFICATION.md). Count/time snapshots use
+encoder lock 4; task configuration/status use lock 3; no raw bit-field layout
+crosses the network. Per-consumer status copies are the I4/I5 messages, with no
+single-consumer queue. The explicit telemetry packet is 36 bytes.

@@ -81,6 +81,17 @@ EXPORT INT usermain(void)
     tm_printf((UB *)"single-core build\n");
 #endif
 
+#if APP_S2_STANDALONE
+    CHECK(subsystem2_init(), "subsystem2_init");
+    CHECK(subsystem2_start(), "subsystem2_start");
+    tm_printf((UB *)"[motion] standalone: subsystem2 only; "
+                    "disarmed at boot\n");
+#if APP_TEST
+    tm_printf((UB *)"[TEST] === subsystem2 test run start ===\n");
+    subsystem2_test();
+    tm_printf((UB *)"[TEST] === subsystem2 test run end ===\n");
+#endif
+#else
     /* Phase 1: every subsystem creates its kernel objects */
     CHECK(subsystem1_init(), "subsystem1_init");
     CHECK(subsystem2_init(), "subsystem2_init");
@@ -108,6 +119,8 @@ EXPORT INT usermain(void)
     subsystem4_test();
     subsystem5_test();
     tm_printf((UB *)"[TEST] === test run end ===\n");
+#endif
+
 #endif
 
     /* Sleep forever.  Returning from usermain() would shut down. */

@@ -1,0 +1,664 @@
+d30b081f6b355c7b26b5acb65fabb1486ebd542b8dc9a162835e6e5cf390aab1  app_program/subsystem2/console_motion.c
+848912c857f6ca2022fd6dfeb8af1cd49198271579ba7fbf8d3512b20c3aa8e9  app_program/subsystem2/console_motion.h
+a273761652536d462077dbd51585c555ad3d413192ff18b7e0f29ad47d4022d5  app_program/subsystem2/ctrl_math.c
+280387c7ac2e7ed5081b117029085f4aa49e484f4084da01d17e1d246faac96b  app_program/subsystem2/ctrl_math.h
+4d4e4ef734b21406a82445b9a71c23a68b1e7acfe9c1b591d41ff6219bf77677  app_program/subsystem2/drv_motion.c
+12db7eafe14d443b898f9cd8415c921d7d1de066dbeffb1ef1ddde78b75872d8  app_program/subsystem2/drv_motion.h
+f7d49a517b11efbb83d4bc5bac053287097772d65cd7f7af5e693574a37cdada  app_program/subsystem2/motion_control.c
+ffd5636273ec5ffe511a93c0de7faceec088b5ea8121dde0bf5be32ad5f4a123  app_program/subsystem2/motion_control.h
+737e7086625c04c3bf5dd4c43160b65fb4cfb00c6961f8ae5229f6336aff1f82  app_program/subsystem2/motion_defaults.h
+20d6716f66bfb82801160dfcaaf9a44f9e70db761a64057563b92e512dad8463  app_program/subsystem2/subsystem2.c
+3f8fa7152b813f57306240ef6d420a7d275bdc89fbbf167721d1ac91a5d0867c  app_program/subsystem2/subsystem2.h
+0f606fa034e81278917fb1b32f0d46cc1ad7e4c50999a1f63c24e1c54a8433b9  app_program/subsystem2/subsystem2_test.c
+e1d48f79340e68ecca526f70b9e4b87dfebd5af246437942710c8a35e5ca5656  testing/subsystem2/host/test_defaults.c
+dfb672441008abf4a60985ec4d0e810f060b2cf9a9cabc5c8a7324773c253124  testing/subsystem2/host/test_motion.c
+868c8c4dfb07c8ebff5e115a737ff303e4fbb5ba66bb098cd94e8b032d5b01d0  testing/subsystem2/host/test_output.c
+e7710efc30a5383bf9d42a6e013799ac9925e3b559c38bdd14b0404a068edad2  testing/subsystem2/host/test_schedule.c
+fd8f1cc40fb384793685e154d6466034e12b3fccd57e18058118c4fd70e19065  testing/subsystem2/host/test_startup.c
+f13ea74d7e90d4b3b86a329fb9fa677387692a3ea7548ac81a850317314c9048  testing/subsystem2/host/check_source.py
+a2c2c7092901e623f3cbd56b926585f7594c37995cd96fbc2888cd5174848848  testing/subsystem2/host/compare_representation.py
+7a85523b8f3de0c53c3b7b28b413f3365697ca0dfe56f21fe0a701c15044cac5  testing/subsystem2/host/test_irq.py
+d59ef719b28b5f049d9e24a78d66fc79a935c248e44fd9e2b0fd987841852c10  testing/subsystem2/host/tests.mk
+cf69fa185ba67bf6041d28eaf287e5098a7422ffa1237ac3f01f72561c767651  Makefile
+68597bfd43dabf8d78534e5166136b9d4ac797410880780481b9a603b543799d  build_make/pico_rp2040.mk
+37525fa31a38df1f974a2090e7ddd178090f9116f5303b2216a7daec7d4040df  build_make/mtkernel_3/app_program/subdir.mk
+Host C and port tests
+representation bytes: config=28 status=44 pid=4 encoder=16 wire=36 reference_status=60 reference_config=68
+host packing roundtrip: 401.5 ns/op (100000 iterations); hardware timing pending
+host active control fixture: 26.8 ns/tick (100000 iterations); not RP2040 WCET
+PASS: 13683 assertions
+representation bytes: config=28 status=44 pid=4 encoder=16 wire=36 reference_status=60 reference_config=68
+host packing roundtrip: 469.0 ns/op (100000 iterations); hardware timing pending
+host active control fixture: 28.6 ns/tick (100000 iterations); not RP2040 WCET
+PASS: 13683 assertions
+PASS startup: SMP=0 TEST=0 S2_STANDALONE=0
+PASS startup: SMP=0 TEST=0 S2_STANDALONE=1
+PASS startup: SMP=0 TEST=1 S2_STANDALONE=0
+PASS startup: SMP=0 TEST=1 S2_STANDALONE=1
+PASS cyclic task/flag model SMP=0
+PASS startup: SMP=1 TEST=0 S2_STANDALONE=0
+PASS startup: SMP=1 TEST=0 S2_STANDALONE=1
+PASS startup: SMP=1 TEST=1 S2_STANDALONE=0
+PASS startup: SMP=1 TEST=1 S2_STANDALONE=1
+PASS cyclic task/flag model SMP=1
+PASS defaults/reboot: no automatic arm, runtime edits not retained
+PASS defaults/reboot: no automatic arm, runtime edits not retained
+PASS defaults/reboot: no automatic arm, runtime edits not retained
+PASS actual ISR: W1C interleavings, shared callback, 16 startup phases, locked sample time
+PASS motor-test endpoint: PWM mapping, zero shutdown and braked reversal unchanged
+FULL-WIDTH REFERENCE: identical algorithms, unsigned fields widened to uint32_t; not a historical firmware baseline.
+representation bytes: config=68 status=60 pid=8 encoder=32 wire=36 reference_status=60 reference_config=68
+host packing roundtrip: 470.4 ns/op (100000 iterations); hardware timing pending
+host active control fixture: 26.2 ns/tick (100000 iterations); not RP2040 WCET
+PASS: 13683 assertions
+ARM packed: control/math/console static RAM = 260 bytes
+ARM full-width: control/math/console static RAM = 336 bytes
+PASS: Buddy 2 layout, signed-field, keyword, allocation and header checks
+Manual BARR-C review and documented port deviations remain necessary.
+AddressSanitizer and UndefinedBehaviorSanitizer (-fsanitize=address,undefined)
+representation bytes: config=28 status=44 pid=4 encoder=16 wire=36 reference_status=60 reference_config=68
+host packing roundtrip: 443.9 ns/op (100000 iterations); hardware timing pending
+host active control fixture: 45.2 ns/tick (100000 iterations); not RP2040 WCET
+PASS: 13683 assertions
+representation bytes: config=28 status=44 pid=4 encoder=16 wire=36 reference_status=60 reference_config=68
+host packing roundtrip: 465.5 ns/op (100000 iterations); hardware timing pending
+host active control fixture: 45.3 ns/tick (100000 iterations); not RP2040 WCET
+PASS: 13683 assertions
+PASS startup: SMP=0 TEST=0 S2_STANDALONE=0
+PASS startup: SMP=0 TEST=0 S2_STANDALONE=1
+PASS startup: SMP=0 TEST=1 S2_STANDALONE=0
+PASS startup: SMP=0 TEST=1 S2_STANDALONE=1
+PASS cyclic task/flag model SMP=0
+PASS startup: SMP=1 TEST=0 S2_STANDALONE=0
+PASS startup: SMP=1 TEST=0 S2_STANDALONE=1
+PASS startup: SMP=1 TEST=1 S2_STANDALONE=0
+PASS startup: SMP=1 TEST=1 S2_STANDALONE=1
+PASS cyclic task/flag model SMP=1
+PASS defaults/reboot: no automatic arm, runtime edits not retained
+PASS defaults/reboot: no automatic arm, runtime edits not retained
+PASS defaults/reboot: no automatic arm, runtime edits not retained
+PASS actual ISR: W1C interleavings, shared callback, 16 startup phases, locked sample time
+PASS motor-test endpoint: PWM mapping, zero shutdown and braked reversal unchanged
+FULL-WIDTH REFERENCE: identical algorithms, unsigned fields widened to uint32_t; not a historical firmware baseline.
+representation bytes: config=68 status=60 pid=8 encoder=32 wire=36 reference_status=60 reference_config=68
+host packing roundtrip: 474.4 ns/op (100000 iterations); hardware timing pending
+host active control fixture: 61.9 ns/tick (100000 iterations); not RP2040 WCET
+PASS: 13683 assertions
+ARM packed: control/math/console static RAM = 260 bytes
+ARM full-width: control/math/console static RAM = 336 bytes
+PASS: Buddy 2 layout, signed-field, keyword, allocation and header checks
+Manual BARR-C review and documented port deviations remain necessary.
+Integrated normal and TEST builds
+Standalone normal and TEST builds
+Single diagnostic build
+Direct build_make normal and TEST builds
+Build profile is now smp1-usb_cdc-wificyw43-netnone-mqtt0-crash0-test0; discarding objects built for another profile.
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/libtm.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/libtm_printf.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/fastlock.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/fastmlock.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/kmalloc.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/usermain/usermain.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tstdlib/bitop.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tstdlib/string.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/kmalloc.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tstdlib/bitop.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/usermain/usermain.c
+ 
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/cpuctl.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/device.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/deviceio.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/fastlock.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/libtm.c
+ 
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/fastmlock.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/eventflag.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/int.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/klock.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tstdlib/string.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mailbox.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/int.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/memory.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/cpuctl.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mempfix.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/eventflag.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mempool.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/klock.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/libtm_printf.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/messagebuf.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/misc_calls.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/device.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mailbox.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mutex.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/objname.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/memory.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/misc_calls.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/power.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/rendezvous.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/objname.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mempfix.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/smp_lock.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/semaphore.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/power.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/deviceio.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/rendezvous.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/smp_dispatch.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/ready_queue_smp.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mempool.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task_manage.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/messagebuf.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mutex.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task_sync.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/time_calls.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/smp_lock.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/timer.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/smp_dispatch.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/semaphore.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/tkinit.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/wait.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysinit/sysinit.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/ready_queue_smp.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/tkinit.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/inittask/inittask.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/device/common/drvif/msdrvif.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/timer.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/device/adc/adc.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task_sync.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysinit/sysinit.c
+Building file: /Users/cin/Desktop/embedded/INF2004/device/adc/sysdepend/rp2040/adc_rp2040.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/device/i2c/i2c.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/inittask/inittask.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task_manage.c
+Building file: /Users/cin/Desktop/embedded/INF2004/device/i2c/sysdepend/rp2040/i2c_rp2040.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/wait.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/device/ser/ser.c
+Building file: /Users/cin/Desktop/embedded/INF2004/device/ser/sysdepend/rp2040/ser_rp2040.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/common/drvif/msdrvif.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_console.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/adc/adc.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_descriptors.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/adc/sysdepend/rp2040/adc_rp2040.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_sdk_compat.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/i2c/i2c.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_tinyusb_glue.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_console.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/ser/sysdepend/rp2040/ser_rp2040.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_descriptors.c
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/tusb.c
+ 
+ 
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/common/tusb_fifo.c
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/device/usbd.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/time_calls.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/i2c/sysdepend/rp2040/i2c_rp2040.c
+ 
+ 
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/device/usbd_control.c
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/class/cdc/cdc_device.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/ser/ser.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_sdk_compat.c
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c
+ 
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_tinyusb_glue.c
+ 
+Building Wi-Fi port file: /Users/cin/Desktop/embedded/INF2004/lib/libwifi/sysdepend/pico_rp2040/cyw43_utk.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/device/usbd_control.c
+ 
+Building Wi-Fi port file: /Users/cin/Desktop/embedded/INF2004/lib/libwifi/sysdepend/pico_rp2040/cyw43_utk_kernel.c
+Building Wi-Fi port file: /Users/cin/Desktop/embedded/INF2004/lib/libwifi/sysdepend/pico_rp2040/cyw43_utk_compat.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/tusb.c
+ 
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/class/cdc/cdc_device.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/common/tusb_fifo.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/device/usbd.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/tm_com.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/tm_com.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/no_device/tm_com.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/rp2040/int_rp2040.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/rp2040/ptimer_rp2040.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/core/armv6m/int_armv6m.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/no_device/tm_com.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/rp2040/int_rp2040.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/core/armv6m/wusec_armv6m.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/rp2040/ptimer_rp2040.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libbsp/sysdepend/cpu/rp2040/libbsp_pwm.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/cpu_clock.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/core/armv6m/int_armv6m.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/devinit.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libbsp/sysdepend/cpu/rp2040/libbsp_pwm.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/core/armv6m/wusec_armv6m.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/hw_setting.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/power_save.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/cpu_clock.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/boot_2nd.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/vector_tbl.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/smp_rp2040.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/smp_atomic.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/devinit.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/boot_2nd.c
+ 
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/vector_tbl.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/power_save.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/hw_setting.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/cpu_cntl.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/dispatch.S
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/exc_hdr.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/interrupt.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/reset_hdl.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/smp_atomic.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/smp_rp2040.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/app_main.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/dispatch.S
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem1/subsystem1.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem1/subsystem1_test.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/console_motion.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/interrupt.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/reset_hdl.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/exc_hdr.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/ctrl_math.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/drv_motion.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/motion_control.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/cpu_cntl.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem1/subsystem1.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/app_main.c
+ 
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem1/subsystem1_test.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/subsystem2.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/subsystem2_test.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem3/subsystem3.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem3/subsystem3_test.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/ctrl_math.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/subsystem2_test.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem3/subsystem3_test.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem3/subsystem3.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/drv_gy511.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/subsystem4.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/subsystem4_test.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/task_imu.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/drv_motion.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem5/subsystem5.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/subsystem2.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem5/subsystem5_test.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/console_motion.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/task_imu.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/subsystem4.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/subsystem4_test.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/drv_gy511.c
+ 
+ 
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem5/subsystem5.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem5/subsystem5_test.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/motion_control.c
+ 
+Linker: mtk3pico_smp1_usb_cdc_wifi.elf
+Finished building target: mtk3pico_smp1_usb_cdc_wifi.elf
+   text	   data	    bss	    dec	    hex	filename
+ 291264	     88	  24824	 316176	  4d310	mtk3pico_smp1_usb_cdc_wifi.elf
+ 
+Build profile is now smp1-usb_cdc-wificyw43-netnone-mqtt0-crash0-test1; discarding objects built for another profile.
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/libtm.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/libtm_printf.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/fastlock.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/fastmlock.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/kmalloc.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/usermain/usermain.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tstdlib/bitop.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tstdlib/string.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tstdlib/bitop.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/cpuctl.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/libtm.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/kmalloc.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/usermain/usermain.c
+ 
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/device.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/deviceio.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/eventflag.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/fastlock.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/int.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/fastmlock.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/klock.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tstdlib/string.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mailbox.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/int.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/memory.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/cpuctl.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mempfix.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/klock.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mempool.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/libtm_printf.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/messagebuf.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/eventflag.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/misc_calls.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/device.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mailbox.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/objname.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mutex.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/memory.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/power.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mempfix.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/rendezvous.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/objname.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/misc_calls.c
+ 
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/power.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/semaphore.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/smp_lock.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/smp_dispatch.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/rendezvous.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/ready_queue_smp.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/deviceio.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mempool.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task_manage.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/messagebuf.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/mutex.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task_sync.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/time_calls.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/smp_dispatch.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/smp_lock.c
+ 
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/semaphore.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/timer.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/tkinit.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/wait.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/tkinit.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/ready_queue_smp.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysinit/sysinit.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/inittask/inittask.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/device/common/drvif/msdrvif.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task_sync.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/timer.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/device/adc/adc.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/wait.c
+Building file: /Users/cin/Desktop/embedded/INF2004/device/adc/sysdepend/rp2040/adc_rp2040.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysinit/sysinit.c
+Building file: /Users/cin/Desktop/embedded/INF2004/device/i2c/i2c.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/device/i2c/sysdepend/rp2040/i2c_rp2040.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/task_manage.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/inittask/inittask.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/device/ser/ser.c
+Building file: /Users/cin/Desktop/embedded/INF2004/device/ser/sysdepend/rp2040/ser_rp2040.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/common/drvif/msdrvif.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_console.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/adc/sysdepend/rp2040/adc_rp2040.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_descriptors.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/adc/adc.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/i2c/i2c.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_sdk_compat.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_tinyusb_glue.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/tkernel/time_calls.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/i2c/sysdepend/rp2040/i2c_rp2040.c
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/tusb.c
+ 
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/common/tusb_fifo.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/ser/sysdepend/rp2040/ser_rp2040.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/device/ser/ser.c
+ 
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/device/usbd.c
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/device/usbd_control.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_console.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_descriptors.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_sdk_compat.c
+ 
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/class/cdc/cdc_device.c
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c
+Building TinyUSB file: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/usb/usb_tinyusb_glue.c
+ 
+Building Wi-Fi port file: /Users/cin/Desktop/embedded/INF2004/lib/libwifi/sysdepend/pico_rp2040/cyw43_utk.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/device/usbd_control.c
+ 
+Building Wi-Fi port file: /Users/cin/Desktop/embedded/INF2004/lib/libwifi/sysdepend/pico_rp2040/cyw43_utk_kernel.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/tusb.c
+ 
+Building Wi-Fi port file: /Users/cin/Desktop/embedded/INF2004/lib/libwifi/sysdepend/pico_rp2040/cyw43_utk_compat.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/common/tusb_fifo.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c
+ 
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/class/cdc/cdc_device.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/.pico-sdk/lib/tinyusb/src/device/usbd.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/tm_com.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/no_device/tm_com.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/rp2040/int_rp2040.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/no_device/tm_com.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtm/sysdepend/pico_rp2040/tm_com.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/rp2040/ptimer_rp2040.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/core/armv6m/int_armv6m.c
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/core/armv6m/wusec_armv6m.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/rp2040/int_rp2040.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/lib/libbsp/sysdepend/cpu/rp2040/libbsp_pwm.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/rp2040/ptimer_rp2040.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/core/armv6m/int_armv6m.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/cpu_clock.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/devinit.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libtk/sysdepend/cpu/core/armv6m/wusec_armv6m.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/hw_setting.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/lib/libbsp/sysdepend/cpu/rp2040/libbsp_pwm.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/power_save.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/boot_2nd.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/devinit.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/vector_tbl.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/smp_rp2040.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/cpu_clock.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/smp_atomic.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/boot_2nd.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/cpu_cntl.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/power_save.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/dispatch.S
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/pico_rp2040/hw_setting.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/vector_tbl.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/exc_hdr.c
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/interrupt.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/reset_hdl.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/dispatch.S
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/app_main.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/smp_atomic.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/exc_hdr.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/reset_hdl.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem1/subsystem1.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/interrupt.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem1/subsystem1_test.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/core/armv6m/cpu_cntl.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/console_motion.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/ctrl_math.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/kernel/sysdepend/cpu/rp2040/smp_rp2040.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/drv_motion.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/motion_control.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem1/subsystem1_test.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem1/subsystem1.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/subsystem2.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/app_main.c
+ 
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/subsystem2_test.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem3/subsystem3.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem3/subsystem3_test.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/ctrl_math.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem3/subsystem3.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/drv_gy511.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/subsystem4.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem3/subsystem3_test.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/drv_motion.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/subsystem4_test.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/subsystem2_test.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/task_imu.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/console_motion.c
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem5/subsystem5.c
+ 
+Building file: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem5/subsystem5_test.c
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/subsystem2.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/subsystem4.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/drv_gy511.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem5/subsystem5.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/subsystem4_test.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/task_imu.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem5/subsystem5_test.c
+ 
+Finished building: /Users/cin/Desktop/embedded/INF2004/app_program/subsystem2/motion_control.c
+ 
+Linker: mtk3pico_smp1_usb_cdc_wifi_test.elf
+Finished building target: mtk3pico_smp1_usb_cdc_wifi_test.elf
+   text	   data	    bss	    dec	    hex	filename
+ 294040	     88	  24824	 318952	  4dde8	mtk3pico_smp1_usb_cdc_wifi_test.elf
+ 

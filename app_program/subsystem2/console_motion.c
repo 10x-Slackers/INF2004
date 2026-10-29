@@ -51,8 +51,6 @@ int32_t console_motion_getchar(void)
     return byte;
 }
 
-
-
 /* Decimal parsing rejects trailing tokens and overflow. */
 static bool console_motion_number(const char ** pp_text, int32_t * p_value)
 {
@@ -103,6 +101,16 @@ static bool console_motion_config(const char * p_key, uint32_t value)
     else if ((0 == strcmp(p_key, "cpr")) && (value <= 65535u))
     {
         config.counts_per_rev = value;
+        config.left_counts_per_rev = 0u;
+        config.right_counts_per_rev = 0u;
+    }
+    else if ((0 == strcmp(p_key, "cprl")) && (value <= 65535u))
+    {
+        config.left_counts_per_rev = value;
+    }
+    else if ((0 == strcmp(p_key, "cprr")) && (value <= 65535u))
+    {
+        config.right_counts_per_rev = value;
     }
     else if ((0 == strcmp(p_key, "kp")) && (value <= 4095u))
     {
@@ -178,9 +186,24 @@ bool console_motion_execute(const char * p_line)
         motion_control_safety_stop(0u);
         return true;
     }
+    if ((0 == strcmp(command, "status")) ||
+        (0 == strcmp(command, "encoder")))
+    {
+        motion_control_status_t status = {0};
+        motion_control_get_status(&status);
+        if (0u != status.armed)
+        {
+            return false;
+        }
+    }
     if ((0 == strcmp(command, "status")) && ('\0' == *p_line))
     {
         console_motion_report();
+        return true;
+    }
+    if ((0 == strcmp(command, "encoder")) && ('\0' == *p_line))
+    {
+        console_motion_encoder_report();
         return true;
     }
     if ((0 == strcmp(command, "arm")) && ('\0' == *p_line))
@@ -195,6 +218,17 @@ bool console_motion_execute(const char * p_line)
     if ((0 == strcmp(command, "reset")) && ('\0' == *p_line))
     {
         return motion_control_reset_faults();
+    }
+    if ((0 == strcmp(command, "config")) && ('\0' == *p_line))
+    {
+        motion_control_status_t status = {0};
+        motion_control_get_status(&status);
+        if (0u != status.armed)
+        {
+            return false;
+        }
+        console_motion_config_report();
+        return true;
     }
     if (0 == strcmp(command, "config"))
     {

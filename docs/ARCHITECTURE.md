@@ -6,7 +6,13 @@ The design agreed at the Week 6 design review: tasks, ownership, interfaces and 
 
 These decisions were frozen at the review. Changing one means updating this document.
 
-1. **Only Wheel Motion Control writes motor outputs.** Every other task requests motion; none drives a motor pin.
+1. **Only Buddy 2's driver writes motor outputs.** Normal drive updates run in
+   Wheel Motion Control. Task-context cancellation/disarm/safety endpoints may
+   synchronously write zero duty under the same state lock, so stopping does
+   not wait for a control release. Other subsystems call those APIs and never
+   drive motor pins directly; ISR callbacks do not write motor PWM.
+   Physical left is M1 with encoder GP16/17 (Grove4); physical right is
+   M2 with encoder GP2/3 (Grove2). Both capture backends share this mapping.
 2. **Each hardware device has exactly one owning task.** Others get its data through an interface.
 3. **Safety Monitor has the highest priority and can stop the car on its own**, bypassing the Vehicle Controller.
 4. **Telemetry runs below everything else**, so a network delay can never hold up navigation or motor control.
@@ -33,7 +39,7 @@ and Wi-Fi service tasks retain 3 and 4.
 | Pri | Task                            | Purpose                                                                              | Trigger                        | Buddy |
 | --- | ------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------ | ----- |
 | P1  | Safety Monitor                  | Stop on collision risk, stale control data or critical fault. Holds the latched stop | 5 ms + events                  | All   |
-| P2  | Wheel Motion Control            | Sole motor writer. Per-wheel PID, odometry, encoder-based turns                      | 10 ms; stop applied at next release              | 2     |
+| P2  | Wheel Motion Control            | Normal motor updates. Per-wheel PID, odometry, encoder-based turns                      | 10 ms; stop endpoint writes zero synchronously              | 2     |
 | P3  | Barcode Decoder                 | Sample the auxiliary IR sensor and validate LEFT / RIGHT / STRAIGHT / UTURN          | 1 ms acquisition while reading | 3     |
 | P4  | Line Following                  | Line error and junction detection from two digital IR sensors                        | 10 ms                          | 3     |
 | P5  | Vehicle Controller              | Mission state machine and arbiter of normal motion                                   | Events + 10 ms                 | All   |

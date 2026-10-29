@@ -31,10 +31,33 @@ endif
 # the USB console and its TinyUSB dependency.
 CONSOLE ?= usb_cdc
 
+# Explicit bench mode; the integrated startup remains the default.
+S2_DIAGNOSTIC ?= 0
+ifneq ($(filter $(S2_DIAGNOSTIC),0 1),$(S2_DIAGNOSTIC))
+$(error S2_DIAGNOSTIC must be 0 or 1)
+endif
+ifeq ($(S2_ENCODER_PIO),1)
+$(error The experimental PIO encoder backend was retired; GPIO is required)
+endif
+S2_STANDALONE ?= 0
+ifeq ($(S2_DIAGNOSTIC),1)
+ifneq ($(S2_STANDALONE),1)
+$(error S2_DIAGNOSTIC=1 requires S2_STANDALONE=1)
+endif
+endif
+ifneq ($(S2_STANDALONE),0)
+ifneq ($(S2_STANDALONE),1)
+$(error Unknown S2_STANDALONE '$(S2_STANDALONE)'; use 0 or 1)
+endif
+endif
+ifeq ($(S2_STANDALONE),1)
+S2_SUFFIX := _s2only
+endif
+
 # Pico W radio.  Defaults to cyw43: the radio is powered up and owned by a
 # core-0 polling service task, using the Pico SDK's cyw43 driver.  WIFI=none
 # leaves the radio powered down.
-WIFI ?= cyw43
+WIFI ?= $(if $(filter 1,$(S2_STANDALONE)),none,cyw43)
 ifneq ($(filter $(WIFI),none cyw43),$(WIFI))
 $(error Unknown WIFI '$(WIFI)'; use none or cyw43)
 endif
@@ -109,13 +132,19 @@ ifeq ($(CONSOLE)$(CRASH_REPORT),usb_cdc1)
 CRASH_SUFFIX := _crash
 endif
 
+ifeq ($(S2_STANDALONE),1)
+ifneq ($(CONSOLE)-$(WIFI)-$(NET)-$(MQTT)-$(CRASH_REPORT),usb_cdc-none-none-0-0)
+$(error S2_STANDALONE=1 requires CONSOLE=usb_cdc WIFI=none NET=none MQTT=0 CRASH_REPORT=0)
+endif
+endif
+
 #
 # Images are named after the profile they were built with.  Every image is
 # flashed by hand from a downloads folder, so identically-named artifacts are
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(S2_SUFFIX)$(if $(filter 1,$(S2_DIAGNOSTIC)),_s2diag,)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -176,7 +205,7 @@ ifeq ($(SMP),1)
 CFLAGS  += -DCNF_SMP=1
 ASFLAGS += -DCNF_SMP=1
 endif
-CFLAGS  += -DAPP_TEST=$(TEST)
+CFLAGS  += -DAPP_TEST=$(TEST) -DAPP_S2_STANDALONE=$(S2_STANDALONE)
 CFLAGS  += -DTM_CONSOLE_UART=$(CRASH_REPORT)
 ifeq ($(CRASH_REPORT),0)
 CFLAGS  += -DBOARD_UART0_FREE=1
@@ -208,7 +237,8 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)$(if $(filter 1,$(S2_STANDALONE)),-s2only,)
+PROFILE_ID := $(PROFILE_ID)$(if $(filter 1,$(S2_DIAGNOSTIC)),-s2diag,)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))
@@ -468,3 +498,5 @@ include $(ROOT)/build_make/mtkernel_3/lib/libbsp/sysdepend/cpu/rp2040/subdir.mk
 include $(ROOT)/build_make/mtkernel_3/kernel/sysdepend/pico_rp2040/subdir.mk
 include $(ROOT)/build_make/mtkernel_3/kernel/sysdepend/cpu/rp2040/subdir.mk
 include $(ROOT)/build_make/mtkernel_3/kernel/sysdepend/cpu/core/armv6m/subdir.mk
+
+CFLAGS += -DS2_DIAGNOSTIC=$(S2_DIAGNOSTIC)

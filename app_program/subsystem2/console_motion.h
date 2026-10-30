@@ -1,15 +1,18 @@
+/** @file console_motion.h
+ *
+ * @brief USB console for testing, calibrating and tuning motion control.
+ */
+
 #ifndef CONSOLE_MOTION_H
 #define CONSOLE_MOTION_H
 
-#include <stdbool.h>
+#include "../app.h"
 #include <stdint.h>
 
-/* Generic weak USB port hook: fixed integration name. */
+/* Name fixed by the weak hook in lib/libtm. Runs in the USB task. */
 void tm_console_receive_byte(uint8_t byte);
-void console_motion_report(void);
-int32_t console_motion_getchar(void);
-/* A complete NUL-terminated line, at most 63 bytes. */
-bool console_motion_execute(const char * p_line);
+void console_motion_task(INT stacd, void * p_exinf);
 
 #endif /* CONSOLE_MOTION_H */
-/* End of file. */
+
+/*** end of file ***/

@@ -1,0 +1,36 @@
+[motion] REJECTED
+[motion] OK
+[motion] state=2 cmd=1 faults=0 heading=161 dist_mm=5797 counts=56594,51708 speed=48,56 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=1 faults=0 heading=161 dist_mm=5899 counts=57848,52966 speed=47,47 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=2 faults=0 heading=162 dist_mm=6001 counts=56599,51727 speed=-23,-39 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=1 faults=0 heading=161 dist_mm=6102 counts=57846,52967 speed=48,56 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=2 faults=0 heading=162 dist_mm=6203 counts=56604,51738 speed=-47,-63 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=1 faults=0 heading=162 dist_mm=6304 counts=57845,52974 speed=40,48 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=2 faults=0 heading=162 dist_mm=6405 counts=56601,51741 speed=-40,-48 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=1 faults=0 heading=162 dist_mm=6507 counts=57842,52975 speed=47,55 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=2 faults=0 heading=162 dist_mm=6608 counts=56595,51740 speed=-56,-56 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=3 faults=0 heading=253 dist_mm=6699 counts=55468,52840 speed=-39,39 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=4 faults=0 heading=163 dist_mm=6789 counts=56581,51737 speed=-8,-40 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=3 faults=0 heading=253 dist_mm=6879 counts=55464,52854 speed=-24,48 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=4 faults=0 heading=163 dist_mm=6969 counts=56578,51751 speed=40,-32 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=3 faults=0 heading=344 dist_mm=7148 counts=54360,53970 speed=-47,47 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=4 faults=0 heading=164 dist_mm=7327 counts=56574,51753 speed=48,-40 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=3 faults=0 heading=163 dist_mm=7685 counts=52149,56179 speed=-47,63 max_tick_us=1939
+[motion] OK
+[motion] OK
+[motion] state=0 cmd=0 faults=0 heading=155 dist_mm=12345 counts=44549,48374 speed=95,103 max_tick_us=1939

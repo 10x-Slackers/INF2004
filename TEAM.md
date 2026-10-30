@@ -47,8 +47,8 @@ fixed.
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
 | GP0 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
 | GP1 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP2 | Motion (Buddy 2) | left encoder phase A (Grove 2) |
-| GP3 | Motion (Buddy 2) | left encoder phase B (Grove 2) |
+| GP2 | Motion (Buddy 2) | right encoder phase A (Grove 2) |
+| GP3 | Motion (Buddy 2) | right encoder phase B (Grove 2) |
 | GP4 | IMU (Buddy 4) | GY-511 SDA, I2C0 (Grove 3) |
 | GP5 | IMU (Buddy 4) | GY-511 SCL, I2C0 (Grove 3) |
 | GP6 | | |
@@ -61,8 +61,8 @@ fixed.
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
-| GP16 | Motion (Buddy 2) | right encoder A |
-| GP17 | Motion (Buddy 2) | right encoder B |
+| GP16 | Motion (Buddy 2) | left encoder phase A (Grove 4) |
+| GP17 | Motion (Buddy 2) | left encoder phase B (Grove 4) |
 | GP18 | IMU (Buddy 4) | Maker Pi Pico buzzer, beeps when calibration is done (PWM slice 1 A). On the Robo Pico this pin is the NeoPixel and the buzzer is GP22 |
 | GP19 | | |
 | GP20 | | |
@@ -108,9 +108,8 @@ the drivers have no locking to stop it.
 | SPI0 | | | |
 | SPI1 | | | |
 | ADC | | | GP26–GP28 |
-| PWM4, PWM5 | Motion (Buddy 2) | `subsystem2_motion_task` | GP8–GP11 |
-| IRQ13, core 0 | Motion dispatcher | `drv_motion_gpio_isr` | GP2/3, GP16/17; Buddy 5 callback registration |
-| SIO locks 3/4 | Motion (Buddy 2) | task state / encoder snapshot | No pins; kernel reserves locks 0–2 |
+| PWM4, PWM5 | Motion (Buddy 2) | `s2_motion` (`motion_control_stop()` may brake from any task) | GP8–GP11 |
+| IRQ13 (GPIO bank 0), core 0 | Motion (Buddy 2) | `drv_motion_gpio_isr` | GP2/3, GP16/17. Other GPIO edge users register a callback with `drv_motion_gpio_register()` |
 | PWM slices (list) | IMU (Buddy 4) | `imu_task` | Slice 1 A: GP18 buzzer |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
@@ -147,7 +146,7 @@ Safety reserves 5; Vehicle Controller reserves 9. Write down each task.
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
 | 1 | 23–24 | telemetry reservation |
-| 2 | 6, 22 | `subsystem2_motion_task` – 6 – core 0; `subsystem2_console_task` – 22 – core 0 |
+| 2 | 6, 22 | `s2_motion` – 6 – core 0; `s2_console` – 22 – core 0 |
 | 3 | 7–8 | barcode / line reservations |
 | 4 | 18–19 | imu_task – 18 – any |
 | 5 | 10–11 | avoidance / scan reservations |
@@ -157,17 +156,14 @@ Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
 ## 5. Interfaces between subsystems
 
 Every arrow between two subsystems is listed here. Providers expose synchronized APIs or create the kernel objects used by
-consumers. Motion uses short, locked single-slot commands and coherent
-per-consumer snapshots; no dynamic queue allocation is required. Data formats
-and units are defined in the owning public header and technical guide.
+consumers. Data formats and units are defined in the owning public header and technical guide.
 
 | ID | From → To | Mechanism | Object ID name | Data / meaning | Agreed by |
 |---|---|---|---|---|---|
-| I3 | Controller → Motion | locked single command slot | `motion_control_*()` | asynchronous mm / deci-degree commands | Buddy 2 contract |
-| I4 | Motion → Controller | coherent snapshot | `motion_control_get_status()` | state, completion, faults | Buddy 2 contract |
-| I5 | Motion → Buddies 3/4/5, Safety | independent coherent copies | `motion_control_get_status()` | signed counts, mm, mm/s; timestamp µs | Buddy 2 contract |
-| I11 | Safety → Motion | latched locked update | `motion_control_safety_stop()` | fault mask, disarm, active command invalidation | Buddy 2 contract |
-| Motion telemetry | Motion → Buddy 1 | explicit bit stream | `motion_control_pack()` | 36 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
+| I3 | Controller, Buddies 3/5 → Motion | function calls under the motion mutex | `motion_control_move_*()`, `_turn_*()`, `_drive()`, `_stop()` | mm, degrees, mm/s; a new command replaces the running one | Buddy 2 contract |
+| I4/I5 | Motion → any task | snapshot copy under the motion mutex | `motion_control_get_status()` | state, faults, speeds, counts, odometer, heading | Buddy 2 contract |
+| I11 | Safety, Controller → Motion | function call | `motion_control_stop()` | brakes both wheels before returning; cancels the command | Buddy 2 contract |
+| Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).
@@ -183,11 +179,11 @@ limit there. Fill in each subsystem's usage.
 | Semaphore | 16 | | | | | |
 | Event flag | 16 | | | | | |
 | Mailbox | 12 | | | | | |
-| Mutex | 12 | | | | 1 | |
+| Mutex | 12 | | 1 | | 1 | |
 | Message buffer | 12 | | | | | |
 | Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |
-| Cyclic handler | 12 | | | | 1 | |
+| Cyclic handler | 12 | | 1 | | 1 | |
 | Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)

@@ -17,14 +17,14 @@ Pin assignments, wiring and the datasheet facts needed to write drivers. Sources
 
 ## Pin map
 
-The design review's assignment, except that the GY-511 and the left encoder swapped ports: the GY-511 moved to Grove 3 (GP4, GP5) for I2C0, the left encoder to Grove 2 (GP2, GP3). The owner column is the only task allowed to touch the pin (see [ARCHITECTURE.md](ARCHITECTURE.md#hardware-ownership)).
+The design review's assignment, with two changes: the GY-511 moved to Grove 3 (GP4, GP5) for I2C0, and the encoders are the other way round, right on Grove 2 (GP2, GP3) and left on Grove 4 (GP16, GP17). The owner column is the only task allowed to touch the pin (see [ARCHITECTURE.md](ARCHITECTURE.md#hardware-ownership)).
 
 | GPIO | Signal          | Connects to                 | Interface               | Owner task              |
 | ---- | --------------- | --------------------------- | ----------------------- | ----------------------- |
 | GP0  | `RANGE_TRIG`    | HC-SR04 TRIG                | GPIO out                | Ultrasonic Scan         |
 | GP1  | `RANGE_ECHO`    | HC-SR04 ECHO, level shifted | Timed GPIO in           | Ultrasonic Scan         |
-| GP2  | `ENC_L_A`       | Left motor pin 02           | GPIO in, edge interrupt | Wheel Motion Control    |
-| GP3  | `ENC_L_B`       | Left motor pin 03           | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP2  | `ENC_R_A`       | Right motor pin 02           | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP3  | `ENC_R_B`       | Right motor pin 03           | GPIO in, edge interrupt | Wheel Motion Control    |
 | GP4  | `IMU_SDA`       | GY-511 SDA                  | I2C0 SDA                | IMU and Terrain Monitor |
 | GP5  | `IMU_SCL`       | GY-511 SCL                  | I2C0 SCL                | IMU and Terrain Monitor |
 | GP6  | `LINE_LEFT`     | Left IR module DO           | GPIO in                 | Line Following          |
@@ -34,8 +34,8 @@ The design review's assignment, except that the GY-511 and the left encoder swap
 | GP10 | `MOTOR_R_A`     | M2A (on board)              | PWM / GPIO out          | Wheel Motion Control    |
 | GP11 | `MOTOR_R_B`     | M2B (on board)              | PWM / GPIO out          | Wheel Motion Control    |
 | GP12 | `SONAR_PAN_PWM` | SG90 signal (servo header)  | Servo PWM               | Ultrasonic Scan         |
-| GP16 | `ENC_R_A`       | Right motor pin 02          | GPIO in, edge interrupt | Wheel Motion Control    |
-| GP17 | `ENC_R_B`       | Right motor pin 03          | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP16 | `ENC_L_A`       | Left motor pin 02          | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP17 | `ENC_L_B`       | Left motor pin 03          | GPIO in, edge interrupt | Wheel Motion Control    |
 | GP26 | `BARCODE_AO`    | Auxiliary IR module AO      | ADC0                    | Barcode Decoder         |
 
 Where each signal lands on the Robo Pico:
@@ -43,9 +43,9 @@ Where each signal lands on the Robo Pico:
 | Grove port | GPIOs      | Used for                            |
 | ---------- | ---------- | ----------------------------------- |
 | 1          | GP0, GP1   | HC-SR04                             |
-| 2          | GP2, GP3   | Left encoder (also on Maker port)   |
+| 2          | GP2, GP3   | Right encoder (also on Maker port)   |
 | 3          | GP4, GP5   | GY-511                              |
-| 4          | GP16, GP17 | Right encoder                       |
+| 4          | GP16, GP17 | Left encoder                       |
 | 5          | GP6, GP26  | Left line sensor (GP6 only)         |
 | 6          | GP26, GP27 | Barcode sensor (GP26 only)          |
 | 7          | GP7, GP28  | Right line sensor (GP7 only)        |
@@ -113,15 +113,15 @@ Each motor is driven by two GPIOs. Put PWM on one input and hold the other low t
 | Low                  | High                 | Backward             |
 | High                 | High                 | Coast (outputs open) |
 
-"Forward" depends on which way the motor leads are connected. If a wheel turns the wrong way, swap its two leads or swap A and B in software. The motor test buttons on the board run a motor at full speed without any firmware, which is useful for checking wiring.
+"Forward" depends on which way the motor leads are connected. If a wheel turns the wrong way, swap its two leads or swap A and B in software. The measured polarity of this robot is set by the `DRV_MOTION_*_SIGN` constants in `app_program/subsystem2/drv_motion.c`. The motor test buttons on the board run a motor at full speed without any firmware, which is useful for checking wiring.
 
 ### Six-pin motor connector (PH2.0-6P)
 
 | Pin | Function        | Connect to                           |
 | --- | --------------- | ------------------------------------ |
 | 01  | Encoder ground  | GND                                  |
-| 02  | Encoder phase A | Left: GP2. Right: GP16               |
-| 03  | Encoder phase B | Left: GP3. Right: GP17               |
+| 02  | Encoder phase A | Left: GP16. Right: GP2               |
+| 03  | Encoder phase B | Left: GP17. Right: GP3               |
 | 04  | Encoder supply  | 3.3 V                                |
 | 05  | Motor +         | M1 or M2 terminal                    |
 | 06  | Motor −         | The other terminal of the same motor |

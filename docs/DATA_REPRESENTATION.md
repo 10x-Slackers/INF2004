@@ -24,49 +24,36 @@ Application data uses only the bits its valid range needs (change requirement "M
 
 ## Buddy 2 application fields
 
-All storage below is unsigned. Fields grouped on a row share range/encoding.
-C layout padding is measured, never assumed to be the sum of bit widths.
-Transport offsets and invalid codes are in [MOTION_CONTROL.md](MOTION_CONTROL.md).
+Signed values are stored unsigned with a bias, because BARR-C 5.3.a forbids signed bit-fields. The motion state (`g_status`, `g_config`, `g_run`, `g_pid`) is guarded by one priority-inheriting mutex, so a read-modify-write of any packed field cannot race. Telemetry is packed with explicit shifts (see [MOTION_CONTROL.md](MOTION_CONTROL.md#telemetry-payload)).
 
-| Field(s) | Valid value / resolution | Bits each | Encoding / ownership |
-| --- | --- | --- | --- |
-| config circumference / track | 50–1000 mm, 1 mm; 0 unconfigured | 10 | direct, motion state lock |
-| config counts_per_rev | 4–65535 four-edge counts, 1 count; 0 unconfigured | 16 | direct |
-| config kp / ki / kd | 0–4095, 1/256 gain; Kp must be nonzero when confirmed | 12 | Q8; Ki/Kd per 10 ms sample |
-| config speed_mm_s | 10–1000 mm/s | 10 | direct; zero only while unconfigured |
-| config duty_limit | 1–1000 permille | 10 | direct; zero only while unconfigured |
-| config timeout_ms | 100–60000 ms | 16 | direct |
-| config stall_ms | 100–10000 ms | 14 | direct |
-| config motor/encoder left/right reverse, confirmed | 0/1 | 1 | direct |
-| status state | 0–4 | 3 | 5–7 reserved |
-| status command | 0–5 | 3 | 6–7 reserved |
-| status armed | 0/1 | 1 | permission, not motor-on indication |
-| status faults | 8 independent flags | 8 | combined mask; unknown sensor reading is not zero/clear |
-| status left/right count | −8388608..8388607, 1 edge | 24 | signed value + 8388608 |
-| status left/right/average mm | −8388608..8388607, 1 mm | 24 | signed value + 8388608 |
-| status left/right mm_s | −2000..2000, 1 mm/s | 12 | signed value + 2048; others reserved |
-| status timestamp_us, max_execution_us, max_period_us | 0..4294967295 µs | 32 | timer-wrap arithmetic; maxima diagnostic |
-| status missed_periods | 0..4294967295 releases | 32 | saturating counter |
-| PID integral, each wheel | −65535..65535 error-samples | 17 | value + 65535; all-ones reserved |
-| PID previous_error, each wheel | −3250..3250 mm/s | 13 | value + 4096; outside range reserved |
-| run start_left/right, last_left/right | normalized signed encoder range | 24 | value + 8388608 |
-| run goal | 1..8388607 edges; 0 idle | 23 | direct |
-| run invalid | 0–65535 transitions | 16 | last observed ISR diagnostic |
-| run test_wheel | 0/1 | 1 | left/right |
-| run test_duty | −200..200 permille | 9 | value + 200 |
-| run test_duration_ms | 0–1000 ms | 10 | zero idle |
-| run start_us, last_us, left/right_edge_us | full 32-bit µs timer | 32 | wrap-safe differences |
-| driver left/right counts | signed encoder range | 24 | value + 8388608, lock 4 |
-| driver invalid | 0–65535 transitions | 16 | saturates, then raises overflow |
-| driver overflow | 0/1 | 1 | latched until reboot |
-| driver left/right quadrature phase | 0–3 | 2 | A*2+B |
-| driver previous left/right duty | −1000..1000 permille | 11 | value + 1000 |
-| driver additional GPIO owner mask | GP0–29 | 30 | one bit/pin; fixed startup registration |
-| driver started | 0/1 | 1 | unsigned bit-field |
-| console RX bytes | 0–255 | 8 | byte stream, fixed 128-byte ring |
-| console RX head/tail | 0–127 | 7 | state lock protects producer/consumer |
+| Field | Valid range | Bits | Representation | Shared with |
+| --- | --- | --- | --- | --- |
+| `status.state` | 0–3 (idle, running, complete, failed) | 2 | `unsigned int` bit-field | Any task, copied by `motion_control_get_status()` under the mutex; MQTT |
+| `status.command` | 0–5 | 3 | as above | as above |
+| `status.faults` | stall left, stall right, encoder | 3 | one bit per fault | as above |
+| `status.heading_deg` | 0–359° | 9 | as above | as above |
+| `status.left_speed`, `.right_speed` | −1023 to 1023 mm/s | 11 each | value + 1024 | as above |
+| `status.left_count`, `.right_count` | 0–65535 edges, wrapping | 16 each | as above | as above |
+| `status.distance_mm` | 0–16 777 215 mm, wrapping | 24 | as above | as above |
+| `config.speed_mm_s` | 10–1000 mm/s | 10 | bit-field | API callers and motion task, mutex |
+| `config.track_um` | 50 000–200 000 µm | 18 | bit-field | as above |
+| `config.kp`, `.ki`, `.kd` | 0–4095 (Q8) | 12 each | bit-field | as above |
+| `run.goal` | 0–62 119 edges (5 m) | 16 | bit-field | as above |
+| `run.left_progress`, `.right_progress` | 0–131 071 edges | 17 each | clamped at 0 | motion task |
+| `run.profile_speed` | 0–1000 mm/s | 10 | bit-field | motion task |
+| `run.left_target`, `.right_target` | −1000 to 1000 mm/s | 11 each | value + 1024 | `motion_control_drive()` and motion task, mutex |
+| `run.left_raw`, `.right_raw` | 0–65535 edges | 16 each | last driver count | motion task |
+| `run.skipped` | 0–255, wrapping | 8 | last driver value | motion task |
+| `run.left_stall`, `.right_stall` | 0–100 periods (1 s) | 7 each | bit-field | motion task |
+| `run.drive_age` | 0–20 periods (200 ms target expiry) | 5 | bit-field | `motion_control_drive()` and motion task, mutex |
+| `run.heading` | 0 to 2 × track × 2537 (< 2^30) | 30 | edge difference × wheel diameter, modulo one turn | motion task |
+| `run.odometer` | 0 to 2^30 − 1 edges, wrapping | 30 | bit-field | motion task |
+| `pid[n].integral` | −32767 to 32767 | 16 each | value + 32768 | motion task |
+| `pid[n].last_error` | −2047 to 2047 mm/s | 12 each | value + 2048 | motion task |
+| Driver `left_count`, `right_count` | 0–65535 edges, wrapping | 16 each | `volatile uint16_t` | Encoder ISR writes; motion task reads. A 16-bit load is atomic on Cortex-M0+, so no lock is needed |
+| Driver `skipped` | 0–255, wrapping | 8 | `volatile uint8_t` | as above |
+| Driver wheel `phase`, `b_backward` | 0–3, 0/1 | 2 + 1 per wheel | bit-field | Encoder ISR only |
+| Console receive ring head, tail | 0–63 | 8 each | `volatile uint8_t`, for an atomic access | USB task writes head, console task writes tail (both core 0) |
+| Console `drive` speeds | −1000 to 1000 mm/s | 16 each | `int16_t`, the smallest signed standard type | Console task only |
 
-Temporary calculations use wider signed arithmetic deliberately. IDs, function
-pointers, lock addresses and bus register formats are kernel/device data.
-Host fixtures and the generated full-width reference are test data, not robot
-application storage. See the subsystem test log for measured sizes and evidence.
+`run.last_us` stays a full 32-bit timer reading, because elapsed time is a wrap-around difference of the hardware counter. Measured savings are in `testing/subsystem2/logs/2026-10-31_ram.txt`.

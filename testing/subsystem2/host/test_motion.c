@@ -1,526 +1,409 @@
-#define _POSIX_C_SOURCE 200809L
-#include "../../../app_program/subsystem2/motion_control.h"
-#include "../../../app_program/subsystem2/ctrl_math.h"
-#include "../../../app_program/subsystem2/console_motion.h"
+/** @file test_motion.c
+ *
+ * @brief Host test of motion_control.c against a simulated robot.
+ *
+ * Replaces drv_motion.c with a model: each wheel's speed follows its duty
+ * with a lag, the right motor is 15% weaker, and wheels coast briefly after
+ * braking. Geometry matches the firmware (65 mm wheels, 2537 edges/rev,
+ * 113.5 mm track), so heading and distance are checked against the model's
+ * true motion. Build and run with "make test".
+ */
+
 #include "../../../app_program/subsystem2/drv_motion.h"
-#include <pthread.h>
+#include "../../../app_program/subsystem2/motion_control.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-static pthread_mutex_t g_lock = PTHREAD_MUTEX_INITIALIZER;
-static drv_motion_encoders_t g_counts;
-static uint32_t g_now;
-static int32_t g_left;
-static int32_t g_right;
-static uint32_t g_checks;
-static bool g_ready = true;
+#define TEST_PI        3.14159265358979
+#define TEST_EDGE_MM   (TEST_PI * 65.0 / 2537.0)
+#define TEST_TRACK_MM  113.5
+#define TEST_TICK_US   10000u
+#define TEST_TICKS_MAX 3000u
 
-#define CHECK(condition) do { g_checks++; if (!(condition)) { \
-    fprintf(stderr, "FAIL line %d: %s\n", __LINE__, #condition); \
-    exit(EXIT_FAILURE); } } while (0)
+typedef struct
+{
+    double speed_mm_s; /* True wheel speed. */
+    double edges;      /* True edges travelled, fractional. */
+    double gain;       /* mm/s per permille above the dead band. */
+    int32_t duty;
+    bool b_blocked;
+} test_wheel_t;
 
-uint32_t drv_motion_lock(void)
+static test_wheel_t g_wheel[2];
+static uint32_t g_now_us;
+static uint8_t g_skipped;
+static uint32_t g_count_origin;
+static int g_failures;
+
+/* Print one result and count failures. */
+static void test_check(bool b_pass, const char * p_text)
 {
-    (void)pthread_mutex_lock(&g_lock);
-    return 0u;
+    printf("%s  %s\n", b_pass ? "PASS" : "FAIL", p_text);
+    if (!b_pass)
+    {
+        g_failures++;
+    }
 }
-void drv_motion_unlock(uint32_t saved)
-{
-    (void)saved;
-    (void)pthread_mutex_unlock(&g_lock);
-}
+
+/* ---- Fake driver ------------------------------------------------------- */
+
 bool drv_motion_init(void)
 {
-    memset(&g_counts, 0, sizeof(g_counts));
-    g_counts.left = MOTION_CONTROL_COUNT_BIAS;
-    g_counts.right = MOTION_CONTROL_COUNT_BIAS;
-    g_left = 0;
-    g_right = 0;
-    return g_ready;
+    return true;
 }
-uint32_t drv_motion_time_us(void) { return g_now; }
-void drv_motion_snapshot(drv_motion_encoders_t * p_counts)
-{
-    *p_counts = g_counts;
-}
-void drv_motion_write(int32_t left, int32_t right)
-{
-    g_left = left;
-    g_right = right;
-}
-void console_motion_report(void) {}
 
-static motion_control_status_t status(void)
+void drv_motion_write(int32_t left_duty, int32_t right_duty)
 {
-    motion_control_status_t result = {0};
-    motion_control_get_status(&result);
-    return result;
+    g_wheel[0].duty = left_duty;
+    g_wheel[1].duty = right_duty;
 }
-static void step(int32_t left, int32_t right)
+
+void drv_motion_read(drv_motion_counts_t * p_counts)
 {
-    g_counts.left = (uint32_t)((int32_t)g_counts.left + left);
-    g_counts.right = (uint32_t)((int32_t)g_counts.right + right);
-    g_now += MOTION_CONTROL_PERIOD_US;
-    motion_control_tick(g_now);
+    p_counts->left =
+        (uint16_t)(g_count_origin + (int32_t)floor(g_wheel[0].edges));
+    p_counts->right =
+        (uint16_t)(g_count_origin + (int32_t)floor(g_wheel[1].edges));
+    p_counts->skipped = g_skipped;
 }
-static motion_control_config_t configuration(void)
+
+uint32_t drv_motion_time_us(void)
 {
-    motion_control_config_t result = {0};
-    result.circumference_mm = 200u;
-    result.track_mm = 100u;
-    result.counts_per_rev = 1000u;
-    result.kp_q8 = 256u;
-    result.ki_q8 = 16u;
-    result.speed_mm_s = 100u;
-    result.duty_limit = 500u;
-    result.timeout_ms = 10000u;
-    result.stall_ms = 500u;
-    result.confirmed = 1u;
-    return result;
+    return g_now_us;
 }
-static void setup(void)
+
+void drv_motion_lock(void)
 {
-    motion_control_config_t config = configuration();
-    g_now = 0u;
-    g_ready = true;
+}
+
+void drv_motion_unlock(void)
+{
+}
+
+bool drv_motion_gpio_register(uint32_t pins,
+                              drv_motion_gpio_callback_t p_callback)
+{
+    (void)pins;
+    (void)p_callback;
+    return false;
+}
+
+/* ---- Robot model ------------------------------------------------------- */
+
+static void test_reset(uint32_t count_origin)
+{
+    memset(g_wheel, 0, sizeof(g_wheel));
+    g_wheel[0].gain = 0.6;
+    g_wheel[1].gain = 0.6 * 0.85; /* Weaker right motor. */
+    g_now_us = 123456u;
+    g_skipped = 0u;
+    g_count_origin = count_origin;
     motion_control_init();
-    CHECK(0 == g_left && 0 == g_right);
-    CHECK(!motion_control_arm());
-    CHECK(motion_control_configure(&config));
-    step(0, 0);
-    CHECK(motion_control_arm());
 }
 
-static void test_primitives(void)
+/* Advance the model by 1 ms steps for one control period. */
+static void test_physics(void)
 {
-    uint32_t sequence[] = {0u, 1u, 3u, 2u, 0u};
-    uint32_t index = 0u;
-    int32_t total = 0;
-    int32_t previous = 0;
-    uint32_t channel_a = 0u;
-    uint32_t channel_b = 0u;
-    drv_motion_encoders_t counts = {0};
-    ctrl_math_pid_t pid = {0};
-    for (index = 0u; index < 4u; index++)
+    uint32_t step = 0u;
+    uint32_t wheel = 0u;
+    double target = 0.0;
+    double lag_ms = 0.0;
+    double magnitude = 0.0;
+
+    for (step = 0u; step < 10u; step++)
     {
-        total += drv_motion_decode(sequence[index], sequence[index + 1u]);
+        for (wheel = 0u; wheel < 2u; wheel++)
+        {
+            test_wheel_t * p_wheel = &g_wheel[wheel];
+            magnitude = abs(p_wheel->duty) - 80.0; /* Static friction. */
+            target = (magnitude > 0.0) ? ((p_wheel->duty > 0) ? 1.0 : -1.0) *
+                                             magnitude * p_wheel->gain
+                                       : 0.0;
+            lag_ms = (0 == p_wheel->duty) ? 15.0 : 40.0; /* Braking coasts. */
+            p_wheel->speed_mm_s += (target - p_wheel->speed_mm_s) / lag_ms;
+            if (p_wheel->b_blocked)
+            {
+                p_wheel->speed_mm_s = 0.0;
+            }
+            p_wheel->edges += p_wheel->speed_mm_s * 0.001 / TEST_EDGE_MM;
+        }
+        g_now_us += 1000u;
     }
-    CHECK(4 == total);
-    for (index = 4u; index > 0u; index--)
-    {
-        total += drv_motion_decode(sequence[index], sequence[index - 1u]);
-    }
-    CHECK(0 == total);
-    CHECK(0 == drv_motion_decode(0u, 3u));
-    CHECK(0 == drv_motion_decode(2u, 2u));
-    CHECK(0u == drv_motion_count(0u, 1u, 0u, &counts));
-    CHECK(1u == counts.overflow);
-    counts.overflow = 0u;
-    CHECK(16777215u == drv_motion_count(16777215u, 0u, 1u, &counts));
-    CHECK(1u == counts.overflow);
-    CHECK(100u == drv_motion_count(100u, 0u, 3u, &counts));
-    CHECK(1u == counts.invalid);
-    counts.invalid = 65535u;
-    counts.overflow = 0u;
-    (void)drv_motion_count(100u, 0u, 3u, &counts);
-    CHECK(1u == counts.overflow);
-    drv_motion_plan(1200, &previous, &channel_a, &channel_b);
-    CHECK(1000u == channel_a && 0u == channel_b);
-    drv_motion_plan(-500, &previous, &channel_a, &channel_b);
-    CHECK(0u == channel_a && 0u == channel_b);
-    drv_motion_plan(-500, &previous, &channel_a, &channel_b);
-    CHECK(0u == channel_a && 500u == channel_b);
-    drv_motion_plan(0, &previous, &channel_a, &channel_b);
-    CHECK(0u == channel_a && 0u == channel_b);
-    CHECK(0 == previous);
-    ctrl_math_pid_reset(&pid);
-    for (index = 0u; index < 1000u; index++)
-    {
-        CHECK(100 == ctrl_math_pid(&pid, 1000, 0, 4095u,
-                                      4095u, 4095u, 100u));
-    }
-    CHECK(65535u == pid.integral);
-    CHECK(0 == ctrl_math_pid(&pid, 0, 100, 1u, 1u, 1u, 1000u));
-    CHECK(4096u == pid.previous_error);
-    (void)ctrl_math_pid(&pid, 1000, -2000, 4095u, 1u, 0u, 100u);
-    CHECK(7096u == pid.previous_error);
-    CHECK(-100 == ctrl_math_pid(&pid, -1000, 0, 4095u,
-                                   4095u, 4095u, 100u));
-    CHECK(INT32_MAX == ctrl_math_clamp(INT64_MAX, INT32_MAX));
-    CHECK(-INT32_MAX == ctrl_math_clamp(INT64_MIN, INT32_MAX));
 }
 
-static void test_movement(void)
+/* Run until the state leaves RUNNING; returns the ticks taken. */
+static uint32_t test_run(motion_control_status_t * p_status)
 {
-    uint32_t index = 0u;
-    motion_control_config_t config = configuration();
-    setup();
-    CHECK(!motion_control_move_forward(0u));
-    CHECK(!motion_control_move_forward(10001u));
-    CHECK(!motion_control_turn_left(3601u));
-    CHECK(motion_control_move_forward(20u));
-    CHECK(!motion_control_move_forward(20u));
-    CHECK(!motion_control_configure(&config));
-    CHECK(!motion_control_set_speed(200u));
-    step(0, 0);
-    CHECK(g_left > 0 && g_right > 0);
-    step(10, 0);
-    CHECK(g_left < g_right);
-    for (index = 0u; index < 20u; index++) { step(5, 5); }
-    CHECK(MOTION_CONTROL_COMPLETE == status().state);
-    CHECK(0 == g_left && 0 == g_right);
-    CHECK(22 == motion_control_decode_count(status().left_mm));
-    CHECK(20 == motion_control_decode_count(status().right_mm));
-    CHECK(21 == motion_control_decode_count(status().average_mm));
-    CHECK(100 == motion_control_decode_speed(status().left_mm_s));
-    CHECK(motion_control_move_backward(20u));
-    step(0, 0);
-    CHECK(g_left < 0 && g_right < 0);
-    for (index = 0u; index < 21u; index++) { step(-5, -5); }
-    CHECK(MOTION_CONTROL_COMPLETE == status().state);
-    setup();
-    CHECK(motion_control_turn_left(900u));
-    step(0, 0);
-    CHECK(g_left < 0 && g_right > 0);
-    for (index = 0u; index < 79u; index++) { step(-5, 5); }
-    CHECK(MOTION_CONTROL_COMPLETE == status().state);
-    CHECK(motion_control_turn_right(900u));
-    step(0, 0);
-    CHECK(g_left > 0 && g_right < 0);
-    for (index = 0u; index < 79u; index++) { step(5, -5); }
-    CHECK(MOTION_CONTROL_COMPLETE == status().state);
-    CHECK(0 == motion_control_decode_count(status().average_mm));
-    setup();
-    CHECK(motion_control_move_backward(20u));
-    step(-10, 0);
-    CHECK(-g_left < -g_right);
+    uint32_t ticks = 0u;
+
+    do
+    {
+        test_physics();
+        motion_control_tick(g_now_us);
+        motion_control_get_status(p_status);
+        ticks++;
+    } while ((MOTION_CONTROL_RUNNING == p_status->state) &&
+             (ticks < TEST_TICKS_MAX));
+
+    /* Let the wheels coast to rest, then take the final reading. */
+    for (uint32_t settle = 0u; settle < 20u; settle++)
+    {
+        test_physics();
+        motion_control_tick(g_now_us);
+    }
+    motion_control_get_status(p_status);
+    return ticks;
+}
+
+/* True rotation of the model, degrees counter-clockwise. */
+static double test_true_heading(void)
+{
+    return (g_wheel[1].edges - g_wheel[0].edges) * TEST_EDGE_MM /
+           TEST_TRACK_MM * 180.0 / TEST_PI;
+}
+
+static double test_true_distance(void)
+{
+    return (g_wheel[0].edges + g_wheel[1].edges) * TEST_EDGE_MM / 2.0;
+}
+
+/* ---- Tests ------------------------------------------------------------- */
+
+static void test_turn(bool b_left, uint32_t angle)
+{
+    motion_control_status_t status = {0};
+    char text[96];
+    double actual = 0.0;
+    uint32_t ticks = 0u;
+
+    test_reset(0u);
+    (void)(b_left ? motion_control_turn_left(angle)
+                  : motion_control_turn_right(angle));
+    ticks = test_run(&status);
+    actual = fabs(test_true_heading());
+    snprintf(text, sizeof(text),
+             "%s %u deg: turned %.1f deg in %.2f s, heading field %u",
+             b_left ? "left" : "right", angle, actual, ticks / 100.0,
+             status.heading_deg);
+    test_check((MOTION_CONTROL_COMPLETE == status.state) &&
+                   (fabs(actual - angle) <= 2.0),
+               text);
+}
+
+static void test_straight(bool b_forward, uint32_t distance_mm)
+{
+    motion_control_status_t status = {0};
+    char text[128];
+    double distance = 0.0;
+    double heading = 0.0;
+
+    test_reset(0u);
+    (void)(b_forward ? motion_control_move_forward(distance_mm)
+                     : motion_control_move_backward(distance_mm));
+    (void)test_run(&status);
+    distance = fabs(test_true_distance());
+    heading = test_true_heading();
+    snprintf(text, sizeof(text),
+             "%s %u mm: moved %.1f mm, drift %.2f deg, odometer %u mm",
+             b_forward ? "forward" : "backward", distance_mm, distance, heading,
+             status.distance_mm);
+    test_check(
+        (MOTION_CONTROL_COMPLETE == status.state) &&
+            (fabs(distance - distance_mm) <= 3.0) && (fabs(heading) <= 1.0) &&
+            (abs((int32_t)status.distance_mm - (int32_t)distance_mm) <= 3),
+        text);
+}
+
+static void test_drive_and_stop(void)
+{
+    motion_control_status_t status = {0};
+    uint32_t tick = 0u;
+    int32_t left = 0;
+    int32_t right = 0;
+    char text[96];
+
+    test_reset(0u);
+    test_check(motion_control_drive(200, 100), "drive accepted");
+    for (tick = 0u; tick < 100u; tick++)
+    {
+        test_physics();
+        motion_control_tick(g_now_us);
+        (void)motion_control_drive(200,
+                                   100); /* Repeated, as a follower would. */
+    }
+    motion_control_get_status(&status);
+    left = motion_control_decode_speed(status.left_speed);
+    right = motion_control_decode_speed(status.right_speed);
+    snprintf(text, sizeof(text), "drive 200,100 holds %d,%d mm/s after 1 s",
+             left, right);
+    test_check((MOTION_CONTROL_RUNNING == status.state) &&
+                   (abs(left - 200) <= 15) && (abs(right - 100) <= 15),
+               text);
+
     motion_control_stop();
-    step(0, 0);
-    CHECK(MOTION_CONTROL_CANCELLED == status().state);
-    CHECK(0 == g_left && 0 == g_right);
-    motion_control_disarm();
-    CHECK(!motion_control_move_forward(10u));
+    motion_control_get_status(&status);
+    test_check((MOTION_CONTROL_IDLE == status.state) &&
+                   (0 == g_wheel[0].duty) && (0 == g_wheel[1].duty),
+               "stop brakes both wheels at once");
+
+    /* Not renewed: the I3 target expires after 200 ms and both wheels brake. */
+    (void)motion_control_drive(150, 150);
+    for (tick = 0u; tick < 19u; tick++)
+    {
+        test_physics();
+        motion_control_tick(g_now_us);
+    }
+    motion_control_get_status(&status);
+    left = (int32_t)status.state;
+    for (tick = 0u; tick < 2u; tick++)
+    {
+        test_physics();
+        motion_control_tick(g_now_us);
+    }
+    motion_control_get_status(&status);
+    test_check((MOTION_CONTROL_RUNNING == (uint32_t)left) &&
+                   (MOTION_CONTROL_IDLE == status.state) &&
+                   (0 == g_wheel[0].duty) && (0 == g_wheel[1].duty),
+               "drive not renewed for 200 ms expires and brakes");
 }
 
 static void test_faults(void)
 {
-    uint32_t index = 0u;
-    motion_control_config_t config = configuration();
-    setup();
-    CHECK(motion_control_move_forward(1000u));
-    for (index = 0u; index < 50u; index++) { step(0, 0); }
-    CHECK(MOTION_CONTROL_STALL == status().faults);
-    CHECK(0 == g_left && 0 == g_right);
-    CHECK(!motion_control_arm());
-    motion_control_stop();
-    CHECK(MOTION_CONTROL_STALL == status().faults);
-    CHECK(motion_control_reset_faults());
-    CHECK(!motion_control_move_forward(10u));
-    CHECK(motion_control_arm());
-    CHECK(motion_control_move_forward(10u));
-    motion_control_safety_stop(MOTION_CONTROL_ENCODER);
-    motion_control_safety_stop(MOTION_CONTROL_STALE);
-    step(0, 0);
-    CHECK((MOTION_CONTROL_ENCODER | MOTION_CONTROL_STALE |
-           MOTION_CONTROL_SAFETY) == status().faults);
-    CHECK(0u == status().armed);
-    CHECK(!motion_control_move_forward(10u));
-    setup();
-    motion_control_disarm();
-    config.timeout_ms = 100u;
-    CHECK(motion_control_configure(&config));
-    step(0, 0);
-    CHECK(motion_control_arm());
-    CHECK(motion_control_move_forward(1000u));
-    for (index = 0u; index < 10u; index++) { step(5, 5); }
-    CHECK(MOTION_CONTROL_TIMEOUT == status().faults);
-    setup();
-    CHECK(motion_control_move_forward(10u));
-    g_counts.invalid++;
-    step(0, 0);
-    CHECK(MOTION_CONTROL_ENCODER == status().faults);
-    CHECK(motion_control_reset_faults());
-    g_counts.overflow = 1u;
-    step(0, 0);
-    CHECK(!motion_control_reset_faults());
-    setup();
-    CHECK(motion_control_move_forward(10u));
-    step(1000, 0);
-    CHECK(MOTION_CONTROL_RANGE == status().faults);
-    step(0, 0);
-    CHECK(motion_control_reset_faults());
-    step(0, 0);
-    CHECK(0u == status().faults);
-    setup();
-    CHECK(motion_control_move_forward(10u));
-    g_now += 10000u;
-    step(0, 0);
-    CHECK(MOTION_CONTROL_TIMING == status().faults);
-    CHECK(1u == status().missed_periods);
-    setup();
-    CHECK(motion_control_move_forward(10u));
-    g_now += 40000u;
-    step(0, 0);
-    CHECK(MOTION_CONTROL_STALE == status().faults);
-    setup();
-    CHECK(motion_control_move_forward(100u));
-    step(-15, 0);
-    CHECK(MOTION_CONTROL_ENCODER == status().faults);
-    CHECK(0 == g_left && 0 == g_right);
-    setup();
-    motion_control_record_execution(10000u);
-    CHECK(MOTION_CONTROL_TIMING == status().faults);
-    CHECK(10000u == status().max_execution_us);
-    setup();
-    CHECK(!motion_control_test_motor(2u, 100, 100u));
-    CHECK(!motion_control_test_motor(0u, 201, 100u));
-    CHECK(!motion_control_test_motor(0u, 100, 1001u));
-    CHECK(motion_control_test_motor(1u, -100, 100u));
-    step(0, 0);
-    CHECK(0 == g_left && -100 == g_right);
-    for (index = 0u; index < 9u; index++) { step(0, 0); }
-    CHECK(MOTION_CONTROL_COMPLETE == status().state);
-    CHECK(0 == g_left && 0 == g_right);
-    g_now += 40000u;
-    CHECK(!motion_control_move_forward(10u));
-    motion_control_disarm();
-    CHECK(!motion_control_arm());
-    g_ready = false;
-    motion_control_init();
-    step(0, 0);
-    CHECK(MOTION_CONTROL_INIT == status().faults);
-    CHECK(!motion_control_reset_faults());
+    motion_control_status_t status = {0};
+    uint32_t ticks = 0u;
+
+    test_reset(0u);
+    g_wheel[1].b_blocked = true;
+    (void)motion_control_move_forward(500u);
+    ticks = test_run(&status);
+    test_check((MOTION_CONTROL_FAILED == status.state) &&
+                   (MOTION_CONTROL_FAULT_STALL_RIGHT == status.faults) &&
+                   (ticks >= 100u) && (ticks <= 110u) &&
+                   (0 == g_wheel[0].duty) && (0 == g_wheel[1].duty),
+               "blocked right wheel: stall fault after 1 s, both braked");
+
+    test_reset(0u);
+    (void)motion_control_move_forward(200u);
+    test_physics();
+    motion_control_tick(g_now_us);
+    g_skipped++;
+    (void)test_run(&status);
+    test_check((MOTION_CONTROL_COMPLETE == status.state) &&
+                   (MOTION_CONTROL_FAULT_ENCODER == status.faults),
+               "missed encoder state is reported and the move still completes");
+
+    test_reset(0u);
+    (void)motion_control_move_forward(200u);
+    (void)test_run(&status);
+    (void)motion_control_move_forward(100u);
+    motion_control_get_status(&status);
+    test_check(0u == status.faults, "a new command clears the faults");
 }
 
-static void test_packet(void)
+static void test_limits(void)
 {
-    uint8_t packet[MOTION_CONTROL_PACKET_BYTES + 1u] = {0};
-    motion_control_status_t original = {0};
-    motion_control_status_t decoded = {0};
-    setup();
-    original = status();
-    original.left_count = 0u;
-    original.right_count = 16777215u;
-    original.left_mm_s = 48u;
-    original.right_mm_s = 4048u;
-    original.timestamp_us = UINT32_MAX;
-    original.max_execution_us = UINT32_MAX;
-    original.max_period_us = UINT32_MAX;
-    original.missed_periods = UINT32_MAX;
-    original.faults = 255u;
-    packet[MOTION_CONTROL_PACKET_BYTES] = 0xa5u;
-    motion_control_pack(&original, packet);
-    CHECK(0xa5u == packet[MOTION_CONTROL_PACKET_BYTES]);
-    CHECK(0x1fu == packet[0]);
-    CHECK(0xf0u == packet[1]);
-    CHECK(motion_control_unpack(&decoded, packet, MOTION_CONTROL_PACKET_BYTES));
-    CHECK(original.left_count == decoded.left_count);
-    CHECK(original.right_count == decoded.right_count);
-    CHECK(original.left_mm_s == decoded.left_mm_s);
-    CHECK(original.right_mm_s == decoded.right_mm_s);
-    CHECK(original.timestamp_us == decoded.timestamp_us);
-    CHECK(original.faults == decoded.faults);
-    CHECK(original.missed_periods == decoded.missed_periods);
-    CHECK(!motion_control_unpack(&decoded, packet, 35u));
-    packet[35] |= 1u;
-    CHECK(!motion_control_unpack(&decoded, packet, 36u));
-    packet[35] &= 254u;
-    packet[0] |= 224u;
-    CHECK(!motion_control_unpack(&decoded, packet, 36u));
-    CHECK(-8388608 == motion_control_decode_count(0u));
-    CHECK(8388607 == motion_control_decode_count(16777215u));
+    motion_control_status_t status = {0};
+
+    test_reset(0u);
+    test_check(
+        !motion_control_move_forward(0u) &&
+            !motion_control_move_forward(MOTION_CONTROL_MAX_DISTANCE_MM + 1u) &&
+            !motion_control_move_backward(0u) &&
+            !motion_control_turn_left(0u) &&
+            !motion_control_turn_right(MOTION_CONTROL_MAX_ANGLE_DEG + 1u) &&
+            !motion_control_drive(1001, 0) && !motion_control_drive(0, -1001) &&
+            !motion_control_set_speed(9u) && !motion_control_set_speed(1001u) &&
+            !motion_control_set_track(49999u) &&
+            !motion_control_set_pid(0u, 0u, 0u) &&
+            !motion_control_set_pid(1u, 4096u, 0u),
+        "out-of-range commands and settings are rejected");
+    motion_control_get_status(&status);
+    test_check(MOTION_CONTROL_IDLE == status.state, "rejection leaves it idle");
+
+    /* Encoder counters wrap during the move. */
+    test_reset(65000u);
+    (void)motion_control_move_forward(300u);
+    (void)test_run(&status);
+    test_check((MOTION_CONTROL_COMPLETE == status.state) &&
+                   (fabs(test_true_distance() - 300.0) <= 3.0),
+               "16-bit encoder counter wrap is handled");
+
+    /* Track calibration scales turns. */
+    test_reset(0u);
+    (void)motion_control_set_track(102150u); /* 90% of 113.5 mm. */
+    (void)motion_control_turn_left(90u);
+    (void)test_run(&status);
+    test_check(fabs(test_true_heading() - 81.0) <= 2.0,
+               "track calibration scales the turn (90% track: 81 deg)");
 }
 
-static void * writer(void * p_unused)
+static void test_pack(void)
 {
-    uint32_t index = 0u;
-    (void)p_unused;
-    for (index = 0u; index < 10000u; index++)
-    {
-        motion_control_safety_stop((index % 2u) ?
-            MOTION_CONTROL_ENCODER : MOTION_CONTROL_STALE);
-    }
-    return NULL;
-}
-static void test_concurrent(void)
-{
-    pthread_t first;
-    pthread_t second;
-    uint32_t index = 0u;
-    setup();
-    CHECK(0 == pthread_create(&first, NULL, writer, NULL));
-    CHECK(0 == pthread_create(&second, NULL, writer, NULL));
-    for (index = 0u; index < 10000u; index++)
-    {
-        motion_control_status_t sample = status();
-        CHECK((0u == sample.faults) ||
-              ((0u == sample.armed) &&
-               (MOTION_CONTROL_FAILED == sample.state)));
-    }
-    CHECK(0 == pthread_join(first, NULL));
-    CHECK(0 == pthread_join(second, NULL));
-    CHECK((MOTION_CONTROL_SAFETY | MOTION_CONTROL_ENCODER |
-           MOTION_CONTROL_STALE) == status().faults);
+    motion_control_status_t status = {0};
+    uint8_t packet[MOTION_CONTROL_PACKET_BYTES];
+    static const uint8_t expected[MOTION_CONTROL_PACKET_BYTES] = {
+        0x9d, 0xac, 0xc6, 0x44, 0x18, 0x24, 0x69, 0x57, 0x9b, 0xde, 0x02, 0x46};
+
+    /* state 2, cmd 3, faults 5, heading 345, speeds +100 / -500,
+     * counts 0x1234 / 0xabcd, distance 0xef0123 (see docs table). */
+    status.state = 2u;
+    status.command = 3u;
+    status.faults = 5u;
+    status.heading_deg = 345u;
+    status.left_speed = 100u + MOTION_CONTROL_SPEED_BIAS;
+    status.right_speed = (uint32_t)(MOTION_CONTROL_SPEED_BIAS - 500);
+    status.left_count = 0x1234u;
+    status.right_count = 0xabcdu;
+    status.distance_mm = 0xef0123u;
+    memset(packet, 0xff, sizeof(packet));
+    motion_control_pack(&status, packet);
+    test_check(0 == memcmp(packet, expected, sizeof(packet)),
+               "telemetry: 12 bytes, big-endian, fixed bit layout");
+    test_check(12u == sizeof(motion_control_status_t),
+               "status snapshot is 12 bytes (full-width equivalent 36 bytes)");
 }
 
-static void test_console_and_boundaries(void)
+static void test_timing(void)
 {
-    motion_control_config_t config = configuration();
-    setup();
-    CHECK(console_motion_execute("status"));
-    {
-        const char * p_old = "reset\narm\nforward 100\n";
-        uint32_t index = 0u;
-        while ('\0' != *p_old)
-        {
-            tm_console_receive_byte((uint8_t)*p_old);
-            p_old++;
-        }
-        tm_console_receive_byte('!');
-        CHECK('!' == console_motion_getchar());
-        CHECK(-1 == console_motion_getchar());
-        CHECK(MOTION_CONTROL_SAFETY == status().faults);
-        for (index = 0u; index < 128u; index++)
-        {
-            tm_console_receive_byte('x');
-        }
-        CHECK('!' == console_motion_getchar());
-        CHECK(-1 == console_motion_getchar());
-        CHECK(0u == status().armed);
-        CHECK(motion_control_reset_faults());
-        CHECK(motion_control_arm());
-    }
-    CHECK(!console_motion_execute("forward -1"));
-    CHECK(!console_motion_execute("forward 999999999999"));
-    CHECK(!console_motion_execute("motor 0 100 1001"));
-    CHECK(!console_motion_execute("config cpr 65536"));
-    CHECK(!console_motion_execute("forward 10 extra"));
-    CHECK(!console_motion_execute("unknown 10"));
-    CHECK(console_motion_execute("forward 10"));
-    CHECK(console_motion_execute("stop"));
-    CHECK(!console_motion_execute("arm"));
-    step(0, 0);
-    CHECK(console_motion_execute("reset"));
-    CHECK(console_motion_execute("disarm"));
-    CHECK(console_motion_execute("config circ 210"));
-    CHECK(!motion_control_arm());
-    CHECK(console_motion_execute("config confirm 1"));
-    step(0, 0);
-    CHECK(motion_control_arm());
-    motion_control_disarm();
-    config.encoder_left_reverse = 1u;
-    config.motor_left_reverse = 1u;
-    CHECK(motion_control_configure(&config));
-    step(-5, 5);
-    CHECK(100 == motion_control_decode_speed(status().left_mm_s));
-    CHECK(motion_control_arm());
-    CHECK(motion_control_move_forward(10u));
-    step(0, 0);
-    CHECK(g_left < 0 && g_right > 0);
-    setup();
-    motion_control_disarm();
-    config = configuration();
-    config.counts_per_rev = 65535u;
-    config.circumference_mm = 50u;
-    CHECK(motion_control_configure(&config));
-    step(0, 0);
-    CHECK(motion_control_arm());
-    CHECK(!motion_control_move_forward(10000u));
-    motion_control_disarm();
-    config = configuration();
-    config.track_mm = 1000u;
-    config.circumference_mm = 50u;
-    config.counts_per_rev = 65535u;
-    CHECK(motion_control_configure(&config));
-    step(0, 0);
-    CHECK(motion_control_arm());
-    CHECK(motion_control_turn_right(3600u));
-    setup();
-    step(5, 5);
-    motion_control_disarm();
-    config = configuration();
-    config.encoder_left_reverse = 1u;
-    CHECK(motion_control_configure(&config));
-    CHECK(!motion_control_arm());
-    step(0, 0);
-    CHECK(0u == status().faults);
-    CHECK(-5 == motion_control_decode_count(status().left_count));
-    CHECK(0 == motion_control_decode_speed(status().left_mm_s));
-    CHECK(motion_control_arm());
-    CHECK(!motion_control_set_speed(1001u));
-    setup();
-    g_now = UINT32_MAX - 4999u;
-    motion_control_tick(g_now);
-    CHECK(motion_control_arm());
-    CHECK(motion_control_move_forward(10u));
-    step(5, 5);
-    CHECK(0u == status().faults);
-    CHECK(5000u == status().timestamp_us);
-}
+    motion_control_status_t status = {0};
+    clock_t start = 0;
+    uint32_t ticks = 0u;
+    double us = 0.0;
 
-static void evidence(void)
-{
-    struct timespec start = {0};
-    struct timespec end = {0};
-    uint32_t index = 0u;
-    uint8_t packet[MOTION_CONTROL_PACKET_BYTES] = {0};
-    motion_control_status_t sample = status();
-    motion_control_status_t decoded = {0};
-    double elapsed = 0;
-    (void)clock_gettime(CLOCK_MONOTONIC, &start);
-    for (index = 0u; index < 100000u; index++)
+    test_reset(0u);
+    (void)motion_control_drive(150, 150);
+    start = clock();
+    for (ticks = 0u; ticks < 100000u; ticks++)
     {
-        motion_control_pack(&sample, packet);
-        (void)motion_control_unpack(&decoded, packet, sizeof(packet));
+        g_now_us += TEST_TICK_US;
+        motion_control_tick(g_now_us);
     }
-    (void)clock_gettime(CLOCK_MONOTONIC, &end);
-    elapsed = (double)(end.tv_sec - start.tv_sec) * 1e9 +
-              (double)(end.tv_nsec - start.tv_nsec);
-    printf("representation bytes: config=%zu status=%zu pid=%zu encoder=%zu "
-           "wire=%u reference_status=%zu reference_config=%zu\n",
-           sizeof(motion_control_config_t), sizeof(motion_control_status_t),
-           sizeof(ctrl_math_pid_t), sizeof(drv_motion_encoders_t),
-           MOTION_CONTROL_PACKET_BYTES, 15u * sizeof(uint32_t),
-           15u * sizeof(uint32_t));
-    printf("host packing roundtrip: %.1f ns/op (100000 iterations); "
-           "hardware timing pending\n", elapsed / 100000.0);
-    setup();
-    motion_control_disarm();
-    {
-        motion_control_config_t config = configuration();
-        config.timeout_ms = 60000u;
-        CHECK(motion_control_configure(&config));
-    }
-    step(0, 0);
-    CHECK(motion_control_arm());
-    (void)clock_gettime(CLOCK_MONOTONIC, &start);
-    for (index = 0u; index < 100000u; index++)
-    {
-        if (MOTION_CONTROL_RUNNING != status().state)
-        {
-            (void)motion_control_move_forward(1000u);
-        }
-        step(5, 5);
-    }
-    (void)clock_gettime(CLOCK_MONOTONIC, &end);
-    elapsed = (double)(end.tv_sec - start.tv_sec) * 1e9 +
-              (double)(end.tv_nsec - start.tv_nsec);
-    CHECK(0u == status().faults);
-    printf("host active control fixture: %.1f ns/tick (100000 iterations); "
-           "not RP2040 WCET\n", elapsed / 100000.0);
+    us = ((double)(clock() - start) / CLOCKS_PER_SEC) * 1e6 / ticks;
+    motion_control_get_status(&status);
+    printf("INFO  host cost of one control step: %.3f us\n", us);
 }
 
 int main(void)
 {
-    test_primitives();
-    test_movement();
+    test_turn(true, 90u);
+    test_turn(false, 90u);
+    test_turn(true, 180u);
+    test_turn(false, 45u);
+    test_turn(true, 360u);
+    test_straight(true, 500u);
+    test_straight(false, 300u);
+    test_straight(true, 2000u);
+    test_drive_and_stop();
     test_faults();
-    test_packet();
-    test_concurrent();
-    test_console_and_boundaries();
-    evidence();
-    printf("PASS: %u assertions\n", g_checks);
-    return EXIT_SUCCESS;
+    test_limits();
+    test_pack();
+    test_timing();
+    printf("%s: %d failure(s)\n", (0 == g_failures) ? "ALL PASS" : "FAILED",
+           g_failures);
+    return (0 == g_failures) ? 0 : 1;
 }
+
+/*** end of file ***/

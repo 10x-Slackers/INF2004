@@ -33,7 +33,7 @@ and Wi-Fi service tasks retain 3 and 4.
 | Pri | Task                            | Purpose                                                                              | Trigger                        | Buddy |
 | --- | ------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------ | ----- |
 | P1  | Safety Monitor                  | Stop on collision risk, stale control data or critical fault. Holds the latched stop | 5 ms + events                  | All   |
-| P2  | Wheel Motion Control            | Sole motor writer. Per-wheel PID, odometry, encoder-based turns                      | 10 ms + stop wake              | 2     |
+| P2  | Wheel Motion Control            | Sole motor writer. Per-wheel PID, odometry, encoder-based turns                      | 10 ms; stop brakes at once                       | 2     |
 | P3  | Barcode Decoder                 | Decode the auxiliary IR samples and validate LEFT / RIGHT / STRAIGHT / UTURN         | 10 ms, one DMA block           | 3     |
 | P4  | Line Following                  | Line error and junction detection from two digital IR sensors                        | 10 ms                          | 3     |
 | P5  | Vehicle Controller              | Mission state machine and arbiter of normal motion                                   | Events + 10 ms                 | All   |

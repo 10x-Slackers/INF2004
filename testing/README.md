@@ -74,8 +74,8 @@ the test's result row. `videos/README.md` explains how.
 
 ## Native Buddy 2 tests
 
-From the repository root, `make test` runs the portable motion fixture, its
-full-width reference and focused source checks without hardware. `make TEST=1`
+From the repository root, `make test` runs the Buddy 2 motion code against a
+simulated robot, without hardware. `make TEST=1`
 builds on-target tests in a separate profile; it does not run them on the host.
 Buddy 2's [test log](subsystem2/TEST_LOG.md) separates software evidence from
 [PID tuning and motion accuracy](subsystem2/CALIBRATION.md) on the real robot.

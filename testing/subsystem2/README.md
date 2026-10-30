@@ -77,7 +77,9 @@ sample are required before a later explicit arm. These edits are RAM-only.
 Each accepted command returns `OK`, which means acceptance rather than success.
 Inspect final state after completion/disarming. Changes are RAM-only; reviewed
 calibration goes in `motion_defaults.h` to survive reboot. Confirmation asserts
-operator review, not verified accuracy. No tuned gains or polarity are supplied.
+operator review, not verified accuracy. The reviewed boot profile is documented
+in [MOTION_CONTROL](../../docs/MOTION_CONTROL.md); every boot still requires
+explicit confirmation and arming.
 
 ## Fresh physical verification procedure
 

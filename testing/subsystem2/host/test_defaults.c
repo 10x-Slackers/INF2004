@@ -22,11 +22,26 @@ int main(void)
     CHECK(MOTION_DEFAULT_CONFIRMED == config.confirmed);
     CHECK(0u == status().armed);
     CHECK(MOTION_DEFAULT_KP_Q8 == config.kp_q8);
+    CHECK(MOTION_DEFAULT_KI_Q8 == config.ki_q8);
+    CHECK(MOTION_DEFAULT_KD_Q8 == config.kd_q8);
+    CHECK(MOTION_DEFAULT_SPEED_MM_S == config.speed_mm_s);
+    CHECK(MOTION_DEFAULT_DUTY_LIMIT == config.duty_limit);
+    CHECK(MOTION_DEFAULT_TIMEOUT_MS == config.timeout_ms);
+    CHECK(MOTION_DEFAULT_STALL_MS == config.stall_ms);
+    CHECK(0 == g_left && 0 == g_right);
     CHECK(!motion_control_arm()); /* Loaded defaults need a fresh tick. */
     step(0, 0);
     CHECK((0u != MOTION_DEFAULT_CONFIRMED) == motion_control_arm());
     motion_control_disarm();
+    config.confirmed = 1u;
+    CHECK(motion_control_configure(&config));
+    CHECK(!motion_control_arm()); /* Confirmation also needs a fresh sample. */
+    step(0, 0);
+    CHECK(motion_control_arm());
+    CHECK(0 == g_left && 0 == g_right);
+    motion_control_disarm();
     config.encoder_left_reverse = 0u;
+    config.ki_q8 = 7u;
     config.confirmed = 0u;
     CHECK(motion_control_configure(&config));
     /* Emulate a cold boot in this host fixture, not a runtime init API. */
@@ -37,6 +52,8 @@ int main(void)
     CHECK(MOTION_DEFAULT_ENCODER_LEFT_REVERSE == config.encoder_left_reverse);
     CHECK(MOTION_DEFAULT_CONFIRMED == config.confirmed);
     CHECK(0u == status().armed);
+    CHECK(MOTION_DEFAULT_KI_Q8 == config.ki_q8);
+    CHECK(0 == g_left && 0 == g_right);
     puts("PASS defaults/reboot: no automatic arm, runtime edits not retained");
     return 0;
 }

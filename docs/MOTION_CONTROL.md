@@ -146,17 +146,19 @@ police its own PWM; physical stopping and end-to-end latency need measurement.
 
 ## Calibration and calculations
 
-Geometry, per-wheel CPR, polarity and gains require physical calibration.
-Zero geometry/CPR/gains and zero reversal placeholders are not measured values;
-`confirmed=0` prevents arming. Speed 100 mm/s, duty ceiling 200 permille,
-timeout 10000 ms and stall 500 ms are initial software limits, not evidence
-that the hardware operates correctly at those settings. No prior physical
-trial establishes defaults for a replacement encoder.
+`motion_defaults.h` is the single source of boot configuration. Its reviewed
+robot profile uses circumference 204 mm, track 113 mm, left/right CPR 2466/2524,
+Q8 gains 256/1/0, speed 100 mm/s, duty ceiling 100 permille, timeout 1500 ms
+and stall 500 ms. Left motor and encoder reversal are enabled; both right
+reversals are disabled. Per-wheel CPR overrides the unused shared fallback.
+These settings apply to this measured hardware, not replacement components.
 
-`motion_defaults.h` is the single source of boot configuration. Console edits
-are RAM-only. Copy only reviewed, measured settings into the header; set
-confirmation only after reviewing the setup. Confirmation is an operator
-assertion, never proof of achieved accuracy or completed PID tuning.
+Every boot remains disarmed with zero motor outputs and `confirmed=0`.
+Review the loaded profile and physical setup, issue `config confirm 1`, then
+allow a fresh control sample before explicitly issuing `arm`. Arming alone
+produces no motion. Console edits are RAM-only; reboot reloads the header.
+Confirmation is an operator assertion, never proof of achieved accuracy or
+completed PID tuning.
 
 CPR means **four-edge counts per wheel-output revolution**, including gearbox
 ratio. A nonzero left/right CPR overrides shared CPR; zero selects the shared

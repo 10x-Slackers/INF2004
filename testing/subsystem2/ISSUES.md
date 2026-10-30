@@ -7,11 +7,13 @@ for this cycle. No existing hardware defect is presumed.
 
 ## Calibration
 
-No measured four-edge counts per wheel-output revolution, loaded circumference,
-wheel-centre track, physical motor/encoder forward polarity or loaded PID gains
-are established for this image. Defaults remain unconfirmed and cannot arm.
-Measure these using the [manual procedure](README.md), then complete the
-PID tuning and accuracy reports in [VERIFICATION](VERIFICATION.md).
+The reviewed boot profile in [MOTION_CONTROL](../../docs/MOTION_CONTROL.md)
+contains measured geometry, per-wheel CPR, verified polarity and working PI
+settings. Defaults remain unconfirmed and cannot arm until explicitly confirmed.
+Physical turn-angle accuracy, complete PID tuning and powered emergency-stop
+interruption timing still require acceptance evidence; the boot profile alone
+does not establish these results. Record measurements in
+[VERIFICATION](VERIFICATION.md).
 
 The exact motor/encoder part number and electrical output type are not supplied.
 Confirm the actual datasheet or measure the signals before selecting external

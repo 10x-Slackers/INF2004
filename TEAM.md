@@ -159,7 +159,7 @@ Every arrow between two subsystems is listed here. Providers expose synchronized
 consumers. Motion uses short, locked single-slot commands and coherent
 per-consumer snapshots; no dynamic queue allocation is required. Configuration supports per-wheel CPR overrides with a legacy shared fallback;
 all consumers must rebuild after config struct changes. Calibration and polarity
-require physical measurement; zero defaults are unconfirmed. Motion telemetry remains
+require physical measurement; boot defaults remain unconfirmed. Motion telemetry remains
 36 bytes. Data formats
 and units are defined in the owning public header and technical guide.
 

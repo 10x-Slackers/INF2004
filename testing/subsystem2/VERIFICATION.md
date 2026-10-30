@@ -192,3 +192,31 @@ inspection. Diagnostic UF2 SHA256 remains
 No firmware settings or outputs were changed on hardware. Rebuilding/reflashing
 is not needed to use supported syntax; only host-test source, documentation
 and the automated transcript changed. No commit, push, merge or flash occurred.
+
+## 2026-10-30 — Reviewed boot calibration defaults
+
+Loaded the operator-supplied hardware-verified working profile into
+`motion_defaults.h`: circumference 204 mm, track 113 mm, left/right four-edge
+CPR 2466/2524, Q8 gains 256/1/0, speed 100 mm/s, duty limit 100 permille,
+timeout 1500 ms, stall 500 ms, motor reversal 1/0 and encoder reversal 1/0.
+Shared CPR remains unused (zero). Confirmation remains zero on every boot.
+Startup/control logic, GPIO assignments and configuration layout are unchanged.
+
+Extended the defaults/reboot host fixture to verify all gains and operating
+limits, zero outputs at boot, rejection before confirmation, successful explicit
+confirmation followed by a fresh sample and arm, zero output after arming, and
+restoration of defaults rather than runtime edits after simulated reboot.
+All three default profiles pass, including the checked-in per-wheel profile.
+
+`make -s test` and `make -s verify` passed. Verification includes production,
+diagnostic and full-width reference motion fixtures (13683 assertions each),
+ASan/UBSan, startup/scheduling and actual ISR/PWM fixtures, source checks,
+integrated normal/TEST, standalone normal/TEST, diagnostic and direct
+`build_make` normal/TEST firmware builds. No compiler warnings or errors were
+reported. The saved transcript and source hashes are in `current.txt`.
+
+No new physical measurements were made, and no hardware configuration was
+changed. These defaults require rebuilding and later operator-controlled
+flashing to take effect on the Pico. No flash, commit, push or merge occurred.
+Powered emergency-stop timing and physical turn-angle acceptance remain
+separate verification work.

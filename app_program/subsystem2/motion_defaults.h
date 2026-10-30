@@ -1,31 +1,31 @@
-/* Robot defaults: zero geometry/CPR means unmeasured, never safe to arm.
- * Edit measured values here and review CONFIRMED only after hardware checks.
+/* Reviewed robot calibration; explicit confirmation is required each boot.
+ * Console confirmation follows review of the physical setup.
  * Console edits are RAM-only. Both firmware modes load these same defaults.
  */
 #ifndef MOTION_DEFAULTS_H
 #define MOTION_DEFAULTS_H
 
 #ifndef MOTION_DEFAULT_CIRCUMFERENCE_MM
-#define MOTION_DEFAULT_CIRCUMFERENCE_MM 0u
+#define MOTION_DEFAULT_CIRCUMFERENCE_MM 204u
 #endif
 #ifndef MOTION_DEFAULT_TRACK_MM
-#define MOTION_DEFAULT_TRACK_MM 0u
+#define MOTION_DEFAULT_TRACK_MM 113u
 #endif
 #ifndef MOTION_DEFAULT_COUNTS_PER_REV
 #define MOTION_DEFAULT_COUNTS_PER_REV 0u
 #endif
-/* Zero means uncalibrated; CPR includes all four quadrature edges. */
+/* Per-wheel zero selects shared CPR; counts include all quadrature edges. */
 #ifndef MOTION_DEFAULT_LEFT_COUNTS_PER_REV
-#define MOTION_DEFAULT_LEFT_COUNTS_PER_REV 0u
+#define MOTION_DEFAULT_LEFT_COUNTS_PER_REV 2466u
 #endif
 #ifndef MOTION_DEFAULT_RIGHT_COUNTS_PER_REV
-#define MOTION_DEFAULT_RIGHT_COUNTS_PER_REV 0u
+#define MOTION_DEFAULT_RIGHT_COUNTS_PER_REV 2524u
 #endif
 #ifndef MOTION_DEFAULT_KP_Q8
-#define MOTION_DEFAULT_KP_Q8 0u
+#define MOTION_DEFAULT_KP_Q8 256u
 #endif
 #ifndef MOTION_DEFAULT_KI_Q8
-#define MOTION_DEFAULT_KI_Q8 0u
+#define MOTION_DEFAULT_KI_Q8 1u
 #endif
 #ifndef MOTION_DEFAULT_KD_Q8
 #define MOTION_DEFAULT_KD_Q8 0u
@@ -34,22 +34,22 @@
 #define MOTION_DEFAULT_SPEED_MM_S 100u
 #endif
 #ifndef MOTION_DEFAULT_DUTY_LIMIT
-#define MOTION_DEFAULT_DUTY_LIMIT 200u
+#define MOTION_DEFAULT_DUTY_LIMIT 100u
 #endif
 #ifndef MOTION_DEFAULT_TIMEOUT_MS
-#define MOTION_DEFAULT_TIMEOUT_MS 10000u
+#define MOTION_DEFAULT_TIMEOUT_MS 1500u
 #endif
 #ifndef MOTION_DEFAULT_STALL_MS
 #define MOTION_DEFAULT_STALL_MS 500u
 #endif
 #ifndef MOTION_DEFAULT_MOTOR_LEFT_REVERSE
-#define MOTION_DEFAULT_MOTOR_LEFT_REVERSE 0u
+#define MOTION_DEFAULT_MOTOR_LEFT_REVERSE 1u
 #endif
 #ifndef MOTION_DEFAULT_MOTOR_RIGHT_REVERSE
 #define MOTION_DEFAULT_MOTOR_RIGHT_REVERSE 0u
 #endif
 #ifndef MOTION_DEFAULT_ENCODER_LEFT_REVERSE
-#define MOTION_DEFAULT_ENCODER_LEFT_REVERSE 0u
+#define MOTION_DEFAULT_ENCODER_LEFT_REVERSE 1u
 #endif
 #ifndef MOTION_DEFAULT_ENCODER_RIGHT_REVERSE
 #define MOTION_DEFAULT_ENCODER_RIGHT_REVERSE 0u

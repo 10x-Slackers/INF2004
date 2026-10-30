@@ -63,7 +63,7 @@ fixed.
 | GP15 | | |
 | GP16 | Motion (Buddy 2) | right encoder A |
 | GP17 | Motion (Buddy 2) | right encoder B |
-| GP18 | | |
+| GP18 | IMU (Buddy 4) | Maker Pi Pico buzzer, beeps when calibration is done (PWM slice 1 A). On the Robo Pico this pin is the NeoPixel and the buzzer is GP22 |
 | GP19 | | |
 | GP20 | | |
 | GP21 | | |
@@ -111,6 +111,7 @@ the drivers have no locking to stop it.
 | PWM4, PWM5 | Motion (Buddy 2) | `subsystem2_motion_task` | GP8–GP11 |
 | IRQ13, core 0 | Motion dispatcher | `drv_motion_gpio_isr` | GP2/3, GP16/17; Buddy 5 callback registration |
 | SIO locks 3/4 | Motion (Buddy 2) | task state / encoder snapshot | No pins; kernel reserves locks 0–2 |
+| PWM slices (list) | IMU (Buddy 4) | `imu_task` | Slice 1 A: GP18 buzzer |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -186,7 +187,7 @@ limit there. Fill in each subsystem's usage.
 | Message buffer | 12 | | | | | |
 | Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |
-| Cyclic handler | 12 | | | | | |
+| Cyclic handler | 12 | | | | 1 | |
 | Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)

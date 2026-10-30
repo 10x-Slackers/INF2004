@@ -13,14 +13,32 @@ EXPORT void subsystem4_test(void)
 {
     S4_ACCEL a, b;
     S4_ACCEL t = {0};
+    S4_TILT tilt;
+    S4_FAULT fault;
+    INT i;
 
     TEST_INIT();
 
+    /* Readings start once start-up calibration (2 s, board still) ends */
+    for (i = 0; i < 30; i++)
+    {
+        s4_get_tilt(&tilt);
+        if (tilt.cal)
+        {
+            break;
+        }
+        tk_dly_tsk(100);
+    }
+    TEST_CHECK("S4-U05", tilt.cal, "start-up calibration ends within 3 s");
+
     s4_get_accel(&a);
-    tk_dly_tsk(5 * S4_IMU_MS); /* let imu_task take a few readings */
+    tk_dly_tsk(500);
     s4_get_accel(&b);
     TEST_CHECK("S4-U01", (UB)(b.count - a.count) >= 3,
                "GY-511 answers on I2C0 and readings arrive");
+    TEST_CHECK("S4-U06",
+               (UB)(b.count - a.count) >= 45 && (UB)(b.count - a.count) <= 55,
+               "a reading every 10 ms (45..55 in 500 ms)");
 
     /* Board lying flat, component side up: gravity on +Z only */
     TEST_CHECK("S4-U02",
@@ -38,6 +56,11 @@ EXPORT void subsystem4_test(void)
                sizeof(S4_ACCEL) == 8 && t.x == -2048 && t.y == 2047 &&
                    t.z == -1 && t.count == 0,
                "packed reading keeps -2048..2047 per axis in 8 bytes");
+
+    /* Board still since power-on: no fault latched */
+    s4_get_fault(&fault);
+    TEST_CHECK("S4-U14", sizeof(S4_FAULT) == 4 && !fault.impact && !fault.tilt,
+               "no impact or tilt fault on a still board");
 
     TEST_SUMMARY("subsystem4");
 }

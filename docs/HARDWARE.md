@@ -17,7 +17,7 @@ Pin assignments, wiring and the datasheet facts needed to write drivers. Sources
 
 ## Pin map
 
-The assignment agreed in the design review. The owner column is the only task allowed to touch the pin (see [ARCHITECTURE.md](ARCHITECTURE.md#hardware-ownership)).
+The design review's assignment, except that the GY-511 and the left encoder swapped ports: the GY-511 moved to Grove 3 (GP4, GP5) for I2C0, the left encoder to Grove 2 (GP2, GP3). The owner column is the only task allowed to touch the pin (see [ARCHITECTURE.md](ARCHITECTURE.md#hardware-ownership)).
 
 | GPIO | Signal          | Connects to                 | Interface               | Owner task              |
 | ---- | --------------- | --------------------------- | ----------------------- | ----------------------- |
@@ -46,11 +46,11 @@ Where each signal lands on the Robo Pico:
 | 2          | GP2, GP3   | Left encoder (also on Maker port)   |
 | 3          | GP4, GP5   | GY-511                              |
 | 4          | GP16, GP17 | Right encoder                       |
-| 5          | GP6, GP26  | Left line sensor, barcode sensor    |
-| 6          | GP26, GP27 | GP26 is the same pin as on port 5   |
-| 7          | GP7, GP28  | Right line sensor                   |
+| 5          | GP6, GP26  | Left line sensor (GP6 only)         |
+| 6          | GP26, GP27 | Barcode sensor (GP26 only)          |
+| 7          | GP7, GP28  | Right line sensor (GP7 only)        |
 
-GP26 appears on both Grove 5 and Grove 6. Never give it two independent signals.
+GP26 appears on both Grove 5 and Grove 6. Connect the barcode sensor once, through Grove 6, and leave the GP26 conductor of the Grove 5 cable unconnected. Likewise leave GP27 (Grove 6) and GP28 (Grove 7) unconnected in those cables unless the pin is assigned.
 
 ### Unassigned and reserved pins
 
@@ -76,7 +76,7 @@ By default the kernel leaves every application pin in its reset state. A few bui
 | UART0 console copy and crash report | `make CRASH_REPORT=1` or `CONSOLE=uart` | Off. When on, it takes GP0 and GP1 |
 | Kernel I2C driver pins | `DEVCNF_USE_IIC` in `config/config_device.h`, pins in `device/i2c/sysdepend/rp2040/i2c_cnf_sysdep.h` | On. It registers I2C0 only (`iica`, in `kernel/sysdepend/pico_rp2040/devinit.c`) and muxes GP4, GP5 for the GY-511 |
 | Kernel ADC driver pins | `DEVCONF_ADC_PIN_INIT_n` in `device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` | None claimed |
-| PWM block reset release | `kernel/sysdepend/pico_rp2040/hw_setting.c`, gated by `USE_PTMR` in `config/config.h` | Off |
+| PWM block reset release | `kernel/sysdepend/pico_rp2040/hw_setting.c`, gated by `USE_PTMR` in `config/config.h` | Off in the kernel. `usermain()` in `app_program/app_main.c` releases it before any subsystem starts |
 
 Things that clash with this pin map:
 
@@ -161,7 +161,9 @@ To take a reading:
 3. Time how long ECHO stays high.
 4. Distance in cm = echo time in µs ÷ 58 (speed of sound 340 m/s, halved for the round trip).
 
-**ECHO is a 5 V signal.** Bring it down to 3.3 V with a level shifter or a resistor divider (for example 1 kΩ in series, 2 kΩ to ground) before it reaches GP1. The datasheet specifies a 5 V supply; the wiring slide shows the module on 3.3 V, which is outside the datasheet rating.
+Power the module from 5 V, not from the Grove port's 3.3 V: the datasheet specifies 5 V, and the wiring slide's 3.3 V is outside that rating. Share ground with the board.
+
+**ECHO is then a 5 V signal.** Bring it down to 3.3 V with a level shifter or a resistor divider (for example 1 kΩ in series, 2 kΩ to ground) before it reaches GP1.
 
 Narrow, angled or soft objects reflect poorly. The datasheet's accuracy figure assumes a smooth target of at least 0.5 m².
 
@@ -196,6 +198,10 @@ A minimal setup:
 3. Read six bytes starting at `0xA8`. Setting the top bit of the register address (`0x28 | 0x80`) turns on address auto-increment for a multi-byte read.
 
 Each axis is a 16-bit two's complement value, left-justified. In high-resolution mode shift right by 4 to get a 12-bit value at 1 mg per LSB (±2 g range).
+
+The design review asked for ±4 g. The firmware uses ±2 g (1 mg per LSB), so anything beyond 2 g clips. Impact is therefore detected as a sudden jump rather than an absolute g level.
+
+On the car the module lies flat, chips up, with −Y pointing forward, +X to the left and +Z up (found by tilting the car). If Z sits at full scale (about 2040 mg) whatever the orientation while X and Y still work, the module is faulty: replace it. The firmware does not check for this, and start-up calibration accepts the stuck value.
 
 ### Magnetometer registers
 
@@ -254,7 +260,7 @@ For the full pinout see the [Pico W datasheet](https://datasheets.raspberrypi.co
 
 ## Pre-power checklist
 
-1. HC-SR04 ECHO goes through a divider or level shifter.
+1. HC-SR04 is powered from 5 V, and its ECHO goes through a divider or level shifter.
 2. IR modules and the GY-511 are powered from 3.3 V.
 3. Encoder supply is 3.3 V, and the plug orientation matches the motor's markings.
 4. Nothing is wired to GP23, GP24, GP25 or GP29.

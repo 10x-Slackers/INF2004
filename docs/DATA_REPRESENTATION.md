@@ -77,9 +77,8 @@ hardware register values retain their native representation.
 
 Compare sizes using `make test`: the same portable control, math and console
 algorithms are compiled for ARM with packed fields and with a temporary
-full-width reference. No generated reference source becomes firmware. Actual
-RAM/message measurements, commands and limitations belong in
-[verification](../testing/subsystem2/VERIFICATION.md). Count/time snapshots use
-encoder lock 4; task configuration/status use lock 3; no raw bit-field layout
+full-width reference. No generated reference source becomes firmware. The command
+prints RAM/message measurements; host timing is not target WCET. Count/time
+snapshots use encoder lock 4; task configuration/status use lock 3; no raw bit-field layout
 crosses the network. Per-consumer status copies are the I4/I5 messages, with no
 single-consumer queue. The explicit telemetry packet is 36 bytes.

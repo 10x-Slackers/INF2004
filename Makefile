@@ -32,6 +32,7 @@ diagnostic:
 	$(MAKE) S2_STANDALONE=1 S2_DIAGNOSTIC=1 TEST=1 all
 
 verify:
+	@mkdir -p build
 	+@bash -o pipefail -c 'set -e; { \
 	 shasum -a 256 app_program/subsystem2/*.[ch] testing/subsystem2/host/*.[ch] testing/subsystem2/host/*.py testing/subsystem2/host/tests.mk Makefile build_make/pico_rp2040.mk build_make/mtkernel_3/app_program/subdir.mk; \
 	 echo "Host C and port tests"; $(MAKE) -s test && \
@@ -42,7 +43,7 @@ verify:
 	 echo "Single diagnostic build" && $(MAKE) -s diagnostic -j8 && \
 	 echo "Direct build_make normal and TEST builds" && $(MAKE) -s -C build_make -j8 && \
 	 $(MAKE) -s -C build_make TEST=1 -j8; \
-	 } 2>&1 | tee testing/subsystem2/current.txt'
+	 } 2>&1 | tee build/verify.log'
 
 clean:
 	rm -rf build
@@ -57,7 +58,7 @@ help:
 	@echo 'S2_STANDALONE=1: Buddy 2 only, USB CDC, Wi-Fi off; TEST=1 adds only S2 tests'
 	@echo 'Standalone profiles/images add -s2only / _s2only'
 	@echo 'make diagnostic: one standalone diagnostic image, explicit arm required'
-	@echo 'make verify: tests/sanitizers/builds; overwrite testing/subsystem2/current.txt'
+	@echo 'make verify: tests/sanitizers/builds; overwrite build/verify.log'
 	@echo 'Outputs: build/<profile>/mtk3pico_<options>.{elf,map,uf2}'
 
 export PYTHONDONTWRITEBYTECODE := 1

@@ -1,4 +1,4 @@
-/* Buddy 2 public contract. Units: docs/MOTION_CONTROL.md. */
+/* Buddy 2 API; units and integration details: docs/MOTION_CONTROL.md. */
 #ifndef MOTION_CONTROL_H
 #define MOTION_CONTROL_H
 

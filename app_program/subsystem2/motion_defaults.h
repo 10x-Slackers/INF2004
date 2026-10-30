@@ -1,6 +1,5 @@
-/* Reviewed robot calibration; explicit confirmation is required each boot.
- * Console confirmation follows review of the physical setup.
- * Console edits are RAM-only. Both firmware modes load these same defaults.
+/* Shared boot calibration; review the setup and confirm explicitly each boot.
+ * Console edits are RAM-only.
  */
 #ifndef MOTION_DEFAULTS_H
 #define MOTION_DEFAULTS_H

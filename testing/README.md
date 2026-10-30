@@ -77,10 +77,5 @@ the test's result row. `videos/README.md` explains how.
 From the repository root, `make test` runs the portable motion fixture, its
 full-width reference and focused source checks without hardware. `make TEST=1`
 builds on-target tests in a separate profile; it does not run them on the host.
-Buddy 2's [verification record](subsystem2/VERIFICATION.md) contains its fresh
-software/physical test plan, change-requirement evidence, and PID/accuracy
-reports. The current automated transcript is overwritten by `make verify`;
-record failures in the verification record before rerunning. Physical results
-must be entered explicitly and are never inferred from host tests.
-When changes must remain uncommitted, record the base revision and tested
-source fingerprints rather than claiming that revision contains the changes.
+`make verify` also runs sanitizers and firmware builds, writing its generated
+transcript to ignored `build/verify.log`.

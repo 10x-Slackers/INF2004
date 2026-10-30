@@ -1,4 +1,8 @@
-# Buddy 2 motion control
+# Buddy 2 integration reference
+
+Operating instructions, wiring and boot settings are in the
+[root README](../README.md#buddy-2--motion-control). This reference retains the
+requirement mapping and detailed contract used by teammates.
 
 ## Requirements and boundaries
 
@@ -22,21 +26,9 @@ lock and safety policies are team design decisions, not extra course wording.
 | Stable motion, resource efficiency | Bounded duty, stall/timeout/range/timing faults; fixed storage | Host safety tests; target load/stack/CPU/power/stop measurements |
 | Minimum-bit application fields | Unsigned bit-fields, combined fault mask, locked shared copies | [Field table](DATA_REPRESENTATION.md), RAM/message comparison and correctness evidence |
 | Compact MQTT application data | Explicit 36-byte binary status packet for Buddy 1 | Known-bit and roundtrip tests; Buddy 1 owns MQTT transport |
-| Calibration, tuning and accuracy reports | Measured geometry, CPR, polarity and gains | [Verification record](../testing/subsystem2/VERIFICATION.md) |
-
-System line following, barcode decoding, IMU processing, avoidance planning,
-MQTT transport and mission arbitration belong to teammates. Continuous
-independent wheel setpoints for line following, I10 health delivery, I11
-system stop-generation/new-Start arbitration, yaw ownership and numeric
-acceptance tolerances need team agreement. Finite motion APIs alone do not
-establish complete robot integration. Do not silently invent these contracts.
+| Calibration, tuning and accuracy reports | Measured geometry, CPR, polarity and gains | Coursework calibration, PID tuning and accuracy deliverables |
 
 ## Hardware and execution
-
-The confirmed six-pin wiring is recorded in [HARDWARE.md](HARDWARE.md).
-Motor pin 5 goes to M1B/M2B and pin 6 to M1A/M2A. Wire colours do not establish
-forward rotation. Positive *normalized* counts and wheel targets mean physical
-forward; reversal flags must be measured on each wheel.
 
 The [Cytron motor truth table](https://www.farnell.com/datasheets/4381243.pdf)
 is low/low brake, high/low one electrical direction, low/high the opposite,
@@ -146,20 +138,6 @@ police its own PWM; physical stopping and end-to-end latency need measurement.
 
 ## Calibration and calculations
 
-`motion_defaults.h` is the single source of boot configuration. Its reviewed
-robot profile uses circumference 204 mm, track 113 mm, left/right CPR 2466/2524,
-Q8 gains 256/1/0, speed 100 mm/s, duty ceiling 100 permille, timeout 1500 ms
-and stall 500 ms. Left motor and encoder reversal are enabled; both right
-reversals are disabled. Per-wheel CPR overrides the unused shared fallback.
-These settings apply to this measured hardware, not replacement components.
-
-Every boot remains disarmed with zero motor outputs and `confirmed=0`.
-Review the loaded profile and physical setup, issue `config confirm 1`, then
-allow a fresh control sample before explicitly issuing `arm`. Arming alone
-produces no motion. Console edits are RAM-only; reboot reloads the header.
-Confirmation is an operator assertion, never proof of achieved accuracy or
-completed PID tuning.
-
 CPR means **four-edge counts per wheel-output revolution**, including gearbox
 ratio. A nonzero left/right CPR overrides shared CPR; zero selects the shared
 fallback. Both resolved CPR values must be 4–65535. Config is 28 bytes under
@@ -209,19 +187,3 @@ Counts/mm store signed value + 8388608; speed stores signed value + 2048.
 Unpack requires exactly 36 bytes, valid state/command/speed codes and reserved
 zero; failure leaves its output unchanged. Pack requires a valid snapshot and
 a 36-byte caller buffer. Transport never blocks the motion task.
-
-## Builds and review
-
-[Buddy 2 testing](../testing/subsystem2/README.md) gives build paths, console
-syntax and the manual calibration procedure. `make diagnostic` uses the same
-motion C sources and safety checks, standalone startup, boot tests and a distinct
-banner. It adds no alternative capture backend or motor experiment.
-
-Application code uses C99, unsigned bit-fields, fixed-width arithmetic and the
-repository formatter. ISO C bit-fields use `unsigned int`; the kernel's callback
-ABI requires `INT`/`UINT`/`FP` and fixed port names. Driver pure functions share
-`ctrl_math.c` to exercise identical code in host and firmware. Early rejection
-returns improve readability; the parser/control state flows exceed the preferred
-100-line function size to keep their ordering visible. These port/layout conventions and the course's
-`subsystem2_test.c` naming are explicit BARR review boundaries; focused automated
-checks do not certify full BARR-C compliance or approve deviations.

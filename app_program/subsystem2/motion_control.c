@@ -486,8 +486,8 @@ void motion_control_tick(uint32_t now_us)
         motion_control_finish(MOTION_CONTROL_FAILED, MOTION_CONTROL_ENCODER);
     }
     g_run.invalid = counts.invalid;
-    /* A pending cyclic flag can cause an immediate second task iteration.
-     * Retain the count/time baseline and PID state for a full sample window.
+    /* Coalesced wakeups can be close together; retain the sample baseline
+     * and PID state until a full sample window has elapsed.
      */
     if (elapsed_us < MOTION_CONTROL_MIN_SAMPLE_US)
     {

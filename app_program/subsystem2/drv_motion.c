@@ -94,8 +94,7 @@ void drv_motion_snapshot(drv_motion_encoders_t * p_counts)
     (void)drv_motion_sample(p_counts);
 }
 
-/* GPIO edge flags are latches, not a queue. Sample before acknowledging.
- * Read both A/B bits from one GPIO_IN word; never infer missing edges.
+/* GPIO edge flags can coalesce; sample A/B together before W1C ack.
  * RP2040 datasheet 2.19: INTR is W1C; PROC0_INTS is enabled status.
  */
 static void drv_motion_gpio_isr(UINT intno)

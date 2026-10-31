@@ -173,6 +173,8 @@ Barcode Handling, Obstacle Handling, Bypassing and Line Recovery also drop to Sa
 | Fault             | A subsystem failed, a sensor is missing, or initialisation errored                                                    |
 | Mission Complete  | Course finished: stop motors, report final telemetry including the maximum hump estimate                              |
 
+The Vehicle Controller folds Hump Monitoring, Line Recovery and Mission Complete into its other states ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#states)).
+
 Safe Stop is latched. Leaving it requires the fault to clear or a reset, followed by a new Start (FR11). Mission Complete is entered only on a validated course-finish event (FR12).
 
 ## Subsystem statecharts

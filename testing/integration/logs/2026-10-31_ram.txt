@@ -1,0 +1,43 @@
+Minimum-bit change: RAM before and after (Vehicle Controller, and the whole image)
+Code: 2aabbff (normal build, SMP=1)
+Tool: make -C build_make; arm-none-eabi-size and arm-none-eabi-nm -S on the object files and the ELF
+BEFORE: Vehicle Controller: fdc9ef9, its last unpacked version (enum and uint32_t globals).
+        Whole image: a copy of 2aabbff with every bit-field in app_program widened to a 32-bit integer and
+        vehicle_controller.c from fdc9ef9, built the same way:
+  sed -E 's/unsigned int ([a-z_]+) *: *[0-9]+;/uint32_t \1;/; s/signed int ([a-z_]+) *: *[0-9]+;/int32_t \1;/' $(find app_program -name "*.[ch]")
+AFTER:  2aabbff as built
+
+== Vehicle Controller BEFORE (fdc9ef9)
+   text	   data	    bss	    dec	    hex	filename
+   1520	      0	     14	   1534	    5fe	vehicle_controller.o
+00000000 00000001 b g_b_turning
+00000000 00000004 b g_cycles
+00000000 00000004 b g_pending
+00000000 00000004 b g_released
+00000000 00000001 b g_state
+
+== Vehicle Controller AFTER
+   text	   data	    bss	    dec	    hex	filename
+   1508	      0	      4	   1512	    5e8	shared/vehicle_controller.o
+00000000 00000004 b g_vc
+
+== Whole image BEFORE
+   text	   data	    bss	    dec	    hex	filename
+ 293478	     88	  26252	 319818	  4e14a	mtk3pico_smp1_usb_cdc_wifi.elf
+app_program objects:
+  13846	      0	   1500	  15346	   3bf2	(TOTALS)
+
+== Whole image AFTER
+   text	   data	    bss	    dec	    hex	filename
+ 294574	     88	  26148	 320810	  4e52a	mtk3pico_smp1_usb_cdc_wifi.elf
+app_program objects:
+  14994	      0	   1318	  16312	   3fb8	(TOTALS)
+
+Summary
+  Vehicle Controller state   14 B -> 4 B (5 globals -> one 20-bit struct g_vc)
+  Safety Monitor             0 B both: it keeps no state; the latch is motion control's g_b_latched
+  app_program .bss           1500 B -> 1318 B (-182 B, -12%)
+  image .bss                 26252 B -> 26148 B (-104 B). Less than the app saving because the barcode DMA ring
+                             is aligned to 512 B: smaller variables before it leave more padding in front of it.
+  image .text                +1096 B (bit-field shifts and masks)
+Same behaviour: the controller has no automated test; INT-05..07 cover it on the car.

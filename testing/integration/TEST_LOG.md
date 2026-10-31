@@ -20,6 +20,7 @@ Define a test here before running it. Test IDs never change.
 | INT-08 | IMU fault latches a safe stop | I9, FR11 | manual | Car following; tilt it past 25° for 1 s; then press GP20 | `[safety] stop, cause 0x1`, `SAFE_STOP: safety latched`, motors stop; GP20 does not leave the safe stop until reset |
 | INT-09 | Retired: Safety Monitor collision backstop. The backstop was removed after its FAIL (see Results); avoidance (INT-06, S5-U48) covers collision risk | I8, I11, NFR5 | manual | Normal build. Start following; hold a flat target 100 mm in front of the sensor while the car drives | `[safety] stop, cause 0x2`, motors brake at once, `SAFE_STOP: safety latched`; drive commands are refused until GP20 |
 | INT-10 | Safety Monitor latches a wheel stall | I4, I11, FR11 | manual | Normal build, car following. Hold one wheel still for over 1 s | `[safety] stop, cause 0x4`, `SAFE_STOP: safety latched`; GP20 clears it, a second press follows again |
+| INT-11 | RAM before/after minimum-bit: Vehicle Controller and the whole image | Minimum-bit CR | host | Commands in `logs/2026-10-31_ram.txt` | Packed is smaller |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).

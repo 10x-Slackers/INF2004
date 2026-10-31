@@ -24,6 +24,7 @@ Define a test here before running it. Test IDs never change.
 | S3-U12 | Invalid barcodes are rejected | FR3 | auto | As above | `S3-U12 PASS`: `*Z*`, and `*A*` with a wide gap, give 0 |
 | S3-U13 | Barcode result is bit-packed | Minimum-bit data | auto | As above | `S3-U13 PASS`: `barcode_decoder_t` is 8 bytes |
 | S3-U14 | Barcodes are read while driving | FR3, NFR3, A3 | manual | `TEST=1` image. Lay a printed `*A*` 20 mm beside a straight line, then a `*Z*`. Hold GP21 for 1 s, put the car on the line before them | `[barcode] command=1` with count +1 for `*A*`; rejects +1 and no new command for `*Z*`; then repeat driving the other way along the line |
+| S3-U15 | RAM and record sizes before/after minimum-bit | Minimum-bit CR | host | Commands in `logs/2026-10-31_ram.txt` | Packed is smaller |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).

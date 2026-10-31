@@ -1,0 +1,31 @@
+S1-U01: MQTT payloads, binary (docs/TELEMETRY.md) vs the Week 6 JSON design
+Code: testing/subsystem1/host/payloads.py (commit in the S1-U01 result row)
+Command: python3 -I testing/subsystem1/host/payloads.py
+B/s columns are payload bytes per second at the docs/TELEMETRY.md rates. MQTT adds the same header and topic bytes to both.
+
+PASS  telemetry round trip (min)
+PASS  telemetry round trip (max)
+PASS  motion round trip (min)
+PASS  motion round trip (max)
+PASS  scan round trip (min)
+PASS  scan round trip (max)
+PASS  heartbeat round trip (min)
+PASS  heartbeat round trip (max)
+PASS  cmd round trip (min)
+PASS  cmd round trip (max)
+
+Topic      Bits  Binary B  JSON B  Saved  Hz  JSON B/s  Binary B/s
+telemetry    80        10     275    96%   5      1375          50
+           4005261fa42354841726  {"v":1,"robot_id":"CSC13","seq":1234,"state":"FOLLOW","latched":0,"faults":0,"line":1,"junction":0,"following":1,"barcode":1,"barcodes":3,"motion_class":0,"pitch":-12,"roll":35,"hump_max":21,"humps":2,"on_hump":0,"avoid_state":1,"avoid_side":0,"bypasses":1,"forward_mm":1830}
+motion       96        12     182    93%  10      1820         120
+           6887cc699778a77e0c006144  {"v":1,"robot_id":"CSC13","seq":1234,"state":1,"command":5,"faults":0,"heading_deg":271,"left_speed":198,"right_speed":203,"left_count":48211,"right_count":48902,"distance_mm":12450}
+scan         64         8     141    94%   -         0           0
+           136b5530c7334000  {"v":1,"robot_id":"CSC13","seq":1234,"closest_mm":310,"closest_deg":90,"right_deg":84,"left_deg":97,"width_mm":71,"left_mm":820,"right_mm":0}
+heartbeat    16         2      50    96%   1        50           2
+           04d2  {"v":1,"robot_id":"CSC13","seq":1234,"count":1234}
+cmd           8         1     101    99%   -         0           0
+           40  {"v":1,"robot_id":"CSC13","session_id":"s1","command_id":"c7","seq":7,"cmd":"START","challenge":"n4"}
+
+Periodic total: JSON 3245 B/s, binary 172 B/s
+
+ALL PASS

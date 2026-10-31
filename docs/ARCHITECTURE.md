@@ -31,7 +31,7 @@ These decisions were frozen at the review. Changing one means updating this docu
 | --- | ------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------ | ----- |
 | P1  | Safety Monitor                  | Stop on collision risk, stale control data or critical fault. Holds the latched stop | 5 ms + events                  | All   |
 | P2  | Wheel Motion Control            | Sole motor writer. Per-wheel PID, odometry, encoder-based turns                      | 10 ms + stop wake              | 2     |
-| P3  | Barcode Decoder                 | Decode the auxiliary IR samples and validate LEFT / RIGHT / STRAIGHT / UTURN         | 10 ms, one DMA block           | 3     |
+| P3  | Barcode Decoder                 | Decode the auxiliary IR samples and validate LEFT / RIGHT / STRAIGHT / UTURN         | 10 ms                          | 3     |
 | P4  | Line Following                  | Line error and junction detection from two digital IR sensors                        | 10 ms                          | 3     |
 | P5  | Vehicle Controller              | Mission state machine and arbiter of normal motion                                   | Events + 10 ms                 | All   |
 | P6  | Obstacle Avoidance and Recovery | Plan the bypass and the return to the line                                           | Events, ≥ 20 ms between steps  | 5     |
@@ -47,7 +47,7 @@ The periods are design targets, not measurements. P9 is left free.
 
 ### Barcode acquisition
 
-The ADC samples the barcode sensor (ADC0) at 2 ksample/s, paced by the ADC clock divider and moved by DMA into two ping-pong buffers of 20 samples. The task decodes one block every 10 ms and keeps a 200-sample (100 ms) history. Bar widths are measured against encoder distance (I5), never against task wake-ups, so speed changes do not distort them. A DMA overrun or missing block invalidates the capture.
+The ADC samples the barcode sensor (ADC0) at 2 ksample/s, paced by the ADC clock divider and moved by one DMA channel into a 256-sample (128 ms) ring that wraps by itself. Every 10 ms the task takes the samples written since its last read, about 20. A task that falls more than 128 ms behind loses the oldest samples. Bar widths are measured against encoder distance (I5), never against task wake-ups, so speed changes do not distort them.
 
 At 0.20 m/s and a 3 mm narrow bar this gives about 30 samples per narrow bar.
 

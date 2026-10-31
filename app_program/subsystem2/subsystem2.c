@@ -20,7 +20,7 @@ static void subsystem2_motion_task(INT stacd, void * p_exinf);
 /*!
  * @brief Set up the motors and encoders, with both motors braked.
  */
-EXPORT ER subsystem2_init(void)
+ER subsystem2_init(void)
 {
     ER result = E_SYS;
 
@@ -35,7 +35,7 @@ EXPORT ER subsystem2_init(void)
 /*!
  * @brief Start the motion task and the 10 ms cyclic handler.
  */
-EXPORT ER subsystem2_start(void)
+ER subsystem2_start(void)
 {
     T_CCYC cyclic = {0};
 

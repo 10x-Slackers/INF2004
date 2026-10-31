@@ -3,10 +3,8 @@
  * @brief Subsystem 4 (IMU and terrain). Other subsystems read the latest
  * tilt, faults, humps and motion class with the s4_get_*() calls.
  *
- * The code follows BARR-C:2018. Deviations:
- * - 3.1.j, 3.2: layout is the repository's .clang-format.
- * - 4.2.a: subsystem4_test.c has no header; app.h declares its function.
- * - 5.2: kernel calls, the task and the cyclic handler use kernel types.
+ * The code follows BARR-C:2018, with the team's deviations listed in app.h
+ * and these:
  * - 5.3.a: x, y, z, pitch and roll are signed bit-fields, packed to the
  *   minimum bits (docs/DATA_REPRESENTATION.md).
  * - 7.1.e: struct fields x, y, z and on keep their short names.

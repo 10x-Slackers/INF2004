@@ -54,28 +54,31 @@ Every `.c` file in `app_program/` and in its subfolders is compiled automaticall
 
 `usermain()` in `app_program/app_main.c` is the entry point. It calls every `subsystemN_init()` (create kernel objects), then every `subsystemN_start()` (start tasks), then sleeps forever; it must not return.
 
-Each subsystem lives in `app_program/subsystemN/`. `subsystemN.h` is its public interface (object IDs, message formats, priorities); everything else stays `LOCAL` in its `.c` files. Device drivers go in the owning subsystem's folder as `drv_<name>.c` / `drv_<name>.h`. A task is started with `app_start_task()` from `app.h`:
+Each subsystem lives in `app_program/subsystemN/`. `subsystemN.h` is its public interface (object IDs, message formats, priorities); everything else stays `static` in its `.c` files. Device drivers go in the owning subsystem's folder as `drv_<name>.c` / `drv_<name>.h`. A task is started with `app_start_task()` from `app.h`:
 
 ```c
-#define S5_PRI_RANGE 12 /* from the subsystem's band in TEAM.md */
-#define RANGE_MS     60
+#define S5_PRI_RANGE 12 /* From the subsystem's band in TEAM.md. */
+#define S5_RANGE_MS  60
 
-LOCAL void range_task(INT stacd, void * exinf)
+static void subsystem5_range_task(INT stacd, void * p_exinf)
 {
     (void)stacd;
-    (void)exinf;
+    (void)p_exinf;
 
-    while (1)
+    for (;;)
     {
-        /* read sensor, publish result */
-        tk_dly_tsk(RANGE_MS);
+        /* Read the sensor, publish the result. */
+        (void)tk_dly_tsk(S5_RANGE_MS);
     }
 }
 
-EXPORT ER subsystem2_start(void)
+ER subsystem5_start(void)
 {
-    ID tid = app_start_task(range_task, S5_PRI_RANGE, 0, "range_task");
-    return (tid < E_OK) ? tid : E_OK;
+    /* FP is the kernel's generic task pointer type. */
+    ID task_id = app_start_task((FP)subsystem5_range_task, S5_PRI_RANGE, 0,
+                                "s5_range");
+
+    return (task_id < E_OK) ? task_id : E_OK;
 }
 ```
 
@@ -85,7 +88,7 @@ The upstream template (`upstream` remote) has a worked example in subsystems 1â€
 
 ### Things to know
 
-- **Stacks are `TASK_STACK_SIZE` bytes** (`app.h`). Raise it for a task with deep call chains or large locals.
+- **Stacks are `APP_TASK_STACK_SIZE` bytes** (`app.h`). Raise it for a task with deep call chains or large locals.
 - **`tk_dly_tsk` is a relative delay.** The period becomes the delay plus the work time, so it drifts. For a fixed rate, sleep until the next absolute deadline or use a cyclic handler.
 - **The tick is 10 ms** (`CNF_TIMER_PERIOD` in `config/config.h`). Delays are rounded to it.
 - **There is no FPU.** Floating point is software-emulated; keep it out of fast loops.
@@ -158,6 +161,8 @@ Application code follows the [Barr Group Embedded C Coding Standard](https://bar
 - No magic numbers: name constants.
 - Public functions and types carry their module's prefix.
 - One header per module, exposing only what other modules need.
+
+The deviations every subsystem shares (kernel types for kernel calls, the `TEST_*` macros, the clang-format layout) are listed at the top of `app_program/app.h`. A subsystem lists any further ones of its own in its header or its doc.
 
 The layout rules (braces, indentation, line length, spacing) are applied automatically by clang-format through the pre-commit hook, using the root `.clang-format`. Run `pre-commit install` once after cloning. To format by hand:
 

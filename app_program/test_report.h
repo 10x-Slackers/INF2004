@@ -1,40 +1,46 @@
-/*
- *      test_report.h
- *      Minimal on-target test helpers.
+/** @file test_report.h
  *
- *      Every check prints ONE line in a fixed format, so a saved console log
- *      can be searched for results ("grep '\[TEST\]' log.txt"):
+ * @brief Minimal on-target test helpers.
  *
- *          [TEST] S1-U01 PASS  ADC reads in range
- *          [TEST] S1-U02 FAIL  queue rejects overflow   (task_x.c:57)
- *          [TEST] subsystem1 SUMMARY 1 passed, 1 failed
+ * Every check prints ONE line in a fixed format, so a saved console log
+ * can be searched for results ("grep '\[TEST\]' log.txt"):
  *
- *      Usage, inside a test function:
- *          TEST_INIT();
- *          TEST_CHECK("S1-U01", value >= 0 && value <= 4095, "ADC reads in
- * range"); TEST_SUMMARY("subsystem1");
+ *     [TEST] S1-U01 PASS  ADC reads in range
+ *     [TEST] S1-U02 FAIL  queue rejects overflow   (task_x.c:57)
+ *     [TEST] subsystem1 SUMMARY 1 passed, 1 failed
  *
- *      Test IDs must match the ones in testing/<subsystem>/TEST_LOG.md.
+ * Usage, inside a test function:
+ *
+ *     TEST_INIT();
+ *     TEST_CHECK("S1-U01", (value >= 0) && (value <= 4095), "ADC reads");
+ *     TEST_SUMMARY("subsystem1");
+ *
+ * Test IDs must match the ones in testing/<subsystem>/TEST_LOG.md. These
+ * are macros (a deviation from rule 6.3.a, see app.h) so that a failure
+ * reports the caller's file and line.
  */
 
 #ifndef TEST_REPORT_H
 #define TEST_REPORT_H
 
+#include <stdint.h>
 #include <tm/tmonitor.h>
 
-#define TEST_INIT() INT test_pass_ = 0, test_fail_ = 0
+#define TEST_INIT()                                                            \
+    int32_t test_passed = 0;                                                   \
+    int32_t test_failed = 0
 
 #define TEST_CHECK(id, cond, desc)                                             \
     do                                                                         \
     {                                                                          \
         if (cond)                                                              \
         {                                                                      \
-            test_pass_++;                                                      \
+            test_passed++;                                                     \
             tm_printf((UB *)"[TEST] %s PASS  %s\n", (id), (desc));             \
         }                                                                      \
         else                                                                   \
         {                                                                      \
-            test_fail_++;                                                      \
+            test_failed++;                                                     \
             tm_printf((UB *)"[TEST] %s FAIL  %s   (%s:%d)\n", (id), (desc),    \
                       __FILE__, __LINE__);                                     \
         }                                                                      \
@@ -42,6 +48,8 @@
 
 #define TEST_SUMMARY(name)                                                     \
     tm_printf((UB *)"[TEST] %s SUMMARY %d passed, %d failed\n", (name),        \
-              test_pass_, test_fail_)
+              test_passed, test_failed)
 
 #endif /* TEST_REPORT_H */
+
+/*** end of file ***/

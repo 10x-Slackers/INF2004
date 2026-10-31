@@ -191,7 +191,7 @@ limit there. Fill in each subsystem's usage.
 | Message buffer | 12 | | | | | |
 | Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |
-| Cyclic handler | 12 | | 1 | | 1 | |
+| Cyclic handler | 12 | | 1 | 1 | 1 | |
 | Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)

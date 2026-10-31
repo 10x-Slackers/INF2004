@@ -34,6 +34,11 @@ void subsystem3_test(void)
     line_following_get(&line);
     TEST_CHECK("S3-U01", count != line.count,
                "the line sensors are sampled within 100 ms");
+    /* tk_dly_tsk(100) waits 100 to 110 ms. */
+    TEST_CHECK("S3-U07",
+               ((uint8_t)(line.count - count) >= 10u) &&
+                   ((uint8_t)(line.count - count) <= 12u),
+               "a sample every 10 ms (10..12 in 100 ms)");
     TEST_CHECK("S3-U02", 8u == sizeof(line), "packed line state 8 bytes");
     TEST_CHECK("S3-U04",
                !line_following_start(0u) &&

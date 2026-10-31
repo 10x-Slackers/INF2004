@@ -89,6 +89,7 @@ void line_following_task(INT stacd, void * p_exinf)
     (void)p_exinf;
     for (;;)
     {
+        (void)tk_slp_tsk(TMO_FEVR); /* Woken every 10 ms (subsystem3.c). */
         bits = drv_line_read();
         both = (LINE_FOLLOWING_BOTH == bits) ? (both + 1u) : 0u;
         (void)tk_get_otm(&now);
@@ -121,8 +122,6 @@ void line_following_task(INT stacd, void * p_exinf)
                                        g_speed_mm_s + turn);
         }
         (void)tk_unl_mtx(g_mutex);
-
-        tk_dly_tsk(LINE_FOLLOWING_PERIOD_MS);
     }
 }
 

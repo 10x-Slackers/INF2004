@@ -16,6 +16,7 @@ Define a test here before running it. Test IDs never change.
 | S3-U04 | Out-of-range speeds are rejected | I1 | auto | `TEST=1` image, read the console | `S3-U04 PASS`: `line_following_start()` refuses 0 and 501 mm/s |
 | S3-U05 | Line following boots stopped | FR2 | auto | As above | `S3-U05 PASS`: `following=0` until started |
 | S3-U06 | The car follows the line | FR2, NFR3 | manual | `TEST=1` image. Hold GP21 for 1 s and release, put the car on a straight line, then a curved one, with a cross line at the end | Within 5 s the car follows at 200 mm/s without losing the line and stops at the cross line (`[line] bench done`); record the run with a video |
+| S3-U07 | Sensors are sampled every 10 ms | FR2, NFR6 | auto | `TEST=1` image, read the console | `S3-U07 PASS`: 10 to 12 samples in a 100 ms wait |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).

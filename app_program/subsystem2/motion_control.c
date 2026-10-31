@@ -28,7 +28,7 @@
 
 /* Controller tuning. */
 #define MOTION_DUTY_LIMIT     800  /* Permille. */
-#define MOTION_DUTY_OFFSET    100  /* Feedforward for static friction. */
+#define MOTION_DUTY_OFFSET    125  /* Feedforward for static friction. */
 #define MOTION_APPROACH_MM_S  30   /* Speed at the end of a move. */
 #define MOTION_ACCEL_MM_S     5    /* Speed increase per tick (500 mm/s^2). */
 #define MOTION_DECEL_PER_S    3    /* Approach mm/s per mm still to go. */

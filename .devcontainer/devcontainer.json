@@ -1,5 +1,5 @@
 {
-  "name": "Pico Development",
+  "name": "INF2004 Embedded Systems Development",
   "image": "ghcr.io/commit2main/universal:latest",
   "features": {
     "./pico-tools": {}

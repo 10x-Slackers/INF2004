@@ -6,16 +6,15 @@ This is a **university coursework project** done by undergraduates. It is not a 
 
 It is an autonomous robotic car built in C on µT-Kernel 3.0 (RP2040 dual-core SMP port) for the Raspberry Pi Pico W, built with GNU make from `build_make/`.
 
-## Research First
+## Research
 
-- Always research before implementing a task — both the codebase and online. Understand existing patterns, dependencies, and conventions before writing code.
-- Refer to the latest documentation and existing implementations of any libraries or frameworks in use.
-- Check `docs/` for architectural and planning details relevant to the task. Start from the index in `docs/README.md`.
+- Before implementing, read the code and `docs/` relevant to the task so changes follow existing patterns. Start from the index in `docs/README.md`, and scale this to the task; a small fix needs only the files it touches.
+- Check µT-Kernel, Pico SDK and hardware APIs against their documentation or the vendored sources rather than memory.
 
-## Ask When Unsure
+## When to ask
 
-- Clarify ambiguities before proceeding — ask rather than guess.
-- When in doubt about scope, priorities, or critical decisions, surface the uncertainty and let the user decide.
+- Ask before deciding anything that changes scope, priorities, the design in `docs/`, or is hard to reverse.
+- For smaller ambiguities, pick the option most consistent with the existing code and state the assumption in your summary.
 
 ## Engineering posture
 
@@ -23,7 +22,7 @@ Optimize for **low line count, readability, and simplicity** — not for product
 
 - **Prefer fewer lines of code.** Skip defensive checks, input validation, retry logic, and abstractions that a production codebase would require.
 - **Prefer readability.** A short, obvious solution beats a clever, dense one.
-- **Security and robustness may be traded for simplicity.** It is acceptable to a certain degree to trust inputs, skip edge-case handling, and omit safeguards (rate limiting, sanitization layers, error boundaries, etc.) if removing them makes the code clearer and shorter.
+- **Security and robustness may be traded for simplicity.** Within reason, it is acceptable to trust inputs, skip edge-case handling, and omit safeguards (rate limiting, sanitization layers, error boundaries, etc.) if removing them makes the code clearer and shorter.
 - **Don't over-engineer.** No speculative extensibility, no config layers for options nobody uses yet, no premature abstraction.
 
 ## Conventions
@@ -37,7 +36,7 @@ Optimize for **low line count, readability, and simplicity** — not for product
 
 ## Checks
 
-- After every task, check that the firmware still builds without new warnings. From the repository root:
+After each change, check that both images still build without new warnings. From the repository root:
 
 ```sh
 make -C build_make -j$(nproc)

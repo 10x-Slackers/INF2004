@@ -9,9 +9,8 @@
 #include "code39.h"
 #include <stdbool.h>
 
-#define CODE39_STRIDE  10u /* 9 elements and the gap after them. */
-#define CODE39_PER_CHR 9u
-#define CODE39_WIDE    3u
+#define CODE39_STRIDE 10u /* 9 elements and the gap after them. */
+#define CODE39_WIDE   3u
 
 /* Patterns, first element in the most significant of 9 bits, 1 = wide. */
 static const uint16_t g_patterns[] = {0x094u, 0x109u, 0x049u, 0x148u, 0x019u};

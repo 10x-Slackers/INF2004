@@ -15,9 +15,9 @@
 #include "../subsystem2/motion_control.h"
 
 #if APP_TEST
-#define S3_TEST_WAIT_MS     100 /* Ten sampling periods. */
-#define S3_TEST_NARROW      48u /* 3 mm in 1/16 mm. */
-#define S3_TEST_WIDE        144u
+#define S3_TEST_WAIT_MS     100   /* Ten sampling periods. */
+#define S3_TEST_NARROW      3000u /* 3 mm in um, as the decoder measures. */
+#define S3_TEST_WIDE        9000u
 #define S3_TEST_A           0x109u /* Code 39 patterns, 1 = wide. */
 #define S3_TEST_Z           0x0D0u
 #define S3_TEST_START       0x094u /* '*' */

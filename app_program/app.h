@@ -31,6 +31,7 @@
 #include <tm/tmonitor.h> /* T-Monitor API: tm_printf() console output. */
 #include <bsp/libbsp.h>  /* Board helpers: gpio_set_pin/val, pwm_... */
 #include "app_fault.h"   /* The shared fault bitmask. */
+#include <stdbool.h>
 
 #define APP_TASK_STACK_SIZE 2048 /* Bytes; tm_printf needs ~1 KB. */
 
@@ -43,6 +44,18 @@ void app_check(ER result, const char * p_what);
 
 /* Input with the pull-up only: a button or open collector grounds it. */
 void app_pull_up(UW pin);
+
+/* Wake a task every period_ms from a cyclic handler (tk_dly_tsk() would
+ * add a tick to every period). A negative task_id, from a failed
+ * app_start_task(), is returned as it is. */
+ER app_start_cyclic(ID task_id, RELTIM period_ms);
+
+/* GPIO edge interrupt (IRQ13, GPIO bank 0), shared by every subsystem.
+ * Register in subsystemN_init(): the callback runs in the interrupt with
+ * the registered pins that saw an edge, so keep it short. Refused if the
+ * slots are full or a pin is taken. */
+typedef void (*app_gpio_callback_t)(uint32_t pins);
+bool app_gpio_register(uint32_t pins, app_gpio_callback_t p_callback);
 
 /* Every subsystem provides these. usermain() calls ALL the _init()
  * functions first and only then ALL the _start() functions, so every

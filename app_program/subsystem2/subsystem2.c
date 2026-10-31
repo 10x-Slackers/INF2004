@@ -9,12 +9,9 @@
 
 #define SUBSYSTEM2_TICK_MAX 0xffffu
 
-static ID g_motion_task;
-
 /* Longest control step in us. Written only by the motion task. */
 static volatile uint16_t g_max_tick_us;
 
-static void subsystem2_wake(void * p_exinf);
 static void subsystem2_motion_task(INT stacd, void * p_exinf);
 
 /*!
@@ -37,16 +34,10 @@ ER subsystem2_init(void)
  */
 ER subsystem2_start(void)
 {
-    T_CCYC cyclic = {0};
-
-    /* FP is the kernel's generic task and handler pointer type. */
-    g_motion_task = app_start_task((FP)subsystem2_motion_task, S2_PRI_MOTION,
-                                   TP_PRC1, "s2_motion");
-    cyclic.cycatr = TA_HLNG | TA_STA;
-    cyclic.cychdr = (FP)subsystem2_wake; /* Kernel handler type, as above. */
-    cyclic.cyctim = MOTION_CONTROL_PERIOD_MS;
-    cyclic.cycphs = MOTION_CONTROL_PERIOD_MS;
-    return (g_motion_task < E_OK) ? g_motion_task : tk_cre_cyc(&cyclic);
+    /* FP is the kernel's generic task pointer type. */
+    return app_start_cyclic(app_start_task((FP)subsystem2_motion_task,
+                                           S2_PRI_MOTION, TP_PRC1, "s2_motion"),
+                            MOTION_CONTROL_PERIOD_MS);
 }
 
 /*!
@@ -55,15 +46,6 @@ ER subsystem2_start(void)
 uint32_t subsystem2_max_tick_us(void)
 {
     return g_max_tick_us;
-}
-
-/*!
- * @brief Cyclic handler: wake the motion task every 10 ms.
- */
-static void subsystem2_wake(void * p_exinf)
-{
-    (void)p_exinf;
-    (void)tk_wup_tsk(g_motion_task);
 }
 
 /*!

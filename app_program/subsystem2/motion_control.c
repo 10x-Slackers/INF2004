@@ -75,6 +75,8 @@ static int32_t motion_control_clamp(int64_t value, int32_t min, int32_t max);
 static int32_t motion_control_wrap(uint32_t difference);
 static bool motion_control_start(uint32_t command, uint32_t amount);
 static void motion_control_begin(uint32_t command);
+static void motion_control_step(int32_t left_delta, int32_t right_delta,
+                                uint32_t skipped);
 static void motion_control_odometry(int32_t left_delta, int32_t right_delta,
                                     uint32_t elapsed_ms);
 static int32_t motion_control_speed(int32_t delta, uint32_t elapsed_ms);
@@ -295,16 +297,15 @@ void motion_control_pack(const motion_control_status_t * p_status,
 
 /*!
  * @brief One 10 ms control step. Called only by the motion task.
+ *
+ * @param[in] elapsed_ms Kernel time since the last step. 0 for a queued
+ * wake-up: edges are counted, everything else waits for the next step.
  */
 void motion_control_tick(uint32_t elapsed_ms)
 {
     drv_motion_counts_t counts = {0};
     int32_t left_delta = 0;
     int32_t right_delta = 0;
-    int32_t left_target = 0;
-    int32_t right_target = 0;
-    int32_t left_duty = 0;
-    int32_t right_duty = 0;
 
     drv_motion_read(&counts);
     drv_motion_lock();
@@ -314,10 +315,50 @@ void motion_control_tick(uint32_t elapsed_ms)
     g_run.left_raw = counts.left;
     g_run.right_raw = counts.right;
     motion_control_odometry(left_delta, right_delta, elapsed_ms);
+    if (0u != elapsed_ms)
+    {
+        motion_control_step(left_delta, right_delta, counts.skipped);
+    }
+    drv_motion_unlock();
+}
+
+/*!
+ * @brief Distance rolled up to now, in um, wraps. Unlike status.distance_mm
+ * it includes the edges since the last step.
+ */
+uint32_t motion_control_distance_um(void)
+{
+    drv_motion_counts_t counts = {0};
+    int32_t left = 0;
+    int32_t right = 0;
+    uint32_t edges = 0u;
+
+    drv_motion_lock();
+    drv_motion_read(&counts);
+    left = motion_control_wrap((uint32_t)counts.left - g_run.left_raw);
+    right = motion_control_wrap((uint32_t)counts.right - g_run.right_raw);
+    edges = g_run.odometer + (uint32_t)((left < 0) ? -left : left) +
+            (uint32_t)((right < 0) ? -right : right);
+    drv_motion_unlock();
+    /* The odometer adds both wheels' edges. */
+    return (uint32_t)(((uint64_t)edges * MOTION_CIRCUMFERENCE_UM) /
+                      (2u * MOTION_COUNTS_PER_REV));
+}
+
+/*!
+ * @brief Targets, stall checks and PID for one step. Caller holds the lock.
+ */
+static void motion_control_step(int32_t left_delta, int32_t right_delta,
+                                uint32_t skipped)
+{
+    int32_t left_target = 0;
+    int32_t right_target = 0;
+    int32_t left_duty = 0;
+    int32_t right_duty = 0;
 
     if (MOTION_CONTROL_RUNNING == g_status.state)
     {
-        if (counts.skipped != g_run.skipped)
+        if (skipped != g_run.skipped)
         {
             app_fault_set(APP_FAULT_ENCODER);
         }
@@ -355,7 +396,7 @@ void motion_control_tick(uint32_t elapsed_ms)
             g_status.state = MOTION_CONTROL_FAILED;
         }
     }
-    g_run.skipped = counts.skipped;
+    g_run.skipped = skipped;
 
     if (MOTION_CONTROL_RUNNING == g_status.state)
     {
@@ -363,7 +404,6 @@ void motion_control_tick(uint32_t elapsed_ms)
         right_duty = motion_control_pid(1u, right_target, g_status.right_speed);
     }
     drv_motion_write(left_duty, right_duty);
-    drv_motion_unlock();
 }
 
 /*!
@@ -487,7 +527,7 @@ static void motion_control_odometry(int32_t left_delta, int32_t right_delta,
     g_status.distance_mm =
         (uint32_t)(((int64_t)g_run.odometer * MOTION_CIRCUMFERENCE_UM) /
                    (2 * MOTION_COUNTS_PER_REV * 1000));
-    if (0u != elapsed_ms) /* Zero for a queued wake-up: keep the speeds. */
+    if (0u != elapsed_ms)
     {
         g_status.left_speed = motion_control_speed(left_delta, elapsed_ms);
         g_status.right_speed = motion_control_speed(right_delta, elapsed_ms);

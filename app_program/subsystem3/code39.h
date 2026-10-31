@@ -12,6 +12,7 @@
 /* Elements of *X*: three characters of 5 bars and 4 spaces, and the two
  * narrow spaces between them. */
 #define CODE39_ELEMENTS 29u
+#define CODE39_PER_CHR  9u /* Elements in one character. */
 
 uint32_t code39_decode(const uint16_t * p_widths);
 

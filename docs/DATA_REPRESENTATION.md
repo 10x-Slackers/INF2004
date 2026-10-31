@@ -81,7 +81,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `barcode_decoder_t.command`: last validated command (none, left, right, straight, U-turn) | 0 to 4 | 3 | `unsigned int` bit-field | Readers copy it with `barcode_decoder_get()`, under the barcode mutex |
 | 3 | `.count`, `.rejects`: barcodes validated and rejected | 0 to 15 each, wrap | 4 each | As above | As above |
 | 3 | `.distance_mm`: odometer at the end of the barcode | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
-| 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in 1/16 mm (0 to 480) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
+| 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in µm (0 to 30000) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
 | Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `unsigned int` bit-field | Controller task writes; telemetry reads it with `vehicle_controller_state()`, one load, no lock |
 | Shared | `g_vc.cycles`: 10 ms cycles since the state or junction move began | 0 to 1023, wraps (only TURN reads it, below 502) | 10 | As above | Controller task only |
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |

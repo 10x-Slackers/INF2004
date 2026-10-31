@@ -110,10 +110,11 @@ the drivers have no locking to stop it.
 | ADC | Line following (Buddy 3) | `s3_barcode` | GP26 (channel 0; `DEVCONF_ADC_PIN_INIT_0` = TRUE). The kernel's `adca` device is not opened |
 | DMA channel 11 | Line following (Buddy 3) | `s3_barcode` | ADC FIFO to the sample ring. The Wi-Fi driver claims the lowest free channels (0, 1) at run time |
 | PWM4, PWM5 | Motion (Buddy 2) | `s2_motion` (`motion_control_stop()` may brake from any task) | GP8–GP11 |
-| IRQ13 (GPIO bank 0), core 0 | Motion (Buddy 2) | `drv_motion_gpio_isr` | GP2/3, GP16/17. Other GPIO edge users register a callback with `drv_motion_gpio_register()` |
+| IRQ13 (GPIO bank 0), core 0 | *shared* (`app_main.c`) | `app_gpio_isr` | Passes edges to the callbacks registered with `app_gpio_register()` in each `_init()`, not `tk_def_int(13)`. 2 slots |
+| GPIO edge callback on IRQ13 | Motion (Buddy 2) | `drv_motion_edge`, registered with `app_gpio_register()` | GP2/3, GP16/17 encoders |
 | PWM slices (list) | IMU (Buddy 4) | `s4_imu` | Slice 3 A: GP22 buzzer |
 | PWM slices (list) | Ultrasonic (Buddy 5) | `s5_scan` | Slice 6 A: GP12 servo |
-| GPIO edge callback on IRQ13 | Ultrasonic (Buddy 5) | `drv_hcsr04_edge`, registered with `drv_motion_gpio_register()` | GP1 echo |
+| GPIO edge callback on IRQ13 | Ultrasonic (Buddy 5) | `drv_hcsr04_edge`, registered with `app_gpio_register()` | GP1 echo |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -167,7 +168,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | ID | From → To | Mechanism | Object ID name | Data / meaning | Agreed by |
 |---|---|---|---|---|---|
 | I3 | Controller, Buddies 3/5 → Motion | function calls under the motion mutex | `motion_control_move_*()`, `_turn_*()`, `_drive()`, `_stop()` | mm, degrees, mm/s; a new command replaces the running one | Buddy 2 contract |
-| I4/I5 | Motion → any task | snapshot copy under the motion mutex | `motion_control_get_status()` | state, speeds, counts, odometer, heading | Buddy 2 contract |
+| I4/I5 | Motion → any task | snapshot copy under the motion mutex | `motion_control_get_status()`; `motion_control_distance_um()` | state, speeds, counts, odometer, heading; distance rolled up to now in µm | Buddy 2 contract |
 | I11 | Safety, Controller → Motion; Controller → Safety | function calls | `motion_control_stop()`, `_latch()`, `_latched()`; `safety_monitor_stop()`, `_clear()` | stop brakes both wheels before returning and cancels the command; while latched every command is refused; clear is refused while an IMU fault is set; `docs/SAFETY_MONITOR.md` | Buddy 2 contract, shared |
 | I6 | Controller ↔ Avoidance | function calls; status copy under the avoidance mutex | `obstacle_avoidance_start()`, `_cancel()`, `_get_status()` | state, bypass side and step, bypasses done, side clearances; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | I7/I8 | Any task ↔ Ultrasonic scan | function calls; result copy under the scan mutex | `ultrasonic_scan_request()`, `ultrasonic_scan_get()` | forward range and its time, obstacle profile; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |

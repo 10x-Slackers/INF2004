@@ -21,7 +21,6 @@
 #define LINE_FOLLOWING_LOST_MM    150u /* All white this far: lost. Tune. */
 #define LINE_FOLLOWING_SEARCH_DEG 135  /* Pivot each side of the heading. */
 #define LINE_FOLLOWING_PIVOT_MM_S 100  /* Wheel speed while pivoting. */
-#define LINE_FOLLOWING_ODOMETER   0xFFFFFFu /* distance_mm wraps here. */
 
 /* Line search, under g_mutex. */
 typedef struct
@@ -134,7 +133,7 @@ void line_following_task(INT stacd, void * p_exinf)
         }
         else if ((0u == g_search.phase) &&
                  (((motion.distance_mm - g_search.from_mm) &
-                   LINE_FOLLOWING_ODOMETER) >= LINE_FOLLOWING_LOST_MM))
+                   MOTION_CONTROL_DISTANCE_MASK) >= LINE_FOLLOWING_LOST_MM))
         {
             g_search.phase = 1u;
             g_search.start_deg = motion.heading_deg;

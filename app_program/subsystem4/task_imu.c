@@ -45,7 +45,6 @@ static int32_t imu_clamp(int32_t value, int32_t limit);
 static bool imu_beyond(int32_t value, int32_t limit);
 static bool imu_moved(int32_t value, int32_t sum, int32_t count);
 static void imu_beep_on(void);
-static void imu_wake(void * p_exinf);
 
 void s4_get_accel(s4_accel_t * p_accel)
 {
@@ -80,7 +79,6 @@ void s4_get_motion(s4_motion_t * p_motion)
  */
 void s4_imu_task(INT stacd, void * p_exinf)
 {
-    T_CCYC cyclic = {0};
     int32_t x_mg = 0, y_mg = 0, z_mg = 0;
     int32_t cal_count = 0, sum_x = 0, sum_y = 0, sum_z = 0;
     int32_t offset_x = 0, offset_y = 0, offset_z = 0;
@@ -95,7 +93,7 @@ void s4_imu_task(INT stacd, void * p_exinf)
     int32_t pushed_count = 0; /* Samples in a row beyond S4_ACCEL_MG. */
     s4_motion_class_t push_class = S4_STEADY;
     s4_motion_class_t motion_class = S4_STEADY;
-    bool b_ready = false;
+    bool b_ready = true; /* Last read worked: print the next failure. */
     bool b_jolt = false;
     bool b_new_impact = false;
     bool b_new_tilt = false;
@@ -112,17 +110,16 @@ void s4_imu_task(INT stacd, void * p_exinf)
 
     app_check(drv_gy511_init(), "drv_gy511_init");
 
-    cyclic.exinf = (void *)tk_get_tid();
-    cyclic.cycatr = TA_HLNG | TA_STA;
-    cyclic.cychdr = (FP)imu_wake; /* Kernel handler type. */
-    cyclic.cyctim = S4_IMU_MS;
-    app_check(tk_cre_cyc(&cyclic), "tk_cre_cyc");
+    app_check(app_start_cyclic(tk_get_tid(), S4_IMU_MS), "tk_cre_cyc");
 
     for (;;)
     {
         (void)tk_slp_tsk(TMO_FEVR);
         result = drv_gy511_read(&x_mg, &y_mg, &z_mg);
-        app_check(result, "drv_gy511_read");
+        if (b_ready)
+        {
+            app_check(result, "drv_gy511_read"); /* Not 100 a second. */
+        }
         b_ready = (result >= E_OK);
 
         if (b_ready && (cal_count < S4_CAL_N))
@@ -331,14 +328,6 @@ static void imu_beep_on(void)
     (void)pwm_set_wrap(S4_BUZZER_PIN, (IMU_PWM_CLOCK_HZ / S4_BEEP_HZ) - 1u);
     (void)pwm_set_cc(S4_BUZZER_PIN, IMU_PWM_CLOCK_HZ / S4_BEEP_HZ / 2u);
     (void)pwm_set_enabled(S4_BUZZER_PIN, TRUE);
-}
-
-/*!
- * @brief Cyclic handler: wake the IMU task, whose ID is p_exinf.
- */
-static void imu_wake(void * p_exinf)
-{
-    (void)tk_wup_tsk((ID)p_exinf);
 }
 
 /*** end of file ***/

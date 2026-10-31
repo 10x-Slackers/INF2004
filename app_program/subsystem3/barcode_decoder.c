@@ -2,8 +2,8 @@
  *
  * @brief Barcode Decoder API and task, the only task that drives the ADC.
  *
- * Each sample is placed along the track by interpolating the odometer
- * across its 10 ms block, in 1/16 mm. A barcode starts at the first black
+ * Each sample is placed along the track by interpolating the distance
+ * rolled across its 10 ms block, in um. A barcode starts at the first black
  * after white and ends at a white run longer than BARCODE_END; its bars
  * and spaces then go to code39_decode().
  */
@@ -14,12 +14,9 @@
 #include "subsystem3.h"
 #include "../subsystem2/motion_control.h"
 
-#define BARCODE_BLACK    2500u /* ADC counts: white reads ~170, black */
-#define BARCODE_WHITE    1500u /* ~4070 (S3-U10). Hysteresis between. */
-#define BARCODE_SUB      16u   /* Positions in 1/16 mm. */
-#define BARCODE_END      (30u * BARCODE_SUB) /* 30 mm: over 3 wide bars. */
-#define BARCODE_ODOMETER 0xFFFFFFu /* motion distance_mm wraps at 24 bits. */
-#define CODE39_CHAR      9u        /* Elements in one character. */
+#define BARCODE_BLACK 2500u  /* ADC counts: white reads ~170, black */
+#define BARCODE_WHITE 1500u  /* ~4070 (S3-U10). Hysteresis between. */
+#define BARCODE_END   30000u /* um: 30 mm, over 3 wide bars. */
 
 static ID g_mutex;
 static barcode_decoder_t g_barcode;
@@ -28,7 +25,7 @@ static barcode_decoder_raw_t g_raw;
 /* Barcode Decoder task only. */
 static uint16_t g_widths[CODE39_ELEMENTS];
 static uint32_t g_elements;  /* Elements so far; over 29 is too many. */
-static uint32_t g_run_start; /* 1/16 mm. */
+static uint32_t g_run_start; /* um. */
 static bool g_b_black;
 static bool g_b_in_code;
 
@@ -79,9 +76,8 @@ void barcode_decoder_task(INT stacd, void * p_exinf)
 {
     static uint16_t samples[DRV_BARCODE_RING]; /* Off the task stack. */
     motion_control_status_t motion = {0};
-    uint32_t last_mm = 0u;
-    uint32_t moved = 0u; /* 1/16 mm rolled in this block. */
-    uint32_t pos = 0u;   /* 1/16 mm, wraps. */
+    uint32_t last_um = motion_control_distance_um();
+    uint32_t moved = 0u; /* um rolled in this block. */
     uint32_t count = 0u;
     uint32_t min = 0u;
     uint32_t max = 0u;
@@ -89,16 +85,13 @@ void barcode_decoder_task(INT stacd, void * p_exinf)
 
     (void)stacd;
     (void)p_exinf;
-    motion_control_get_status(&motion);
-    last_mm = motion.distance_mm;
     for (;;)
     {
         (void)tk_slp_tsk(TMO_FEVR); /* Woken every 10 ms (subsystem3.c). */
         count = drv_barcode_read(samples);
+        /* Read right after the samples, so both end at the same moment. */
+        moved = motion_control_distance_um() - last_um;
         motion_control_get_status(&motion);
-        moved =
-            ((motion.distance_mm - last_mm) & BARCODE_ODOMETER) * BARCODE_SUB;
-        last_mm = motion.distance_mm;
         min = 4095u;
         max = 0u;
         for (i = 0u; i < count; i++)
@@ -106,10 +99,10 @@ void barcode_decoder_task(INT stacd, void * p_exinf)
             min = (samples[i] < min) ? samples[i] : min;
             max = (samples[i] > max) ? samples[i] : max;
             barcode_decoder_sample(samples[i],
-                                   pos + ((moved * (i + 1u)) / count),
+                                   last_um + ((moved * (i + 1u)) / count),
                                    motion.distance_mm);
         }
-        pos += moved;
+        last_um += moved;
 
         (void)tk_loc_mtx(g_mutex, TMO_FEVR);
         g_raw.min = min;
@@ -124,7 +117,7 @@ void barcode_decoder_task(INT stacd, void * p_exinf)
  * and end the barcode after a long white run.
  *
  * @param[in] level       ADC counts.
- * @param[in] pos         Where the sample was taken, 1/16 mm.
+ * @param[in] pos         Where the sample was taken, um, wraps.
  * @param[in] odometer_mm Odometer at the end of this block.
  */
 static void barcode_decoder_sample(uint32_t level, uint32_t pos,
@@ -178,14 +171,14 @@ static void barcode_decoder_end(uint32_t odometer_mm)
     uint32_t i = 0u;
 
     /* Bench evidence for S3-U14: what the sensor measured, in 0.1 mm. */
-    if (g_elements >= CODE39_CHAR)
+    if (g_elements >= CODE39_PER_CHR)
     {
         /* (UB *): tm_printf() takes unsigned chars. */
         tm_printf((UB *)"[barcode] elements=%u letter=%c widths_0.1mm=",
                   g_elements, (0u != letter) ? (int)letter : '-');
         for (i = 0u; (i < g_elements) && (i < CODE39_ELEMENTS); i++)
         {
-            tm_printf((UB *)" %u", (g_widths[i] * 10u) / BARCODE_SUB);
+            tm_printf((UB *)" %u", g_widths[i] / 100u);
         }
         tm_printf((UB *)"\n");
     }
@@ -198,7 +191,7 @@ static void barcode_decoder_end(uint32_t odometer_mm)
         g_barcode.count++;
         g_barcode.distance_mm = odometer_mm;
     }
-    else if (g_elements >= CODE39_CHAR)
+    else if (g_elements >= CODE39_PER_CHR)
     {
         g_barcode.rejects++; /* Shorter runs are specks, or the line. */
     }

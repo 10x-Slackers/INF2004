@@ -22,6 +22,7 @@ static struct
 static ultrasonic_scan_t g_scan;
 static uint8_t g_angle = ULTRASONIC_SCAN_AHEAD; /* Scan task only. */
 
+static void ultrasonic_scan_serve(uint32_t mode, uint32_t request);
 static void ultrasonic_scan_aim(uint32_t angle_deg);
 static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * p_b_fault);
 
@@ -80,14 +81,9 @@ void ultrasonic_scan_get(ultrasonic_scan_t * p_scan)
  */
 void ultrasonic_scan_task(INT stacd, void * p_exinf)
 {
-    uint16_t rays[SCAN_PROFILE_RAYS] = {0};
-    scan_profile_t profile = {0};
-    SYSTIM now = {0};
-    uint32_t ray = 0u;
     uint32_t mode = 0u;
     uint32_t request = 0u;
-    uint32_t mm = 0u;
-    bool b_fault = false;
+    bool b_new = false;
 
     (void)stacd;
     (void)p_exinf;
@@ -97,40 +93,59 @@ void ultrasonic_scan_task(INT stacd, void * p_exinf)
         (void)tk_loc_mtx(g_mutex, TMO_FEVR);
         mode = g_next.mode;
         request = g_next.request;
+        /* A request made while the task woke is read with the one before
+         * it; its own signal then finds it already served. */
+        b_new = (request != g_scan.request);
         (void)tk_unl_mtx(g_mutex);
-
-        b_fault = false;
-        if (ULTRASONIC_SCAN_PROFILE == mode)
+        if (b_new)
         {
-            for (ray = 0u; ray < SCAN_PROFILE_RAYS; ray++)
-            {
-                rays[ray] = (uint16_t)ultrasonic_scan_ray(ray, &b_fault);
-            }
-            scan_profile_build(rays, &profile);
+            ultrasonic_scan_serve(mode, request);
         }
-        ultrasonic_scan_aim(ULTRASONIC_SCAN_AHEAD);
-        b_fault = !drv_hcsr04_measure(&mm) || b_fault;
-        (void)tk_get_otm(&now);
-
-        (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-        g_scan.forward_mm = mm;
-        g_scan.forward_ms = now.lo;
-        /* APP_FAULT_NO_ECHO, before request tells readers it is done. */
-        if (b_fault)
-        {
-            app_fault_set(APP_FAULT_NO_ECHO);
-        }
-        else
-        {
-            app_fault_clear(APP_FAULT_NO_ECHO);
-        }
-        if (ULTRASONIC_SCAN_PROFILE == mode)
-        {
-            g_scan.profile = profile;
-        }
-        g_scan.request = request;
-        (void)tk_unl_mtx(g_mutex);
     }
+}
+
+/*!
+ * @brief Take one scan and publish it with its request number.
+ */
+static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
+{
+    uint16_t rays[SCAN_PROFILE_RAYS] = {0};
+    scan_profile_t profile = {0};
+    SYSTIM now = {0};
+    uint32_t ray = 0u;
+    uint32_t mm = 0u;
+    bool b_fault = false;
+
+    if (ULTRASONIC_SCAN_PROFILE == mode)
+    {
+        for (ray = 0u; ray < SCAN_PROFILE_RAYS; ray++)
+        {
+            rays[ray] = (uint16_t)ultrasonic_scan_ray(ray, &b_fault);
+        }
+        scan_profile_build(rays, &profile);
+    }
+    ultrasonic_scan_aim(ULTRASONIC_SCAN_AHEAD);
+    b_fault = !drv_hcsr04_measure(&mm) || b_fault;
+    (void)tk_get_otm(&now);
+
+    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    g_scan.forward_mm = mm;
+    g_scan.forward_ms = now.lo;
+    /* APP_FAULT_NO_ECHO, before request tells readers it is done. */
+    if (b_fault)
+    {
+        app_fault_set(APP_FAULT_NO_ECHO);
+    }
+    else
+    {
+        app_fault_clear(APP_FAULT_NO_ECHO);
+    }
+    if (ULTRASONIC_SCAN_PROFILE == mode)
+    {
+        g_scan.profile = profile;
+    }
+    g_scan.request = request;
+    (void)tk_unl_mtx(g_mutex);
 }
 
 /*!

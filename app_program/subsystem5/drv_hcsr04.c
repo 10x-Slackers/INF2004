@@ -2,7 +2,7 @@
  *
  * @brief HC-SR04 ultrasonic range sensor.
  *
- * ECHO edges arrive through subsystem 2's GPIO interrupt, which records
+ * ECHO edges arrive through the shared GPIO interrupt, which records
  * their time on the 1 MHz TIMER and wakes the measuring task, so the task
  * sleeps instead of polling while the echo is out.
  */
@@ -10,7 +10,6 @@
 #include "drv_hcsr04.h"
 #include "scan_profile.h"
 #include "../app.h"
-#include "../subsystem2/drv_motion.h"
 
 #define DRV_HCSR04_TRIG     0u
 #define DRV_HCSR04_ECHO     1u
@@ -42,7 +41,7 @@ bool drv_hcsr04_init(void)
     (void)gpio_set_val(DRV_HCSR04_TRIG, 0u);
     (void)gpio_set_pin(DRV_HCSR04_TRIG, GPIO_MODE_OUT);
     (void)gpio_set_pin(DRV_HCSR04_ECHO, GPIO_MODE_IN);
-    return drv_motion_gpio_register(1u << DRV_HCSR04_ECHO, drv_hcsr04_edge);
+    return app_gpio_register(1u << DRV_HCSR04_ECHO, drv_hcsr04_edge);
 }
 
 /*!

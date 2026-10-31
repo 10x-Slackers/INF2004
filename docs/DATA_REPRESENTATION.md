@@ -64,3 +64,8 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 5 | `g_angle` (scan): servo angle last set | 0, 80 to 100° | 8 | `uint8_t` | Scan task only |
 | 5 | `g_rise_us`, `g_width_us`, `g_trigger_us` (driver): echo rise time, echo width, last trigger time | 0 to 2³²−1 µs, wraps | 32 each | `uint32_t`, in the TIMER register's format (out of scope) | Edge callback writes the first two, the scan task reads them after it wakes |
 | 5 | `g_b_rose`, `g_b_fell` (driver): echo edges seen | 0 or 1 | 1 each | `volatile bool`: written by the edge callback, these loads are atomic | As above |
+| 3 | `line_following_t.bits`: left and right sensor over black | One bit each | 2 | `unsigned int` bit-field | Readers copy it with `line_following_get()`, under the line mutex |
+| 3 | `.last_side`: last single sensor to see black | `DRV_LINE_LEFT` or `DRV_LINE_RIGHT`, 0 before the first | 2 | As above | As above |
+| 3 | `.b_junction`: both sensors black for 3 samples | 0 or 1 | 1 | As above | As above |
+| 3 | `.count`: samples taken | 0 to 255, wraps | 8 | As above | As above |
+| 3 | `.sample_ms`: kernel time of the sample | 0 to 2³²−1 ms, wraps | 32 | As above | As above |

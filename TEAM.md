@@ -150,7 +150,7 @@ agreement. Write down every task you create.
 |---|---|---|
 | Shared | 5, 10 | Safety Monitor (P1) – 5; Vehicle Controller (P5) – 10 |
 | 2 | 6–7 | `s2_motion` (P2) – 6 – core 0; `s2_bench` – 7 – core 0 (`TEST=1` only) |
-| 3 | 8–9 | Barcode Decoder (P3), Line Following (P4) |
+| 3 | 8–9 | Barcode Decoder (P3); `s3_line` (P4) – 9 – any; `s3_bench` – 9 – any (`TEST=1` only) |
 | 5 | 11–12 | `s5_avoid` (P6) – 11 – any; `s5_scan` (P7) – 12 – any; `s5_bench` – 12 – any (`TEST=1` only) |
 | 4 | 18–19 | `s4_imu` (P8) – 18 – any |
 | 1 | 20–21 | Wi-Fi and MQTT Telemetry (P10) |
@@ -170,6 +170,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | I11 | Safety, Controller → Motion | function call | `motion_control_stop()` | brakes both wheels before returning; cancels the command | Buddy 2 contract |
 | I6 | Controller ↔ Avoidance | function calls; status copy under the avoidance mutex | `obstacle_avoidance_start()`, `_cancel()`, `_get_status()` | state, faults, bypass side and step, bypasses done, side clearances; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | I7/I8 | Any task ↔ Ultrasonic scan | function calls; result copy under the scan mutex | `ultrasonic_scan_request()`, `ultrasonic_scan_get()` | forward range and its time, obstacle profile; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
+| I1 | Line Following → Controller, Avoidance | line state copy under the line mutex | `line_following_get()` | sensor bits, last side seen, junction flag, sample count and time; `line_following.h` | Buddy 3 contract |
 | Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
 Each interface is tested by at least one integration test
@@ -182,11 +183,11 @@ limit there. Fill in each subsystem's usage.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | | 2 | | 1 | 3 |
+| Task | 32 | | 2 | 1 | 1 | 3 |
 | Semaphore | 16 | | | | | 1 |
 | Event flag | 16 | | | | | |
 | Mailbox | 12 | | | | | |
-| Mutex | 12 | | 1 | | 1 | 2 |
+| Mutex | 12 | | 1 | 1 | 1 | 2 |
 | Message buffer | 12 | | | | | |
 | Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |

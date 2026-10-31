@@ -1,4 +1,4 @@
-S5-U48 with the 700 mm pass, TEST=1 image from b39e2dc (200 mm side-step, repeatable bench). Bottle centred about 80 cm ahead.
+S5-U48 with the 700 mm pass, TEST=1 image from a4f227c (200 mm side-step, repeatable bench). Bottle centred about 80 cm ahead.
 Tester's observation: perfect, no issues (past the bottle, on the line, same heading).
 
 [scan] forward_mm=701 fault=0 closest=697@85 edges=85..85 obstacle=0

@@ -1,4 +1,4 @@
-S5-U49 on the car, TEST=1 image from cbc7a94. Bottle centred about 80 cm ahead, walls about 25 cm either side.
+S5-U49 on the car, TEST=1 image from a4f227c before its 700 mm pass and GP20 bench changes. Bottle centred about 80 cm ahead, walls about 25 cm either side.
 
 [motion] bench: press GP21 to start
 [scan] forward_mm=534 fault=0

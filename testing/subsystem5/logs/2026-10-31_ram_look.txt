@@ -1,5 +1,5 @@
 Minimum-bit change: RAM before and after (subsystem 5, after the car-turn coarse scan)
-Code: 26a4ae2 (unsigned bit-fields in scan_profile_t, ultrasonic_scan_t, obstacle_avoidance_status_t; uint8_t g_mode, g_angle)
+Code: b66c3c3 before its servo pulse trims (unsigned bit-fields in scan_profile_t, ultrasonic_scan_t, obstacle_avoidance_status_t; uint8_t g_mode, g_angle)
 Tool and BEFORE method as in 2026-10-31_ram.txt (sed widening of every bit-field to 32 bits; the build's arm-none-eabi-gcc -c; nm -S; size)
 
 == BEFORE

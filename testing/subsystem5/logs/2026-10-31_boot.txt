@@ -1,4 +1,4 @@
-S5-U40..U42 on the car, TEST=1 image from 1937ba5. Plain HC-SR04 on Grove 1 (3.3 V), SG90 on the GP12 header. Captured with:
+S5-U40..U42 on the car, TEST=1 image from 774f912. Plain HC-SR04 on Grove 1 (3.3 V), SG90 on the GP12 header. Captured with:
 timeout 20 sh -c 'exec < /host-dev/ttyACM0; stty 115200 raw -echo; exec cat' | stdbuf -oL tr -d '\r'
 Blank lines removed; output cut after the bench prompt.
 

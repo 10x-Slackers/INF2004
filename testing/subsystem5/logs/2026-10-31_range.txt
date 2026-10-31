@@ -1,4 +1,4 @@
-S5-U45 on the car, TEST=1 image from fc9b321. Plain HC-SR04 on Grove 1 (3.3 V). Short GP20 presses, flat target ahead.
+S5-U45 on the car, TEST=1 image from b66c3c3. Plain HC-SR04 on Grove 1 (3.3 V). Short GP20 presses, flat target ahead.
 True distances from the front of the sensor's cans, by the tester: 100 mm and 300 mm with a ruler; 1000 mm without a metre ruler (estimated); open space = pointed at the room (ceiling or far wall).
 
 == 100 mm

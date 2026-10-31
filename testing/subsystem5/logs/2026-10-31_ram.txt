@@ -1,5 +1,5 @@
 Minimum-bit change: RAM before and after (subsystem 5: scan_profile.c, ultrasonic_scan.c, obstacle_avoidance.c)
-Code: fbdac9e (unsigned bit-fields in scan_profile_t, ultrasonic_scan_t, obstacle_avoidance_status_t; uint8_t g_mode, g_angle)
+Code: 774f912 (unsigned bit-fields in scan_profile_t, ultrasonic_scan_t, obstacle_avoidance_status_t; uint8_t g_mode, g_angle)
 Tool: the build's arm-none-eabi-gcc command for app_program/subsystem5 (-mcpu=cortex-m0plus -mthumb -O2 -std=gnu11) -c; arm-none-eabi-nm -S; arm-none-eabi-size
 BEFORE: the same source with every bit-field widened to a 32-bit integer
   sed -E 's/unsigned int ([a-z_]+) *: *[0-9]+;/uint32_t \1;/; s/signed int ([a-z_]+) *: *[0-9]+;/int32_t \1;/' app_program/subsystem5/*.[ch]

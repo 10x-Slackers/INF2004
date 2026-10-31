@@ -1,4 +1,4 @@
-S5-U43 host test, commit 7dba476
+S5-U43 host test, commit 4b22bb9
 cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 app_program/subsystem5/scan_profile.c testing/subsystem5/host/test_profile.c -o /tmp/test_profile && /tmp/test_profile
 
 PASS  echo time to mm; past 4 m reads as 4000 (nothing there)

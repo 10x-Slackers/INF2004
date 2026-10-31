@@ -1,8 +1,5 @@
 [S5-HW] === BUDDY 5 HARDWARE TEST ===
 [S5-HW] Real FORWARD scan requested.
-wifi: cyw43_utk_task starting (proc 1)
-wifi: cyw43_init() ...
-wifi: cyw43_init() returned, bringing interface up ...
 [S5-HW] FORWARD valid=0 distance_mm=0 servo_angle=90 state=WAIT_STOP action=STOP_AND_SCAN faults=0x08
 [S5-HW] BENCH-TEST ONLY: simulating MOTION_STOPPED; assembly is stationary on desk, Buddy 2 unavailable.
 [S5-HW] COARSE SCAN (retry=0).

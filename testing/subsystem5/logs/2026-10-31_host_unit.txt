@@ -3,7 +3,7 @@
 [TEST] S5-U02 PASS  5800 us converts to 1000 mm
 [TEST] S5-U03 PASS  no echo is invalid
 [TEST] S5-U04 PASS  closest point
-[TEST] S5-U05 PASS  centred sector, width unknown
+[TEST] S5-U05 PASS  centred sector
 [TEST] S5-U06 PASS  left-only clearance
 [TEST] S5-U07 PASS  right-only clearance
 [TEST] S5-U08 PASS  both blocked, no blind reverse
@@ -27,4 +27,5 @@
 [TEST] S5-U26 PASS  reset needs new activation and range
 [TEST] S5-U27 PASS  sensor useful range boundaries
 [TEST] S5-U28 PASS  all-invalid filter remains invalid
-[TEST] subsystem5 SUMMARY 28 passed, 0 failed
+[TEST] S5-U29 PASS  planner stop preserves profile; cancellation invalidates
+[TEST] subsystem5 SUMMARY 29 passed, 0 failed

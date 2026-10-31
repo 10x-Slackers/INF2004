@@ -1,0 +1,5 @@
+[TEST] S5-U31 PASS  simulated 1160 us echo converts to about 200 mm
+[TEST] S5-U38 PASS  10 us trigger pulse without WaitUsec
+[TEST] S5-U32 PASS  no echo is invalid
+[TEST] S5-U33 PASS  echo stuck high is invalid
+[TEST] hcsr04 driver SUMMARY 4 passed, 0 failed

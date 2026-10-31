@@ -26,8 +26,8 @@
 
 #include "app.h"
 
-/* Temporary isolated demo: set to 0 to restore all buddies. */
-#define APP_BUDDY5_ONLY 1
+#define APP_WATCHDOG_TICK        0x4005802cu /* RP2040 WATCHDOG TICK */
+#define APP_WATCHDOG_TICK_ENABLE (1u << 9)
 
 /*
  * Create and start one task (declared in app.h for every subsystem).
@@ -70,7 +70,6 @@ EXPORT ID app_start_task(FP entry, PRI pri, UW prc, const char * name)
 
 EXPORT INT usermain(void)
 {
-#if !APP_BUDDY5_ONLY
     T_RVER ver;
 
     /* tk_ref_ver: ask the kernel who it is */
@@ -84,7 +83,6 @@ EXPORT INT usermain(void)
 #else
     tm_printf((UB *)"single-core build\n");
 #endif
-#endif
 
     /* The kernel leaves the PWM block in reset (USE_PTMR = 0 in
        config/config.h).  Release it once here for every PWM pin: motors,
@@ -94,41 +92,37 @@ EXPORT INT usermain(void)
     {
     }
 
+    /* The kernel never starts the watchdog tick that clocks the 1 MHz
+       TIMER block, so after a power-on the timer runs about 20 times too
+       slow (a reboot from BOOTSEL keeps the boot ROM's setting, which
+       hides this).  One tick per microsecond of the 12 MHz crystal. */
+    out_w(APP_WATCHDOG_TICK, APP_WATCHDOG_TICK_ENABLE | XOSC_MHz);
+
     /* Phase 1: every subsystem creates its kernel objects */
-#if !APP_BUDDY5_ONLY
     CHECK(subsystem1_init(), "subsystem1_init");
     CHECK(subsystem2_init(), "subsystem2_init");
     CHECK(subsystem3_init(), "subsystem3_init");
     CHECK(subsystem4_init(), "subsystem4_init");
-#endif
     CHECK(subsystem5_init(), "subsystem5_init");
 
     /* Phase 2: every subsystem starts its tasks */
-#if !APP_BUDDY5_ONLY
     CHECK(subsystem1_start(), "subsystem1_start");
     CHECK(subsystem2_start(), "subsystem2_start");
     CHECK(subsystem3_start(), "subsystem3_start");
     CHECK(subsystem4_start(), "subsystem4_start");
-#endif
     CHECK(subsystem5_start(), "subsystem5_start");
 
-#if APP_BUDDY5_ONLY
-    tm_printf((UB *)"Buddy 5 started\n\n");
-#else
     tm_printf((UB *)"all subsystems started\n\n");
-#endif
 
 #if APP_TEST
     /* Test build (make TEST=1): run every subsystem's tests in turn,
        here in the initial task, while the system is running.  Tests may
        call tk_dly_tsk() to let the other tasks work for a while. */
     tm_printf((UB *)"[TEST] === test run start ===\n");
-#if !APP_BUDDY5_ONLY
     subsystem1_test();
     subsystem2_test();
     subsystem3_test();
     subsystem4_test();
-#endif
     subsystem5_test();
     tm_printf((UB *)"[TEST] === test run end ===\n");
 #endif

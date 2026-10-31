@@ -1,9 +1,8 @@
 #include "subsystem5.h"
 #include "../test_report.h"
 
-/* Temporary stationary-desk test; excluded from normal and host builds. */
-#define S5_RUN_HARDWARE_BENCH_TEST 1
-#if APP_TEST && S5_RUN_HARDWARE_BENCH_TEST && !defined(S5_HOST_TEST)
+/* The bench sequence runs on the Pico only, not in the host build. */
+#if APP_TEST && !defined(S5_HOST_TEST)
 #include <sys/sysdef.h>
 static void s5_hardware_bench_test(void);
 #endif
@@ -58,8 +57,8 @@ void subsystem5_test(void)
                "closest point");
     TEST_CHECK("S5-U05",
                profile.detected && profile.valid && profile.left_edge == 90 &&
-                   profile.right_edge == 90 && !profile.width_valid,
-               "centred sector, width unknown");
+                   profile.right_edge == 90,
+               "centred sector");
     profile.right_mm = 400;
     TEST_CHECK("S5-U06", s5_choose(&profile, 1100, 1) == S5_BYPASS_LEFT,
                "left-only clearance");
@@ -210,15 +209,14 @@ void subsystem5_test(void)
                "planner stop preserves profile; cancellation invalidates");
     TEST_SUMMARY("subsystem5");
 
-#if S5_RUN_HARDWARE_BENCH_TEST && !defined(S5_HOST_TEST)
+#ifndef S5_HOST_TEST
     s5_hardware_bench_test();
 #endif
 }
 #endif
 
-/* ---------- Temporary on-target hardware bench: no direct drivers ----------
- */
-#if APP_TEST && S5_RUN_HARDWARE_BENCH_TEST && !defined(S5_HOST_TEST)
+/* Bench sequence: real sensor and servo through the public API only. */
+#if APP_TEST && !defined(S5_HOST_TEST)
 #define S5_BENCH_POLL_MS 20
 #define S5_BENCH_MAX_MS                                                        \
     ((S5_MAX_SCAN_RETRIES + 3U) * S5_SCAN_MAX_MS + S5_WAIT_STOP_MS)

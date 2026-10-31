@@ -1,4 +1,4 @@
-/* Buddy 5 local contracts. Cross-subsystem wiring needs team agreement. */
+/* Subsystem 5: ultrasonic scanning and obstacle avoidance. */
 #ifndef SUBSYSTEM5_H
 #define SUBSYSTEM5_H
 #ifdef S5_HOST_TEST
@@ -79,10 +79,8 @@ typedef struct
     unsigned int right_edge : 8;
     unsigned int detected : 1;
     unsigned int valid : 1;
-    unsigned int width_valid : 1;
     unsigned int left_valid : 1;
     unsigned int left_edge : 8;
-    unsigned int width_mm : 12;
     unsigned int right_valid : 1;
     unsigned int valid_count : 4;
     unsigned int faults : 7;

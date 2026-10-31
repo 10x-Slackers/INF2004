@@ -292,13 +292,3 @@ The design does not fix these. They come from tests on the real car and track, a
 | IR thresholds and barcode timing | Calibration on the real track |
 | Hump-height estimation error | Humps of known height (A4) |
 | Ultrasonic profile error | Objects at known distance and width (A5) |
-
-## Buddy 5 local implementation contract
-
-Buddy 5 implements the two responsibilities at actual priorities 20/21,
-using internal copy queues and one snapshot mutex. Detailed profiling requires
-explicit standstill confirmation. Its local I6/I7/I8/I10 proposal, calibration
-gate, freshness rules, bounded recovery and deferred cross-subsystem wiring
-are specified in [the Buddy 5 contract](../app_program/subsystem5/README.md).
-No reverse recommendation is available without a verified rear-clearance
-source. Angular edges are reported; unreliable metric width stays invalid.

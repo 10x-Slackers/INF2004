@@ -45,8 +45,8 @@ fixed.
 | Pin | Owner | Used for |
 |---|---|---|
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
-| GP0 | Ultrasonic (Buddy 5) | HC-SR04 TRIG; USB CDC / `CRASH_REPORT=0` only |
-| GP1 | Ultrasonic (Buddy 5) | HC-SR04 ECHO, level shifted; UART prohibited |
+| GP0 | Ultrasonic (Buddy 5) | HC-SR04 TRIG (Grove 1). Unplug the sensor for `CRASH_REPORT=1` builds |
+| GP1 | Ultrasonic (Buddy 5) | HC-SR04 ECHO, level shifted (Grove 1). Unplug the sensor for `CRASH_REPORT=1` builds |
 | GP2 | Motion (Buddy 2) | left encoder phase A (Grove 2) |
 | GP3 | Motion (Buddy 2) | left encoder phase B (Grove 2) |
 | GP4 | IMU (Buddy 4) | GY-511 SDA, I2C0 (Grove 3) |
@@ -57,7 +57,7 @@ fixed.
 | GP9 | | |
 | GP10 | | |
 | GP11 | | |
-| GP12 | Ultrasonic (Buddy 5) | SG90 servo signal |
+| GP12 | Ultrasonic (Buddy 5) | SG90 servo signal (PWM slice 6 A) |
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
@@ -109,8 +109,7 @@ the drivers have no locking to stop it.
 | SPI1 | | | |
 | ADC | | | GP26–GP28 |
 | PWM slices (list) | IMU (Buddy 4) | `imu_task` | Slice 1 A: GP18 buzzer |
-| PWM slice 6, channel A | Ultrasonic (Buddy 5) | `scan_task` | GP12; GP13 must not independently configure slice 6 |
-| TIMER free-running counter setup | Ultrasonic (Buddy 5) | `scan_task` | No GPIO; 1 MHz reference/reset release, shared read-only counter; alarms unclaimed |
+| PWM slices (list) | Ultrasonic (Buddy 5) | `scan_task` | Slice 6 A: GP12 servo |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -161,14 +160,7 @@ sends to it or waits on it. Agree on the data format before coding.
 
 | ID | From → To | Mechanism | Object ID name | Data / meaning | Agreed by |
 |---|---|---|---|---|---|
-| IF-01 | Buddy 5 internal: scanner → avoidance | Copy message buffer | private `inbox` | Scan results and commands; four records | Buddy 5 internal |
-| IF-02 | Buddy 5 internal: avoidance → scanner | Copy message buffer | private `requests` | Two-bit mode; one outstanding record | Buddy 5 internal |
-| IF-03 | Buddy 5 internal/readers | Inheritance mutex | private `snapshot_mutex` | `s5_get_health()` copies health | Buddy 5 internal |
-
-Buddy 5 I6/I7/I8/I10 types/APIs are local proposals in `subsystem5.h`;
-no project-wide object IDs are allocated. Agree the contract in
-`app_program/subsystem5/README.md` before wiring motion, line and safety
-providers. I1/I5/I11 ownership stays with providers.
+| IF-01 | | | | | |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).

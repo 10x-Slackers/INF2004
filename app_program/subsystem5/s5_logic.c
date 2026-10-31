@@ -150,9 +150,6 @@ void s5_make_profile(const S5_SCAN * scan, uint32_t now_ms, S5_PROFILE * out)
     }
     out->right_mm = out->right_valid ? right : 0;
     out->left_mm = out->left_valid ? left : 0;
-    /* A single sonar fan cannot reliably infer physical width. Keep the
-     * angular edges and explicitly mark metric width unknown. */
-    out->width_valid = 0;
 }
 
 S5_ACTION s5_choose(const S5_PROFILE * p, uint32_t now_ms,
@@ -178,6 +175,13 @@ static void stop(S5_CONTROL * c, unsigned int fault, uint32_t now)
     c->active = 0;
     c->scan_due = 0;
     c->profile.valid = 0;
+    c->entered_ms = now;
+}
+
+static void wait_stop(S5_CONTROL * c, uint32_t now)
+{
+    c->action = S5_STOP_AND_SCAN;
+    c->state = S5_WAIT_STOP;
     c->entered_ms = now;
 }
 
@@ -217,27 +221,20 @@ void s5_transition(S5_CONTROL * c, S5_EVENT_KIND event, const S5_SCAN * scan,
     {
         c->motion_stopped = 1;
     }
-    if (c->state == S5_STOPPED)
+    if (c->state == S5_STOPPED) /* needs a reset and a new activation */
     {
         return;
-    } /* reset + new activation */
+    }
     if (event == S5_ACTIVATE)
     {
         c->active = 1;
-        c->action = S5_STOP_AND_SCAN;
-        c->state = S5_WAIT_STOP;
-        c->entered_ms = now;
+        wait_stop(c, now);
     }
-    if (event == S5_REQUEST_COARSE || event == S5_REQUEST_FINE)
+    if ((event == S5_REQUEST_COARSE || event == S5_REQUEST_FINE) && !c->pending)
     {
-        if (!c->pending)
-        {
-            c->mode = event == S5_REQUEST_FINE ? S5_FINE : S5_COARSE;
-            c->active = 1;
-            c->action = S5_STOP_AND_SCAN;
-            c->state = S5_WAIT_STOP;
-            c->entered_ms = now;
-        }
+        c->mode = event == S5_REQUEST_FINE ? S5_FINE : S5_COARSE;
+        c->active = 1;
+        wait_stop(c, now);
     }
     if (event == S5_REQUEST_FORWARD && !c->pending && c->state == S5_MONITOR)
     {
@@ -252,7 +249,7 @@ void s5_transition(S5_CONTROL * c, S5_EVENT_KIND event, const S5_SCAN * scan,
     {
         stop(c, S5_NO_SAFE_PATH, now);
     }
-    if (event == S5_SCAN_DONE && scan && c->state != S5_STOPPED)
+    if (event == S5_SCAN_DONE)
     {
         c->faults |= scan->faults;
         if (scan->faults & (S5_SERVO_ERROR | S5_SCAN_TIMEOUT))
@@ -274,20 +271,14 @@ void s5_transition(S5_CONTROL * c, S5_EVENT_KIND event, const S5_SCAN * scan,
             }
             else
             {
-                c->action = S5_STOP_AND_SCAN;
-                c->state = S5_WAIT_STOP;
-                c->entered_ms = now;
+                wait_stop(c, now);
             }
         }
         else if (c->state == S5_PROFILING)
         {
             s5_make_profile(scan, now, &c->profile);
-            if (scan->faults & (S5_SCAN_TIMEOUT | S5_SERVO_ERROR))
-            {
-                stop(c, scan->faults, now);
-            }
-            else if (c->profile.closest_mm &&
-                     c->profile.closest_mm <= S5_EMERGENCY_MM)
+            if (c->profile.closest_mm &&
+                c->profile.closest_mm <= S5_EMERGENCY_MM)
             {
                 stop(c, S5_NO_SAFE_PATH, now);
             }

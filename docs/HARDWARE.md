@@ -143,6 +143,8 @@ No SG90 datasheet was supplied. The values below are the usual ones for this ser
 
 Let the servo settle before taking a range reading at a new angle.
 
+The servo runs on PWM slice 6 A at 50 Hz (1 MHz counter, TOP 19999). GP13 shares slice 6, so it shares that frequency.
+
 ## HC-SR04 ultrasonic sensor
 
 | Parameter                 | Value                        |
@@ -165,16 +167,9 @@ Power the module from 5 V, not from the Grove port's 3.3 V: the datasheet specif
 
 **ECHO is then a 5 V signal.** Bring it down to 3.3 V with a level shifter or a resistor divider (for example 1 kΩ in series, 2 kΩ to ground) before it reaches GP1.
 
-The **RCWL-9610A design / HC-SR04-R** variant supports 3.3 V operation.
-For the Maker Pi Pico desk bench, supply that variant from Grove 1's 3V3,
-use M1=M2 open (GPIO), and match TRIG to GP0 / ECHO to GP1 by board labels.
-This does not change the Robo Pico project pin map or make a classic 5 V
-module a 3.3 V part. See the [variant datasheet](https://cdn.sparkfun.com/assets/6/7/a/d/1/Ultrasonic_Ranging_Module_HC-SR04-R__SEN-28798.pdf).
+The [HC-SR04-R](https://cdn.sparkfun.com/assets/6/7/a/d/1/Ultrasonic_Ranging_Module_HC-SR04-R__SEN-28798.pdf) (RCWL-9610A) variant is rated for 3.3 V. Powered from the Grove port's 3.3 V, with M1 and M2 open (GPIO mode), its ECHO needs no divider.
 
-Buddy 5 initializes the free-running TIMER reference at 1 MHz and releases
-TIMER from reset locally without asserting reset or using alarms. The RTOS
-uses CPU-clock SysTick instead. TIMER tick initialization does not enable
-watchdog resets. Readers such as Wi-Fi may share the running counter.
+The driver times ECHO with the RP2040's 1 MHz TIMER, whose tick `usermain()` starts.
 
 Narrow, angled or soft objects reflect poorly. The datasheet's accuracy figure assumes a smooth target of at least 0.5 m².
 
@@ -278,13 +273,3 @@ For the full pinout see the [Pico W datasheet](https://datasheets.raspberrypi.co
 5. GP26 carries one signal only.
 6. The supply is between 3.6 V and 6 V.
 7. The [boot-time pin setup](#boot-time-pin-setup) agrees with the pin map for every pin you have connected.
-
-## Buddy 5 PWM setup
-
-The scan task releases PWM from reset locally without asserting reset, using
-the atomic CLEAR alias. It configures only GP12's slice 6A with divider 125,
-TOP 19999 (50 Hz at 125 MHz). Motor slices 4/5 are untouched; `USE_PTMR`
-remains disabled. GP13 shares the slice frequency. Initial servo targets and
-physical validation steps are in the
-[Buddy 5 contract](../app_program/subsystem5/README.md) and
-[test plan](../testing/subsystem5/TEST_LOG.md).

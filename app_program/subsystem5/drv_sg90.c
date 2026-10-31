@@ -27,19 +27,9 @@ ER s5_sg90_angle(unsigned int angle)
 
 ER s5_sg90_init(void)
 {
-    uint32_t start = s5_now_ms();
-    /* Atomic CLEAR alias: release only PWM, without resetting active slices.
-     * Do not enable USE_PTMR (kernel physical timers also consume PWM). */
-    out_w(RESETS_RESET + 0x3000U, RESETS_RESET_PWM);
-    while (!(in_w(RESETS_RESET_DONE) & RESETS_RESET_PWM))
-    {
-        if (s5_now_ms() - start > 100U)
-        {
-            return E_TMOUT;
-        }
-    }
+    /* usermain() releases the PWM block from reset. */
     out_w(PWM_CH6_BASE + PWM_CHx_CSR, 0);
-    /* 125 MHz / 125 = 1 MHz; 20000 counter ticks -> 50 Hz. 8.4 divider. */
+    /* Divider 125 (8.4 fixed point): 1 MHz counter; 20000 ticks -> 50 Hz. */
     out_w(PWM_CH6_BASE + PWM_CHx_DIV, SYSCLK << 4);
     out_w(PWM_CH6_BASE + PWM_CHx_CTR, 0);
     pwm_set_wrap(S5_SERVO_PIN, 19999);

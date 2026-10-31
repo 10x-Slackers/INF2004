@@ -18,8 +18,7 @@ _Static_assert(sizeof(S5_REQUEST) == 4, "request ABI");
 
 static ID inbox, requests, snapshot_mutex;
 static S5_HEALTH snapshot;
-/* Kernel records need a word header per queued message. Static, word aligned.
- */
+/* Each queued message needs one extra word for the kernel's header. */
 static UW inbox_storage[4 * (sizeof(S5_MESSAGE) / sizeof(UW) + 1)];
 static UW request_storage[sizeof(S5_REQUEST) / sizeof(UW) + 1];
 
@@ -57,15 +56,14 @@ ER s5_command(S5_EVENT_KIND command)
 
 ER s5_request_scan(S5_MODE mode)
 {
-    if (mode > S5_FINE)
-    {
-        return E_PAR;
-    }
     return s5_command((S5_EVENT_KIND)(S5_REQUEST_FORWARD + mode));
 }
 
+static unsigned int servo_angle; /* last commanded angle, scan task only */
+
 static void hardware_state(unsigned int angle, unsigned int state)
 {
+    servo_angle = angle;
     tk_loc_mtx(snapshot_mutex, TMO_FEVR);
     snapshot.servo_angle = angle;
     snapshot.scan_state = state;
@@ -90,8 +88,7 @@ static void take_angle(S5_SCAN * scan, unsigned int angle, uint32_t began)
     {
         return;
     }
-    S5_HEALTH before;
-    s5_get_health(&before);
+    unsigned int moved = servo_angle != angle;
     /* Publish busy before changing PWM so no reader sees forward clear
      * during the start of a pan. */
     hardware_state(angle, 1);
@@ -100,7 +97,7 @@ static void take_angle(S5_SCAN * scan, unsigned int angle, uint32_t began)
         scan->faults |= S5_SERVO_ERROR;
         return;
     }
-    if (before.servo_angle != angle)
+    if (moved)
     {
         tk_dly_tsk(S5_SERVO_SETTLE_MS);
     }
@@ -229,6 +226,13 @@ static void scan_task(INT stacd, void * exinf)
     }
 }
 
+static void publish(const S5_CONTROL * control)
+{
+    tk_loc_mtx(snapshot_mutex, TMO_FEVR);
+    snapshot.control = *control;
+    tk_unl_mtx(snapshot_mutex);
+}
+
 static void avoidance_task(INT stacd, void * exinf)
 {
     S5_CONTROL control = {0};
@@ -242,9 +246,7 @@ static void avoidance_task(INT stacd, void * exinf)
             size < E_OK ? S5_TICK : (S5_EVENT_KIND)message.kind;
         s5_transition(&control, event,
                       event == S5_SCAN_DONE ? &message.scan : 0, s5_now_ms());
-        tk_loc_mtx(snapshot_mutex, TMO_FEVR);
-        snapshot.control = control;
-        tk_unl_mtx(snapshot_mutex);
+        publish(&control);
         if (control.scan_due)
         {
             S5_REQUEST request = {0};
@@ -257,9 +259,7 @@ static void avoidance_task(INT stacd, void * exinf)
                 control.pending = 0;
                 control.faults |= S5_SCAN_TIMEOUT;
                 s5_transition(&control, S5_SAFETY_STOP, 0, s5_now_ms());
-                tk_loc_mtx(snapshot_mutex, TMO_FEVR);
-                snapshot.control = control;
-                tk_unl_mtx(snapshot_mutex);
+                publish(&control);
             }
         }
     }

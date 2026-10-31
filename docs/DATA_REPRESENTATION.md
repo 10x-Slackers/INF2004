@@ -20,55 +20,26 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 4 | `S4_TILT.pitch`, `.roll`: tilt from the start surface | −900 to 900 (0.1 degree) | 11 each | `signed int` bit-field | Readers copy it with `s4_get_tilt()`, under mutex `s4_mtx_accel` |
 | 4 | `S4_TILT.cal`: start-up calibration done | 0 or 1 | 1 | `unsigned int` bit-field | As above |
 | 4 | `S4_FAULT.impact`, `.tilt`: impact and excessive-tilt faults, latched until reset | 0 or 1 | 1 each | `unsigned int` bit-field (moves into the shared fault bitmask once agreed) | Readers copy it with `s4_get_fault()`, under mutex `s4_mtx_accel` |
-
-## Buddy 5
-
-All fields below use explicit `unsigned int` bit-fields. Enum constants and
-function parameters are unpacked; stored enums have the widths below.
-Timestamps are wrapping 32-bit monotonic milliseconds. Normal word alignment
-is retained. These are local ABI records; network encoding requires masks
-and shifts, never C bit-fields.
-
-| Subsystem | Field | Valid range | Bits | Representation | Shared with |
-| --- | --- | --- | --- | --- | --- |
-| 5 | `S5_SAMPLE.distance_mm` | zero invalid; 20–4000 mm valid | 12 | unsigned bit-field | Scanner → avoidance / I8 readers |
-| 5 | `S5_SAMPLE.angle_deg` | 0–180 degrees; travel 30–150 | 8 | unsigned bit-field | As above |
-| 5 | `S5_SAMPLE.valid` | false/true | 1 | unsigned bit-field | As above |
-| 5 | `S5_SAMPLE.stamp_ms` | 0–4294967295, wraps | 32 | unsigned bit-field | As above |
-| 5 | `S5_PROFILE.closest_mm`, `left_mm`, `right_mm`, `width_mm` | 0–4000 mm; zero unknown with validity false | 12 each | unsigned bit-field | Avoidance / I8/I10 readers |
-| 5 | `S5_PROFILE.closest_angle`, `left_edge`, `right_edge` | 0–180 degrees | 8 each | unsigned bit-field | As above |
-| 5 | `S5_PROFILE.detected`, `valid`, `width_valid`, `left_valid`, `right_valid` | false/true | 1 each | unsigned bit-field | As above |
-| 5 | `S5_PROFILE.valid_count` | 0–12 unique rays | 4 | unsigned bit-field | As above |
-| 5 | `S5_PROFILE.faults` | mask 0–127 | 7 | unsigned bit-field | I8/I10 readers |
-| 5 | `S5_PROFILE.stamp_ms` | 0–4294967295, wraps; oldest contributor | 32 | unsigned bit-field | I8/I10 readers |
-| 5 | `S5_SCAN.count` | 0–12 | 4 | unsigned bit-field | Scanner → avoidance copy |
-| 5 | `S5_SCAN.mode`, private `S5_REQUEST.mode` | FORWARD/COARSE/FINE, 0–2 | 2 each | unsigned bit-field | Internal queues |
-| 5 | `S5_SCAN.faults` | mask 0–127 | 7 | unsigned bit-field | Scanner → avoidance copy |
-| 5 | private `S5_MESSAGE.kind` | 15 events, 0–14 | 4 | unsigned bit-field | Input/result queue |
-| 5 | `S5_CONTROL.state` | seven states, 0–6 | 3 | unsigned bit-field | Avoidance → readers |
-| 5 | `S5_CONTROL.action` | seven actions, 0–6 | 3 | unsigned bit-field | I6 readers |
-| 5 | `S5_CONTROL.scan_retries`, `recovery_retries` | 0–2 | 2 each | unsigned bit-field | I6/I10 readers |
-| 5 | `S5_CONTROL.faults` | mask 0–127 | 7 | unsigned bit-field | I10 readers |
-| 5 | `S5_CONTROL.active`, `motion_stopped`, `pending`, `scan_due` | false/true | 1 each | unsigned bit-field | Internal / readers |
-| 5 | `S5_CONTROL.mode` | 0–2 | 2 | unsigned bit-field | Internal / readers |
-| 5 | `S5_CONTROL.entered_ms` | 0–4294967295, wraps | 32 | unsigned bit-field | Internal / readers |
-| 5 | `S5_HEALTH.servo_angle` | 0–180 degrees | 8 | unsigned bit-field | Scanner → readers under mutex |
-| 5 | `S5_HEALTH.scan_state` | idle/settling/measuring, 0–2 | 2 | unsigned bit-field | Scanner → readers under mutex |
-| 5 | `S5_HEALTH.front_clear` | false/true | 1 | unsigned bit-field | Computed on caller's private copy |
-
-Sample: 53 payload bits, 8 bytes. Profile: 120 payload bits, 16 bytes.
-Scan: twelve samples + 13 metadata bits, 100 bytes. Control: 23 control bits
-+ 32 timer bits + sample + profile, 32 bytes. Health: control + 11 bits,
-36 bytes. Internal message: four event bits + scan, 104 bytes. Request: two
-bits, 4 bytes. Sizes include GCC ABI padding, checked by tests.
-
-Avoidance owns control; scanner owns local scans/cache. Queues pass copies.
-Every shared snapshot read/write uses one inheritance mutex; each writer
-modifies only its owned members. Readers get private copies. Fault fields
-carry one seven-bit mask format (NO_ECHO, ECHO_TIMEOUT, SCAN_TIMEOUT,
-STALE_RANGE, NO_SAFE_PATH, RECOVERY_FAULT, SERVO_ERROR), copied/accumulated
-at the scan/profile/health boundaries; no per-fault booleans. Faults latch
-until reset except the transient stale-forward flag.
-
-Packing evidence and the labelled unpacked reference comparison are in
-`testing/subsystem5/TEST_LOG.md`; no historical firmware saving is claimed.
+| 5 | `S5_SAMPLE.distance_mm`: one range reading | 20 to 4000 mm, 0 when invalid | 12 | `unsigned int` bit-field | Scan task passes copies to the avoidance task in message buffer `inbox`; readers copy health with `s5_get_health()`, under mutex `snapshot_mutex` |
+| 5 | `S5_SAMPLE.angle_deg`: servo angle of the reading | 30 to 150 degrees | 8 | `unsigned int` bit-field | As above |
+| 5 | `S5_SAMPLE.valid`: reading in range | 0 or 1 | 1 | `unsigned int` bit-field | As above |
+| 5 | `S5_SAMPLE.stamp_ms`: time of the reading | 0 to 2³²−1 ms, wraps | 32 | `unsigned int` bit-field | As above |
+| 5 | `S5_PROFILE.closest_mm`, `.left_mm`, `.right_mm`: closest point and side clearances | 0 to 4000 mm, 0 when unknown | 12 each | `unsigned int` bit-field | Readers copy it with `s5_get_health()`, under mutex `snapshot_mutex` |
+| 5 | `S5_PROFILE.closest_angle`, `.left_edge`, `.right_edge`: angles of the closest point and obstacle edges | 30 to 150 degrees | 8 each | `unsigned int` bit-field | As above |
+| 5 | `S5_PROFILE.detected`, `.valid`, `.left_valid`, `.right_valid` | 0 or 1 | 1 each | `unsigned int` bit-field | As above |
+| 5 | `S5_PROFILE.valid_count`: valid rays in the profile | 0 to 12 | 4 | `unsigned int` bit-field | As above |
+| 5 | `S5_PROFILE.stamp_ms`: time of the oldest reading used | 0 to 2³²−1 ms, wraps | 32 | `unsigned int` bit-field | As above |
+| 5 | `S5_SCAN.count`: readings in the scan | 0 to 12 | 4 | `unsigned int` bit-field | Scan task passes copies to the avoidance task in message buffer `inbox` |
+| 5 | `S5_SCAN.mode`, `S5_REQUEST.mode`: forward, coarse or fine scan | 0 to 2 | 2 each | `unsigned int` bit-field | `S5_REQUEST` is copied from the avoidance task to the scan task in message buffer `requests` |
+| 5 | `S5_MESSAGE.kind`: event in the avoidance task's inbox | 0 to 14 | 4 | `unsigned int` bit-field | Copied in message buffer `inbox` |
+| 5 | `S5_SCAN.faults`, `S5_PROFILE.faults`, `S5_CONTROL.faults`: fault bitmask (no echo, echo timeout, scan timeout, stale range, no safe path, recovery fault, servo error) | 7 single-bit flags | 7 each | `unsigned int` bit-field (moves into the shared fault bitmask once agreed) | As each record |
+| 5 | `S5_CONTROL.state`: avoidance state | 0 to 6 | 3 | `unsigned int` bit-field | Written only by the avoidance task; readers copy it with `s5_get_health()`, under mutex `snapshot_mutex` |
+| 5 | `S5_CONTROL.action`: recommended action | 0 to 6 | 3 | `unsigned int` bit-field | As above |
+| 5 | `S5_CONTROL.scan_retries`, `.recovery_retries` | 0 to 2 | 2 each | `unsigned int` bit-field | As above |
+| 5 | `S5_CONTROL.active`, `.motion_stopped`, `.pending`, `.scan_due` | 0 or 1 | 1 each | `unsigned int` bit-field | As above |
+| 5 | `S5_CONTROL.mode`: scan mode to request | 0 to 2 | 2 | `unsigned int` bit-field | As above |
+| 5 | `S5_CONTROL.entered_ms`: time the state was entered | 0 to 2³²−1 ms, wraps | 32 | `unsigned int` bit-field | As above |
+| 5 | `S5_HEALTH.servo_angle`: current servo angle | 30 to 150 degrees | 8 | `unsigned int` bit-field | Written only by the scan task, under mutex `snapshot_mutex`; readers copy it with `s5_get_health()` |
+| 5 | `S5_HEALTH.scan_state`: idle, settling or measuring | 0 to 2 | 2 | `unsigned int` bit-field | As above |
+| 5 | `S5_HEALTH.front_clear`: fresh forward range beyond 350 mm | 0 or 1 | 1 | `unsigned int` bit-field | Computed in the caller's copy by `s5_get_health()` |
+| 5 | `previous_us` in `drv_hcsr04.c`: TIMER value at the last trigger, to keep 60 ms between readings | 0 to 2³²−1 µs, wraps | 32 | `uint32_t` | Scan task only |

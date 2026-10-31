@@ -1,0 +1,11 @@
+[TEST] S5-U30 PASS timer reference enabled, reset released, advancing
+[TEST] S5-U31 PASS actual driver converts simulated 1160 us Echo
+[TEST] S5-U32 PASS no Echo is invalid and bounded
+[TEST] S5-U33 PASS never-falling Echo is invalid and bounded
+[TEST] S5-U34 PASS frozen timer cannot trap measurement-spacing wait
+[TEST] S5-U35 PASS frozen timer fails initialization before GPIO setup
+[TEST] S5-U36 PASS independent RTOS deadline bounds frozen rising-edge wait
+[TEST] S5-U37 PASS independent RTOS deadline bounds frozen high-pulse wait
+[TEST] S5-U38 PASS 10 us shared-timer trigger without per-core WaitUsec
+[TEST] S5-U39 PASS stalled trigger timer returns TRIG LOW and exits
+[TEST] hcsr04 driver SUMMARY 10 passed, 0 failed (simulated hardware)

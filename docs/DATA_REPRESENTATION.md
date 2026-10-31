@@ -47,7 +47,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 2 | `g_b_latched`: safety stop latched | 0 or 1 | 1 | `bool`, the smallest type | Safety Monitor and Controller write it with `motion_control_latch()`, any task reads it with `motion_control_latched()`, under the motion mutex |
 | 2 | `g_callback_pins` (driver): GPIO pins of the registered edge callback | Bank 0 pin mask | 32 | `uint32_t` in the hardware register's format (out of scope) | Set once at init, read by the encoder ISR |
 | 5 | `ultrasonic_scan_t.forward_mm`: latest range straight ahead | 20 to 4000 mm (4000: nothing in range) | 12 | `unsigned int` bit-field | Readers copy it with `ultrasonic_scan_get()`, under the scan mutex |
-| 5 | `.count`: scans finished | 0 to 15, wraps | 4 | As above | As above |
+| 5 | `.request`: request number the latest scan served | 0 to 15, wraps | 4 | As above | As above |
 | 5 | `.forward_ms`: kernel time of `forward_mm` | 0 to 2³²−1 ms, wraps | 32 | As above | As above |
 | 5 | `scan_profile_t.closest_mm`: closest point of the servo sweep | 20 to 4000 mm | 12 | `unsigned int` bit-field | Inside `ultrasonic_scan_t`, as above |
 | 5 | `.closest_deg`, `.right_deg`, `.left_deg`: servo angles of the closest point and the obstacle edges | 80 to 100° | 7 each | As above | As above |
@@ -58,8 +58,9 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 5 | `.step`: bypass step | 0 to 7 | 3 | As above | As above |
 | 5 | `.bypasses`: bypasses finished | 0 to 15, wraps | 4 | As above | As above |
 | 5 | `.left_mm`, `.right_mm`: clearance with the car turned 45° left and right | 0 to 4000 mm (0: not measured) | 12 each | As above | As above |
-| 5 | `g_mode` (scan): requested scan, forward or profile | 0 or 1 | 8 | `uint8_t`, the smallest type; written under the scan mutex | `ultrasonic_scan_request()` and the scan task |
-| 5 | `g_angle` (scan): servo angle last set | 0, 80 to 100° | 8 | `uint8_t` | Scan task only |
+| 5 | `g_next.mode` (scan): requested scan, forward or profile | 0 or 1 | 1 | `unsigned int` bit-field; written under the scan mutex | `ultrasonic_scan_request()` and the scan task |
+| 5 | `g_next.request` (scan): requests made | 0 to 15, wraps | 4 | As above | As above |
+| 5 | `g_angle` (scan): servo angle last set | 80 to 100° | 8 | `uint8_t` | Scan task only |
 | 5 | `g_rise_us`, `g_width_us`, `g_trigger_us` (driver): echo rise time, echo width, last trigger time | 0 to 2³²−1 µs, wraps | 32 each | `uint32_t`, in the TIMER register's format (out of scope) | Edge callback writes the first two, the scan task reads them after it wakes |
 | 5 | `g_b_rose`, `g_b_fell` (driver): echo edges seen | 0 or 1 | 1 each | `volatile bool`: written by the edge callback, these loads are atomic | As above |
 | 3 | `line_following_t.bits`: left and right sensor over black | One bit each | 2 | `unsigned int` bit-field | Readers copy it with `line_following_get()`, under the line mutex |

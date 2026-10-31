@@ -22,9 +22,8 @@ ER subsystem5_init(void)
  */
 ER subsystem5_start(void)
 {
+    ID avoid = obstacle_avoidance_start_task();
     /* FP is the kernel's generic task pointer type. */
-    ID avoid = app_start_task((FP)obstacle_avoidance_task, S5_PRI_AVOID, 0,
-                              "s5_avoid");
     ID scan =
         app_start_task((FP)ultrasonic_scan_task, S5_PRI_SCAN, 0, "s5_scan");
 

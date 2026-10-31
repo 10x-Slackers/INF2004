@@ -21,8 +21,8 @@ Tests and results: [testing/subsystem5](../testing/subsystem5/TEST_LOG.md).
 | `obstacle_avoidance_start()`           | Clear the faults and watch the range ahead. Also the only way out of a safe stop. Does nothing if already started |
 | `obstacle_avoidance_cancel()`          | Stop watching. Brakes the car if avoidance is driving it (profiling or bypassing)                |
 | `obstacle_avoidance_get_status(&s)`    | Copy the avoidance status (below)                                                               |
-| `ultrasonic_scan_request(mode)`        | Ask for a scan: `ULTRASONIC_SCAN_FORWARD` (one reading ahead, about 60 ms) or `ULTRASONIC_SCAN_PROFILE` (servo sweep, about 2 s, car still) |
-| `ultrasonic_scan_get(&scan)`           | Copy the latest results; `count` goes up by one when a scan finishes                             |
+| `ultrasonic_scan_request(mode)`        | Ask for a scan: `ULTRASONIC_SCAN_FORWARD` (one reading ahead, about 60 ms) or `ULTRASONIC_SCAN_PROFILE` (servo sweep, about 2 s, car still). Returns the request number |
+| `ultrasonic_scan_get(&scan)`           | Copy the latest results; `request` is the number of the request the latest scan served |
 
 ```c
 obstacle_avoidance_start();                 /* with the line follower */
@@ -55,7 +55,7 @@ Faults are bits in the shared fault bitmask (`app_faults()`, `app_fault.h`), cle
 | `profile.right_deg`, `.left_deg` | 80–100 | Obstacle edges: outermost rays within 350 mm next to the closest point |
 | `profile.b_obstacle`   | 0–1           | Closest point within 350 mm                                                    |
 
-Each scan also sets `APP_FAULT_NO_ECHO` in the shared fault bitmask when one of its rays got no echo pulse (sensor missing or faulty), and clears it otherwise, before `count` moves on.
+Each scan also sets `APP_FAULT_NO_ECHO` in the shared fault bitmask when one of its rays got no echo pulse (sensor missing or faulty), and clears it otherwise, before `request` moves on.
 | `profile.width_mm`     | 0–122         | Rough obstacle width: the arc between the edges at `closest_mm`; 0 with no obstacle |
 
 Servo angles: 80° points right, 90° ahead, 100° left. The sensor's mount stops the servo about 15° either side, so the servo only does the fine scan; the car turns for the coarse one. The width (FR6) is rough: the beam is about as wide as the sweep, and an obstacle that fills the sweep reads at most about 120 mm at 350 mm, whatever its real width.

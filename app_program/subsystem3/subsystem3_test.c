@@ -152,13 +152,11 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
     (void)stacd;
     (void)p_exinf;
 
-    /* Pull-up only (both on is bus keeper): the button grounds the pin. */
-    (void)gpio_set_pin(S3_BENCH_BUTTON, GPIO_MODE_IN);
-    clr_w(GPIO(S3_BENCH_BUTTON), GPIO_PDE);
-    set_w(GPIO(S3_BENCH_BUTTON), GPIO_PUE);
+    app_pull_up(S3_BENCH_BUTTON);
     last.bits = DRV_LINE_LEFT | DRV_LINE_RIGHT;
     last.b_junction = true; /* Unlikely at power-up: print the first state. */
-    tm_printf((UB *)"[line] bench: hold GP21 for 2 s to follow the line\n");
+    tm_printf((UB *)"[line] bench: hold GP21 for %u s to follow the line\n",
+              S3_BENCH_HOLD_MS / 1000u);
     for (;;)
     {
         (void)subsystem3_bench_report(&last);

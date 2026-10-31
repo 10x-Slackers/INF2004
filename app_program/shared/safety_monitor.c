@@ -33,9 +33,9 @@ ER safety_monitor_start(void)
  */
 void safety_monitor_stop(uint32_t cause)
 {
-    if (!motion_control_latched())
+    /* One locked step, so two tasks cannot both see it unlatched. */
+    if (!motion_control_latch(true))
     {
-        motion_control_latch(true);
         tm_printf((UB *)"[safety] stop, cause 0x%x\n", cause);
     }
 }
@@ -52,7 +52,7 @@ bool safety_monitor_clear(void)
 
     if (b_clear)
     {
-        motion_control_latch(false);
+        (void)motion_control_latch(false);
         tm_printf((UB *)"[safety] cleared\n");
     }
     return b_clear;

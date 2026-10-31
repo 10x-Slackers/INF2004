@@ -75,6 +75,16 @@ void app_check(ER result, const char * p_what)
 }
 
 /*!
+ * @brief Input with the pull-up only (both pulls on is a bus keeper).
+ */
+void app_pull_up(UW pin)
+{
+    (void)gpio_set_pin(pin, GPIO_MODE_IN);
+    clr_w(GPIO(pin), GPIO_PDE);
+    set_w(GPIO(pin), GPIO_PUE);
+}
+
+/*!
  * @brief Set fault bits (APP_FAULT_..., app_fault.h). Safe from interrupts.
  */
 void app_fault_set(uint32_t bits)

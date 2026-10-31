@@ -69,10 +69,7 @@ ER vehicle_controller_start(void)
 {
     ID task = 0;
 
-    /* Pull-up only (both on is bus keeper): the button grounds the pin. */
-    (void)gpio_set_pin(VC_BUTTON, GPIO_MODE_IN);
-    clr_w(GPIO(VC_BUTTON), GPIO_PDE);
-    set_w(GPIO(VC_BUTTON), GPIO_PUE);
+    app_pull_up(VC_BUTTON);
 
     /* FP is the kernel's generic task pointer type. */
     task = app_start_task((FP)vehicle_controller_task, VC_PRI, 0, "vc");

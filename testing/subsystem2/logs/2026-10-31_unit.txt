@@ -1,0 +1,36 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+
+[TEST] === test run start ===
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+ERROR gy511_init: -57
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+ERROR gy511_read: -57
+wifi: cyw43_init() returned, bringing interface up ...
+[motion] ready: forward/backward mm, left/right deg, drive l r, stop, speed, track, pid, status, trace
+ERROR gy511_read: -57
+[TEST] S2-U16 PASS  boots idle with the motors braked
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+[TEST] subsystem2 SUMMARY 5 passed, 0 failed
+[TEST] subsystem3 SUMMARY 0 passed, 0 failed
+ERROR gy511_read: -57
+ERROR gy511_read: -57
+ERROR gy511_read: -57
+ERROR gy511_read: -57
+ERROR gy511_read: -57
+[TEST] S4-U01 FAIL  GY-511 answers on I2C0 and readings arrive   (/Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/subsystem4_test.c:22)
+[TEST] S4-U02 FAIL  flat: z ~ +1000 mg, x and y ~ 0   (/Users/cin/Desktop/embedded/INF2004/app_program/subsystem4/subsystem4_test.c:26)
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] subsystem4 SUMMARY 1 passed, 2 failed
+[TEST] subsystem5 SUMMARY 0 passed, 0 failed
+[TEST] === test run end ===

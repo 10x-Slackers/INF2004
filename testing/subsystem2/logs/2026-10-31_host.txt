@@ -1,0 +1,29 @@
+Buddy 2 host test (S2-U21 command, simulated robot)
+Code: 673b8ca + uncommitted Buddy 2 changes
+
+PASS  left 90 deg: turned 91.2 deg in 1.23 s, heading field 91
+PASS  right 90 deg: turned 91.2 deg in 1.23 s, heading field 268
+PASS  left 180 deg: turned 181.2 deg in 2.13 s, heading field 181
+PASS  right 45 deg: turned 45.8 deg in 0.77 s, heading field 314
+PASS  left 360 deg: turned 361.3 deg in 3.90 s, heading field 1
+PASS  forward 500 mm: moved 501.3 mm, drift -0.15 deg, odometer 501 mm
+PASS  backward 300 mm: moved 301.1 mm, drift 0.14 deg, odometer 301 mm
+PASS  forward 2000 mm: moved 2001.1 mm, drift 0.15 deg, odometer 2001 mm
+PASS  drive accepted
+PASS  drive 200,100 holds 193,96 mm/s after 1 s
+PASS  stop brakes both wheels at once
+PASS  drive not renewed for 200 ms expires and brakes
+PASS  blocked right wheel: stall fault after 1 s, both braked
+PASS  missed encoder state is reported and the move still completes
+PASS  a new command clears the faults
+PASS  out-of-range commands and settings are rejected
+PASS  rejection leaves it idle
+PASS  16-bit encoder counter wrap is handled
+PASS  track calibration scales the turn (90% track: 81 deg)
+PASS  telemetry: 12 bytes, big-endian, fixed bit layout
+PASS  status snapshot is 12 bytes (full-width equivalent 36 bytes)
+INFO  host cost of one control step: 0.012 us
+ALL PASS: 0 failure(s)
+
+With AddressSanitizer and UndefinedBehaviorSanitizer:
+ALL PASS: 0 failure(s)

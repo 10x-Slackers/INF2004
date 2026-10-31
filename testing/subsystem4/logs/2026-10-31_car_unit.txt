@@ -1,0 +1,27 @@
+# S4 auto tests, 2026-10-31: test image, sensor on the car (Robo Pico), car flat and still on the floor from power-on.
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[TEST] === test run start ===
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+[TEST] S2-U16 PASS  boots idle with the motors braked
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+[TEST] subsystem2 SUMMARY 5 passed, 0 failed
+[TEST] subsystem3 SUMMARY 0 passed, 0 failed
+[motion] bench: press GP21 to start
+[imu] calibrated: offsets x=8 y=38 z=-196 mg
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] subsystem5 SUMMARY 0 passed, 0 failed
+[TEST] === test run end ===

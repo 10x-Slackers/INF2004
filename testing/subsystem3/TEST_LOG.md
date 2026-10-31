@@ -31,3 +31,4 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-31 | S3-U04 | `195db26` | mykacx | PASS | `logs/2026-10-31_unit.txt` | |
 | 2026-10-31 | S3-U05 | `195db26` | mykacx | PASS | `logs/2026-10-31_unit.txt` | |
 | 2026-10-31 | S3-U03 | `195db26` | mykacx | PASS | `logs/2026-10-31_unit.txt` | Left, right and both over the line read as expected; DO is 1 over black |
+| 2026-10-31 | S3-U06 | `ca4b8b1` | mykacx | FAIL | `logs/2026-10-31_follow.txt` | Ran off the line: after one left=1 reading neither sensor saw the line again. Cause under investigation |

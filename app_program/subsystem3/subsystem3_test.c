@@ -186,7 +186,8 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
         {
             held_ms = 0u;
             tm_printf((UB *)"[line] put the car on the line, starting in "
-                            "5 s\n");
+                            "%d s\n",
+                      S3_BENCH_GO_MS / 1000);
             tk_dly_tsk(S3_BENCH_GO_MS);
             (void)line_following_start(S3_BENCH_SPEED_MM_S);
             for (run_ms = 0u;

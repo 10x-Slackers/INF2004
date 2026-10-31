@@ -50,13 +50,13 @@ Faults are bits in the shared fault bitmask (`app_faults()`, `app_fault.h`), cle
 | ---------------------- | ------------- | ------------------------------------------------------------------------------ |
 | `forward_mm`           | 20–4000       | Latest range straight ahead. 4000 means nothing within the sensor's range      |
 | `forward_ms`           | wraps         | Kernel time of `forward_mm`, to check its age                                  |
-| `count`                | 0–15, wraps   | Scans finished                                                                 |
+| `request`              | 0–15, wraps   | Number of the request the latest scan served                                   |
 | `profile.closest_mm`   | 20–4000       | Closest point of the last profile scan, at `profile.closest_deg`               |
 | `profile.right_deg`, `.left_deg` | 80–100 | Obstacle edges: outermost rays within 350 mm next to the closest point |
 | `profile.b_obstacle`   | 0–1           | Closest point within 350 mm                                                    |
+| `profile.width_mm`     | 0–122         | Rough obstacle width: the arc between the edges at `closest_mm`; 0 with no obstacle |
 
 Each scan also sets `APP_FAULT_NO_ECHO` in the shared fault bitmask when one of its rays got no echo pulse (sensor missing or faulty), and clears it otherwise, before `request` moves on.
-| `profile.width_mm`     | 0–122         | Rough obstacle width: the arc between the edges at `closest_mm`; 0 with no obstacle |
 
 Servo angles: 80° points right, 90° ahead, 100° left. The sensor's mount stops the servo about 15° either side, so the servo only does the fine scan; the car turns for the coarse one. The width (FR6) is rough: the beam is about as wide as the sweep, and an obstacle that fills the sweep reads at most about 120 mm at 350 mm, whatever its real width.
 

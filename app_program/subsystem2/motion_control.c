@@ -213,7 +213,7 @@ bool motion_control_latch(bool b_latched)
     drv_motion_lock();
     b_was = g_b_latched;
     g_b_latched = b_latched;
-    if (b_latched)
+    if (b_latched && !b_was)
     {
         g_status.state = MOTION_CONTROL_IDLE;
         g_status.command = MOTION_CONTROL_CMD_NONE;

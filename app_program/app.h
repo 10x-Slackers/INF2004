@@ -15,9 +15,16 @@
  *
  * The application code follows BARR-C:2018. Deviations shared by every
  * subsystem:
- * - 3.1.j, 3.2: layout is the repository's .clang-format.
- * - 4.2.a: the subsystemN_test.c files have no header; this file declares
- *   their functions.
+ * - 3.1.j, 3.2, 3.3.b: layout is the repository's .clang-format, which
+ *   does not add a blank line around every block.
+ * - 4.1.b: the subsystemN file names come from the course template.
+ * - 4.2.a, 4.3.c: app_main.c implements this file and app_fault.h.
+ * - 4.2.a, 6.2.d: the subsystemN_test.c files have no header; this file
+ *   declares every subsystemN_init/_start/_test(). A subsystemN.h declares
+ *   its task entries, keeping kernel types out of the module headers that
+ *   host tests include.
+ * - 5.3.a: signed bit-fields hold signed values in the fewest bits
+ *   (docs/DATA_REPRESENTATION.md).
  * - 5.2: kernel calls, task entries and handlers use kernel types (ER, ID,
  *   INT, UB, ...), as the kernel's prototypes do.
  * - 6.3.a: the TEST_* helpers in test_report.h are macros, because they
@@ -31,6 +38,7 @@
 #include <tm/tmonitor.h> /* T-Monitor API: tm_printf() console output. */
 #include <bsp/libbsp.h>  /* Board helpers: gpio_set_pin/val, pwm_... */
 #include "app_fault.h"   /* The shared fault bitmask. */
+#include <stdbool.h>
 
 #define APP_TASK_STACK_SIZE 2048 /* Bytes; tm_printf needs ~1 KB. */
 
@@ -43,6 +51,18 @@ void app_check(ER result, const char * p_what);
 
 /* Input with the pull-up only: a button or open collector grounds it. */
 void app_pull_up(UW pin);
+
+/* Wake a task every period_ms from a cyclic handler (tk_dly_tsk() would
+ * add a tick to every period). A negative h_task, from a failed
+ * app_start_task(), is returned as it is. */
+ER app_start_cyclic(ID h_task, RELTIM period_ms);
+
+/* GPIO edge interrupt (IRQ13, GPIO bank 0), shared by every subsystem.
+ * Register in subsystemN_init(): the callback runs in the interrupt with
+ * the registered pins that saw an edge, so keep it short. Refused if the
+ * slots are full or a pin is taken. */
+typedef void (*app_gpio_callback_t)(uint32_t pins);
+bool app_gpio_register(uint32_t pins, app_gpio_callback_t p_callback);
 
 /* Every subsystem provides these. usermain() calls ALL the _init()
  * functions first and only then ALL the _start() functions, so every

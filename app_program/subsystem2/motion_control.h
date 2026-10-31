@@ -35,7 +35,8 @@
 #define MOTION_CONTROL_MAX_ANGLE_DEG   360u
 #define MOTION_CONTROL_MAX_SPEED_MM_S  1000
 
-#define MOTION_CONTROL_PACKET_BYTES 12u
+#define MOTION_CONTROL_PACKET_BYTES  12u
+#define MOTION_CONTROL_DISTANCE_MASK 0xFFFFFFu /* distance_mm wraps here. */
 
 /* Motion status. Forward is positive for every field. */
 typedef struct
@@ -61,6 +62,7 @@ bool motion_control_latch(bool b_latched);
 bool motion_control_latched(void);
 bool motion_control_set_speed(uint32_t speed_mm_s);
 void motion_control_get_status(motion_control_status_t * p_status);
+uint32_t motion_control_distance_um(void);
 void motion_control_pack(const motion_control_status_t * p_status,
                          uint8_t * p_packet);
 void motion_control_tick(uint32_t elapsed_ms);

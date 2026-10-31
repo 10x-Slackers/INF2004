@@ -43,7 +43,7 @@ typedef struct
 } scan_profile_t;
 
 uint32_t scan_profile_mm(uint32_t echo_us);
-uint32_t scan_profile_median(uint32_t a, uint32_t b, uint32_t c);
+uint32_t scan_profile_median(uint32_t first, uint32_t second, uint32_t third);
 void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile);
 uint32_t scan_profile_side(uint32_t left_mm, uint32_t right_mm);
 

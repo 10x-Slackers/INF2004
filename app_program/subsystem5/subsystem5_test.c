@@ -15,12 +15,15 @@
 #define S5_TEST_SCAN_MS   500  /* A forward reading takes about 60 ms. */
 #define S5_BENCH_BUTTON   20u  /* Robo Pico button, low when pressed. */
 #define S5_BENCH_GO_MS    5000 /* Time to put the car down after a press. */
-#define S5_BENCH_POLL_MS  20
+#define S5_BENCH_POLL_MS  20u
 #define S5_BENCH_HOLD_MS  1000u /* A press this long starts the drive. */
 #define S5_BENCH_DRIVE_MM 1500u
 
 static void subsystem5_bench_task(INT stacd, void * p_exinf);
 
+/*!
+ * @brief Run subsystem 5's on-target tests, then start the bench task.
+ */
 void subsystem5_test(void)
 {
     obstacle_avoidance_status_t status = {0};
@@ -46,7 +49,7 @@ void subsystem5_test(void)
     TEST_SUMMARY("subsystem5");
 
     /* FP is the kernel's generic task pointer type. */
-    (void)app_start_task((FP)subsystem5_bench_task, S5_PRI_BENCH, 0,
+    (void)app_start_task((FP)subsystem5_bench_task, S5_PRI_BENCH, 0u,
                          "s5_bench");
 }
 
@@ -120,6 +123,7 @@ static void subsystem5_bench_task(INT stacd, void * p_exinf)
 
     for (;;)
     {
+        /* (UB *): tm_printf() takes unsigned chars. */
         tm_printf((UB *)"[avoid] bench: press GP20 for a profile scan, hold "
                         "it %u s to avoid while driving 1500 mm\n",
                   S5_BENCH_HOLD_MS / 1000u);
@@ -155,6 +159,7 @@ static void subsystem5_bench_task(INT stacd, void * p_exinf)
                   (MOTION_CONTROL_RUNNING == motion.state)));
         obstacle_avoidance_cancel();
         subsystem5_bench_report();
+        /* (UB *): tm_printf() takes unsigned chars. */
         tm_printf((UB *)"[avoid] bench done\n");
     }
 }

@@ -11,7 +11,7 @@
 #include "../subsystem2/motion_control.h"
 #include "../subsystem3/line_following.h"
 
-#define OBSTACLE_AVOIDANCE_POLL_MS  20    /* Two kernel ticks. */
+#define OBSTACLE_AVOIDANCE_POLL_MS  20u   /* Two kernel ticks. */
 #define OBSTACLE_AVOIDANCE_STILL_MS 1000u /* Braking to standstill. */
 #define OBSTACLE_AVOIDANCE_SCAN_MS  8000u /* Longest profile scan. */
 #define OBSTACLE_AVOIDANCE_MOVE_MS  10000u
@@ -19,10 +19,8 @@
 #define OBSTACLE_AVOIDANCE_TURN_DEG 90
 #define OBSTACLE_AVOIDANCE_LOOK_DEG 45   /* Car turn for the clearance. */
 #define OBSTACLE_AVOIDANCE_SIDE_MM  200u /* Out to the side and back. */
-#define OBSTACLE_AVOIDANCE_WIDE_MM                                             \
-    300u                                /* For an obstacle filling the sweep.  \
-                                         */
-#define OBSTACLE_AVOIDANCE_PASS_MM 700u /* Gap, obstacle and car length. */
+#define OBSTACLE_AVOIDANCE_WIDE_MM  300u /* Obstacle fills the sweep. */
+#define OBSTACLE_AVOIDANCE_PASS_MM  700u /* Gap, obstacle and car length. */
 /* One bypass step: a turn towards the bypass side (+1) or back (-1), or a
  * move forward (0): the pass alongside the obstacle, or a side-step. */
 typedef struct
@@ -35,8 +33,8 @@ static const obstacle_avoidance_step_t g_steps[OBSTACLE_AVOIDANCE_STEPS] = {
     {1, false},  {0, false}, {-1, false}, {0, true},
     {-1, false}, {0, false}, {1, false}};
 
-static ID g_mutex;
-static ID g_task;
+static ID gh_mutex;
+static ID gh_task;
 static obstacle_avoidance_status_t g_status;
 
 static void obstacle_avoidance_task(INT stacd, void * p_exinf);
@@ -46,7 +44,7 @@ static void obstacle_avoidance_stop(uint32_t fault);
 static bool obstacle_avoidance_active(void);
 static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan);
 static bool obstacle_avoidance_still(void);
-static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm);
+static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm);
 static bool obstacle_avoidance_look(uint32_t * p_left_mm,
                                     uint32_t * p_right_mm);
 static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
@@ -63,8 +61,8 @@ bool obstacle_avoidance_init(void)
     T_CMTX mutex = {0};
 
     mutex.mtxatr = TA_INHERIT;
-    g_mutex = tk_cre_mtx(&mutex);
-    return (g_mutex > 0);
+    gh_mutex = tk_cre_mtx(&mutex);
+    return (gh_mutex > 0);
 }
 
 /*!
@@ -74,9 +72,9 @@ bool obstacle_avoidance_init(void)
 ID obstacle_avoidance_start_task(void)
 {
     /* FP is the kernel's generic task pointer type. */
-    g_task = app_start_task((FP)obstacle_avoidance_task, S5_PRI_AVOID, 0,
-                            "s5_avoid");
-    return g_task;
+    gh_task = app_start_task((FP)obstacle_avoidance_task, S5_PRI_AVOID, 0,
+                             "s5_avoid");
+    return gh_task;
 }
 
 /*!
@@ -85,14 +83,14 @@ ID obstacle_avoidance_start_task(void)
  */
 void obstacle_avoidance_start(void)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     if (!obstacle_avoidance_running(g_status.state))
     {
         g_status.state = OBSTACLE_AVOIDANCE_MONITOR;
         app_fault_clear(APP_FAULT_AVOID);
-        (void)tk_wup_tsk(g_task);
+        (void)tk_wup_tsk(gh_task);
     }
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -100,7 +98,7 @@ void obstacle_avoidance_start(void)
  */
 void obstacle_avoidance_cancel(void)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     if ((OBSTACLE_AVOIDANCE_PROFILE == g_status.state) ||
         (OBSTACLE_AVOIDANCE_BYPASS == g_status.state))
     {
@@ -108,7 +106,7 @@ void obstacle_avoidance_cancel(void)
     }
     g_status.state = OBSTACLE_AVOIDANCE_IDLE;
     g_status.step = 0u;
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -116,9 +114,9 @@ void obstacle_avoidance_cancel(void)
  */
 void obstacle_avoidance_get_status(obstacle_avoidance_status_t * p_status)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     *p_status = g_status;
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -167,13 +165,13 @@ static bool obstacle_avoidance_running(uint32_t state)
  */
 static void obstacle_avoidance_set(uint32_t state, uint32_t step)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     if (obstacle_avoidance_running(g_status.state))
     {
         g_status.state = state;
         g_status.step = step;
     }
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -183,7 +181,7 @@ static void obstacle_avoidance_set(uint32_t state, uint32_t step)
  */
 static void obstacle_avoidance_stop(uint32_t fault)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     if (obstacle_avoidance_running(g_status.state))
     {
         motion_control_stop();
@@ -191,7 +189,7 @@ static void obstacle_avoidance_stop(uint32_t fault)
         app_fault_set(fault);
         g_status.step = 0u;
     }
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -213,19 +211,19 @@ static bool obstacle_avoidance_active(void)
  */
 static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan)
 {
-    uint32_t request = ultrasonic_scan_request(mode);
+    uint32_t const request = ultrasonic_scan_request(mode);
     uint32_t waited = 0u;
 
     ultrasonic_scan_get(p_scan);
     /* An older scan may finish first; only the one for this request counts. */
-    while (obstacle_avoidance_active() && (request != p_scan->request) &&
+    while ((obstacle_avoidance_active()) && (request != p_scan->request) &&
            (waited < OBSTACLE_AVOIDANCE_SCAN_MS))
     {
         tk_dly_tsk(OBSTACLE_AVOIDANCE_POLL_MS);
         waited += OBSTACLE_AVOIDANCE_POLL_MS;
         ultrasonic_scan_get(p_scan);
     }
-    if (obstacle_avoidance_active() &&
+    if ((obstacle_avoidance_active()) &&
         ((request != p_scan->request) ||
          (0u != (app_faults() & APP_FAULT_NO_ECHO))))
     {
@@ -256,12 +254,12 @@ static bool obstacle_avoidance_still(void)
 
 /*!
  * @brief Turn the car (positive is left) or, with no turn, drive forward
- * by mm, and wait for the move to finish. A forward move keeps reading the
- * range and stops within SCAN_PROFILE_BLOCK_MM of anything ahead.
+ * by distance_mm, and wait for the move to finish. A forward move keeps reading
+ * the range and stops within SCAN_PROFILE_BLOCK_MM of anything ahead.
  *
  * @return False if cancelled or stopped.
  */
-static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
+static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
 {
     motion_control_status_t status = {0};
     ultrasonic_scan_t scan = {0};
@@ -269,24 +267,25 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
     SYSTIM now = {0};
 
     /* Under the lock, so a cancel cannot slip in before the command. */
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     if (!obstacle_avoidance_running(g_status.state))
     {
         /* Cancelled or stopped. */
     }
     else if (0 == turn_deg)
     {
-        (void)motion_control_move_forward(mm);
+        (void)motion_control_move_forward(distance_mm);
     }
     else if (turn_deg > 0)
     {
-        (void)motion_control_turn_left((uint32_t)turn_deg);
+        (void)motion_control_turn_left((uint32_t)turn_deg); /* Positive. */
     }
     else
     {
+        /* Negative here, so -turn_deg is positive and fits. */
         (void)motion_control_turn_right((uint32_t)-turn_deg);
     }
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 
     (void)tk_get_otm(&start);
     do
@@ -295,7 +294,7 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
         {
             tk_dly_tsk(OBSTACLE_AVOIDANCE_POLL_MS);
         }
-        else if (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan) &&
+        else if ((obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan)) &&
                  (scan.forward_mm <= SCAN_PROFILE_BLOCK_MM))
         {
             obstacle_avoidance_stop(APP_FAULT_AVOID_BLOCKED);
@@ -306,10 +305,10 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
         }
         motion_control_get_status(&status);
         (void)tk_get_otm(&now);
-    } while (obstacle_avoidance_active() &&
+    } while ((obstacle_avoidance_active()) &&
              (MOTION_CONTROL_RUNNING == status.state) &&
              ((now.lo - start.lo) < OBSTACLE_AVOIDANCE_MOVE_MS));
-    if (obstacle_avoidance_active() &&
+    if ((obstacle_avoidance_active()) &&
         (MOTION_CONTROL_COMPLETE != status.state))
     {
         obstacle_avoidance_stop(APP_FAULT_AVOID_MOTION);
@@ -327,13 +326,13 @@ static bool obstacle_avoidance_look(uint32_t * p_left_mm, uint32_t * p_right_mm)
 {
     ultrasonic_scan_t scan = {0};
 
-    if (obstacle_avoidance_move(OBSTACLE_AVOIDANCE_LOOK_DEG, 0u) &&
-        obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan))
+    if ((obstacle_avoidance_move(OBSTACLE_AVOIDANCE_LOOK_DEG, 0u)) &&
+        (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan)))
     {
         *p_left_mm = scan.forward_mm;
     }
-    if (obstacle_avoidance_move(-2 * OBSTACLE_AVOIDANCE_LOOK_DEG, 0u) &&
-        obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan))
+    if ((obstacle_avoidance_move(-2 * OBSTACLE_AVOIDANCE_LOOK_DEG, 0u)) &&
+        (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan)))
     {
         *p_right_mm = scan.forward_mm;
     }
@@ -350,7 +349,7 @@ static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
 {
     const obstacle_avoidance_step_t * p_step = &g_steps[step];
     /* Towards the bypass side or back; left is positive. */
-    int32_t turn_deg = p_step->turn * OBSTACLE_AVOIDANCE_TURN_DEG;
+    int32_t const turn_deg = p_step->turn * OBSTACLE_AVOIDANCE_TURN_DEG;
 
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, step + 1u);
     return obstacle_avoidance_move(
@@ -373,14 +372,14 @@ static void obstacle_avoidance_avoid(void)
     uint32_t step = 0u;
 
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_PROFILE, 0u);
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     if (OBSTACLE_AVOIDANCE_PROFILE == g_status.state)
     {
         /* Brakes, and the line follower cannot drive again before the
          * controller restarts it after the bypass. */
         line_following_stop();
     }
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
     if (!obstacle_avoidance_active())
     {
         /* Cancelled. */
@@ -389,8 +388,8 @@ static void obstacle_avoidance_avoid(void)
     {
         obstacle_avoidance_stop(APP_FAULT_AVOID_MOTION);
     }
-    else if (obstacle_avoidance_look(&left_mm, &right_mm) &&
-             obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan) &&
+    else if ((obstacle_avoidance_look(&left_mm, &right_mm)) &&
+             (obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan)) &&
              (0u != scan.profile.b_obstacle))
     {
         side = scan_profile_side(left_mm, right_mm);
@@ -400,26 +399,27 @@ static void obstacle_avoidance_avoid(void)
         {
             side_mm = OBSTACLE_AVOIDANCE_WIDE_MM;
         }
-        (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_status.side = side;
         g_status.left_mm = left_mm;
         g_status.right_mm = right_mm;
-        (void)tk_unl_mtx(g_mutex);
+        (void)tk_unl_mtx(gh_mutex);
         if (SCAN_PROFILE_NONE == side)
         {
             obstacle_avoidance_stop(APP_FAULT_AVOID_BLOCKED);
         }
         for (step = 0u;
              (SCAN_PROFILE_NONE != side) && (step < OBSTACLE_AVOIDANCE_STEPS) &&
-             obstacle_avoidance_step(side, step, side_mm);
+             (obstacle_avoidance_step(side, step, side_mm));
              step++)
         {
+            /* Each step runs in the loop test. */
         }
         if (OBSTACLE_AVOIDANCE_STEPS == step)
         {
-            (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+            (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
             g_status.bypasses++;
-            (void)tk_unl_mtx(g_mutex);
+            (void)tk_unl_mtx(gh_mutex);
         }
     }
     else

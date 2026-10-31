@@ -9,24 +9,15 @@
 #include "drv_motion.h"
 #include "../app.h"
 
-#define DRV_MOTION_IRQ           13u /* IO_IRQ_BANK0 */
-#define DRV_MOTION_IRQ_PRIORITY  2
-#define DRV_MOTION_GPIO_BANKS    4u
-#define DRV_MOTION_PINS_PER_BANK 8u
-#define DRV_MOTION_INTR          (IO_BANK0_BASE + 0xf0u)
-#define DRV_MOTION_INTE          (IO_BANK0_BASE + 0x100u)
-#define DRV_MOTION_INTS          (IO_BANK0_BASE + 0x120u)
-#define DRV_MOTION_EDGE_BOTH     0xcu /* Falling and rising edge bits. */
-#define DRV_MOTION_EDGE_BITS     0xccccccccu
-#define DRV_MOTION_LEFT_A        16u
-#define DRV_MOTION_LEFT_B        17u
-#define DRV_MOTION_RIGHT_A       2u
-#define DRV_MOTION_RIGHT_B       3u
-#define DRV_MOTION_MOTOR_FIRST   8u
-#define DRV_MOTION_MOTOR_LAST    11u
-#define DRV_MOTION_PWM_DIV       16u   /* 8.4 fixed point, divide by 1. */
-#define DRV_MOTION_PWM_TOP       6249u /* 125 MHz / 6250 = 20 kHz. */
-#define DRV_MOTION_SKIP          2     /* Decode table: both phases changed. */
+#define DRV_MOTION_LEFT_A      16u
+#define DRV_MOTION_LEFT_B      17u
+#define DRV_MOTION_RIGHT_A     2u
+#define DRV_MOTION_RIGHT_B     3u
+#define DRV_MOTION_MOTOR_FIRST 8u
+#define DRV_MOTION_MOTOR_LAST  11u
+#define DRV_MOTION_PWM_DIV     16u   /* 8.4 fixed point, divide by 1. */
+#define DRV_MOTION_PWM_TOP     6249u /* 125 MHz / 6250 = 20 kHz. */
+#define DRV_MOTION_SKIP        2     /* Decode table: both phases changed. */
 
 #define DRV_MOTION_ENCODER_PINS                                                \
     ((1u << DRV_MOTION_LEFT_A) | (1u << DRV_MOTION_LEFT_B) |                   \
@@ -68,34 +59,29 @@ static volatile uint16_t g_left_count;
 static volatile uint16_t g_right_count;
 static volatile uint8_t g_skipped;
 
-static drv_motion_wheel_t g_left_wheel;
-static drv_motion_wheel_t g_right_wheel;
-static drv_motion_gpio_callback_t g_p_callback = NULL;
-static uint32_t g_callback_pins;
-static ID g_mutex;
+static volatile drv_motion_wheel_t g_left_wheel;
+static volatile drv_motion_wheel_t g_right_wheel;
+static ID gh_mutex;
 
 static uint32_t drv_motion_phase(uint32_t levels, uint32_t pin_a,
                                  uint32_t pin_b);
 static void drv_motion_count(volatile uint16_t * p_count,
-                             drv_motion_wheel_t * p_wheel, uint32_t phase,
-                             int32_t sign);
-static void drv_motion_enable_edges(uint32_t pins);
+                             volatile drv_motion_wheel_t * p_wheel,
+                             uint32_t phase, int32_t sign);
 static void drv_motion_output(uint32_t slice, int32_t duty);
-static void drv_motion_gpio_isr(UINT intno);
+static void drv_motion_edge(uint32_t pins);
 
 /*!
- * @brief Set up 20 kHz PWM with both motors braked, the encoder inputs,
- * the GPIO interrupt and the state lock.
+ * @brief Set up 20 kHz PWM with both motors braked, the encoder inputs and
+ * their edge callback, and the state lock.
  *
- * @return True if the interrupt and the mutex were created.
+ * @return True if the callback was registered and the mutex created.
  */
 bool drv_motion_init(void)
 {
     T_CMTX mutex = {0};
-    T_DINT handler = {0};
     uint32_t pin = 0u;
     uint32_t levels = 0u;
-    ER result = E_OK;
 
     /* usermain() has already taken the PWM block out of reset. */
     out_w(PWM_CH4_BASE + PWM_CHx_DIV, DRV_MOTION_PWM_DIV);
@@ -124,43 +110,9 @@ bool drv_motion_init(void)
         drv_motion_phase(levels, DRV_MOTION_RIGHT_A, DRV_MOTION_RIGHT_B);
 
     mutex.mtxatr = TA_INHERIT;
-    g_mutex = tk_cre_mtx(&mutex);
-
-    handler.intatr = TA_HLNG;
-    /* FP is the kernel's generic handler pointer type. */
-    handler.inthdr = (FP)drv_motion_gpio_isr;
-    result = tk_def_int(DRV_MOTION_IRQ, &handler);
-    if (E_OK == result)
-    {
-        drv_motion_enable_edges(DRV_MOTION_ENCODER_PINS);
-        EnableInt(DRV_MOTION_IRQ, DRV_MOTION_IRQ_PRIORITY);
-    }
-    return ((E_OK == result) && (g_mutex > 0));
-}
-
-/*!
- * @brief Share the GPIO interrupt with another subsystem.
- *
- * Call once, on core 0, from that subsystem's init function. The callback
- * runs inside the ISR, so keep it short. Encoder pins are refused.
- *
- * @param[in] pins       Bit n set for each GPIO n to watch.
- * @param[in] p_callback Called with the pins that saw an edge.
- * @return True if registered.
- */
-bool drv_motion_gpio_register(uint32_t pins,
-                              drv_motion_gpio_callback_t p_callback)
-{
-    bool b_accepted = ((NULL == g_p_callback) && (NULL != p_callback) &&
-                       (0u == (pins & DRV_MOTION_ENCODER_PINS)));
-
-    if (b_accepted)
-    {
-        g_callback_pins = pins;
-        g_p_callback = p_callback;
-        drv_motion_enable_edges(pins);
-    }
-    return b_accepted;
+    gh_mutex = tk_cre_mtx(&mutex);
+    return (app_gpio_register(DRV_MOTION_ENCODER_PINS, drv_motion_edge)) &&
+           (gh_mutex > 0);
 }
 
 /*!
@@ -199,7 +151,7 @@ uint32_t drv_motion_time_us(void)
  */
 void drv_motion_lock(void)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
 }
 
 /*!
@@ -207,7 +159,7 @@ void drv_motion_lock(void)
  */
 void drv_motion_unlock(void)
 {
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -223,8 +175,8 @@ static uint32_t drv_motion_phase(uint32_t levels, uint32_t pin_a,
  * @brief Update one wheel's count for a newly read phase.
  */
 static void drv_motion_count(volatile uint16_t * p_count,
-                             drv_motion_wheel_t * p_wheel, uint32_t phase,
-                             int32_t sign)
+                             volatile drv_motion_wheel_t * p_wheel,
+                             uint32_t phase, int32_t sign)
 {
     int32_t step = g_decode[(p_wheel->phase * 4u) + phase];
 
@@ -243,34 +195,10 @@ static void drv_motion_count(volatile uint16_t * p_count,
         /* No change: the edge was on another pin. */
     }
 
-    /* The counter is meant to wrap modulo 65536. */
-    *p_count = (uint16_t)(*p_count + (step * sign));
+    /* The counter is meant to wrap modulo 65536: step * sign is -2..2,
+     * and both casts keep the low bits. */
+    *p_count = (uint16_t)(*p_count + (uint32_t)(step * sign));
     p_wheel->phase = phase;
-}
-
-/*!
- * @brief Clear old edge flags on these pins, then enable their interrupts.
- */
-static void drv_motion_enable_edges(uint32_t pins)
-{
-    uint32_t bank = 0u;
-    uint32_t pin = 0u;
-    uint32_t mask = 0u;
-
-    for (bank = 0u; bank < DRV_MOTION_GPIO_BANKS; bank++)
-    {
-        mask = 0u;
-        for (pin = 0u; pin < DRV_MOTION_PINS_PER_BANK; pin++)
-        {
-            if (0u !=
-                (pins & (1u << ((bank * DRV_MOTION_PINS_PER_BANK) + pin))))
-            {
-                mask |= DRV_MOTION_EDGE_BOTH << (pin * 4u);
-            }
-        }
-        out_w(DRV_MOTION_INTR + (bank * 4u), mask);
-        set_w(DRV_MOTION_INTE + (bank * 4u), mask);
-    }
 }
 
 /*!
@@ -291,36 +219,14 @@ static void drv_motion_output(uint32_t slice, int32_t duty)
 }
 
 /*!
- * @brief GPIO bank 0 interrupt: count encoder edges and pass other pins
- * to the registered callback.
+ * @brief Encoder edge callback, from the GPIO interrupt (app_main.c).
  */
-static void drv_motion_gpio_isr(UINT intno)
+static void drv_motion_edge(uint32_t pins)
 {
-    uint32_t pins = 0u;
-    uint32_t bank = 0u;
-    uint32_t pin = 0u;
-    uint32_t edges = 0u;
     uint32_t levels = 0u;
 
-    (void)intno;
-    for (bank = 0u; bank < DRV_MOTION_GPIO_BANKS; bank++)
-    {
-        edges = in_w(DRV_MOTION_INTS + (bank * 4u)) & DRV_MOTION_EDGE_BITS;
-        if (0u != edges) /* Usually only one bank has edges. */
-        {
-            out_w(DRV_MOTION_INTR + (bank * 4u), edges);
-            for (pin = 0u; pin < DRV_MOTION_PINS_PER_BANK; pin++)
-            {
-                if (0u != (edges & (DRV_MOTION_EDGE_BOTH << (pin * 4u))))
-                {
-                    pins |= 1u << ((bank * DRV_MOTION_PINS_PER_BANK) + pin);
-                }
-            }
-        }
-    }
-
-    /* Read the pins after clearing the flags, so a later edge is not lost. */
-    levels = in_w(GPIO_IN);
+    (void)pins;             /* Both wheels are read on every edge. */
+    levels = in_w(GPIO_IN); /* Flags already cleared: no edge is lost. */
     drv_motion_count(
         &g_left_count, &g_left_wheel,
         drv_motion_phase(levels, DRV_MOTION_LEFT_A, DRV_MOTION_LEFT_B),
@@ -329,11 +235,6 @@ static void drv_motion_gpio_isr(UINT intno)
         &g_right_count, &g_right_wheel,
         drv_motion_phase(levels, DRV_MOTION_RIGHT_A, DRV_MOTION_RIGHT_B),
         DRV_MOTION_RIGHT_ENCODER_SIGN);
-
-    if ((NULL != g_p_callback) && (0u != (pins & g_callback_pins)))
-    {
-        g_p_callback(pins & g_callback_pins);
-    }
 }
 
 /*** end of file ***/

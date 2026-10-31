@@ -1,6 +1,7 @@
 /** @file subsystem1.h
  *
- * @brief Subsystem 1 (Wi-Fi, command and telemetry). Student ID: <student ID>.
+ * @brief Subsystem 1 (Wi-Fi, command and telemetry).
+ * TODO: Student ID: <student ID>.
  *
  * Public interface of subsystem 1. Put here only what OTHER subsystems
  * may use (object IDs, message formats, priorities); keep everything else

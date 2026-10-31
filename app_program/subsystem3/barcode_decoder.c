@@ -2,8 +2,8 @@
  *
  * @brief Barcode Decoder API and task, the only task that drives the ADC.
  *
- * Each sample is placed along the track by interpolating the odometer
- * across its 10 ms block, in 1/16 mm. A barcode starts at the first black
+ * Each sample is placed along the track by interpolating the distance
+ * rolled across its 10 ms block, in um. A barcode starts at the first black
  * after white and ends at a white run longer than BARCODE_END; its bars
  * and spaces then go to code39_decode().
  */
@@ -14,23 +14,20 @@
 #include "subsystem3.h"
 #include "../subsystem2/motion_control.h"
 
-#define BARCODE_BLACK    2500u /* ADC counts: white reads ~170, black */
-#define BARCODE_WHITE    1500u /* ~4070 (S3-U10). Hysteresis between. */
-#define BARCODE_SUB      16u   /* Positions in 1/16 mm. */
-#define BARCODE_END      (30u * BARCODE_SUB) /* 30 mm: over 3 wide bars. */
-#define BARCODE_ODOMETER 0xFFFFFFu /* motion distance_mm wraps at 24 bits. */
-#define CODE39_CHAR      9u        /* Elements in one character. */
+#define BARCODE_BLACK 2500u  /* ADC counts: white reads ~170, black */
+#define BARCODE_WHITE 1500u  /* ~4070 (S3-U10). Hysteresis between. */
+#define BARCODE_END   30000u /* um: 30 mm, over 3 wide bars. */
 
-static ID g_mutex;
+static ID gh_mutex;
 static barcode_decoder_t g_barcode;
 static barcode_decoder_raw_t g_raw;
 
 /* Barcode Decoder task only. */
 static uint16_t g_widths[CODE39_ELEMENTS];
 static uint32_t g_elements;  /* Elements so far; over 29 is too many. */
-static uint32_t g_run_start; /* 1/16 mm. */
-static bool g_b_black;
-static bool g_b_in_code;
+static uint32_t g_run_start; /* um. */
+static bool gb_black;
+static bool gb_in_code;
 
 static void barcode_decoder_sample(uint32_t level, uint32_t pos,
                                    uint32_t odometer_mm);
@@ -46,9 +43,9 @@ bool barcode_decoder_init(void)
     T_CMTX mutex = {0};
 
     mutex.mtxatr = TA_INHERIT;
-    g_mutex = tk_cre_mtx(&mutex);
+    gh_mutex = tk_cre_mtx(&mutex);
     drv_barcode_init();
-    return (g_mutex > 0);
+    return (gh_mutex > 0);
 }
 
 /*!
@@ -56,9 +53,9 @@ bool barcode_decoder_init(void)
  */
 void barcode_decoder_get(barcode_decoder_t * p_barcode)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     *p_barcode = g_barcode;
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -66,9 +63,9 @@ void barcode_decoder_get(barcode_decoder_t * p_barcode)
  */
 void barcode_decoder_get_raw(barcode_decoder_raw_t * p_raw)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     *p_raw = g_raw;
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -79,43 +76,39 @@ void barcode_decoder_task(INT stacd, void * p_exinf)
 {
     static uint16_t samples[DRV_BARCODE_RING]; /* Off the task stack. */
     motion_control_status_t motion = {0};
-    uint32_t last_mm = 0u;
-    uint32_t moved = 0u; /* 1/16 mm rolled in this block. */
-    uint32_t pos = 0u;   /* 1/16 mm, wraps. */
+    uint32_t last_um = motion_control_distance_um();
+    uint32_t moved = 0u; /* um rolled in this block. */
     uint32_t count = 0u;
     uint32_t min = 0u;
     uint32_t max = 0u;
-    uint32_t i = 0u;
+    uint32_t sample = 0u;
 
     (void)stacd;
     (void)p_exinf;
-    motion_control_get_status(&motion);
-    last_mm = motion.distance_mm;
     for (;;)
     {
         (void)tk_slp_tsk(TMO_FEVR); /* Woken every 10 ms (subsystem3.c). */
         count = drv_barcode_read(samples);
+        /* Read right after the samples, so both end at the same moment. */
+        moved = motion_control_distance_um() - last_um;
         motion_control_get_status(&motion);
-        moved =
-            ((motion.distance_mm - last_mm) & BARCODE_ODOMETER) * BARCODE_SUB;
-        last_mm = motion.distance_mm;
         min = 4095u;
         max = 0u;
-        for (i = 0u; i < count; i++)
+        for (sample = 0u; sample < count; sample++)
         {
-            min = (samples[i] < min) ? samples[i] : min;
-            max = (samples[i] > max) ? samples[i] : max;
-            barcode_decoder_sample(samples[i],
-                                   pos + ((moved * (i + 1u)) / count),
+            min = (samples[sample] < min) ? samples[sample] : min;
+            max = (samples[sample] > max) ? samples[sample] : max;
+            barcode_decoder_sample(samples[sample],
+                                   last_um + ((moved * (sample + 1u)) / count),
                                    motion.distance_mm);
         }
-        pos += moved;
+        last_um += moved;
 
-        (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_raw.min = min;
         g_raw.max = max;
         g_raw.samples += count;
-        (void)tk_unl_mtx(g_mutex);
+        (void)tk_unl_mtx(gh_mutex);
     }
 }
 
@@ -124,42 +117,40 @@ void barcode_decoder_task(INT stacd, void * p_exinf)
  * and end the barcode after a long white run.
  *
  * @param[in] level       ADC counts.
- * @param[in] pos         Where the sample was taken, 1/16 mm.
+ * @param[in] pos         Where the sample was taken, um, wraps.
  * @param[in] odometer_mm Odometer at the end of this block.
  */
 static void barcode_decoder_sample(uint32_t level, uint32_t pos,
                                    uint32_t odometer_mm)
 {
-    bool b_black =
-        g_b_black ? (level > BARCODE_WHITE) : (level > BARCODE_BLACK);
-    uint32_t width = pos - g_run_start;
+    bool const b_black =
+        gb_black ? (level > BARCODE_WHITE) : (level > BARCODE_BLACK);
+    uint32_t const width = pos - g_run_start;
 
-    if (b_black != g_b_black)
+    if (b_black != gb_black)
     {
-        if (g_b_black && !g_b_in_code)
+        if (gb_black && (!gb_in_code))
         {
-            g_b_in_code = true; /* The first bar has ended. */
+            gb_in_code = true; /* The first bar has ended. */
             g_elements = 0u;
         }
-        if (g_b_in_code && (width > BARCODE_END))
+        if (gb_in_code && (width > BARCODE_END))
         {
-            g_b_in_code = false; /* A bar this long is not a barcode. */
+            gb_in_code = false; /* A bar this long is not a barcode. */
         }
-        if (g_b_in_code)
+        if (gb_in_code && (g_elements < CODE39_ELEMENTS))
         {
-            if (g_elements < CODE39_ELEMENTS)
-            {
-                g_widths[g_elements] = (uint16_t)width;
-            }
-            g_elements++;
+            /* In a barcode, width is at most BARCODE_END: it fits. */
+            g_widths[g_elements] = (uint16_t)width;
         }
+        g_elements++; /* Over 29 in a barcode; reset when one starts. */
         g_run_start = pos;
-        g_b_black = b_black;
+        gb_black = b_black;
     }
-    else if (g_b_in_code && !g_b_black && (width > BARCODE_END))
+    else if (gb_in_code && (!gb_black) && (width > BARCODE_END))
     {
         barcode_decoder_end(odometer_mm);
-        g_b_in_code = false;
+        gb_in_code = false;
     }
     else
     {
@@ -172,33 +163,35 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
  */
 static void barcode_decoder_end(uint32_t odometer_mm)
 {
-    uint32_t letter =
+    uint32_t const letter =
         (CODE39_ELEMENTS == g_elements) ? code39_decode(g_widths) : 0u;
 #if APP_TEST
-    uint32_t i = 0u;
+    uint32_t element = 0u;
 
     /* Bench evidence for S3-U14: what the sensor measured, in 0.1 mm. */
-    if (g_elements >= CODE39_CHAR)
+    if (g_elements >= CODE39_PER_CHR)
     {
-        /* (UB *): tm_printf() takes unsigned chars. */
+        /* (UB *): tm_printf() takes unsigned chars. (int): letter is 0
+         * or 'A'..'D'. */
         tm_printf((UB *)"[barcode] elements=%u letter=%c widths_0.1mm=",
                   g_elements, (0u != letter) ? (int)letter : '-');
-        for (i = 0u; (i < g_elements) && (i < CODE39_ELEMENTS); i++)
+        for (element = 0u;
+             (element < g_elements) && (element < CODE39_ELEMENTS); element++)
         {
-            tm_printf((UB *)" %u", (g_widths[i] * 10u) / BARCODE_SUB);
+            tm_printf((UB *)" %u", g_widths[element] / 100u);
         }
         tm_printf((UB *)"\n");
     }
 #endif
 
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     if (0u != letter)
     {
         g_barcode.command = BARCODE_DECODER_LEFT + (letter - 'A');
         g_barcode.count++;
         g_barcode.distance_mm = odometer_mm;
     }
-    else if (g_elements >= CODE39_CHAR)
+    else if (g_elements >= CODE39_PER_CHR)
     {
         g_barcode.rejects++; /* Shorter runs are specks, or the line. */
     }
@@ -206,7 +199,7 @@ static void barcode_decoder_end(uint32_t odometer_mm)
     {
         /* Ignored. */
     }
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*** end of file ***/

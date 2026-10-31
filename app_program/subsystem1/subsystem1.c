@@ -6,9 +6,9 @@
  * mailboxes, ...) and starts no tasks. subsystem1_start() creates and
  * starts its tasks, e.g.
  *
- *     ID task_id = app_start_task((FP)subsystem1_task, S1_PRI_MAIN, 0,
- *                                 "s1_main");
- *     return (task_id < E_OK) ? task_id : E_OK;
+ *     ID h_task = app_start_task((FP)subsystem1_task, S1_PRI_MAIN, 0u,
+ *                                "s1_main");
+ *     return (h_task < E_OK) ? h_task : E_OK;
  *
  * Drivers for this subsystem's hardware go in this folder as
  * drv_<name>.c / drv_<name>.h, called only from the task that owns the

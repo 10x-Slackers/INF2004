@@ -25,7 +25,7 @@ typedef struct
 {
     unsigned int forward_mm : 12; /* 20..4000; 4000 is nothing in range. */
     unsigned int request : 4;     /* Request the latest scan served. */
-    unsigned int forward_ms : 32; /* Kernel time of forward_mm, wraps. */
+    uint32_t forward_ms;          /* Kernel time of forward_mm, wraps. */
     scan_profile_t profile;       /* Last profile scan. */
 } ultrasonic_scan_t;
 

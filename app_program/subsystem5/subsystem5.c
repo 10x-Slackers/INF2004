@@ -6,13 +6,12 @@
 #include "subsystem5.h"
 
 /*!
- * @brief Set up the sensor, the servo and the locks. Runs after
- * subsystem2_init(), whose GPIO interrupt carries the echo edges.
+ * @brief Set up the sensor, the servo and the locks.
  */
 ER subsystem5_init(void)
 {
-    bool b_scan = ultrasonic_scan_init();
-    bool b_avoid = obstacle_avoidance_init();
+    bool const b_scan = ultrasonic_scan_init();
+    bool const b_avoid = obstacle_avoidance_init();
 
     return (b_scan && b_avoid) ? E_OK : E_SYS;
 }
@@ -22,12 +21,12 @@ ER subsystem5_init(void)
  */
 ER subsystem5_start(void)
 {
-    ID avoid = obstacle_avoidance_start_task();
+    ID const h_avoid = obstacle_avoidance_start_task();
     /* FP is the kernel's generic task pointer type. */
-    ID scan =
-        app_start_task((FP)ultrasonic_scan_task, S5_PRI_SCAN, 0, "s5_scan");
+    ID const h_scan =
+        app_start_task((FP)ultrasonic_scan_task, S5_PRI_SCAN, 0u, "s5_scan");
 
-    return (avoid < E_OK) ? avoid : ((scan < E_OK) ? scan : E_OK);
+    return (h_avoid < E_OK) ? h_avoid : ((h_scan < E_OK) ? h_scan : E_OK);
 }
 
 /*** end of file ***/

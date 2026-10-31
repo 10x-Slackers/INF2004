@@ -15,15 +15,17 @@
 #include "../subsystem2/motion_control.h"
 
 #define LINE_FOLLOWING_BOTH     (DRV_LINE_LEFT | DRV_LINE_RIGHT)
-#define LINE_FOLLOWING_JUNCTION 3u     /* Samples: 30 ms, 6 mm at 0.2 m/s. */
-#define LINE_FOLLOWING_TURN_PCT 50     /* Wheel speed change while one sensor */
-                                       /* sees black, % of the speed: tune. */
-#define LINE_FOLLOWING_LOST_MM    150u /* All white this far: lost. Tune. */
-#define LINE_FOLLOWING_SEARCH_DEG 135  /* Pivot each side of the heading. */
-#define LINE_FOLLOWING_PIVOT_MM_S 100  /* Wheel speed while pivoting. */
-#define LINE_FOLLOWING_ODOMETER   0xFFFFFFu /* distance_mm wraps here. */
+#define LINE_FOLLOWING_JUNCTION 3u /* Samples: 30 ms, 6 mm at 0.2 m/s. */
+/* Wheel speed change while one sensor sees black, % of the speed.
+ * TODO: tune. */
+#define LINE_FOLLOWING_TURN_PCT 50
+#define LINE_FOLLOWING_LOST_MM                                                 \
+    150u                              /* All white this far: lost. TODO: tune. \
+                                       */
+#define LINE_FOLLOWING_SEARCH_DEG 135 /* Pivot each side of the heading. */
+#define LINE_FOLLOWING_PIVOT_MM_S 100 /* Wheel speed while pivoting. */
 
-/* Line search, under g_mutex. */
+/* Line search, under gh_mutex. */
 typedef struct
 {
     unsigned int from_mm : 24;  /* Odometer when a sensor last saw black. */
@@ -31,9 +33,9 @@ typedef struct
     unsigned int start_deg : 9; /* Heading when the search began. */
 } line_following_search_t;
 
-static ID g_mutex;
+static ID gh_mutex;
 static line_following_t g_line;
-static uint16_t g_speed_mm_s; /* Under g_mutex. */
+static uint16_t g_speed_mm_s; /* Under gh_mutex. */
 static line_following_search_t g_search;
 
 static void line_following_steer(uint32_t bits);
@@ -49,9 +51,9 @@ bool line_following_init(void)
     T_CMTX mutex = {0};
 
     mutex.mtxatr = TA_INHERIT;
-    g_mutex = tk_cre_mtx(&mutex);
+    gh_mutex = tk_cre_mtx(&mutex);
     drv_line_init();
-    return (g_mutex > 0);
+    return (gh_mutex > 0);
 }
 
 /*!
@@ -59,9 +61,9 @@ bool line_following_init(void)
  */
 void line_following_get(line_following_t * p_line)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     *p_line = g_line;
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -72,15 +74,16 @@ void line_following_get(line_following_t * p_line)
  */
 bool line_following_start(uint32_t speed_mm_s)
 {
-    bool b_valid = (speed_mm_s > 0u) && (speed_mm_s <= LINE_FOLLOWING_MAX_MM_S);
+    bool const b_valid =
+        (speed_mm_s > 0u) && (speed_mm_s <= LINE_FOLLOWING_MAX_MM_S);
 
     if (b_valid)
     {
-        (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-        g_speed_mm_s = (uint16_t)speed_mm_s;
+        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+        g_speed_mm_s = (uint16_t)speed_mm_s; /* <= MAX_MM_S: fits. */
         g_line.b_following = true;
         g_line.b_lost = false;
-        (void)tk_unl_mtx(g_mutex);
+        (void)tk_unl_mtx(gh_mutex);
     }
     return b_valid;
 }
@@ -91,9 +94,9 @@ bool line_following_start(uint32_t speed_mm_s)
  */
 void line_following_stop(void)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     g_line.b_following = false;
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
     motion_control_stop();
 }
 
@@ -118,7 +121,7 @@ void line_following_task(INT stacd, void * p_exinf)
         (void)tk_get_otm(&now);
         motion_control_get_status(&motion);
 
-        (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_line.bits = bits;
         if ((DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits))
         {
@@ -127,14 +130,14 @@ void line_following_task(INT stacd, void * p_exinf)
         g_line.b_junction = (both >= LINE_FOLLOWING_JUNCTION);
         g_line.count++;
         g_line.sample_ms = now.lo;
-        if (!g_line.b_following || (0u != bits))
+        if ((!g_line.b_following) || (0u != bits))
         {
             g_search.phase = 0u; /* Not following, found, or never lost. */
             g_search.from_mm = motion.distance_mm;
         }
         else if ((0u == g_search.phase) &&
                  (((motion.distance_mm - g_search.from_mm) &
-                   LINE_FOLLOWING_ODOMETER) >= LINE_FOLLOWING_LOST_MM))
+                   MOTION_CONTROL_DISTANCE_MASK) >= LINE_FOLLOWING_LOST_MM))
         {
             g_search.phase = 1u;
             g_search.start_deg = motion.heading_deg;
@@ -155,20 +158,21 @@ void line_following_task(INT stacd, void * p_exinf)
         {
             line_following_search(&motion);
         }
-        g_line.b_searching = g_line.b_following && (0u != g_search.phase);
-        (void)tk_unl_mtx(g_mutex);
+        g_line.b_searching = (g_line.b_following) && (0u != g_search.phase);
+        (void)tk_unl_mtx(gh_mutex);
     }
 }
 
 /*!
  * @brief Steer towards the side whose sensor sees black. Call under
- * g_mutex while following.
+ * gh_mutex while following.
  *
  * @param[in] bits Sensors over black.
  */
 static void line_following_steer(uint32_t bits)
 {
-    int32_t turn = (g_speed_mm_s * LINE_FOLLOWING_TURN_PCT) / 100; /* +left. */
+    int32_t const speed = g_speed_mm_s;                     /* 16 bits: fits. */
+    int32_t turn = (speed * LINE_FOLLOWING_TURN_PCT) / 100; /* +left. */
 
     if (DRV_LINE_RIGHT == bits)
     {
@@ -182,20 +186,21 @@ static void line_following_steer(uint32_t bits)
     {
         /* The line is under the left sensor: turn left. */
     }
-    (void)motion_control_drive(g_speed_mm_s - turn, g_speed_mm_s + turn);
+    (void)motion_control_drive(speed - turn, speed + turn);
 }
 
 /*!
  * @brief Pivot towards last_side up to LINE_FOLLOWING_SEARCH_DEG, then the
  * other way to as far past the start heading; then brake and set b_lost.
- * Call under g_mutex while following.
+ * Call under gh_mutex while following.
  *
  * @param[in] p_motion Motion status, for the heading.
  */
 static void line_following_search(const motion_control_status_t * p_motion)
 {
     int32_t side = (DRV_LINE_RIGHT == g_line.last_side) ? -1 : 1; /* +left. */
-    /* Degrees turned anticlockwise since the search began, -180..179. */
+    /* Degrees turned anticlockwise since the search began, -180..179. Both
+     * headings are 0..359, so the casts keep them. */
     int32_t turned =
         (((int32_t)p_motion->heading_deg - (int32_t)g_search.start_deg + 540) %
          360) -

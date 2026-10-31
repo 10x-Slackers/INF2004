@@ -62,7 +62,7 @@ Servo angles: 80° points right, 90° ahead, 100° left. The sensor's mount stop
 
 ## How it works
 
-- **Ranging:** a 10 µs trigger, then the scan task sleeps while the echo is out. ECHO's edges arrive through subsystem 2's GPIO interrupt (`drv_motion_gpio_register()`), which times them on the 1 MHz TIMER and wakes the task. Distance is `echo_us × 10 / 58` mm. An echo longer than 4 m, or none ending within 50 ms, reads 4000 mm: open space is clear. Only an echo pulse that never starts is a fault. Triggers are at least 60 ms apart, and wait for ECHO to be low.
+- **Ranging:** a 10 µs trigger, then the scan task sleeps while the echo is out. ECHO's edges arrive through the shared GPIO interrupt (`app_gpio_register()`), which times them on the 1 MHz TIMER and wakes the task. Distance is `echo_us × 10 / 58` mm. An echo longer than 4 m, or none ending within 50 ms, reads 4000 mm: open space is clear. Only an echo pulse that never starts is a fault. Triggers are at least 60 ms apart, and wait for ECHO to be low.
 - **Coarse scan (car):** with the car still, avoidance turns it 45° left and takes a forward reading, turns 90° right and takes another, then turns 45° back to the original heading. These are `left_mm` and `right_mm`.
 - **Fine scan (servo):** rays every 5° from 80 to 100°, each the median of three readings after a 200 ms servo settle. The obstacle is the run of rays within 350 mm around the closest one. The servo returns ahead and takes a forward reading at the end of every scan.
 - **Side:** the more open side, if it has at least 400 mm; left on a tie. With neither, a safe stop (no reverse: nothing checks behind the car).
@@ -93,7 +93,7 @@ The `make -C build_make TEST=1` image starts task `s5_bench` after the checks. I
 | GP0, GP1              | HC-SR04 TRIG, ECHO (level shifted). Unplug the sensor for `CRASH_REPORT=1` builds    |
 | GP12, PWM slice 6 A   | Servo, 50 Hz                                                                        |
 | GP20                  | Bench button (pull-up), `TEST=1` only                                              |
-| IRQ 13 callback       | ECHO edges, registered with `drv_motion_gpio_register()`                             |
+| IRQ 13 callback       | ECHO edges, registered with `app_gpio_register()`                                    |
 | Tasks                 | `s5_avoid` priority 11; `s5_scan` priority 12; `s5_bench` priority 12, `TEST=1` only |
 | Kernel objects        | 2 mutexes, 1 semaphore                                                              |
 

@@ -59,11 +59,11 @@ An unvalidated barcode only bumps `rejects`; its command is never published.
 
 ## How it works
 
-- **Sampling:** one cyclic handler wakes both tasks every 10 ms (`tk_dly_tsk()` would add a tick to every period).
+- **Sampling:** a cyclic handler wakes each task every 10 ms (`app_start_cyclic()`; `tk_dly_tsk()` would add a tick to every period).
 - **Line following:** the sensors straddle the 18 mm line. Both white means centred, one black means the line has drifted under that sensor, so the car turns that way: that wheel slows and the other speeds up by 50% of the speed. Both black is a junction (or a marking across the line) and the car drives straight on.
 - **Lost line:** both white also looks like a lost line, so the line counts as lost only after `LINE_FOLLOWING_LOST_MM` (150 mm) of travel with both sensors white (`distance_mm` from the motion status). The car then pivots on the spot towards `last_side`, where a curve usually takes the line, up to `LINE_FOLLOWING_SEARCH_DEG` (135°), then the other way to as far past its starting heading (`heading_deg`). Either sensor seeing black resumes normal following. If the whole sweep finds nothing, the task brakes, stops following and sets `b_lost`; the Vehicle Controller takes a safe stop. On a straight, a false alarm costs a small pivot: the line soon reaches one sensor. While `b_searching` is set the Vehicle Controller pauses obstacle avoidance, since the pivot sweeps the ultrasonic sensor across the sides; nothing checks collisions during the pivot, as during every other turn.
 - **Search reach:** the sensors are 110 mm ahead of the axle, so the pivot sweeps a circle of that radius. The longer the all-white threshold, the further the car rolls past the point where the line left. On a 90° corner, a 90° sweep stops reaching the new line after about 110 mm of all-white travel, a 135° sweep after about 185 mm, and any sweep after about 220 mm (it would need reversing). So the threshold must stay short however long the straights run without touching a sensor, and the sweep must match it: 150 mm needs about 110°.
-- **Barcodes:** the barcode sensor's AO is converted every 0.5 ms; DMA copies each sample into a 256-sample ring with no interrupt. Every 10 ms the decoder spreads the new samples along the distance rolled in that block, in 1/16 mm, so bar widths do not depend on speed. A bar is black above 2500 counts and ends below 1500 (hysteresis). A barcode starts at the first black after white and ends at a white run over 30 mm.
+- **Barcodes:** the barcode sensor's AO is converted every 0.5 ms; DMA copies each sample into a 256-sample ring with no interrupt. Every 10 ms the decoder spreads the new samples along the distance rolled in that block, in µm, so bar widths do not depend on speed. The distance comes from `motion_control_distance_um()`, read just after the samples: it counts encoder edges up to that moment, not up to the last 10 ms motion step. A bar is black above 2500 counts and ends below 1500 (hysteresis). A barcode starts at the first black after white and ends at a white run over 30 mm.
 - **Code 39:** exactly 29 elements (`*`, the letter, `*`, with narrow gaps between) are split into narrow and wide at halfway between the narrowest and widest. Each character must have exactly 3 wide elements and match `*`, A, B, C or D, read in either direction.
 
 ## Calibration
@@ -90,8 +90,8 @@ The `make -C build_make TEST=1` image starts task `s3_bench` after the checks. I
 | DMA channel 11        | ADC FIFO to the sample ring                                                          |
 | GP21                  | Bench button (pull-up), `TEST=1` only                                                |
 | Tasks                 | `s3_barcode` priority 8; `s3_line` priority 9; `s3_bench` priority 9, `TEST=1` only  |
-| Kernel objects        | 2 mutexes, 1 cyclic handler                                                         |
+| Kernel objects        | 2 mutexes, 2 cyclic handlers                                                        |
 
 ## Coding standard
 
-The code follows BARR-C:2018 with the same deviations as subsystem 2 ([MOTION_CONTROL.md](MOTION_CONTROL.md#coding-standard)), for `subsystem3_test.c` and the task entry points.
+The code follows BARR-C:2018 with the same deviations as subsystem 2 ([MOTION_CONTROL.md](MOTION_CONTROL.md#coding-standard)), for `subsystem3_test.c` and the task entry points. Abbreviations as listed there.

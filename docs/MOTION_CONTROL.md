@@ -23,6 +23,7 @@ Tests and results: [testing/subsystem2](../testing/subsystem2/TEST_LOG.md).
 | `motion_control_stop()`              | Brake both wheels now and cancel the command                                                     |
 | `motion_control_latch(latched)`      | Safety latch ([SAFETY_MONITOR.md](SAFETY_MONITOR.md)): `true` brakes like `stop()` and makes every move, turn and drive return false until `false`. Returns true if it was already latched. `motion_control_latched()` reads it |
 | `motion_control_get_status(&status)` | Copy the status (below)                                                                          |
+| `motion_control_distance_um()`       | Distance rolled up to now in µm, wraps. Counts the edges since the last step too, so it is finer and fresher than `distance_mm` |
 | `motion_control_set_speed(mm_s)`     | Speed of later moves and turns, 10–1000 mm/s (default 100)                                       |
 | `motion_control_pack(&status, buf)`  | 12-byte telemetry payload                                                                        |
 
@@ -57,7 +58,7 @@ Faults are bits in the shared fault bitmask (`app_faults()`, `app_fault.h`), cle
 ## How it works
 
 - **Encoders:** 2537 edges per wheel turn (measured), 0.080 mm per edge. Each edge interrupts core 0. If a phase is missed, the ISR counts two edges in the last direction and sets fault bit 4.
-- **Speed control:** every 10 ms, one PID per wheel: `duty = (Kp·e + Ki·Σe + Kd·Δe) / 256 + 100‰`, limited to 800‰. The integral holds while the output is limited. Defaults Kp 256, Ki 16, Kd 0. Measured speed is the edges counted since the last step over the kernel time since then (10 ms, or 20 ms then 0 ms after a late wake-up); the hardware timer is not used.
+- **Speed control:** every 10 ms, one PID per wheel: `duty = (Kp·e + Ki·Σe + Kd·Δe) / 256 + 100‰`, limited to 800‰. The integral holds while the output is limited. Defaults Kp 256, Ki 16, Kd 0. Measured speed is the edges counted since the last step over the kernel time since then (10 ms, or 20 ms then 0 ms after a late wake-up); the hardware timer is not used. The 0 ms step only counts edges: speeds, stall counts, the PID and the outputs wait for the next step.
 - **Moves and turns:** each wheel rolls a set number of edges: `mm × 2537 / (π × 65)` for a move, `track × angle × 2537 / (360 × 65)` for a turn. Speed ramps up at 500 mm/s² and slows to 30 mm/s at the end, so stops are repeatable.
 - **Going straight:** the wheel that is ahead slows by (edge difference ÷ 4) mm/s and the other speeds up by the same amount.
 - **PWM:** 20 kHz on slices 4 (left, GP8/9) and 5 (right, GP10/11). Zero duty brakes.
@@ -104,19 +105,13 @@ left_mm_s = field(14, 11) - 1024
 | GP8–GP11, PWM slices 4, 5    | Motors                                                                                      |
 | GP2, GP3, GP16, GP17         | Encoders (pull-ups, both edges)                                                             |
 | GP21                         | Bench start button (pull-up), `TEST=1` only                                                 |
-| IRQ 13 (GPIO bank 0), core 0 | Encoder ISR. Other subsystems needing GPIO edge interrupts call `drv_motion_gpio_register()` in their init, not `tk_def_int(13)` |
+| IRQ 13 (GPIO bank 0), core 0 | Encoder edge callback, registered with `app_gpio_register()` (`app.h`)                      |
 | Tasks                        | `s2_motion` priority 6, core 0; `s2_bench` priority 7, core 0, `TEST=1` only                 |
 | Kernel objects               | 1 mutex, 1 cyclic handler                                                                   |
 
 ## Coding standard
 
-The code follows BARR-C:2018. Deviations:
-
-| Rule      | Deviation and reason                                                                                 |
-| --------- | ---------------------------------------------------------------------------------------------------- |
-| 3.1.j, 3.2 | No space before `(` in definitions, and no column alignment of declarations: the repository's `.clang-format` enforces this layout |
-| 4.2.a     | `subsystem2_test.c` has no header: `subsystem2_test()` is declared in `app.h` by the course template  |
-| 5.2       | Task and ISR entry points take kernel types (`INT`, `UINT`) to match the µT-Kernel prototypes         |
+The code follows BARR-C:2018, with the team's deviations listed at the top of `app_program/app.h`.
 
 Abbreviations (rule 1.5):
 
@@ -126,5 +121,10 @@ Abbreviations (rule 1.5):
 | `ms`         | milliseconds                 | `mm_s`        | millimetres per second                   |
 | `deg`        | degrees                      | `cmd`         | command                                  |
 | `pwm`        | pulse width modulation       | `pid`, `kp`, `ki`, `kd` | PID controller and its gains   |
-| `isr`        | interrupt service routine    |               |                                          |
+| `isr`        | interrupt service routine    | `mm`          | millimetres                              |
+| `drv`        | driver                       | `pri`, `prc`  | task priority, processor (core)          |
+| `s2`..`s5`   | subsystem 2 to 5             | `accel`, `decel` | acceleration, deceleration            |
+| `rev`        | revolution                   | `div`         | clock divider                            |
+| `uturn`      | U-turn                       | `trig`        | trigger                                  |
+| `chr`        | character                    | `pct`         | percent                                  |
 | `q8`         | fixed point, 8 fraction bits (value × 256) | `permille` / `‰` | parts per thousand (duty)  |

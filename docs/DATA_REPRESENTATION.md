@@ -20,6 +20,9 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 4 | `S4_TILT.pitch`, `.roll`: tilt from the start surface | −900 to 900 (0.1 degree) | 11 each | `signed int` bit-field | Readers copy it with `s4_get_tilt()`, under mutex `s4_mtx_accel` |
 | 4 | `S4_TILT.cal`: start-up calibration done | 0 or 1 | 1 | `unsigned int` bit-field | As above |
 | 4 | `S4_FAULT.impact`, `.tilt`: impact and excessive-tilt faults, latched until reset | 0 or 1 | 1 each | `unsigned int` bit-field (moves into the shared fault bitmask once agreed) | Readers copy it with `s4_get_fault()`, under mutex `s4_mtx_accel` |
+| 4 | `S4_HUMP.peak`, `.max`: last hump peak and highest of the run | 0 to 63 mm | 6 each | `unsigned int` bit-field | Readers copy it with `s4_get_hump()`, under mutex `s4_mtx_accel` |
+| 4 | `S4_HUMP.count`: humps seen | 0 to 15, wraps | 4 | `unsigned int` bit-field | As above |
+| 4 | `S4_HUMP.on`: right wheel on a hump now | 0 or 1 | 1 | `unsigned int` bit-field | As above |
 | 2 | `motion_control_status_t.state`: idle, running, complete, failed | 0 to 3 | 2 | `unsigned int` bit-field | Readers copy it with `motion_control_get_status()`, under the motion mutex; packed with shifts for telemetry |
 | 2 | `.command`: none, forward, backward, left, right, drive | 0 to 5 | 3 | As above | As above |
 | 2 | `.faults`: stall left, stall right, missed encoder phase | One bit each | 3 | As above (moves into the shared fault bitmask once agreed) | As above |

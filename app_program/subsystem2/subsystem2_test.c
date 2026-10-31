@@ -13,12 +13,12 @@
 #define S2_TEST_WAIT_MS    200 /* 20 control periods. */
 #define S2_TEST_TICK_US    1000u
 #define S2_BENCH_START_MS  10000 /* Other subsystems' tests finish first. */
-#define S2_BENCH_DRIVE_MS  1000
+#define S2_BENCH_DRIVE_MS  2000
 #define S2_BENCH_POLL_MS   10 /* Waits 2 kernel ticks: a line every 20 ms. */
 #define S2_BENCH_STATUS_MS 1000
 #define S2_BENCH_MM_S      100
 #define S2_BENCH_FAST_MM_S 200u
-#define S2_BENCH_MOVE_MM   200u
+#define S2_BENCH_MOVE_MM   300u
 #define S2_BENCH_TURN_DEG  90u
 #define S2_BENCH_UTURN_DEG 180u
 
@@ -80,7 +80,7 @@ static void subsystem2_bench_report(void)
 
 /*!
  * @brief Print the wheel speeds every 20 ms until the command ends, then
- * the status. With b_drive, renew drive(left, right) for up to 1 s and
+ * the status. With b_drive, renew drive(left, right) for up to 2 s and
  * stop after the status, so a stall still shows in it.
  */
 static void subsystem2_bench_run(bool b_drive, int32_t left, int32_t right)
@@ -121,8 +121,9 @@ static void subsystem2_bench_task(INT stacd, void * p_exinf)
     (void)p_exinf;
 
     tk_dly_tsk(S2_BENCH_START_MS);
-    tm_printf((UB *)"[motion] bench: drive +-100, forward/backward 200, "
-                    "left 90, right 90, left 180, forward 200 at 200\n");
+    tm_printf((UB *)"[motion] bench: drive +-100, forward/backward 300, "
+                    "left 90, right 90, left 180, forward 300 at 200, "
+                    "left 180, forward 300\n");
     subsystem2_bench_run(true, S2_BENCH_MM_S, S2_BENCH_MM_S);
     subsystem2_bench_run(true, -S2_BENCH_MM_S, -S2_BENCH_MM_S);
     (void)motion_control_move_forward(S2_BENCH_MOVE_MM);
@@ -139,6 +140,10 @@ static void subsystem2_bench_task(INT stacd, void * p_exinf)
     (void)motion_control_move_forward(S2_BENCH_MOVE_MM);
     subsystem2_bench_run(false, 0, 0);
     (void)motion_control_set_speed((uint32_t)S2_BENCH_MM_S);
+    (void)motion_control_turn_left(S2_BENCH_UTURN_DEG); /* Back to start. */
+    subsystem2_bench_run(false, 0, 0);
+    (void)motion_control_move_forward(S2_BENCH_MOVE_MM);
+    subsystem2_bench_run(false, 0, 0);
     tm_printf((UB *)"[motion] bench done\n");
     for (;;)
     {

@@ -59,7 +59,7 @@ GP26 appears on both Grove 5 and Grove 6. Connect the barcode sensor once, throu
 | GP13, GP14, GP15       | Free. Spare servo headers                                                                |
 | GP18                   | Robo Pico NeoPixel RGB LEDs                                                              |
 | GP19                   | Free                                                                                     |
-| GP20, GP21             | Robo Pico programmable buttons. A tap of GP21 starts the motion bench, a 1 s hold the line following bench, and GP20 steps the avoidance bench (`TEST=1` only); GP20 is a candidate Start/Stop input in normal builds |
+| GP20, GP21             | Robo Pico programmable buttons. A tap of GP21 (under 0.5 s) starts the motion bench, a hold of 1 s or more the line following bench, and GP20 steps the avoidance bench (`TEST=1` only); GP20 is a candidate Start/Stop input in normal builds |
 | GP22                   | Robo Pico piezo buzzer (has a mute switch)                                               |
 | GP27                   | Free. ADC1                                                                               |
 | GP28                   | Free. ADC2. Reads VBAT / 2 if the VBAT sense jumper on the back of the board is soldered |

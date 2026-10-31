@@ -71,7 +71,7 @@ Measured values are in the [test log](../testing/subsystem2/TEST_LOG.md). Consta
 
 ## Bench sequence
 
-The `make -C build_make TEST=1` image starts task `s2_bench` after the checks. It waits for a tap of the GP21 button (a hold of 1 s or more starts the line following bench instead), so other subsystems' `TEST=1` runs never move the robot, then waits 5 s to let you put it down, and runs:
+The `make -C build_make TEST=1` image starts task `s2_bench` after the checks. It waits for a tap of the GP21 button, under 0.5 s (a hold of 1 s or more starts the line following bench instead; a press in between starts neither), so other subsystems' `TEST=1` runs never move the robot, then waits 5 s to let you put it down, and runs:
 
 1. `drive(100, 100)` for 2 s, then `drive(-100, -100)` for 2 s
 2. `move_forward(300)`, `move_backward(300)`

@@ -66,7 +66,7 @@ fixed.
 | GP18 | | |
 | GP19 | | |
 | GP20 | Ultrasonic (Buddy 5) | Robo Pico button: steps the avoidance bench sequence (`TEST=1` only) |
-| GP21 | Motion (Buddy 2) | Robo Pico button: a tap starts the motion bench sequence; a 1 s hold starts the line following bench run (Buddy 3) (`TEST=1` only) |
+| GP21 | Motion (Buddy 2) | Robo Pico button: a tap under 0.5 s starts the motion bench sequence; a hold of 1 s or more starts the line following bench run (Buddy 3); a press in between starts neither (`TEST=1` only) |
 | GP22 | IMU (Buddy 4) | Robo Pico buzzer: beeps when calibration is done and on a fault (PWM slice 3 A) |
 | GP26 | Line following (Buddy 3) | barcode IR module AO, ADC0 (Grove 6) |
 | GP27 | | (ADC1 capable) |
@@ -183,7 +183,7 @@ limit there. Fill in each subsystem's usage.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | | 2 | 1 | 1 | 3 |
+| Task | 32 | | 2 | 2 | 1 | 3 |
 | Semaphore | 16 | | | | | 1 |
 | Event flag | 16 | | | | | |
 | Mailbox | 12 | | | | | |

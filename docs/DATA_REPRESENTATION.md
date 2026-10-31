@@ -8,7 +8,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 - **Stored and shared structs use C bit-fields.** Standard C only guarantees bit-fields of `signed int`, `unsigned int` and `_Bool`, so use those, and always write `signed` or `unsigned`: whether a plain `int` bit-field is signed is up to the compiler.
 - **Anything sent over the network uses explicit masks and shifts**, never bit-fields. The C standard leaves bit-field layout to the compiler, so the receiver cannot rely on it. MQTT payloads are compact binary, not text.
 - **Faults are single bits in one shared fault bitmask**, not separate variables. On the network it is the fault byte in [TELEMETRY.md](TELEMETRY.md#fault-byte).
-- **Packed data shared between tasks, or between an ISR and a task, is accessed safely.** Writing one bit-field rewrites the whole word it shares with its neighbours, so guard packed shared data with a mutex, pass copies through a message buffer, or use an event flag (its set and clear calls are atomic).
+- **Packed data shared between tasks, or between an ISR and a task, is accessed safely.** Writing one bit-field rewrites the whole word it shares with its neighbours, so guard packed shared data with a mutex, pass copies through a message buffer, or use an event flag (its set and clear calls are atomic). A value with a single writer may also be read without a lock when the read is one load, which is atomic on the Cortex-M0+.
 - **Out of scope:** device bus buffers in the sensor's own format, temporary variables inside a calculation, and kernel types such as `ID` and `ER`.
 
 ## Fields
@@ -19,14 +19,14 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 4 | `s4_accel_t.count`: readings taken | 0 to 255, wraps | 8 | `unsigned int` bit-field | As above |
 | 4 | `s4_tilt_t.pitch`, `.roll`: tilt from the start surface | −900 to 900 (0.1 degree) | 11 each | `signed int` bit-field | Readers copy it with `s4_get_tilt()`, under mutex `g_s4_mutex` |
 | 4 | `s4_tilt_t.cal`: start-up calibration done | 0 or 1 | 1 | `unsigned int` bit-field | As above |
-| 4 | `s4_fault_t.impact`, `.tilt`: impact and excessive-tilt faults, latched until reset | 0 or 1 | 1 each | `unsigned int` bit-field; bits 3–4 of the fault byte | Readers copy it with `s4_get_fault()`, under mutex `g_s4_mutex` |
+| 4 | `s4_fault_t.impact`, `.tilt`: impact and excessive-tilt faults, latched until reset | 0 or 1 | 1 each | `unsigned int` bit-field; sent in the fault byte | Readers copy it with `s4_get_fault()`, under mutex `g_s4_mutex` |
 | 4 | `s4_hump_t.peak`, `.max`: last hump peak and highest of the run | 0 to 63 mm | 6 each | `unsigned int` bit-field | Readers copy it with `s4_get_hump()`, under mutex `g_s4_mutex` |
 | 4 | `s4_hump_t.count`: humps seen | 0 to 15, wraps | 4 | `unsigned int` bit-field | As above |
 | 4 | `s4_hump_t.on`: right wheel on a hump now | 0 or 1 | 1 | `unsigned int` bit-field | As above |
 | 4 | `s4_motion_t.cls`: current motion class (steady, accelerating, braking, climbing, descending, impact) | 0 to 5 | 3 | `unsigned int` bit-field | Readers copy it with `s4_get_motion()`, under mutex `g_s4_mutex` |
 | 2 | `motion_control_status_t.state`: idle, running, complete, failed | 0 to 3 | 2 | `unsigned int` bit-field | Readers copy it with `motion_control_get_status()`, under the motion mutex; packed with shifts for telemetry |
 | 2 | `.command`: none, forward, backward, left, right, drive | 0 to 5 | 3 | As above | As above |
-| 2 | `.faults`: stall left, stall right, missed encoder phase | One bit each | 3 | As above; bits 0–2 of the fault byte | As above |
+| 2 | `.faults`: stall left, stall right, missed encoder phase | One bit each | 3 | As above; sent in the fault byte | As above |
 | 2 | `.heading_deg`: anticlockwise from power-up | 0 to 359° | 9 | As above | As above |
 | 2 | `.left_speed`, `.right_speed` | −1023 to 1023 mm/s | 11 each | `signed int` bit-field | As above |
 | 2 | `.left_count`, `.right_count`: encoder edges | 0 to 65535, wraps | 16 each | `unsigned int` bit-field | As above |
@@ -56,7 +56,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 5 | `.b_obstacle`: closest point within 350 mm | 0 or 1 | 1 | As above | As above |
 | 5 | `.width_mm`: rough obstacle width, the arc between the edges at the closest distance | 0 to 122 mm (350 mm × 20°) | 7 | As above | As above |
 | 5 | `obstacle_avoidance_status_t.state`: idle, monitor, profile, bypass, stopped | 0 to 4 | 3 | `unsigned int` bit-field | Readers copy it with `obstacle_avoidance_get_status()`, under the avoidance mutex |
-| 5 | `.faults`: sensor, blocked, motion | One bit each | 3 | As above; sensor and blocked are bits 5–6 of the fault byte | As above |
+| 5 | `.faults`: sensor, blocked, motion | One bit each | 3 | As above; sensor and blocked are sent in the fault byte | As above |
 | 5 | `.side`: none, left, right | 0 to 2 | 2 | As above | As above |
 | 5 | `.step`: bypass step | 0 to 7 | 3 | As above | As above |
 | 5 | `.bypasses`: bypasses finished | 0 to 15, wraps | 4 | As above | As above |
@@ -79,17 +79,14 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `.count`, `.rejects`: barcodes validated and rejected | 0 to 15 each, wrap | 4 each | As above | As above |
 | 3 | `.distance_mm`: odometer at the end of the barcode | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
 | 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in 1/16 mm (0 to 480) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
-| Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `unsigned int` bit-field | Controller task writes; telemetry reads it with `vehicle_controller_state()`, a single byte load, atomic, no lock (the controller is the only writer) |
+| Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `unsigned int` bit-field | Controller task writes; telemetry reads it with `vehicle_controller_state()`, one load, no lock |
 | Shared | `g_vc.cycles`: 10 ms cycles since the state or junction move began | 0 to 1023, wraps (only TURN reads it, below 502) | 10 | As above | Controller task only |
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
 | Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | Controller task only |
 | Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | As above | Controller task only |
-| Shared | `safety_monitor_stop()` `cause`: IMU, stall, controller | One bit each (1, 4, 8) | 4 | `uint32_t` argument, printed only; the Safety Monitor keeps no state, its latch is `g_b_latched` | Passed by the caller |
 | 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 80, 96, 64, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
-| 1 | Fault byte: stalls, encoder, impact, tilt, no echo, no safe path, Wi-Fi lost | One bit each | 8 | Explicit shifts, inside `telemetry` | As above |
 | 1 | Wi-Fi lost latch: link down since the last `telemetry` | 0 or 1 | 1 | `bool`, the smallest type | Telemetry task only |
-| 1 | Telemetry message buffer entry: topic number + payload | 0 to 3; payload as above | 8 + payload | `uint8_t`, the smallest unit of a message, + the packed payload | Telemetry task sends with `TMO_POL`, Wi-Fi service receives with `TMO_POL` |
-| 1 | Command event flag: START, STOP, RESET | One bit each | 3 | Event flag bits: set and clear are atomic | Wi-Fi service sets, Vehicle Controller clears |
+| 1 | Message buffer entry (topic number + payload) and command event flag: [TELEMETRY.md](TELEMETRY.md#inside-the-car) | Topic 0 to 3; commands one bit each | 8 + payload; 3 | `uint8_t` topic, the smallest unit of a message; event flag bits, set and clear atomic | Telemetry task → Wi-Fi service, both `TMO_POL`; Wi-Fi service → Vehicle Controller |
 
 ## Evidence
 

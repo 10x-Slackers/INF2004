@@ -66,8 +66,12 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `.last_side`: last single sensor to see black | `DRV_LINE_LEFT` or `DRV_LINE_RIGHT`, 0 before the first | 2 | As above | As above |
 | 3 | `.b_junction`: both sensors black for 3 samples | 0 or 1 | 1 | As above | As above |
 | 3 | `.b_following`: steering the car | 0 or 1 | 1 | As above | As above |
+| 3 | `.b_lost`: the lost-line search failed | 0 or 1 | 1 | As above | As above |
 | 3 | `.count`: samples taken | 0 to 255, wraps | 8 | As above | As above |
 | 3 | `.sample_ms`: kernel time of the sample | 0 to 2³²−1 ms, wraps | 32 | As above | As above |
+| 3 | `g_search.from_mm` (line following): odometer when a sensor last saw black | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | `unsigned int` bit-field | Line Following task and `line_following_start()`, under the line mutex |
+| 3 | `g_search.phase`: none, pivoting towards `last_side`, pivoting back | 0 to 2 | 2 | As above | As above |
+| 3 | `g_search.start_deg`: heading when the search began | 0 to 359° (motion's `heading_deg`) | 9 | As above | As above |
 | 3 | `g_speed_mm_s` (line following): forward speed while following | 1 to 500 mm/s | 16 | `uint16_t`, the smallest standard type that fits | `line_following_start()` and the Line Following task, under the line mutex |
 | 3 | `barcode_decoder_raw_t.min`, `.max`: barcode sensor level over the last 10 ms | 0 to 4095 ADC counts | 12 each | `unsigned int` bit-field | Readers copy it with `barcode_decoder_get_raw()`, under the barcode mutex |
 | 3 | `.samples`: samples taken | 0 to 65535, wraps | 16 | As above | As above |

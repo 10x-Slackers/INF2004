@@ -4,8 +4,8 @@
  * following, hands the car to obstacle avoidance and takes it back,
  * executes the last validated barcode at the next junction, and goes to a
  * safe stop when the Safety Monitor latches one. Its own stops (GP20, an
- * avoidance safe stop, a failed junction move) latch the Safety Monitor
- * too, so every stop is held the same way.
+ * avoidance safe stop, a lost line, a failed junction move) latch the Safety
+ * Monitor too, so every stop is held the same way.
  *
  * Every variable here belongs to the controller task, so none is locked.
  * Other tasks only read the state, with vehicle_controller_state().
@@ -142,6 +142,10 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
         else if (b_moving && (OBSTACLE_AVOIDANCE_STOPPED == avoid.state))
         {
             vc_enter(VC_SAFE_STOP, "avoidance stopped");
+        }
+        else if (b_moving && (0u != line.b_lost))
+        {
+            vc_enter(VC_SAFE_STOP, "line lost");
         }
         else
         {

@@ -19,7 +19,7 @@ stateDiagram-v2
     AVOID --> FOLLOW: avoidance back to MONITOR
     FOLLOW --> TURN: junction with a barcode pending
     TURN --> FOLLOW: turn complete
-    FOLLOW --> SAFE_STOP: GP20 / safety latched / avoidance STOPPED
+    FOLLOW --> SAFE_STOP: GP20 / safety latched / avoidance STOPPED / line lost
     AVOID --> SAFE_STOP: GP20 / safety latched / avoidance STOPPED
     TURN --> SAFE_STOP: GP20 / safety latched / move failed or over 5 s
     SAFE_STOP --> INIT: GP20, safety latch cleared
@@ -39,7 +39,7 @@ A barcode or junction seen during TURN or AVOID is taken once FOLLOW resumes. A 
 These system states (ARCHITECTURE.md) have no state of their own here:
 
 - **Hump Monitoring:** Subsystem 4 tracks humps by itself while the car follows the line. The run's highest hump is printed on every safe stop.
-- **Line Recovery** and **Line Lost:** a bypass ends stopped on the original line, so FOLLOW simply restarts line following. With two sensors straddling the line, both white means centred or lost, so a lost line cannot be detected.
+- **Line Recovery** and **Line Lost:** a bypass ends stopped on the original line, so FOLLOW simply restarts line following. The line follower searches for a lost line by itself ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works)); if its search fails it sets `b_lost` and the controller takes a safe stop (`line lost`).
 - **Mission Complete:** needs a course-finish event (FR12); until one is defined, a junction with nothing pending is driven straight over.
 
 ## GP20

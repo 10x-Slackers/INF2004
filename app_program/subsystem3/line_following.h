@@ -5,11 +5,13 @@
  *
  * line_following_start() makes the task steer the car along the line
  * with motion_control_drive() until line_following_stop(); a junction
- * does not stop it.
+ * does not stop it. After 150 mm with both sensors white the task pivots
+ * up to 135 degrees each way to find the line again; if it does not, it
+ * brakes, stops following and sets b_lost until the next start.
  *
  * The two sensors straddle the 18 mm line: both white means the car is
- * centred (or has lost the line, see last_side), one black means the line
- * has drifted under that sensor, both black means a junction or a marking
+ * centred (or has lost the line, see last_side and b_lost), one black means the
+ * line has drifted under that sensor, both black means a junction or a marking
  * across the line.
  */
 
@@ -30,6 +32,7 @@ typedef struct
     unsigned int last_side : 2;   /* Last single sensor to see black. */
     unsigned int b_junction : 1;  /* Both black for 3 samples in a row. */
     unsigned int b_following : 1; /* Steering the car. */
+    unsigned int b_lost : 1;      /* Search failed; braked. */
     unsigned int count : 8;       /* Samples taken, wraps. */
     unsigned int sample_ms : 32;  /* Kernel time of the sample, wraps. */
 } line_following_t;

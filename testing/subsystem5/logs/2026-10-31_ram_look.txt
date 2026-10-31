@@ -1,0 +1,26 @@
+Minimum-bit change: RAM before and after (subsystem 5, after the car-turn coarse scan)
+Code: 26a4ae2 (unsigned bit-fields in scan_profile_t, ultrasonic_scan_t, obstacle_avoidance_status_t; uint8_t g_mode, g_angle)
+Tool and BEFORE method as in 2026-10-31_ram.txt (sed widening of every bit-field to 32 bits; the build's arm-none-eabi-gcc -c; nm -S; size)
+
+== BEFORE
+   text	   data	    bss	    dec	    hex	filename
+   1396	      0	     36	   1432	    598	wide_obstacle_avoidance.o
+    236	      0	      0	    236	     ec	wide_scan_profile.o
+    580	      0	     46	    626	    272	wide_ultrasonic_scan.o
+00000000 0000001c b g_status
+00000000 00000024 b g_scan
+
+== AFTER
+   text	   data	    bss	    dec	    hex	filename
+   1456	      0	     16	   1472	    5c0	packed_obstacle_avoidance.o
+    272	      0	      0	    272	    110	packed_scan_profile.o
+    612	      0	     26	    638	    27e	packed_ultrasonic_scan.o
+00000000 00000008 b g_status
+00000000 00000010 b g_scan
+
+Records (sizeof on the host): scan_profile_t 20 B -> 8 B; ultrasonic_scan_t 36 B -> 16 B; obstacle_avoidance_status_t 28 B -> 8 B.
+
+Same behaviour: the BEFORE version run through the host test (S5-U43):
+  FAIL  packed profile 8, scan 16, avoidance status 8 bytes
+  FAILED: 1 failure(s)
+  Only the size check differs, as expected; every profile and side check passes.

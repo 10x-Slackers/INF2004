@@ -1,0 +1,20 @@
+S5-U46 on the car, TEST=1 image from fc9b321 (servo 1450/1700/1950 us). Short GP20 presses; observations by the tester.
+Centre trimmed in steps from 1640 us: 1645 no visible change (deadband), 1655, 1665, 1675, 1685 each slightly less right, 1700 straight.
+End pulses widened from +-110 us (sweep barely moved) to +-200, then +-250 us.
+At fc9b321: points straight ahead at rest and after a sweep; sweep wide enough, clear of the mount's stops, no buzzing.
+
+Bench output from this image:
+[scan] forward_mm=247 fault=0 closest=238@95 edges=80..100 obstacle=1
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0
+[scan] forward_mm=247 fault=0 closest=247@90 edges=80..100 obstacle=1
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0
+[scan] forward_mm=247 fault=0 closest=238@100 edges=80..100 obstacle=1
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0
+[scan] forward_mm=238 fault=0 closest=238@95 edges=80..100 obstacle=1
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0
+[scan] forward_mm=247 fault=0 closest=238@95 edges=80..100 obstacle=1
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0
+[scan] forward_mm=247 fault=0 closest=238@95 edges=80..100 obstacle=1
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0
+[scan] forward_mm=247 fault=0 closest=246@95 edges=80..100 obstacle=1
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0

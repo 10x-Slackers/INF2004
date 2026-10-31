@@ -1,9 +1,10 @@
 /** @file subsystem5_test.c
  *
  * @brief On-target tests for subsystem 5 (make TEST=1). The checks do not
- * move a motor. Afterwards the bench task waits for the GP20 button: the
- * first press prints a profile scan, the second starts avoidance and
- * drives forward, for the manual tests in testing/subsystem5/TEST_LOG.md.
+ * move a motor. Afterwards the bench task waits for the GP20 button: each
+ * short press prints a servo profile scan, a press held for 1 s starts
+ * avoidance and drives forward, for the manual tests in
+ * testing/subsystem5/TEST_LOG.md.
  */
 
 #include "subsystem5.h"
@@ -15,6 +16,7 @@
 #define S5_BENCH_BUTTON   20u  /* Robo Pico button, low when pressed. */
 #define S5_BENCH_GO_MS    5000 /* Time to put the car down after a press. */
 #define S5_BENCH_POLL_MS  20
+#define S5_BENCH_HOLD_MS  1000u /* A press this long starts the drive. */
 #define S5_BENCH_DRIVE_MM 1500u
 
 static void subsystem5_bench_task(INT stacd, void * p_exinf);
@@ -40,9 +42,9 @@ void subsystem5_test(void)
     tm_printf((UB *)"[scan] forward_mm=%u fault=%u\n", scan.forward_mm,
               scan.b_fault);
     TEST_CHECK("S5-U42",
-               (4u == sizeof(status)) && (16u == sizeof(scan)) &&
+               (8u == sizeof(status)) && (16u == sizeof(scan)) &&
                    (8u == sizeof(scan_profile_t)),
-               "packed status 4, scan 16, profile 8 bytes");
+               "packed status 8, scan 16, profile 8 bytes");
     TEST_SUMMARY("subsystem5");
 
     /* FP is the kernel's generic task pointer type. */
@@ -52,9 +54,13 @@ void subsystem5_test(void)
 
 /*!
  * @brief Wait for a GP20 press and release.
+ *
+ * @return True if the press was held for S5_BENCH_HOLD_MS.
  */
-static void subsystem5_bench_press(void)
+static bool subsystem5_bench_press(void)
 {
+    uint32_t held = 0u;
+
     while (0u != gpio_get_val(S5_BENCH_BUTTON))
     {
         tk_dly_tsk(S5_BENCH_POLL_MS);
@@ -62,7 +68,9 @@ static void subsystem5_bench_press(void)
     while (0u == gpio_get_val(S5_BENCH_BUTTON))
     {
         tk_dly_tsk(S5_BENCH_POLL_MS);
+        held += S5_BENCH_POLL_MS;
     }
+    return (held >= S5_BENCH_HOLD_MS);
 }
 
 /*!
@@ -77,22 +85,21 @@ static void subsystem5_bench_report(void)
     obstacle_avoidance_get_status(&status);
     /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[scan] forward_mm=%u fault=%u closest=%u@%u "
-                    "edges=%u..%u right_mm=%u left_mm=%u obstacle=%u\n",
+                    "edges=%u..%u obstacle=%u\n",
               scan.forward_mm, scan.b_fault, scan.profile.closest_mm,
               scan.profile.closest_deg, scan.profile.right_deg,
-              scan.profile.left_deg, scan.profile.right_mm,
-              scan.profile.left_mm, scan.profile.b_obstacle);
+              scan.profile.left_deg, scan.profile.b_obstacle);
     tm_printf((UB *)"[avoid] state=%u faults=%u side=%u step=%u "
-                    "bypasses=%u\n",
+                    "bypasses=%u right_mm=%u left_mm=%u\n",
               status.state, status.faults, status.side, status.step,
-              status.bypasses);
+              status.bypasses, status.right_mm, status.left_mm);
 }
 
 /*!
- * @brief Bench task. First GP20 press: one profile scan, car still. Second
- * press: after 5 s, start avoidance and drive forward 1.5 m, printing the
- * status on every change until the drive ends, a bypass finishes or
- * avoidance stops.
+ * @brief Bench task. Each short GP20 press: one servo profile scan, car
+ * still. A held press: after 5 s, start avoidance and drive forward 1.5 m,
+ * printing the status on every change until the drive ends, a bypass
+ * finishes or avoidance stops.
  */
 static void subsystem5_bench_task(INT stacd, void * p_exinf)
 {
@@ -110,21 +117,20 @@ static void subsystem5_bench_task(INT stacd, void * p_exinf)
     clr_w(GPIO(S5_BENCH_BUTTON), GPIO_PDE);
     set_w(GPIO(S5_BENCH_BUTTON), GPIO_PUE);
 
-    tm_printf((UB *)"[avoid] bench: press GP20 for a profile scan\n");
-    subsystem5_bench_press();
-    ultrasonic_scan_get(&scan);
-    count = scan.count;
-    ultrasonic_scan_request(ULTRASONIC_SCAN_PROFILE);
-    while (count == scan.count)
+    tm_printf((UB *)"[avoid] bench: press GP20 for a profile scan, hold "
+                    "it 1 s to avoid while driving 1500 mm\n");
+    while (!subsystem5_bench_press())
     {
-        tk_dly_tsk(S5_BENCH_POLL_MS);
         ultrasonic_scan_get(&scan);
+        count = scan.count;
+        ultrasonic_scan_request(ULTRASONIC_SCAN_PROFILE);
+        while (count == scan.count)
+        {
+            tk_dly_tsk(S5_BENCH_POLL_MS);
+            ultrasonic_scan_get(&scan);
+        }
+        subsystem5_bench_report();
     }
-    subsystem5_bench_report();
-
-    tm_printf((UB *)"[avoid] bench: press GP20 to avoid while driving "
-                    "1500 mm\n");
-    subsystem5_bench_press();
     tk_dly_tsk(S5_BENCH_GO_MS);
     obstacle_avoidance_start();
     (void)motion_control_move_forward(S5_BENCH_DRIVE_MM);

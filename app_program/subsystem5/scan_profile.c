@@ -31,47 +31,33 @@ uint32_t scan_profile_median(uint32_t a, uint32_t b, uint32_t c)
 /*!
  * @brief Build the profile of the obstacle nearest the car.
  *
- * @param[in]  p_rays    SCAN_PROFILE_RAYS ranges in mm, ray i at 30 + 5 i
- *                       degrees; 0 where no ray was taken.
+ * @param[in]  p_rays    SCAN_PROFILE_RAYS ranges in mm, ray i at
+ *                       SCAN_PROFILE_MIN_DEG + 5 i degrees.
  * @param[out] p_profile The profile.
  */
 void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
 {
-    uint32_t closest = SCAN_PROFILE_RAYS;
+    uint32_t closest = 0u;
     uint32_t right = 0u;
     uint32_t left = 0u;
     uint32_t i = 0u;
 
-    *p_profile = (scan_profile_t){0};
-    for (i = 0u; i < SCAN_PROFILE_RAYS; i++)
+    for (i = 1u; i < SCAN_PROFILE_RAYS; i++)
     {
-        if ((0u != p_rays[i]) &&
-            ((SCAN_PROFILE_RAYS == closest) || (p_rays[i] < p_rays[closest])))
-        {
-            closest = i;
-        }
-    }
-    if (SCAN_PROFILE_RAYS == closest)
-    {
-        return;
+        closest = (p_rays[i] < p_rays[closest]) ? i : closest;
     }
 
-    /* The obstacle is the run of blocked rays around the closest one;
-     * skipped angles do not end it. */
+    /* The obstacle is the run of blocked rays around the closest one. */
     right = closest;
-    left = closest;
-    i = closest;
-    while ((i > 0u) && (p_rays[i - 1u] <= SCAN_PROFILE_BLOCK_MM))
+    while ((right > 0u) && (p_rays[right - 1u] <= SCAN_PROFILE_BLOCK_MM))
     {
-        i--;
-        right = (0u != p_rays[i]) ? i : right;
+        right--;
     }
-    i = closest;
-    while (((i + 1u) < SCAN_PROFILE_RAYS) &&
-           (p_rays[i + 1u] <= SCAN_PROFILE_BLOCK_MM))
+    left = closest;
+    while (((left + 1u) < SCAN_PROFILE_RAYS) &&
+           (p_rays[left + 1u] <= SCAN_PROFILE_BLOCK_MM))
     {
-        i++;
-        left = (0u != p_rays[i]) ? i : left;
+        left++;
     }
 
     p_profile->closest_mm = p_rays[closest];
@@ -81,19 +67,6 @@ void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
     p_profile->right_deg =
         SCAN_PROFILE_MIN_DEG + (right * SCAN_PROFILE_STEP_DEG);
     p_profile->left_deg = SCAN_PROFILE_MIN_DEG + (left * SCAN_PROFILE_STEP_DEG);
-    for (i = 0u; i < SCAN_PROFILE_RAYS; i++)
-    {
-        if ((0u != p_rays[i]) && (i < right) &&
-            ((0u == p_profile->right_mm) || (p_rays[i] < p_profile->right_mm)))
-        {
-            p_profile->right_mm = p_rays[i];
-        }
-        if ((0u != p_rays[i]) && (i > left) &&
-            ((0u == p_profile->left_mm) || (p_rays[i] < p_profile->left_mm)))
-        {
-            p_profile->left_mm = p_rays[i];
-        }
-    }
 }
 
 /*!
@@ -102,16 +75,15 @@ void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
  *
  * @return SCAN_PROFILE_LEFT, _RIGHT, or _NONE if neither side is open.
  */
-uint32_t scan_profile_side(const scan_profile_t * p_profile)
+uint32_t scan_profile_side(uint32_t left_mm, uint32_t right_mm)
 {
     uint32_t side = SCAN_PROFILE_NONE;
 
-    if ((p_profile->left_mm >= SCAN_PROFILE_CLEAR_MM) &&
-        (p_profile->left_mm >= p_profile->right_mm))
+    if ((left_mm >= SCAN_PROFILE_CLEAR_MM) && (left_mm >= right_mm))
     {
         side = SCAN_PROFILE_LEFT;
     }
-    else if (p_profile->right_mm >= SCAN_PROFILE_CLEAR_MM)
+    else if (right_mm >= SCAN_PROFILE_CLEAR_MM)
     {
         side = SCAN_PROFILE_RIGHT;
     }

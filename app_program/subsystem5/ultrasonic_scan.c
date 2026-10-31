@@ -11,8 +11,6 @@
 
 #define ULTRASONIC_SCAN_AHEAD     90u
 #define ULTRASONIC_SCAN_SETTLE_MS 200 /* Servo travel before a reading. */
-#define ULTRASONIC_SCAN_COARSE    6u /* Ray step of the coarse sweep: 30 deg. */
-#define ULTRASONIC_SCAN_FINE      3u /* Fine rays each side of the closest. */
 
 static ID g_mutex;
 static ID g_request; /* Semaphore: a scan was requested. */
@@ -22,8 +20,6 @@ static uint8_t g_angle; /* Scan task only. 0 until the first aim. */
 
 static void ultrasonic_scan_aim(uint32_t angle_deg);
 static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * p_b_fault);
-static void ultrasonic_scan_profile(scan_profile_t * p_profile,
-                                    bool * p_b_fault);
 
 /*!
  * @brief Create the lock and the request semaphore, set up the sensor and
@@ -74,8 +70,10 @@ void ultrasonic_scan_get(ultrasonic_scan_t * p_scan)
  */
 void ultrasonic_scan_task(INT stacd, void * p_exinf)
 {
+    uint16_t rays[SCAN_PROFILE_RAYS] = {0};
     scan_profile_t profile = {0};
     SYSTIM now = {0};
+    uint32_t ray = 0u;
     uint32_t mode = 0u;
     uint32_t mm = 0u;
     bool b_fault = false;
@@ -92,7 +90,11 @@ void ultrasonic_scan_task(INT stacd, void * p_exinf)
         b_fault = false;
         if (ULTRASONIC_SCAN_PROFILE == mode)
         {
-            ultrasonic_scan_profile(&profile, &b_fault);
+            for (ray = 0u; ray < SCAN_PROFILE_RAYS; ray++)
+            {
+                rays[ray] = (uint16_t)ultrasonic_scan_ray(ray, &b_fault);
+            }
+            scan_profile_build(rays, &profile);
         }
         ultrasonic_scan_aim(ULTRASONIC_SCAN_AHEAD);
         b_fault = !drv_hcsr04_measure(&mm) || b_fault;
@@ -142,41 +144,6 @@ static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * p_b_fault)
     }
     *p_b_fault = *p_b_fault || !b_echo;
     return b_echo ? scan_profile_median(mm[0], mm[1], mm[2]) : 0u;
-}
-
-/*!
- * @brief Coarse sweep every 30 degrees; if it finds an obstacle, fine
- * rays every 5 degrees within 15 degrees of the closest point.
- */
-static void ultrasonic_scan_profile(scan_profile_t * p_profile,
-                                    bool * p_b_fault)
-{
-    uint16_t rays[SCAN_PROFILE_RAYS] = {0};
-    uint32_t first = 0u;
-    uint32_t ray = 0u;
-
-    for (ray = 0u; ray < SCAN_PROFILE_RAYS; ray += ULTRASONIC_SCAN_COARSE)
-    {
-        rays[ray] = (uint16_t)ultrasonic_scan_ray(ray, p_b_fault);
-    }
-    scan_profile_build(rays, p_profile);
-    if (0u != p_profile->b_obstacle)
-    {
-        ray = (p_profile->closest_deg - SCAN_PROFILE_MIN_DEG) /
-              SCAN_PROFILE_STEP_DEG;
-        first =
-            (ray > ULTRASONIC_SCAN_FINE) ? (ray - ULTRASONIC_SCAN_FINE) : 0u;
-        for (ray = first; (ray < SCAN_PROFILE_RAYS) &&
-                          (ray <= (first + (2u * ULTRASONIC_SCAN_FINE)));
-             ray++)
-        {
-            if (0u == rays[ray])
-            {
-                rays[ray] = (uint16_t)ultrasonic_scan_ray(ray, p_b_fault);
-            }
-        }
-        scan_profile_build(rays, p_profile);
-    }
 }
 
 /*** end of file ***/

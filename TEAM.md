@@ -168,7 +168,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | I3 | Controller, Buddies 3/5 → Motion | function calls under the motion mutex | `motion_control_move_*()`, `_turn_*()`, `_drive()`, `_stop()` | mm, degrees, mm/s; a new command replaces the running one | Buddy 2 contract |
 | I4/I5 | Motion → any task | snapshot copy under the motion mutex | `motion_control_get_status()` | state, faults, speeds, counts, odometer, heading | Buddy 2 contract |
 | I11 | Safety, Controller → Motion | function call | `motion_control_stop()` | brakes both wheels before returning; cancels the command | Buddy 2 contract |
-| I6 | Controller ↔ Avoidance | function calls; status copy under the avoidance mutex | `obstacle_avoidance_start()`, `_cancel()`, `_get_status()` | state, faults, bypass side and step, bypasses done; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
+| I6 | Controller ↔ Avoidance | function calls; status copy under the avoidance mutex | `obstacle_avoidance_start()`, `_cancel()`, `_get_status()` | state, faults, bypass side and step, bypasses done, side clearances; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | I7/I8 | Any task ↔ Ultrasonic scan | function calls; result copy under the scan mutex | `ultrasonic_scan_request()`, `ultrasonic_scan_get()` | forward range and its time, obstacle profile; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 

@@ -15,7 +15,8 @@
 #define OBSTACLE_AVOIDANCE_SCAN_MS  8000u /* Longest profile scan. */
 #define OBSTACLE_AVOIDANCE_MOVE_MS  10000u
 #define OBSTACLE_AVOIDANCE_STEPS    7u
-#define OBSTACLE_AVOIDANCE_TURN_DEG 90u
+#define OBSTACLE_AVOIDANCE_TURN_DEG 90
+#define OBSTACLE_AVOIDANCE_LOOK_DEG 45   /* Car turn for the clearance. */
 #define OBSTACLE_AVOIDANCE_SIDE_MM  300u /* Out to the side and back. */
 #define OBSTACLE_AVOIDANCE_PASS_MM  400u /* Alongside the obstacle. */
 
@@ -42,6 +43,9 @@ static void obstacle_avoidance_stop(uint32_t fault);
 static bool obstacle_avoidance_active(void);
 static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan);
 static bool obstacle_avoidance_still(void);
+static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm);
+static bool obstacle_avoidance_look(uint32_t * p_left_mm,
+                                    uint32_t * p_right_mm);
 static bool obstacle_avoidance_step(uint32_t side, uint32_t step);
 static void obstacle_avoidance_avoid(void);
 
@@ -225,45 +229,34 @@ static bool obstacle_avoidance_still(void)
 }
 
 /*!
- * @brief Run one bypass step and wait for it to finish. Before a forward
- * move, check that the way ahead is clear.
+ * @brief Turn the car (positive is left) or, with no turn, drive forward
+ * by mm, and wait for the move to finish.
  *
  * @return False if cancelled or stopped.
  */
-static bool obstacle_avoidance_step(uint32_t side, uint32_t step)
+static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
 {
-    const obstacle_avoidance_step_t * p_step = &g_steps[step];
     motion_control_status_t status = {0};
-    ultrasonic_scan_t scan = {0};
-    /* Towards the left side, or back from the right side. */
-    bool b_left = ((SCAN_PROFILE_LEFT == side) == (p_step->turn > 0));
     uint32_t waited = 0u;
-
-    obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, step + 1u);
-    if ((0 == p_step->turn) &&
-        obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan) &&
-        (scan.forward_mm <= SCAN_PROFILE_BLOCK_MM))
-    {
-        obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_BLOCKED);
-    }
 
     /* Under the lock, so a cancel cannot slip in before the command. */
     (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-    if (OBSTACLE_AVOIDANCE_BYPASS != g_status.state)
+    if ((OBSTACLE_AVOIDANCE_IDLE == g_status.state) ||
+        (OBSTACLE_AVOIDANCE_STOPPED == g_status.state))
     {
         /* Cancelled or stopped. */
     }
-    else if (0 == p_step->turn)
+    else if (0 == turn_deg)
     {
-        (void)motion_control_move_forward(p_step->mm);
+        (void)motion_control_move_forward(mm);
     }
-    else if (b_left)
+    else if (turn_deg > 0)
     {
-        (void)motion_control_turn_left(OBSTACLE_AVOIDANCE_TURN_DEG);
+        (void)motion_control_turn_left((uint32_t)turn_deg);
     }
     else
     {
-        (void)motion_control_turn_right(OBSTACLE_AVOIDANCE_TURN_DEG);
+        (void)motion_control_turn_right((uint32_t)-turn_deg);
     }
     (void)tk_unl_mtx(g_mutex);
 
@@ -284,12 +277,62 @@ static bool obstacle_avoidance_step(uint32_t side, uint32_t step)
 }
 
 /*!
- * @brief Stop, profile the obstacle and drive round it on the more open
- * side. Back to watching if the obstacle has gone.
+ * @brief Coarse scan: turn the car 45 degrees left, read the range, turn
+ * 90 degrees right, read, and turn back to the original heading.
+ *
+ * @return False if cancelled or stopped.
+ */
+static bool obstacle_avoidance_look(uint32_t * p_left_mm, uint32_t * p_right_mm)
+{
+    ultrasonic_scan_t scan = {0};
+
+    if (obstacle_avoidance_move(OBSTACLE_AVOIDANCE_LOOK_DEG, 0u) &&
+        obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan))
+    {
+        *p_left_mm = scan.forward_mm;
+    }
+    if (obstacle_avoidance_move(-2 * OBSTACLE_AVOIDANCE_LOOK_DEG, 0u) &&
+        obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan))
+    {
+        *p_right_mm = scan.forward_mm;
+    }
+    return obstacle_avoidance_move(OBSTACLE_AVOIDANCE_LOOK_DEG, 0u);
+}
+
+/*!
+ * @brief Run one bypass step and wait for it to finish. Before a forward
+ * move, check that the way ahead is clear.
+ *
+ * @return False if cancelled or stopped.
+ */
+static bool obstacle_avoidance_step(uint32_t side, uint32_t step)
+{
+    const obstacle_avoidance_step_t * p_step = &g_steps[step];
+    ultrasonic_scan_t scan = {0};
+    /* Towards the bypass side or back; left is positive. */
+    int32_t turn_deg = p_step->turn * OBSTACLE_AVOIDANCE_TURN_DEG;
+
+    obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, step + 1u);
+    if ((0 == p_step->turn) &&
+        obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan) &&
+        (scan.forward_mm <= SCAN_PROFILE_BLOCK_MM))
+    {
+        obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_BLOCKED);
+    }
+    return obstacle_avoidance_move(
+        (SCAN_PROFILE_LEFT == side) ? turn_deg : -turn_deg, p_step->mm);
+}
+
+/*!
+ * @brief Stop, measure the clearance each side, profile the obstacle and
+ * drive round it on the more open side. Back to watching if the obstacle
+ * has gone.
  */
 static void obstacle_avoidance_avoid(void)
 {
     ultrasonic_scan_t scan = {0};
+    uint32_t left_mm = 0u;
+    uint32_t right_mm = 0u;
     uint32_t side = SCAN_PROFILE_NONE;
     uint32_t step = 0u;
 
@@ -308,30 +351,31 @@ static void obstacle_avoidance_avoid(void)
     {
         obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_MOTION);
     }
-    else if (obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan) &&
+    else if (obstacle_avoidance_look(&left_mm, &right_mm) &&
+             obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan) &&
              (0u != scan.profile.b_obstacle))
     {
-        side = scan_profile_side(&scan.profile);
+        side = scan_profile_side(left_mm, right_mm);
+        (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+        g_status.side = side;
+        g_status.left_mm = left_mm;
+        g_status.right_mm = right_mm;
+        (void)tk_unl_mtx(g_mutex);
         if (SCAN_PROFILE_NONE == side)
         {
             obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_BLOCKED);
         }
-        else
+        for (step = 0u;
+             (SCAN_PROFILE_NONE != side) && (step < OBSTACLE_AVOIDANCE_STEPS) &&
+             obstacle_avoidance_step(side, step);
+             step++)
+        {
+        }
+        if (OBSTACLE_AVOIDANCE_STEPS == step)
         {
             (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-            g_status.side = side;
+            g_status.bypasses++;
             (void)tk_unl_mtx(g_mutex);
-            for (step = 0u; (step < OBSTACLE_AVOIDANCE_STEPS) &&
-                            obstacle_avoidance_step(side, step);
-                 step++)
-            {
-            }
-            if (OBSTACLE_AVOIDANCE_STEPS == step)
-            {
-                (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-                g_status.bypasses++;
-                (void)tk_unl_mtx(g_mutex);
-            }
         }
     }
     else

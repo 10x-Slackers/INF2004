@@ -4,8 +4,8 @@
  * a scan and read the latest result; the scan task does the work.
  *
  * Request a scan, then poll ultrasonic_scan_get() until count changes.
- * A forward reading takes about 60 ms; a profile takes 2-5 s and needs the
- * car to stand still.
+ * A forward reading takes about 60 ms; a profile takes about 2 s and needs
+ * the car to stand still.
  */
 
 #ifndef ULTRASONIC_SCAN_H
@@ -17,7 +17,7 @@
 
 /* ultrasonic_scan_request() */
 #define ULTRASONIC_SCAN_FORWARD 0u /* One reading straight ahead. */
-#define ULTRASONIC_SCAN_PROFILE 1u /* Coarse sweep, then fine round it. */
+#define ULTRASONIC_SCAN_PROFILE 1u /* Servo sweep, then a forward reading. */
 
 /* Latest results. */
 typedef struct

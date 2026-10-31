@@ -1,29 +1,37 @@
-/*
- *      subsystem1.c
- *      Subsystem 1 -- Wi-Fi, command and telemetry.
+/** @file subsystem1.c
  *
- *      subsystem1_init():  create this subsystem's kernel objects
- *                          (semaphores, mailboxes, ...).  Do not start
- *                          tasks here.
- *      subsystem1_start(): create and start this subsystem's tasks, e.g.
- *          ID tid = app_start_task(my_task, S1_PRI_MAIN, 0, "my_task");
- *          return (tid < E_OK) ? tid : E_OK;
+ * @brief Subsystem 1 (Wi-Fi, command and telemetry) start-up.
  *
- *      Drivers for this subsystem's hardware go in this folder as
- *      drv_<name>.c / drv_<name>.h, called only from the task that owns
- *      the peripheral (TEAM.md section 3).
+ * subsystem1_init() creates this subsystem's kernel objects (semaphores,
+ * mailboxes, ...) and starts no tasks. subsystem1_start() creates and
+ * starts its tasks, e.g.
  *
- *      Record every pin, task, object and interface in TEAM.md.
+ *     ID task_id = app_start_task((FP)subsystem1_task, S1_PRI_MAIN, 0,
+ *                                 "s1_main");
+ *     return (task_id < E_OK) ? task_id : E_OK;
+ *
+ * Drivers for this subsystem's hardware go in this folder as
+ * drv_<name>.c / drv_<name>.h, called only from the task that owns the
+ * peripheral (TEAM.md section 3). Record every pin, task, object and
+ * interface in TEAM.md.
  */
 
 #include "subsystem1.h"
 
-EXPORT ER subsystem1_init(void)
+/*!
+ * @brief Create this subsystem's kernel objects.
+ */
+ER subsystem1_init(void)
 {
     return E_OK;
 }
 
-EXPORT ER subsystem1_start(void)
+/*!
+ * @brief Create and start this subsystem's tasks.
+ */
+ER subsystem1_start(void)
 {
     return E_OK;
 }
+
+/*** end of file ***/

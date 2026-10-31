@@ -117,19 +117,19 @@ void s4_imu_task(INT stacd, void * p_exinf)
     (void)stacd;
     (void)p_exinf;
 
-    CHECK(drv_gy511_init(), "drv_gy511_init");
+    app_check(drv_gy511_init(), "drv_gy511_init");
 
     cyclic.exinf = (void *)tk_get_tid();
     cyclic.cycatr = TA_HLNG | TA_STA;
     cyclic.cychdr = (FP)imu_wake; /* Kernel handler type. */
     cyclic.cyctim = S4_IMU_MS;
-    CHECK(tk_cre_cyc(&cyclic), "tk_cre_cyc");
+    app_check(tk_cre_cyc(&cyclic), "tk_cre_cyc");
 
     for (;;)
     {
         (void)tk_slp_tsk(TMO_FEVR);
         result = drv_gy511_read(&x_mg, &y_mg, &z_mg);
-        CHECK(result, "drv_gy511_read");
+        app_check(result, "drv_gy511_read");
         b_ready = (result >= E_OK);
 
         if (b_ready && (cal_count < S4_CAL_N))

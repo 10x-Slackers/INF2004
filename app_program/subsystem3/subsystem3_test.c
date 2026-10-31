@@ -2,9 +2,9 @@
  *
  * @brief On-target tests for subsystem 3 (make TEST=1). The checks do not
  * move a motor. Afterwards the bench task prints the line state on every
- * change and follows the line after a short GP20 press, for the manual
- * tests in testing/subsystem3/TEST_LOG.md. GP20 is subsystem 5's bench
- * button too: a short press also makes it do one servo scan.
+ * change and follows the line after GP21 is held for 1 s, for the manual
+ * tests in testing/subsystem3/TEST_LOG.md. A tap of GP21 is subsystem 2's
+ * bench.
  */
 
 #include "subsystem3.h"
@@ -12,9 +12,11 @@
 
 #if APP_TEST
 #define S3_TEST_WAIT_MS     100 /* Ten sampling periods. */
-#define S3_BENCH_POLL_MS    10
-#define S3_BENCH_BUTTON     20u  /* Robo Pico button, low when pressed. */
-#define S3_BENCH_GO_MS      5000 /* Time to put the car on the line. */
+#define S3_BENCH_POLL_MS    10  /* Waits 2 kernel ticks: a poll every 20 ms. */
+#define S3_BENCH_STEP_MS    20
+#define S3_BENCH_BUTTON     21u   /* Robo Pico button, low when pressed. */
+#define S3_BENCH_HOLD_MS    1000u /* Shorter presses are subsystem 2's. */
+#define S3_BENCH_GO_MS      5000  /* Time to put the car on the line. */
 #define S3_BENCH_RUN_MS     15000u
 #define S3_BENCH_SPEED_MM_S 200u
 
@@ -69,16 +71,15 @@ static bool subsystem3_bench_report(line_following_t * p_last)
 }
 
 /*!
- * @brief Bench task. Prints the line state on every change. A short GP20
- * press starts a run: after 5 s the car follows the line at 200 mm/s
- * until a junction or for 15 s, then stops.
+ * @brief Bench task. Prints the line state on every change. Releasing GP21
+ * after holding it for 1 s starts a run: after 5 s the car follows the
+ * line at 200 mm/s until a junction or for 15 s, then stops.
  */
 static void subsystem3_bench_task(INT stacd, void * p_exinf)
 {
     line_following_t last = {0};
     uint32_t run_ms = 0u;
-    bool b_pressed = false;
-    bool b_was_pressed = false;
+    uint32_t held_ms = 0u;
 
     (void)stacd;
     (void)p_exinf;
@@ -89,27 +90,34 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
     set_w(GPIO(S3_BENCH_BUTTON), GPIO_PUE);
     last.bits = DRV_LINE_LEFT | DRV_LINE_RIGHT;
     last.b_junction = true; /* Unlikely at power-up: print the first state. */
-    tm_printf((UB *)"[line] bench: press GP20 briefly to follow the line\n");
+    tm_printf((UB *)"[line] bench: hold GP21 for 1 s to follow the line\n");
     for (;;)
     {
         (void)subsystem3_bench_report(&last);
-        b_pressed = (0u == gpio_get_val(S3_BENCH_BUTTON));
-        if (b_was_pressed && !b_pressed)
+        if (0u == gpio_get_val(S3_BENCH_BUTTON))
         {
+            held_ms += S3_BENCH_STEP_MS;
+        }
+        else if (held_ms >= S3_BENCH_HOLD_MS)
+        {
+            held_ms = 0u;
             tm_printf((UB *)"[line] put the car on the line, starting in "
                             "5 s\n");
             tk_dly_tsk(S3_BENCH_GO_MS);
             (void)line_following_start(S3_BENCH_SPEED_MM_S);
             for (run_ms = 0u;
                  (run_ms < S3_BENCH_RUN_MS) && !subsystem3_bench_report(&last);
-                 run_ms += S3_BENCH_POLL_MS)
+                 run_ms += S3_BENCH_STEP_MS)
             {
                 tk_dly_tsk(S3_BENCH_POLL_MS);
             }
             line_following_stop();
             tm_printf((UB *)"[line] bench done after %u ms\n", run_ms);
         }
-        b_was_pressed = b_pressed;
+        else
+        {
+            held_ms = 0u; /* Released after a tap: subsystem 2's. */
+        }
         tk_dly_tsk(S3_BENCH_POLL_MS);
     }
 }

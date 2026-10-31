@@ -1,8 +1,9 @@
 /** @file subsystem2_test.c
  *
  * @brief On-target tests for subsystem 2 (make TEST=1). The checks do not
- * move a motor. Afterwards the bench task waits for the GP21 button, then
- * runs a fixed move sequence for the manual tests in
+ * move a motor. Afterwards the bench task waits for a tap of the GP21
+ * button (a hold of 1 s or more is subsystem 3's), then runs a fixed move
+ * sequence for the manual tests in
  * testing/subsystem2/TEST_LOG.md.
  */
 
@@ -11,19 +12,20 @@
 #include "../test_report.h"
 
 #if APP_TEST
-#define S2_TEST_WAIT_MS    200 /* 20 control periods. */
-#define S2_TEST_TICK_US    1000u
-#define S2_BENCH_BUTTON    21u  /* Robo Pico button, low when pressed. */
-#define S2_BENCH_GO_MS     5000 /* Time to put the car down after a press. */
-#define S2_BENCH_PAUSE_MS  3000 /* Still after each step, to measure it. */
-#define S2_BENCH_DRIVE_MS  2000
-#define S2_BENCH_POLL_MS   10 /* Waits 2 kernel ticks: a line every 20 ms. */
-#define S2_BENCH_STATUS_MS 1000
-#define S2_BENCH_MM_S      100
-#define S2_BENCH_FAST_MM_S 200u
-#define S2_BENCH_MOVE_MM   300u
-#define S2_BENCH_TURN_DEG  90u
-#define S2_BENCH_UTURN_DEG 180u
+#define S2_TEST_WAIT_MS     200 /* 20 control periods. */
+#define S2_TEST_TICK_US     1000u
+#define S2_BENCH_BUTTON     21u  /* Robo Pico button, low when pressed. */
+#define S2_BENCH_GO_MS      5000 /* Time to put the car down after a press. */
+#define S2_BENCH_HOLD_POLLS 50u  /* 1 s: a press this long is subsystem 3's. */
+#define S2_BENCH_PAUSE_MS   3000 /* Still after each step, to measure it. */
+#define S2_BENCH_DRIVE_MS   2000
+#define S2_BENCH_POLL_MS    10 /* Waits 2 kernel ticks: a line every 20 ms. */
+#define S2_BENCH_STATUS_MS  1000
+#define S2_BENCH_MM_S       100
+#define S2_BENCH_FAST_MM_S  200u
+#define S2_BENCH_MOVE_MM    300u
+#define S2_BENCH_TURN_DEG   90u
+#define S2_BENCH_UTURN_DEG  180u
 
 static void subsystem2_bench_task(INT stacd, void * p_exinf);
 
@@ -117,11 +119,13 @@ static void subsystem2_bench_run(bool b_drive, int32_t left, int32_t right)
 }
 
 /*!
- * @brief Bench task: after a GP21 press, the fixed move sequence with a
+ * @brief Bench task: after a GP21 tap, the fixed move sequence with a
  * pause after each step, then the status every 1 s.
  */
 static void subsystem2_bench_task(INT stacd, void * p_exinf)
 {
+    uint32_t polls = S2_BENCH_HOLD_POLLS;
+
     (void)stacd;
     (void)p_exinf;
 
@@ -129,10 +133,19 @@ static void subsystem2_bench_task(INT stacd, void * p_exinf)
     (void)gpio_set_pin(S2_BENCH_BUTTON, GPIO_MODE_IN);
     clr_w(GPIO(S2_BENCH_BUTTON), GPIO_PDE);
     set_w(GPIO(S2_BENCH_BUTTON), GPIO_PUE);
-    tm_printf((UB *)"[motion] bench: press GP21 to start\n");
-    while (0u != gpio_get_val(S2_BENCH_BUTTON))
+    tm_printf((UB *)"[motion] bench: tap GP21 to start\n");
+    while (polls >= S2_BENCH_HOLD_POLLS)
     {
-        tk_dly_tsk(S2_BENCH_POLL_MS);
+        polls = 0u;
+        while (0u != gpio_get_val(S2_BENCH_BUTTON))
+        {
+            tk_dly_tsk(S2_BENCH_POLL_MS);
+        }
+        while (0u == gpio_get_val(S2_BENCH_BUTTON))
+        {
+            tk_dly_tsk(S2_BENCH_POLL_MS);
+            polls++;
+        }
     }
     tk_dly_tsk(S2_BENCH_GO_MS);
     tm_printf((UB *)"[motion] bench: drive +-100, forward/backward 300, "

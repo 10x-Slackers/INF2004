@@ -3,7 +3,8 @@
  * @brief Ultrasonic scan API (interfaces I7 and I8). Any task may request
  * a scan and read the latest result; the scan task does the work.
  *
- * Request a scan, then poll ultrasonic_scan_get() until count changes.
+ * Request a scan, then poll ultrasonic_scan_get() until .request is the
+ * number the request returned.
  * A forward reading takes about 60 ms; a profile takes about 2 s and needs
  * the car to stand still.
  */
@@ -23,13 +24,13 @@
 typedef struct
 {
     unsigned int forward_mm : 12; /* 20..4000; 4000 is nothing in range. */
-    unsigned int count : 4;       /* Scans finished, wraps. */
+    unsigned int request : 4;     /* Request the latest scan served. */
     unsigned int forward_ms : 32; /* Kernel time of forward_mm, wraps. */
     scan_profile_t profile;       /* Last profile scan. */
 } ultrasonic_scan_t;
 
 bool ultrasonic_scan_init(void);
-void ultrasonic_scan_request(uint32_t mode);
+uint32_t ultrasonic_scan_request(uint32_t mode);
 void ultrasonic_scan_get(ultrasonic_scan_t * p_scan);
 
 #endif /* ULTRASONIC_SCAN_H */

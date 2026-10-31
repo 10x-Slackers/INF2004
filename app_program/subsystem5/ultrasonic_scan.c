@@ -14,9 +14,13 @@
 
 static ID g_mutex;
 static ID g_request; /* Semaphore: a scan was requested. */
-static uint8_t g_mode;
+static struct
+{
+    unsigned int mode : 1;    /* ULTRASONIC_SCAN_... */
+    unsigned int request : 4; /* Requests made, wraps. */
+} g_next;
 static ultrasonic_scan_t g_scan;
-static uint8_t g_angle; /* Scan task only. 0 until the first aim. */
+static uint8_t g_angle = ULTRASONIC_SCAN_AHEAD; /* Scan task only. */
 
 static void ultrasonic_scan_aim(uint32_t angle_deg);
 static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * p_b_fault);
@@ -43,16 +47,22 @@ bool ultrasonic_scan_init(void)
 
 /*!
  * @brief Ask for a scan. A request made while one runs is served after
- * it; only the latest mode is kept.
+ * it; only the latest is kept.
  *
  * @param[in] mode ULTRASONIC_SCAN_FORWARD or ULTRASONIC_SCAN_PROFILE.
+ *
+ * @return The request number its result will carry in .request.
  */
-void ultrasonic_scan_request(uint32_t mode)
+uint32_t ultrasonic_scan_request(uint32_t mode)
 {
+    uint32_t request = 0u;
+
     (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-    g_mode = (uint8_t)mode;
+    g_next.mode = mode;
+    request = ++g_next.request;
     (void)tk_unl_mtx(g_mutex);
     (void)tk_sig_sem(g_request, 1);
+    return request;
 }
 
 /*!
@@ -75,6 +85,7 @@ void ultrasonic_scan_task(INT stacd, void * p_exinf)
     SYSTIM now = {0};
     uint32_t ray = 0u;
     uint32_t mode = 0u;
+    uint32_t request = 0u;
     uint32_t mm = 0u;
     bool b_fault = false;
 
@@ -84,7 +95,8 @@ void ultrasonic_scan_task(INT stacd, void * p_exinf)
     {
         (void)tk_wai_sem(g_request, 1, TMO_FEVR);
         (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-        mode = g_mode;
+        mode = g_next.mode;
+        request = g_next.request;
         (void)tk_unl_mtx(g_mutex);
 
         b_fault = false;
@@ -103,7 +115,7 @@ void ultrasonic_scan_task(INT stacd, void * p_exinf)
         (void)tk_loc_mtx(g_mutex, TMO_FEVR);
         g_scan.forward_mm = mm;
         g_scan.forward_ms = now.lo;
-        /* APP_FAULT_NO_ECHO, before count tells readers it is done. */
+        /* APP_FAULT_NO_ECHO, before request tells readers it is done. */
         if (b_fault)
         {
             app_fault_set(APP_FAULT_NO_ECHO);
@@ -116,7 +128,7 @@ void ultrasonic_scan_task(INT stacd, void * p_exinf)
         {
             g_scan.profile = profile;
         }
-        g_scan.count++;
+        g_scan.request = request;
         (void)tk_unl_mtx(g_mutex);
     }
 }

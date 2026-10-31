@@ -276,8 +276,8 @@ void s4_imu_task(INT stacd, void * p_exinf)
                 peak_mm = 0;
             }
 
-            print_count++;
-            if ((IMU_PRINT_MS / S4_IMU_MS) == print_count)
+            /* TEST=1 only: it would bury the [vc] and [safety] lines. */
+            if (APP_TEST && ((IMU_PRINT_MS / S4_IMU_MS) == ++print_count))
             {
                 print_count = 0u;
                 tm_printf((UB *)"[imu] x=%d y=%d z=%d mg pitch=%d roll=%d "

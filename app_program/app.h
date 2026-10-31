@@ -41,6 +41,9 @@ ID app_start_task(FP p_entry, PRI pri, UW prc, const char * p_name);
 /* Print a readable message if a kernel call failed (negative code). */
 void app_check(ER result, const char * p_what);
 
+/* Input with the pull-up only: a button or open collector grounds it. */
+void app_pull_up(UW pin);
+
 /* Every subsystem provides these. usermain() calls ALL the _init()
  * functions first and only then ALL the _start() functions, so every
  * kernel object exists before any task can use it.

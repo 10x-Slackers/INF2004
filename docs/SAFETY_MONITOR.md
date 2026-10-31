@@ -24,7 +24,7 @@ Collision risk is not checked here: obstacle avoidance stops on the first forwar
 
 | Call                          | Effect                                                                                       |
 | ----------------------------- | -------------------------------------------------------------------------------------------- |
-| `safety_monitor_stop(cause)`  | If not latched yet: `motion_control_latch(true)` (brake and refuse every command) and print the cause |
+| `safety_monitor_stop(cause)`  | `motion_control_latch(true)` (brake and refuse every command); if it was not latched yet, print the cause |
 | `motion_control_latched()`    | True while a stop is latched                                                                  |
 | `safety_monitor_clear()`      | Release the latch. Returns false, and stays latched, while an IMU fault is set (those latch until reset) |
 

@@ -17,7 +17,7 @@
 #define S5_PRI_BENCH 12 /* TEST=1 only. */
 
 void ultrasonic_scan_task(INT stacd, void * p_exinf);
-void obstacle_avoidance_task(INT stacd, void * p_exinf);
+ID obstacle_avoidance_start_task(void);
 
 #endif /* SUBSYSTEM5_H */
 

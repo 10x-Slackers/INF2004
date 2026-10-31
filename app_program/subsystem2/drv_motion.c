@@ -114,9 +114,7 @@ bool drv_motion_init(void)
     {
         if (0u != (DRV_MOTION_ENCODER_PINS & (1u << pin)))
         {
-            (void)gpio_set_pin(pin, GPIO_MODE_IN);
-            clr_w(GPIO(pin), GPIO_PDE);
-            set_w(GPIO(pin), GPIO_PUE);
+            app_pull_up(pin);
         }
     }
     levels = in_w(GPIO_IN);

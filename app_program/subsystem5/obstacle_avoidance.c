@@ -39,6 +39,7 @@ static ID g_mutex;
 static ID g_task;
 static obstacle_avoidance_status_t g_status;
 
+static void obstacle_avoidance_task(INT stacd, void * p_exinf);
 static bool obstacle_avoidance_running(uint32_t state);
 static void obstacle_avoidance_set(uint32_t state, uint32_t step);
 static void obstacle_avoidance_stop(uint32_t fault);
@@ -64,6 +65,18 @@ bool obstacle_avoidance_init(void)
     mutex.mtxatr = TA_INHERIT;
     g_mutex = tk_cre_mtx(&mutex);
     return (g_mutex > 0);
+}
+
+/*!
+ * @brief Start the avoidance task, and keep its ID for
+ * obstacle_avoidance_start() to wake it.
+ */
+ID obstacle_avoidance_start_task(void)
+{
+    /* FP is the kernel's generic task pointer type. */
+    g_task = app_start_task((FP)obstacle_avoidance_task, S5_PRI_AVOID, 0,
+                            "s5_avoid");
+    return g_task;
 }
 
 /*!
@@ -112,13 +125,12 @@ void obstacle_avoidance_get_status(obstacle_avoidance_status_t * p_status)
  * @brief Avoidance task: a forward reading after another while started;
  * avoid when one is blocked.
  */
-void obstacle_avoidance_task(INT stacd, void * p_exinf)
+static void obstacle_avoidance_task(INT stacd, void * p_exinf)
 {
     ultrasonic_scan_t scan = {0};
 
     (void)stacd;
     (void)p_exinf;
-    g_task = tk_get_tid();
     for (;;)
     {
         if (!obstacle_avoidance_active())
@@ -201,13 +213,12 @@ static bool obstacle_avoidance_active(void)
  */
 static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan)
 {
-    uint32_t count = 0u;
+    uint32_t request = ultrasonic_scan_request(mode);
     uint32_t waited = 0u;
 
     ultrasonic_scan_get(p_scan);
-    count = p_scan->count;
-    ultrasonic_scan_request(mode);
-    while (obstacle_avoidance_active() && (count == p_scan->count) &&
+    /* An older scan may finish first; only the one for this request counts. */
+    while (obstacle_avoidance_active() && (request != p_scan->request) &&
            (waited < OBSTACLE_AVOIDANCE_SCAN_MS))
     {
         tk_dly_tsk(OBSTACLE_AVOIDANCE_POLL_MS);
@@ -215,7 +226,7 @@ static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan)
         ultrasonic_scan_get(p_scan);
     }
     if (obstacle_avoidance_active() &&
-        ((count == p_scan->count) ||
+        ((request != p_scan->request) ||
          (0u != (app_faults() & APP_FAULT_NO_ECHO))))
     {
         obstacle_avoidance_stop(APP_FAULT_AVOID_SENSOR);

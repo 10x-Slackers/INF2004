@@ -25,18 +25,16 @@ void subsystem5_test(void)
 {
     obstacle_avoidance_status_t status = {0};
     ultrasonic_scan_t scan = {0};
-    uint32_t count = 0u;
+    uint32_t request = 0u;
 
     TEST_INIT();
     obstacle_avoidance_get_status(&status);
     TEST_CHECK("S5-U40", OBSTACLE_AVOIDANCE_IDLE == status.state,
                "avoidance boots idle");
-    ultrasonic_scan_get(&scan);
-    count = scan.count;
-    ultrasonic_scan_request(ULTRASONIC_SCAN_FORWARD);
+    request = ultrasonic_scan_request(ULTRASONIC_SCAN_FORWARD);
     tk_dly_tsk(S5_TEST_SCAN_MS);
     ultrasonic_scan_get(&scan);
-    TEST_CHECK("S5-U41", count != scan.count,
+    TEST_CHECK("S5-U41", request == scan.request,
                "a forward scan finishes within 500 ms");
     /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[scan] forward_mm=%u fault=%u\n", scan.forward_mm,
@@ -113,26 +111,23 @@ static void subsystem5_bench_task(INT stacd, void * p_exinf)
     motion_control_status_t motion = {0};
     ultrasonic_scan_t scan = {0};
     uint32_t bypasses = 0u;
-    uint32_t count = 0u;
+    uint32_t request = 0u;
 
     (void)stacd;
     (void)p_exinf;
 
-    /* Pull-up only (both on is bus keeper): the button grounds the pin. */
-    (void)gpio_set_pin(S5_BENCH_BUTTON, GPIO_MODE_IN);
-    clr_w(GPIO(S5_BENCH_BUTTON), GPIO_PDE);
-    set_w(GPIO(S5_BENCH_BUTTON), GPIO_PUE);
+    app_pull_up(S5_BENCH_BUTTON);
 
     for (;;)
     {
         tm_printf((UB *)"[avoid] bench: press GP20 for a profile scan, hold "
-                        "it 1 s to avoid while driving 1500 mm\n");
+                        "it %u s to avoid while driving 1500 mm\n",
+                  S5_BENCH_HOLD_MS / 1000u);
         while (!subsystem5_bench_press())
         {
+            request = ultrasonic_scan_request(ULTRASONIC_SCAN_PROFILE);
             ultrasonic_scan_get(&scan);
-            count = scan.count;
-            ultrasonic_scan_request(ULTRASONIC_SCAN_PROFILE);
-            while (count == scan.count)
+            while (request != scan.request)
             {
                 tk_dly_tsk(S5_BENCH_POLL_MS);
                 ultrasonic_scan_get(&scan);

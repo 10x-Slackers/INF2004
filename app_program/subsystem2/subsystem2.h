@@ -10,8 +10,8 @@
 #include "../app.h"
 #include "motion_control.h"
 
-#define S2_PRI_MOTION 6
-#define S2_PRI_BENCH  15 /* TEST=1 only. */
+#define S2_PRI_MOTION 6 /* Priority band 6-7 (TEAM.md). */
+#define S2_PRI_BENCH  7 /* TEST=1 only. */
 
 uint32_t subsystem2_max_tick_us(void);
 

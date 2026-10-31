@@ -59,7 +59,7 @@ GP26 appears on both Grove 5 and Grove 6. Connect the barcode sensor once, throu
 | GP13, GP14, GP15       | Free. Spare servo headers                                                                |
 | GP18                   | Robo Pico NeoPixel RGB LEDs                                                              |
 | GP19                   | Free                                                                                     |
-| GP20, GP21             | Robo Pico programmable buttons. Candidates for a Start/Stop input                        |
+| GP20, GP21             | Robo Pico programmable buttons. GP21 starts the motion bench (`TEST=1`); GP20 is a candidate Start/Stop input |
 | GP22                   | Robo Pico piezo buzzer (has a mute switch)                                               |
 | GP27                   | Free. ADC1                                                                               |
 | GP28                   | Free. ADC2. Reads VBAT / 2 if the VBAT sense jumper on the back of the board is soldered |
@@ -77,6 +77,7 @@ By default the kernel leaves every application pin in its reset state. A few bui
 | Kernel I2C driver pins | `DEVCNF_USE_IIC` in `config/config_device.h`, pins in `device/i2c/sysdepend/rp2040/i2c_cnf_sysdep.h` | On. It registers I2C0 only (`iica`, in `kernel/sysdepend/pico_rp2040/devinit.c`) and muxes GP4, GP5 for the GY-511 |
 | Kernel ADC driver pins | `DEVCONF_ADC_PIN_INIT_n` in `device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` | None claimed |
 | PWM block reset release | `kernel/sysdepend/pico_rp2040/hw_setting.c`, gated by `USE_PTMR` in `config/config.h` | Off in the kernel. `usermain()` in `app_program/app_main.c` releases it before any subsystem starts |
+| 1 MHz TIMER tick (watchdog `TICK`) | Not set anywhere in the kernel | `usermain()` starts it from the 12 MHz crystal. Without it the TIMER runs about 20 times too slow after a power-on; a reboot from BOOTSEL keeps the boot ROM's setting, which hides the fault on the bench |
 
 Things that clash with this pin map:
 

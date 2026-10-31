@@ -1,8 +1,9 @@
 /** @file subsystem2_test.c
  *
  * @brief On-target tests for subsystem 2 (make TEST=1). The checks do not
- * move a motor. Afterwards the bench task runs a fixed move sequence for
- * the manual tests in testing/subsystem2/TEST_LOG.md.
+ * move a motor. Afterwards the bench task waits for the GP21 button, then
+ * runs a fixed move sequence for the manual tests in
+ * testing/subsystem2/TEST_LOG.md.
  */
 
 #include "subsystem2.h"
@@ -12,7 +13,9 @@
 #if APP_TEST
 #define S2_TEST_WAIT_MS    200 /* 20 control periods. */
 #define S2_TEST_TICK_US    1000u
-#define S2_BENCH_START_MS  10000 /* Other subsystems' tests finish first. */
+#define S2_BENCH_BUTTON    21u  /* Robo Pico button, low when pressed. */
+#define S2_BENCH_GO_MS     5000 /* Time to put the car down after a press. */
+#define S2_BENCH_PAUSE_MS  3000 /* Still after each step, to measure it. */
 #define S2_BENCH_DRIVE_MS  2000
 #define S2_BENCH_POLL_MS   10 /* Waits 2 kernel ticks: a line every 20 ms. */
 #define S2_BENCH_STATUS_MS 1000
@@ -110,17 +113,27 @@ static void subsystem2_bench_run(bool b_drive, int32_t left, int32_t right)
     {
         motion_control_stop();
     }
+    tk_dly_tsk(S2_BENCH_PAUSE_MS);
 }
 
 /*!
- * @brief Bench task: the fixed move sequence, then the status every 1 s.
+ * @brief Bench task: after a GP21 press, the fixed move sequence with a
+ * pause after each step, then the status every 1 s.
  */
 static void subsystem2_bench_task(INT stacd, void * p_exinf)
 {
     (void)stacd;
     (void)p_exinf;
 
-    tk_dly_tsk(S2_BENCH_START_MS);
+    /* Pull-up: the button connects the pin to ground. */
+    (void)gpio_set_pin(S2_BENCH_BUTTON, GPIO_MODE_IN);
+    set_w(GPIO(S2_BENCH_BUTTON), GPIO_PUE);
+    tm_printf((UB *)"[motion] bench: press GP21 to start\n");
+    while (0u != (in_w(GPIO_IN) & (1u << S2_BENCH_BUTTON)))
+    {
+        tk_dly_tsk(S2_BENCH_POLL_MS);
+    }
+    tk_dly_tsk(S2_BENCH_GO_MS);
     tm_printf((UB *)"[motion] bench: drive +-100, forward/backward 300, "
                     "left 90, right 90, left 180, forward 300 at 200, "
                     "left 180, forward 300\n");

@@ -12,7 +12,7 @@ Define a test here before running it. Test IDs never change.
 |---|---|---|---|---|---|
 | S2-U11 | Encoder counts and direction | FR4, A2 | manual | Wheels lifted. After `bench done`, turn each wheel 10 turns forward by hand between two status lines | Each count rises by about 25 370 |
 | S2-U12 | PID tuning | FR4, A2 | manual | Bench sequence on the floor; plot the `[trace]` lines of both `forward 300` moves (100 and 200 mm/s) | Follows the start ramp within 0.2 s, overshoot < 15%, steady error < 10 mm/s |
-| S2-U13 | Distance and turn accuracy | FR4, NFR4 | manual | Bench sequence on the floor, 5 runs; measure each move and turn | Distance within ±1%, turns within ±3° |
+| S2-U13 | Distance and turn accuracy | FR4, NFR4 | manual | Bench sequence on the floor, 5 runs. In the 3 s pause after each move and turn, mark the wheel centres and the heading; measure each step afterwards | Distance within ±1%, turns within ±3° |
 | S2-U14 | Control timing under load | FR11, NFR6 | manual | Full team `TEST=1` image with Wi-Fi; read `max_tick_us` after `bench done` | `max_tick_us` < 5000 (half the period) |
 | S2-U16 | Boots idle with the motors braked | FR11 | auto | `subsystem2_test.c` | `[TEST] S2-U16 PASS` |
 | S2-U17 | Out-of-range commands are rejected | FR4 | auto | `subsystem2_test.c` | `[TEST] S2-U17 PASS` |
@@ -24,7 +24,7 @@ Define a test here before running it. Test IDs never change.
 | S2-U24 | Motor direction and speed, wheels lifted | FR4 | manual | Wheels lifted. Bench sequence, drive steps | Forward then backward; 100 ± 15 mm/s; `faults=0` |
 | S2-U25 | Stall protection, wheels lifted | FR11 | manual | Wheels lifted. Bench sequence: hold the left wheel during the forward drive, the right during the backward drive | `state=3`, `faults=2` (right) or `1` (left) within about 1 s; both wheels stop |
 | S2-U26 | Moves and turns finish, wheels lifted | FR4 | manual | Wheels lifted. Bench sequence, move and turn steps | Each ends with `state=2 faults=0`; turns change `heading` by about 90° |
-| S2-U27 | Whole bench sequence returns to its start | FR4, NFR4 | manual | Floor, power bank, USB unplugged. Tape the start position (wheel centres) and direction, power on, place the car within 10 s. After `bench done`, measure the wheel centres from the tape and the heading from the start direction | Within 20 mm of the start and 5° of the start direction (about 1.6 m of driving and 540° of turns) |
+| S2-U27 | Whole bench sequence returns to its start | FR4, NFR4 | manual | Floor, power bank, USB unplugged. Tape the start position (wheel centres) and direction, press GP21, place the car within 5 s. After `bench done`, measure the wheel centres from the tape and the heading from the start direction | Within 20 mm of the start and 5° of the start direction (about 1.6 m of driving and 540° of turns) |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).
@@ -41,6 +41,7 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-31 | S2-U12 | `dfe3e46` | commit2main | PASS (partial) | `logs/2026-10-31_floor.txt` | `forward 300` at 100 mm/s: 90% after 120 ms (ramp 140 ms), peak 110 (10%), steady 101.7 / 101.8. 200 mm/s move too short to judge |
 | 2026-10-31 | S2-U12 | `523159c` | commit2main | FAIL | `logs/2026-10-31_pid.txt` | `forward 200` at 100 mm/s: left wheel at 0 for about 150 ms at each start, 90% after 920 ms, steady 95 / 95. Same with the previous controller; the left motor is weaker than in the `dfe3e46` run, likely since S2-U25. Recheck after looking at the motor |
 | 2026-10-31 | S2-U12 | `00be97c` | commit2main | FAIL | `logs/2026-10-31_return.txt` | Floor, two runs. Start-ramp lag 0.12 and 0.24 s at 100 mm/s, 0.24 and 0.22 s at 200 mm/s (limit 0.2 s): the left wheel starts late. Overshoot 12% / 6–8% (100 ms averages; single samples step by 8 mm/s), steady error 4 mm/s or less |
+| 2026-10-31 | S2-U12 | `2335313` | commit2main | PASS | `logs/2026-10-31_offset125.txt` | Feedforward 125‰ (was 100‰; 150‰ tried: 200 mm/s lag 0.46 s). Start-ramp lag 0.06 / 0.16 s at 100 mm/s, 0.20 s at 200 mm/s; overshoot 10%; steady error 5 mm/s or less |
 | 2026-10-31 | S2-U13 | `673b8ca` + changes | xxcin | PASS (partial) | Measured by tester | `forward` and `backward` 50 and 100 mm within ±2 mm. 500 mm not possible on the USB cable |
 | 2026-10-31 | S2-U13 | `673b8ca` + changes, track 113 500 µm | xxcin | PASS | Measured by tester | `right 90`, `left 90`, `left 180`, `right 360` within ±2°; track unchanged |
 | 2026-10-31 | S2-U13 | `673b8ca` + changes | xxcin | PASS | `logs/2026-10-31_accuracy.txt` | 5 runs each. `forward 100`: 101, 100, 100, 101, 100 mm. `backward 100`: 100, 100, 101, 100, 100 mm. `right 90`: 89, 90, 88, 90, 90°. `left 180`: 178, 179, 180, 180, 181°. `left 90` angles not written down |
@@ -60,3 +61,4 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-31 | S2-U26 | `673b8ca` + changes | xxcin | PASS | `logs/2026-10-31_manual.txt` | `left 90`: heading +90°. `right 90`: heading −89°. All `faults=0` |
 | 2026-10-31 | S2-U26 | `dfe3e46` | commit2main | PASS | `logs/2026-10-31_bench.txt` | Wheels lifted. All `state=2 faults=0`; heading +90°, −90°, +181°; moves 303 and 300 mm |
 | 2026-10-31 | S2-U27 | `00be97c` | commit2main | PASS (partial) | `logs/2026-10-31_return.txt` | USB connected (laptop carried) instead of the power bank. Run B: 10 mm forward and 5 mm left of the start (11 mm). Heading 4° by the encoders (run A: 1°), not measured by hand. `faults=0` |
+| 2026-10-31 | S2-U27 | `2335313` | commit2main | PASS (partial) | `logs/2026-10-31_offset125.txt` | USB connected (laptop carried). 10 mm forward and 3 mm left of the start. Heading 3° by the encoders, not measured by hand. `faults=0` |

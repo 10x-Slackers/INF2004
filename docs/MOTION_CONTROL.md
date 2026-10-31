@@ -71,7 +71,7 @@ Measured values are in the [test log](../testing/subsystem2/TEST_LOG.md). Consta
 
 ## Bench sequence
 
-The `make -C build_make TEST=1` image starts task `s2_bench` after the checks. It waits 10 s, so the other subsystems' tests run on a still robot, then runs:
+The `make -C build_make TEST=1` image starts task `s2_bench` after the checks. It waits for a press of the GP21 button, so other subsystems' `TEST=1` runs never move the robot, then waits 5 s to let you put it down, and runs:
 
 1. `drive(100, 100)` for 2 s, then `drive(-100, -100)` for 2 s
 2. `move_forward(300)`, `move_backward(300)`
@@ -79,7 +79,7 @@ The `make -C build_make TEST=1` image starts task `s2_bench` after the checks. I
 4. `move_forward(300)` at 200 mm/s
 5. `turn_left(180)`, `move_forward(300)`: back on the start position, facing the start direction, so the end position shows the error of the whole sequence
 
-While each step runs it prints `[trace] time_ms left_mm_s right_mm_s` every 20 ms (two kernel ticks), and a `[motion] state=… max_tick_us=…` status line when the step ends (before the stop, for drive steps). After `[motion] bench done` it prints the status every second.
+While each step runs it prints `[trace] time_ms left_mm_s right_mm_s` every 20 ms (two kernel ticks), and a `[motion] state=… max_tick_us=…` status line when the step ends (before the stop, for drive steps), then holds still for 3 s so the step can be measured. After `[motion] bench done` it prints the status every second.
 
 ## Telemetry payload
 

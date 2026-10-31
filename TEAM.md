@@ -66,7 +66,7 @@ fixed.
 | GP18 | IMU (Buddy 4) | Maker Pi Pico buzzer, beeps when calibration is done (PWM slice 1 A). On the Robo Pico this pin is the NeoPixel and the buzzer is GP22 |
 | GP19 | | |
 | GP20 | | |
-| GP21 | | |
+| GP21 | Motion (Buddy 2) | Robo Pico button: starts the motion bench sequence (`TEST=1` only) |
 | GP22 | | |
 | GP26 | | (ADC0 capable) |
 | GP27 | | (ADC1 capable) |
@@ -140,16 +140,18 @@ What students *can* do:
 
 ## 4. Task priorities
 
-1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). Each subsystem gets its own band by default;
-change it only by team agreement. Write down every task you create.
+1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). The bands follow the task order in
+`docs/ARCHITECTURE.md` (Tasks), so a lower `P` number always gets a higher priority. Change a band only by team
+agreement. Write down every task you create.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
-| 1 | 12–13 | |
-| 2 | 14–15 | `s2_motion` – 6 – core 0; `s2_bench` – 15 – core 0 (`TEST=1` only) |
-| 3 | 16–17 | |
-| 4 | 18–19 | imu_task – 18 – any |
-| 5 | 20–21 | |
+| Shared | 5, 10 | Safety Monitor (P1) – 5; Vehicle Controller (P5) – 10 |
+| 2 | 6–7 | `s2_motion` (P2) – 6 – core 0; `s2_bench` – 7 – core 0 (`TEST=1` only) |
+| 3 | 8–9 | Barcode Decoder (P3), Line Following (P4) |
+| 5 | 11–12 | Obstacle Avoidance (P6), Ultrasonic Scan (P7) |
+| 4 | 18–19 | imu_task (P8) – 18 – any |
+| 1 | 20–21 | Wi-Fi and MQTT Telemetry (P10) |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
 

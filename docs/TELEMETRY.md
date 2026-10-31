@@ -8,7 +8,7 @@ All topics start with `csc13/`. Every message is QoS 0, not retained.
 
 | Topic       | Direction        | Sent                                                   | Payload                                          |
 | ----------- | ---------------- | ------------------------------------------------------ | ------------------------------------------------ |
-| `telemetry` | car → supervisor | Every 200 ms                                           | 9 bytes, below                                   |
+| `telemetry` | car → supervisor | Every 200 ms                                           | 11 bytes, below                                  |
 | `motion`    | car → supervisor | With every `telemetry`                                 | 12 bytes, `motion_control_pack()` ([MOTION_CONTROL.md](MOTION_CONTROL.md#telemetry-payload)) |
 | `scan`      | car → supervisor | Once per obstacle profile, when avoidance leaves `PROFILE` | 8 bytes, below                               |
 | `heartbeat` | car → supervisor | Every 1 s                                              | 2 bytes: a count, wraps                          |
@@ -20,7 +20,7 @@ Events (barcode read, hump measured, bypass done, state change) need no topic of
 
 Each payload is one bit stream, most significant bit first, padded with zero bits to whole bytes, as in `motion_control_pack()`. A signed field is sent as value + offset so it is never negative. `testing/subsystem1/host/payloads.py` packs and unpacks every payload and is the reference decoder.
 
-### `telemetry`: 72 bits
+### `telemetry`: 82 bits
 
 Each field's range is in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#fields).
 
@@ -43,6 +43,7 @@ Each field's range is in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#fields)
 | 54–55 | `avoid_side` | `obstacle_avoidance_status_t.side`: 0 none, 1 left, 2 right |
 | 56–59 | `bypasses` | `obstacle_avoidance_status_t.bypasses` |
 | 60–71 | `forward_mm` | `ultrasonic_scan_t.forward_mm` |
+| 72–81 | `faults` | `app_faults()`: the shared fault bitmask, `APP_FAULT_...` in `app_fault.h` |
 
 ### `scan`: 64 bits
 

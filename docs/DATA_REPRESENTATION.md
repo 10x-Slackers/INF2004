@@ -81,7 +81,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
 | Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | Controller task only |
 | Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | As above | Controller task only |
-| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 72, 96, 64, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
+| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 82, 92, 64, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
 | 1 | Message buffer entry (topic number + payload) and command event flag: [TELEMETRY.md](TELEMETRY.md#inside-the-car) | Topic 0 to 3; commands one bit each | 8 + payload; 3 | `uint8_t` topic, the smallest unit of a message; event flag bits, set and clear atomic | Telemetry task → Wi-Fi service, both `TMO_POL`; Wi-Fi service → Vehicle Controller |
 
 ## Evidence
@@ -92,7 +92,7 @@ Change Requirement 1 asks for this table, RAM and message sizes before and after
 | --- | --- |
 | RAM, whole image and Vehicle Controller | INT-11, `testing/integration/logs/2026-10-31_ram.txt` |
 | RAM and record sizes, per subsystem | S2-U22, S3-U15, S4-U22, S5-U44 in each `testing/subsystemN/TEST_LOG.md` |
-| Inter-task record sizes (each `get()` copies one) | The same logs; S3-U02, U09, U13, S4-U04, U13, U14, U18 and S5-U42 check them on the car |
+| Inter-task record sizes (each `get()` copies one) | The same logs; S3-U02, U09, U13, S4-U04, U13, U18 and S5-U42 check them on the car |
 | MQTT payload sizes against the Week 6 JSON | S1-U01, `testing/subsystem1/logs/2026-10-31_payloads.txt` |
 | No loss of function | Every subsystem's unit tests run on the packed code; the widened versions pass the same host tests (S2-U21, S5-U43) except their size checks; S1-U01 round-trips every payload field at its limits |
 | No loss of timing | S2-U14 (`max_tick_us` of the 10 ms control step), and SYS-03 to SYS-09 in `testing/system/TEST_LOG.md` |

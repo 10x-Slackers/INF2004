@@ -24,6 +24,7 @@ Define a test here before running it. Test IDs never change.
 | S3-U12 | Invalid barcodes are rejected | FR3 | auto | As above | `S3-U12 PASS`: `*Z*`, and `*A*` with a wide gap, give 0 |
 | S3-U13 | Barcode result is bit-packed | Minimum-bit data | auto | As above | `S3-U13 PASS`: `barcode_decoder_t` is 8 bytes |
 | S3-U14 | Barcodes are read while driving | FR3, NFR3, A3 | manual | `TEST=1` image. Lay a printed `*A*` 20 mm beside a straight line, then a `*Z*`. Hold GP21 for 1 s, put the car on the line before them | `[barcode] command=1` with count +1 for `*A*`; rejects +1 and no new command for `*Z*`; then repeat driving the other way along the line |
+| S3-U15 | RAM and record sizes before/after minimum-bit | Minimum-bit CR | host | Commands in `logs/2026-10-31_ram.txt` | Packed is smaller |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).
@@ -47,3 +48,4 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-31 | S3-U01, U02, U04, U05, U07, U08, U09, U11, U12, U13 | `76d20ea` | mykacx | PASS | `logs/2026-10-31_barcode_decode.txt` | Tested as `a150618` before a rebase; `76d20ea` has the same subsystem 3 code apart from the GP21 bench timing. |
 | 2026-10-31 | S3-U14 | `76d20ea` | mykacx | FAIL | `logs/2026-10-31_barcode_drive.txt` | No barcode validated; one pattern of 9 or more elements rejected. The line sensors never changed during the 15 s run, so the setup was in doubt. The bar widths were not logged; `783ab28` prints them. Re-run once the sensor mount is repaired. Tested as `a150618` before a rebase; `76d20ea` has the same subsystem 3 code apart from the GP21 bench timing. |
 | 2026-10-31 | S3-U01, U02, U04, U05, U07, U08, U09, U11, U12, U13 | `644e2e8` | commit2main | PASS | `logs/2026-10-31_safety_unit.txt` | Regression run after #20 and #21 |
+| 2026-10-31 | S3-U15 | `2aabbff` | commit2main | PASS | `logs/2026-10-31_ram.txt` | g_line 24 → 8 B, g_barcode 16 → 8 B, g_raw 12 → 8 B; .bss 642 → 614 B |

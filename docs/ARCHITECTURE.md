@@ -264,7 +264,7 @@ The review's diagram mentions gyro data. The GY-511 has no gyroscope, so everyth
 
 ## Telemetry
 
-Topics and message structures are a Buddy 1 deliverable. The brief expects telemetry to cover at least:
+Topics and payloads are in [TELEMETRY.md](TELEMETRY.md). The brief expects telemetry to cover at least:
 
 - current robot state
 - motor speed and encoder counts

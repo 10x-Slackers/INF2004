@@ -1,0 +1,33 @@
+Minimum-bit change: RAM before and after (subsystem 4: task_imu.c)
+Code: 2aabbff (normal build, SMP=1)
+Tool: make -C build_make; arm-none-eabi-size and arm-none-eabi-nm -S on the build's object files
+BEFORE: a copy of the tree with every bit-field in app_program widened to a 32-bit integer, built the same way
+  sed -i -E 's/unsigned int ([a-z_]+) *: *[0-9]+;/uint32_t \1;/; s/signed int ([a-z_]+) *: *[0-9]+;/int32_t \1;/' $(find app_program -name "*.[ch]")
+AFTER:  2aabbff as built
+
+== BEFORE
+   text	   data	    bss	    dec	    hex	filename
+   2231	      0	     56	   2287	    8ef	subsystem4/task_imu.o
+00000000 00000010 b g_accel
+00000000 00000008 b g_fault
+00000000 00000010 b g_hump
+00000000 00000004 b g_motion
+00000000 0000000c b g_tilt
+
+== AFTER
+   text	   data	    bss	    dec	    hex	filename
+   2259	      0	     24	   2283	    8eb	subsystem4/task_imu.o
+00000000 00000008 b g_accel
+00000000 00000004 b g_fault
+00000000 00000004 b g_hump
+00000000 00000004 b g_motion
+00000000 00000004 b g_tilt
+
+Records (nm -S, the size each s4_get_...() copies under g_s4_mutex):
+  s4_accel_t   g_accel   16 B -> 8 B
+  s4_tilt_t    g_tilt    12 B -> 4 B
+  s4_fault_t   g_fault    8 B -> 4 B
+  s4_hump_t    g_hump    16 B -> 4 B
+  s4_motion_t  g_motion   4 B -> 4 B
+.bss: 56 B -> 24 B (-32 B). Covers every record; logs/2026-10-25_ram.txt covered s4_accel_t only.
+Same behaviour: S4-U04, U13, U14 and U18 check the packed sizes on the car; the other unit tests run on the packed code.

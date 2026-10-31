@@ -174,6 +174,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | I1 | Line Following ↔ Controller, Avoidance | function calls; line state copy under the line mutex | `line_following_start()`, `_stop()`, `_get()` | follow at 1–500 mm/s until stopped; sensor bits, last side seen, junction flag, following, sample count and time; `line_following.h` | Buddy 3 contract |
 | I2 | Barcode Decoder → Controller | status copy under the barcode mutex | `barcode_decoder_get()` | last validated command (left, right, straight, U-turn for A to D), validated and rejected counts, odometer at the barcode; `barcode_decoder.h` | Buddy 3 contract |
 | I9 | IMU → Safety, Controller | record copies under `g_s4_mutex` | `s4_get_tilt()`, `_get_fault()`, `_get_hump()` | calibration done, impact and tilt faults (latched), highest hump of the run | Buddy 4 contract |
+| I12 | Telemetry ↔ Wi-Fi service ↔ Controller | message buffer (`TMO_POL` both ends); event flag | | Topic number + binary payload, at most 13 bytes; START, STOP, RESET bits; `docs/TELEMETRY.md` | Proposed, Buddy 1 to agree |
 | Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
 Each interface is tested by at least one integration test

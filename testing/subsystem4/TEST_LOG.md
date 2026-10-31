@@ -31,6 +31,7 @@ Define a test here before running it. Test IDs never change.
 | S4-U19 | sliding the module forward and stopping it reads accelerating then braking | FR10 | manual | 1. Flash normal image, module flat and still until `[imu] calibrated`. 2. Slide it sharply forward (−Y edge leading) about 10 cm and stop it sharply. | `[imu] motion: accelerating`, then `braking`, then `steady` |
 | S4-U20 | a hump under the right wheel reads climbing then descending | FR10 | manual | 1. As above. 2. Lay the module on the 6° ramp right side up for ~3 s, then slowly lower that side back to flat. | `climbing` while on the ramp, `descending` while lowering, then `steady` |
 | S4-U21 | an impact reads impact and stays | FR10 | manual | 1. As above. 2. Rap the table next to the module. | `[imu] motion: impact`, with no further motion lines |
+| S4-U22 | RAM and record sizes before/after minimum-bit, every record | Minimum-bit CR | host | Commands in `logs/2026-10-31_ram_all.txt` | No record larger; total smaller |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).
@@ -75,3 +76,4 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-31 | S4-U06 | `fe71414` | commit2main | FAIL | `logs/2026-10-31_i2c_wake_debug.txt` | 32 readings in 510 ms. Each GY-511 read took 15.3 ms on average (up to 19.6 ms) because the I2C interrupt set the done flag with interrupts masked, so the waiting task only ran at the next 10 ms tick. Pinned to core 0 it passed with 51, but each read still took a whole tick (9.9 ms). Measured with temporary timing prints |
 | 2026-10-31 | S4-U05, S4-U01, S4-U06, S4-U02, S4-U04, S4-U14, S4-U13, S4-U18 | `c3c3aeb` | commit2main | PASS | `logs/2026-10-31_i2c_fix_unit.txt` | `tk_set_flg()` moved outside the lock in `i2c_rp2040.c`. A read now takes 0.46 ms (max 0.56 ms), 51 readings in 509 ms (`logs/2026-10-31_i2c_wake_debug.txt`). S2, S3 and S5 auto tests also pass |
 | 2026-10-31 | S4-U05, S4-U01, S4-U06, S4-U02, S4-U04, S4-U14, S4-U13, S4-U18 | `644e2e8` | commit2main | PASS | `logs/2026-10-31_safety_unit.txt` | Regression run after #20 and #21 |
+| 2026-10-31 | S4-U22 | `2aabbff` | commit2main | PASS | `logs/2026-10-31_ram_all.txt` | accel 16 → 8, tilt 12 → 4, fault 8 → 4, hump 16 → 4, motion 4 → 4 B; .bss 56 → 24 B |

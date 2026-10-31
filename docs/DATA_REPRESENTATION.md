@@ -1,6 +1,6 @@
 # Data Representation
 
-Application data uses only the bits its valid range needs (change requirement "Minimum-Bit Data Representation"). This page states the rules and lists every application data field. Measurements that compare before and after (RAM, message sizes, timing) are test evidence and live in each subsystem's `testing/` log.
+Application data uses only the bits its valid range needs (change requirement "Minimum-Bit Data Representation"). This page states the rules and lists every application data field. Measurements that compare before and after (RAM, message sizes, timing) are test evidence and live in each subsystem's `testing/` log; [Evidence](#evidence) lists them.
 
 ## Rules
 
@@ -8,7 +8,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 - **Stored and shared structs use C bit-fields.** Standard C only guarantees bit-fields of `signed int`, `unsigned int` and `_Bool`, so use those, and always write `signed` or `unsigned`: whether a plain `int` bit-field is signed is up to the compiler.
 - **Anything sent over the network uses explicit masks and shifts**, never bit-fields. The C standard leaves bit-field layout to the compiler, so the receiver cannot rely on it. MQTT payloads are compact binary, not text.
 - **Faults are single bits in one shared fault bitmask**, not separate variables.
-- **Packed data shared between tasks, or between an ISR and a task, is accessed safely.** Writing one bit-field rewrites the whole word it shares with its neighbours, so guard packed shared data with a mutex, pass copies through a message buffer, or use an event flag (its set and clear calls are atomic).
+- **Packed data shared between tasks, or between an ISR and a task, is accessed safely.** Writing one bit-field rewrites the whole word it shares with its neighbours, so guard packed shared data with a mutex, pass copies through a message buffer, or use an event flag (its set and clear calls are atomic). A value with a single writer may also be read without a lock when the read is one load, which is atomic on the Cortex-M0+.
 - **Out of scope:** device bus buffers in the sensor's own format, temporary variables inside a calculation, and kernel types such as `ID` and `ER`.
 
 ## Fields
@@ -45,6 +45,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 2 | `g_left_count`, `g_right_count`, `g_skipped` (driver): encoder edges, missed phases | 0 to 65535; 0 to 255, wrap | 16 each; 8 | `volatile uint16_t`, `uint8_t`: the ISR writes them, and these loads are atomic on Cortex-M0+ | Encoder ISR writes, motion task reads, no lock |
 | 2 | `drv_motion_wheel_t.phase`, `.b_backward` (driver) | 0 to 3; 0 or 1 | 2; 1 | `unsigned int` bit-field | Encoder ISR only |
 | 2 | `g_max_tick_us`: longest control step | 0 to 65535 µs, saturates | 16 | `volatile uint16_t`, for an atomic load | Motion task writes; tests read it with `subsystem2_max_tick_us()` |
+| 2 | `g_b_latched`: safety stop latched | 0 or 1 | 1 | `bool`, the smallest type | Safety Monitor and Controller write it with `motion_control_latch()`, any task reads it with `motion_control_latched()`, under the motion mutex |
 | 2 | `g_callback_pins` (driver): GPIO pins of the registered edge callback | Bank 0 pin mask | 32 | `uint32_t` in the hardware register's format (out of scope) | Set once at init, read by the encoder ISR |
 | 5 | `ultrasonic_scan_t.forward_mm`: latest range straight ahead | 20 to 4000 mm (4000: nothing in range) | 12 | `unsigned int` bit-field | Readers copy it with `ultrasonic_scan_get()`, under the scan mutex |
 | 5 | `.b_fault`: a ray of the last scan had no echo | 0 or 1 | 1 | As above | As above |
@@ -78,3 +79,23 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `.count`, `.rejects`: barcodes validated and rejected | 0 to 15 each, wrap | 4 each | As above | As above |
 | 3 | `.distance_mm`: odometer at the end of the barcode | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
 | 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in 1/16 mm (0 to 480) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
+| Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `unsigned int` bit-field | Controller task writes; telemetry reads it with `vehicle_controller_state()`, one load, no lock |
+| Shared | `g_vc.cycles`: 10 ms cycles since the state or junction move began | 0 to 1023, wraps (only TURN reads it, below 502) | 10 | As above | Controller task only |
+| Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
+| Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | Controller task only |
+| Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | As above | Controller task only |
+| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 72, 96, 64, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
+| 1 | Message buffer entry (topic number + payload) and command event flag: [TELEMETRY.md](TELEMETRY.md#inside-the-car) | Topic 0 to 3; commands one bit each | 8 + payload; 3 | `uint8_t` topic, the smallest unit of a message; event flag bits, set and clear atomic | Telemetry task → Wi-Fi service, both `TMO_POL`; Wi-Fi service → Vehicle Controller |
+
+## Evidence
+
+Change Requirement 1 asks for this table, RAM and message sizes before and after, and proof that nothing was lost. "Before" is the same source with every bit-field widened to a 32-bit integer, or the code's earlier unpacked version where one exists; each log states which.
+
+| Evidence | Where |
+| --- | --- |
+| RAM, whole image and Vehicle Controller | INT-11, `testing/integration/logs/2026-10-31_ram.txt` |
+| RAM and record sizes, per subsystem | S2-U22, S3-U15, S4-U22, S5-U44 in each `testing/subsystemN/TEST_LOG.md` |
+| Inter-task record sizes (each `get()` copies one) | The same logs; S3-U02, U09, U13, S4-U04, U13, U14, U18 and S5-U42 check them on the car |
+| MQTT payload sizes against the Week 6 JSON | S1-U01, `testing/subsystem1/logs/2026-10-31_payloads.txt` |
+| No loss of function | Every subsystem's unit tests run on the packed code; the widened versions pass the same host tests (S2-U21, S5-U43) except their size checks; S1-U01 round-trips every payload field at its limits |
+| No loss of timing | S2-U14 (`max_tick_us` of the 10 ms control step), and SYS-03 to SYS-09 in `testing/system/TEST_LOG.md` |

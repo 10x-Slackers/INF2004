@@ -1,15 +1,28 @@
 /** @file subsystem2_test.c
  *
- * @brief On-target tests for subsystem 2 (make TEST=1). None of them moves
- * a motor; movement is tested by hand (testing/subsystem2/TEST_LOG.md).
+ * @brief On-target tests for subsystem 2 (make TEST=1). The checks do not
+ * move a motor. Afterwards the bench task runs a fixed move sequence for
+ * the manual tests in testing/subsystem2/TEST_LOG.md.
  */
 
 #include "subsystem2.h"
+#include "drv_motion.h"
 #include "../test_report.h"
 
 #if APP_TEST
-#define S2_TEST_WAIT_MS 200 /* 20 control periods. */
-#define S2_TEST_TICK_US 1000u
+#define S2_TEST_WAIT_MS    200 /* 20 control periods. */
+#define S2_TEST_TICK_US    1000u
+#define S2_BENCH_START_MS  10000 /* Other subsystems' tests finish first. */
+#define S2_BENCH_DRIVE_MS  2000
+#define S2_BENCH_POLL_MS   10
+#define S2_BENCH_STATUS_MS 1000
+#define S2_BENCH_MM_S      100
+#define S2_BENCH_FAST_MM_S 200u
+#define S2_BENCH_MOVE_MM   300u
+#define S2_BENCH_TURN_DEG  90u
+#define S2_BENCH_UTURN_DEG 180u
+
+static void subsystem2_bench_task(INT stacd, void * p_exinf);
 
 void subsystem2_test(void)
 {
@@ -43,6 +56,92 @@ void subsystem2_test(void)
                    (subsystem2_max_tick_us() < S2_TEST_TICK_US),
                "control step runs and takes under 1 ms");
     TEST_SUMMARY("subsystem2");
+
+    /* FP is the kernel's generic task pointer type. */
+    (void)app_start_task((FP)subsystem2_bench_task, S2_PRI_BENCH, TP_PRC1,
+                         "s2_bench");
+}
+
+/*!
+ * @brief Print the motion status on one line.
+ */
+static void subsystem2_bench_report(void)
+{
+    motion_control_status_t status = {0};
+
+    motion_control_get_status(&status);
+    /* (UB *): tm_printf() takes unsigned chars. */
+    tm_printf((UB *)"[motion] state=%u cmd=%u faults=%u heading=%u "
+                    "dist_mm=%u counts=%u,%u speed=%d,%d max_tick_us=%u\n",
+              status.state, status.command, status.faults, status.heading_deg,
+              status.distance_mm, status.left_count, status.right_count,
+              status.left_speed, status.right_speed, subsystem2_max_tick_us());
+}
+
+/*!
+ * @brief Print the wheel speeds every 10 ms until the command ends, then
+ * the status. With b_drive, renew drive(left, right) for up to 2 s and
+ * stop after the status, so a stall still shows in it.
+ */
+static void subsystem2_bench_run(bool b_drive, int32_t left, int32_t right)
+{
+    motion_control_status_t status = {0};
+    uint32_t elapsed_ms = 0u;
+
+    do
+    {
+        if (b_drive)
+        {
+            (void)motion_control_drive(left, right);
+        }
+        tk_dly_tsk(S2_BENCH_POLL_MS);
+        elapsed_ms += S2_BENCH_POLL_MS;
+        motion_control_get_status(&status);
+        /* (UB *): tm_printf() takes unsigned chars. */
+        tm_printf((UB *)"[trace] %u %d %d\n", drv_motion_time_us() / 1000u,
+                  status.left_speed, status.right_speed);
+    } while ((MOTION_CONTROL_RUNNING == status.state) &&
+             (!b_drive || (elapsed_ms < S2_BENCH_DRIVE_MS)));
+    subsystem2_bench_report();
+    if (b_drive)
+    {
+        motion_control_stop();
+    }
+}
+
+/*!
+ * @brief Bench task: the fixed move sequence, then the status every 1 s.
+ */
+static void subsystem2_bench_task(INT stacd, void * p_exinf)
+{
+    (void)stacd;
+    (void)p_exinf;
+
+    tk_dly_tsk(S2_BENCH_START_MS);
+    tm_printf((UB *)"[motion] bench: drive +-100, forward/backward 300, "
+                    "left 90, right 90, left 180, forward 300 at 200\n");
+    subsystem2_bench_run(true, S2_BENCH_MM_S, S2_BENCH_MM_S);
+    subsystem2_bench_run(true, -S2_BENCH_MM_S, -S2_BENCH_MM_S);
+    (void)motion_control_move_forward(S2_BENCH_MOVE_MM);
+    subsystem2_bench_run(false, 0, 0);
+    (void)motion_control_move_backward(S2_BENCH_MOVE_MM);
+    subsystem2_bench_run(false, 0, 0);
+    (void)motion_control_turn_left(S2_BENCH_TURN_DEG);
+    subsystem2_bench_run(false, 0, 0);
+    (void)motion_control_turn_right(S2_BENCH_TURN_DEG);
+    subsystem2_bench_run(false, 0, 0);
+    (void)motion_control_turn_left(S2_BENCH_UTURN_DEG);
+    subsystem2_bench_run(false, 0, 0);
+    (void)motion_control_set_speed(S2_BENCH_FAST_MM_S);
+    (void)motion_control_move_forward(S2_BENCH_MOVE_MM);
+    subsystem2_bench_run(false, 0, 0);
+    (void)motion_control_set_speed((uint32_t)S2_BENCH_MM_S);
+    tm_printf((UB *)"[motion] bench done\n");
+    for (;;)
+    {
+        subsystem2_bench_report();
+        tk_dly_tsk(S2_BENCH_STATUS_MS);
+    }
 }
 #endif
 

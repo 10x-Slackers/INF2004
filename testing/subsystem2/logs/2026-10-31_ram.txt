@@ -1,31 +1,30 @@
 Minimum-bit change: RAM before and after (subsystem 2, motion_control.c)
-Code: 673b8ca + uncommitted Buddy 2 changes
-Tool: arm-none-eabi-gcc -mcpu=cortex-m0plus -mthumb -O2 -c; arm-none-eabi-nm -S; arm-none-eabi-size
+Code: 2f503da (track and PID setters removed)
+Tool: arm-none-eabi-gcc -mcpu=cortex-m0plus -mthumb -O2 -std=c99 -c; arm-none-eabi-nm -S; arm-none-eabi-size
 BEFORE: the same source with every 'unsigned int x : N' widened to uint32_t
   sed -E 's/unsigned int ([a-z_]+) *: *[0-9]+;/uint32_t \1;/' motion_control.[ch]
 AFTER:  app_program/subsystem2/motion_control.c
 
 == BEFORE
    text	   data	    bss	    dec	    hex	filename
-   2680	      0	    132	   2812	    afc	wide/mc.o
+   2536	      0	    116	   2652	    a5c	wide/mc.o
+00000070 00000004 b g_config
 00000000 00000010 b g_pid
-00000010 00000014 b g_config
-00000060 00000024 b g_status
-00000024 0000003c b g_run
+00000010 0000003c b g_run
+0000004c 00000024 b g_status
 
 == AFTER
    text	   data	    bss	    dec	    hex	filename
-   3280	      0	     68	   3348	    d14	packed/mc.o
+   3004	      0	     60	   3064	    bf8	packed/mc.o
+00000038 00000004 b g_config
 00000000 00000008 b g_pid
-00000008 0000000c b g_config
-00000038 0000000c b g_status
-00000014 00000024 b g_run
+00000008 00000024 b g_run
+0000002c 0000000c b g_status
 
-Messages: status 36 B -> 12 B; MQTT payload 12 B (96 bits).
+Messages: status 36 B -> 12 B (sizeof on the host); MQTT payload 12 B (96 bits).
 Driver: encoder counts are 2 x uint16_t + uint8_t (5 B) instead of 3 x 32 bits (12 B).
 
 Same behaviour: the BEFORE version run through the host test:
-  PASS: 20
-  Only the 12-byte size check differs, as expected.
-
-On the robot (S2-U14): max_tick_us=1939 with Wi-Fi running; period 10000 us.
+  FAIL  status snapshot is 12 bytes (full-width equivalent 36 bytes)
+  FAILED: 1 failure(s)
+  Only the 12-byte size check differs, as expected; every motion check passes.

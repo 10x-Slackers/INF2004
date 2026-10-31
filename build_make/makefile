@@ -3,10 +3,14 @@
 ################################################################################
 
 # Specify the name of the executable file to be built (Do not include the extension)
-ROOT ?= $(abspath ..)
 EXE_FILE := mtkernel_3
 
 # Specify only one target name
+#TARGET := _IOTE_M367_
+#TARGET := _IOTE_RX231_
+#TARGET := _IOTE_STM32L4_
+#TARGET := _IOTE_RZA2M_
+#TARGET := _NUCLEO_H723_
 TARGET := _PICO_RP2040_
 
 RM := rm -rf
@@ -16,24 +20,40 @@ RM := rm -rf
 # the default goal and quietly leave the image stale.
 .DEFAULT_GOAL := all
 
-INCPATH = -I"$(ROOT)/include" -I"$(ROOT)/config" -I"$(ROOT)/kernel/knlinc"
+INCPATH = -I"../include" -I"../config" -I"../kernel/knlinc"
 
+-include sources.mk
 
-include $(ROOT)/build_make/mtkernel_3/lib/libtm/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/lib/libtk/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/kernel/usermain/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/kernel/tstdlib/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/kernel/tkernel/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/kernel/sysinit/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/kernel/inittask/subdir.mk
+include mtkernel_3/lib/libtm/subdir.mk
+include mtkernel_3/lib/libtk/subdir.mk
+include mtkernel_3/kernel/usermain/subdir.mk
+include mtkernel_3/kernel/tstdlib/subdir.mk
+include mtkernel_3/kernel/tkernel/subdir.mk
+include mtkernel_3/kernel/sysinit/subdir.mk
+include mtkernel_3/kernel/inittask/subdir.mk
 
-include $(ROOT)/build_make/mtkernel_3/device/subdir.mk
+include mtkernel_3/device/subdir.mk
 
+ifeq ($(TARGET), _IOTE_M367_)
+include iote_m367.mk
+endif
+ifeq ($(TARGET), _IOTE_RX231_)
+include iote_rx231.mk
+endif
+ifeq ($(TARGET), _IOTE_STM32L4_)
+include iote_stm32l4.mk
+endif
+ifeq ($(TARGET), _IOTE_RZA2M_)
+include iote_rza2m.mk
+endif
+ifeq ($(TARGET), _NUCLEO_H723_)
+include nucleo_h723.mk
+endif
 ifeq ($(TARGET), _PICO_RP2040_)
-include $(ROOT)/build_make/pico_rp2040.mk
+include pico_rp2040.mk
 endif
 
--include $(ROOT)/build_make/mtkernel_3/app_program/subdir.mk
+-include mtkernel_3/app_program/subdir.mk
 
 # Create every object directory up front.  Git does not store empty
 # directories, so a fresh clone lacks them, and not every compile rule
@@ -72,7 +92,7 @@ endif
 
 # Other EXE_FILEs
 clean:
-	-$(RM) $(OBJS) $(SECONDARY_SIZE) $(ASM_DEPS) $(S_UPPER_DEPS) $(C_DEPS) $(EXE_FILE).elf $(EXE_FILE).map $(EXE_FILE).uf2
+	-$(RM) $(OBJS) $(SECONDARY_SIZE) $(ASM_DEPS) $(S_UPPER_DEPS) $(C_DEPS) $(EXE_FILE).elf $(EXE_FILE).map
 	-@echo ' '
 
 .PHONY: all clean dependents

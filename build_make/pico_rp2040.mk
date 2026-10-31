@@ -27,7 +27,8 @@ endif
 # Console default is needed here because the image name includes it.
 #
 # Defaults to usb_cdc so the console appears on the Pico's own USB cable.
-# UART0 (GP0 TX / GP1 RX) is used only with CRASH_REPORT=1.  CONSOLE=uart drops
+# usb_cdc still mirrors every line to UART0 (GP0 TX / GP1 RX) for early boot
+# and panic messages, so GP0/GP1 stay reserved either way.  CONSOLE=uart drops
 # the USB console and its TinyUSB dependency.
 CONSOLE ?= usb_cdc
 
@@ -44,7 +45,7 @@ WIFI_SUFFIX := _wifi
 # SMP=0 is supported: the radio service task simply drops its TP_PRC1 affinity
 # request when TK_SUPPORT_SMP is off (see cyw43_utk_kernel.c), the same way the
 # USB console task already did. Everything touching the radio and lwIP still
-# runs on that one task, which is what TEAM.md radio ownership actually
+# runs on that one task, which is what docs/RELEASE.md safety rule 6 actually
 # requires -- single-core satisfies it trivially.
 endif
 
@@ -52,7 +53,7 @@ endif
 # tcpip thread): everything that calls into lwIP -- cyw43_poll(),
 # sys_check_timeouts(), and any application tcp_*/udp_*/dns_* call -- runs
 # on the same processor-1-owned task that already services the radio, per
-# TEAM.md radio ownership. See lib/liblwip/sysdepend/pico_rp2040/.
+# docs/RELEASE.md safety rule 6. See lib/liblwip/sysdepend/pico_rp2040/.
 NET ?= none
 ifneq ($(filter $(NET),none lwip),$(NET))
 $(error Unknown NET '$(NET)'; use none or lwip)
@@ -83,8 +84,6 @@ endif
 # TEST=1 builds the subsystem self-tests into the image (APP_TEST=1 in C).
 # The image gets a _test suffix so it cannot be mistaken for the normal one.
 TEST ?= 0
-# S2_ONLY=1: bench image that starts only subsystem 2 (motion control).
-S2_ONLY ?= 0
 ifneq ($(filter $(TEST),0 1),$(TEST))
 $(error Unknown TEST '$(TEST)'; use 0 or 1)
 endif
@@ -117,7 +116,7 @@ endif
 # a live hazard: an SMP=1 build was once flashed in place of an SMP=0 one and
 # only the banner in the log revealed it.
 #
-EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)$(if $(filter 1,$(S2_ONLY)),_s2only)
+EXE_FILE := mtk3pico_smp$(SMP)_$(CONSOLE)$(WIFI_SUFFIX)$(NET_SUFFIX)$(MQTT_SUFFIX)$(CRASH_SUFFIX)$(TEST_SUFFIX)
 
 GCC := arm-none-eabi-gcc
 AS := arm-none-eabi-gcc
@@ -147,10 +146,9 @@ endif
 
 # The ELF-to-UF2 converter is a small host program built from tools/elf2uf2
 # with the host C++ compiler the first time it is needed.
-$(E2U): $(ROOT)/tools/elf2uf2/main.cpp
+$(E2U): ../tools/elf2uf2/main.cpp
 	@echo 'Building host tool: $@'
-	@mkdir -p $(@D)
-	c++ -O2 -std=c++14 -I$(ROOT)/tools/elf2uf2 -o $@ $<
+	c++ -O2 -std=c++14 -I../tools/elf2uf2 -o $@ $<
 
 $(EXE_FILE).elf: | $(E2U)
 
@@ -170,7 +168,7 @@ LFLAGS := -mcpu=cortex-m0plus -mthumb -ffreestanding \
     -O2 -g3 \
     -mfloat-abi=soft \
 
-LNKFILE := "$(ROOT)/etc/linker/pico_rp2040/tkernel_map.ld"
+LNKFILE := "../etc/linker/pico_rp2040/tkernel_map.ld"
 
 # Applied here, after CFLAGS/ASFLAGS are assigned with ':=', which would
 # otherwise discard anything appended above.
@@ -178,7 +176,7 @@ ifeq ($(SMP),1)
 CFLAGS  += -DCNF_SMP=1
 ASFLAGS += -DCNF_SMP=1
 endif
-CFLAGS  += -DAPP_TEST=$(TEST) -DAPP_S2_ONLY=$(S2_ONLY)
+CFLAGS  += -DAPP_TEST=$(TEST)
 CFLAGS  += -DTM_CONSOLE_UART=$(CRASH_REPORT)
 ifeq ($(CRASH_REPORT),0)
 CFLAGS  += -DBOARD_UART0_FREE=1
@@ -187,7 +185,8 @@ endif
 ################################################################################
 # Console selection
 #
-#   CONSOLE=usb_cdc             USB CDC-ACM console, with optional UART0 crash mirror.
+#   CONSOLE=usb_cdc             USB CDC-ACM console, with the UART0 mirror
+#                               retained for early boot and panics.
 #   CONSOLE=uart                UART0 only, no TinyUSB dependency.
 #
 # usb_cdc pulls seven TinyUSB sources and a set of pico-sdk headers from
@@ -210,12 +209,12 @@ endif
 # before any recipe executes.
 ################################################################################
 
-PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)-s2only$(S2_ONLY)
+PROFILE_ID := smp$(SMP)-$(CONSOLE)-wifi$(WIFI)-net$(NET)-mqtt$(MQTT)-crash$(CRASH_REPORT)-test$(TEST)
 PROFILE_FILE := .build_profile
 
 ifneq ($(strip $(shell cat $(PROFILE_FILE) 2>/dev/null)),$(PROFILE_ID))
 $(info Build profile is now $(PROFILE_ID); discarding objects built for another profile.)
-$(shell mkdir -p mtkernel_3; find mtkernel_3 -name '*.o' -o -name '*.d' | xargs rm -f; \
+$(shell find mtkernel_3 -name '*.o' -o -name '*.d' | xargs -r rm -f; \
 	  rm -f $(EXE_FILE).elf $(EXE_FILE).map $(EXE_FILE).uf2; \
 	  echo $(PROFILE_ID) > $(PROFILE_FILE))
 endif
@@ -229,7 +228,7 @@ ifeq ($(wildcard $(TINYUSB_PATH)/src/tusb.c),)
 $(error TinyUSB not found at $(TINYUSB_PATH). Set PICO_SDK_PATH, or build with CONSOLE=uart)
 endif
 
-USBDIR := $(ROOT)/lib/libtm/sysdepend/pico_rp2040/usb
+USBDIR := ../lib/libtm/sysdepend/pico_rp2040/usb
 
 USB_SRCS := usb_console.c usb_descriptors.c usb_sdk_compat.c usb_tinyusb_glue.c
 USB_OBJS := $(addprefix ./mtkernel_3/lib/libtm/sysdepend/pico_rp2040/usb/,$(USB_SRCS:.c=.o))
@@ -294,7 +293,7 @@ ifeq ($(WIFI),cyw43)
 
 CYW43_DRIVER_PATH := $(PICO_SDK_PATH)/lib/cyw43-driver
 CYW43_PICO_PATH := $(PICO_SDK_PATH)/src/rp2_common/pico_cyw43_driver
-WIFIDIR := $(ROOT)/lib/libwifi/sysdepend/pico_rp2040
+WIFIDIR := ../lib/libwifi/sysdepend/pico_rp2040
 
 ifeq ($(wildcard $(CYW43_DRIVER_PATH)/src/cyw43_ll.c),)
 $(error CYW43 driver not found below $(PICO_SDK_PATH); initialize the pico-sdk submodules)
@@ -312,7 +311,7 @@ CYW43_OBJS := ./mtkernel_3/cyw43/cyw43_ll.o \
               ./mtkernel_3/cyw43/gpio.o
 
 WIFI_INCLUDES := -I"$(WIFIDIR)" \
-                 -I"$(ROOT)/lib/libtm/sysdepend/pico_rp2040/usb" \
+                 -I"../lib/libtm/sysdepend/pico_rp2040/usb" \
                  -I"$(CYW43_DRIVER_PATH)/src" \
                  -I"$(CYW43_DRIVER_PATH)/firmware" \
                  -I"$(CYW43_PICO_PATH)/include" \
@@ -391,7 +390,7 @@ mtkernel_3/cyw43/gpio.o: $(PICO_SDK_PATH)/src/rp2_common/hardware_gpio/gpio.c
 ifeq ($(NET),lwip)
 
 LWIPDIR := $(PICO_SDK_PATH)/lib/lwip/src
-LIBLWIP_PORT := $(ROOT)/lib/liblwip/sysdepend/pico_rp2040
+LIBLWIP_PORT := ../lib/liblwip/sysdepend/pico_rp2040
 
 ifeq ($(wildcard $(LWIPDIR)/core/init.c),)
 $(error lwIP not found below $(PICO_SDK_PATH); initialize the pico-sdk submodules)
@@ -431,7 +430,7 @@ mtkernel_3/lwip/%.o: $(LWIPDIR)/%.c
 	@mkdir -p "$(@D)"
 	$(GCC) $(CFLAGS) -D$(TARGET) $(INCPATH) -MF"$(@:%.o=%.d)" -MT"$(@)" -c -o "$@" "$<"
 
-mtkernel_3/lib/liblwip/sysdepend/pico_rp2040/%.o: $(ROOT)/lib/liblwip/sysdepend/pico_rp2040/%.c
+mtkernel_3/lib/liblwip/sysdepend/pico_rp2040/%.o: ../lib/liblwip/sysdepend/pico_rp2040/%.c
 	@echo 'Building lwIP port file: $<'
 	@mkdir -p "$(@D)"
 	$(GCC) $(CFLAGS) -D$(TARGET) $(INCPATH) -MF"$(@:%.o=%.d)" -MT"$(@)" -c -o "$@" "$<"
@@ -462,11 +461,11 @@ endif
 
 endif
 
-include $(ROOT)/build_make/mtkernel_3/lib/libtm/sysdepend/pico_rp2040/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/lib/libtm/sysdepend/no_device/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/lib/libtk/sysdepend/cpu/rp2040/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/lib/libtk/sysdepend/cpu/core/armv6m/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/lib/libbsp/sysdepend/cpu/rp2040/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/kernel/sysdepend/pico_rp2040/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/kernel/sysdepend/cpu/rp2040/subdir.mk
-include $(ROOT)/build_make/mtkernel_3/kernel/sysdepend/cpu/core/armv6m/subdir.mk
+include mtkernel_3/lib/libtm/sysdepend/pico_rp2040/subdir.mk
+include mtkernel_3/lib/libtm/sysdepend/no_device/subdir.mk
+include mtkernel_3/lib/libtk/sysdepend/cpu/rp2040/subdir.mk
+include mtkernel_3/lib/libtk/sysdepend/cpu/core/armv6m/subdir.mk
+include mtkernel_3/lib/libbsp/sysdepend/cpu/rp2040/subdir.mk
+include mtkernel_3/kernel/sysdepend/pico_rp2040/subdir.mk
+include mtkernel_3/kernel/sysdepend/cpu/rp2040/subdir.mk
+include mtkernel_3/kernel/sysdepend/cpu/core/armv6m/subdir.mk

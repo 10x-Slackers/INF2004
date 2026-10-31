@@ -57,16 +57,9 @@ void tm_tusb_write_flush(void)
     (void)tud_cdc_write_flush();
 }
 
-/* Optional application console receiver; TinyUSB stays on its owner task. */
-extern void tm_console_receive_byte(uint8_t byte) __attribute__((weak));
-
 void tm_tusb_discard_input(void)
 {
-    unsigned budget = 64u;
-    while (budget-- && tud_cdc_available()) {
-        uint8_t byte = (uint8_t)tud_cdc_read_char();
-        if (tm_console_receive_byte) tm_console_receive_byte(byte);
-    }
+    while (tud_cdc_available()) (void)tud_cdc_read_char();
 }
 
 /*

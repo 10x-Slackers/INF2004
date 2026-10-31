@@ -1,9 +1,0 @@
-Firmware builds. Code: 673b8ca + uncommitted Buddy 2 changes
-app_program/ is compiled with -std=c99 -Wall -Wextra -Werror
-make : exit 0, warnings 0
-make TEST=1: exit 0, warnings 0
-make S2_ONLY=1: exit 0, warnings 0
-make S2_ONLY=1 TEST=1: exit 0, warnings 0
-make -C build_make TEST=0: exit 0, warnings 0
-make -C build_make TEST=1: exit 0, warnings 0
-clang-format 23.1.3 --dry-run, repository .clang-format, Buddy 2 sources: 0 changes

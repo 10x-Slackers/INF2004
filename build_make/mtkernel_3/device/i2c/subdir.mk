@@ -3,37 +3,37 @@
 ################################################################################
 
 OBJS += \
-./mtkernel_3/device/i2c/i2c.o
+./mtkernel_3/device/i2c/i2c.o 
 
 C_DEPS += \
-./mtkernel_3/device/i2c/i2c.d
+./mtkernel_3/device/i2c/i2c.d 
 
-mtkernel_3/device/i2c/%.o: $(ROOT)/device/i2c/%.c
+mtkernel_3/device/i2c/%.o: ../device/i2c/%.c
 	@echo 'Building file: $<'
 	$(GCC) $(CFLAGS) -D$(TARGET) $(INCPATH) -MF"$(@:%.o=%.d)" -MT"$(@)" -c -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
 ifeq ($(TARGET), _IOTE_M367_)
--include $(ROOT)/build_make/mtkernel_3/device/i2c/sysdepend/tx03_m367/subdir.mk
+-include mtkernel_3/device/i2c/sysdepend/tx03_m367/subdir.mk
 endif
 
 ifeq ($(TARGET), _IOTE_RX231_)
--include $(ROOT)/build_make/mtkernel_3/device/i2c/sysdepend/rx231/subdir.mk
+-include mtkernel_3/device/i2c/sysdepend/rx231/subdir.mk
 endif
 
 ifeq ($(TARGET), _IOTE_STM32L4_)
--include $(ROOT)/build_make/mtkernel_3/device/i2c/sysdepend/stm32l4/subdir.mk
+-include mtkernel_3/device/i2c/sysdepend/stm32l4/subdir.mk
 endif
 
 ifeq ($(TARGET), _IOTE_RZA2M_)
--include $(ROOT)/build_make/mtkernel_3/device/i2c/sysdepend/rza2m/subdir.mk
+-include mtkernel_3/device/i2c/sysdepend/rza2m/subdir.mk
 endif
 
 ifeq ($(TARGET), _NUCLEO_H723_)
--include $(ROOT)/build_make/mtkernel_3/device/i2c/sysdepend/stm32h7/subdir.mk
+-include mtkernel_3/device/i2c/sysdepend/stm32h7/subdir.mk
 endif
 
 ifeq ($(TARGET), _PICO_RP2040_)
--include $(ROOT)/build_make/mtkernel_3/device/i2c/sysdepend/rp2040/subdir.mk
+-include mtkernel_3/device/i2c/sysdepend/rp2040/subdir.mk
 endif

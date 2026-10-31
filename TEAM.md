@@ -94,7 +94,7 @@ changes shared configuration, so record it in the table below first.
 task*.** That task can be in any subsystem, and one subsystem may own
 several peripherals (one owning task each, or one task owning all of them).
 Every other task, in the same subsystem or another one, asks the owning task
-through the synchronized interface (section 5) and never touches that peripheral itself.
+through a kernel object (section 5) and never touches that peripheral itself.
 
 *Why:* this port runs tasks on both cores at the same time. If two tasks
 drive the same I2C or UART block at once, their transfers get mixed up, and
@@ -140,23 +140,24 @@ What students *can* do:
 
 ## 4. Task priorities
 
-1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). Application priorities follow the architecture order below.
-Safety reserves 5; Vehicle Controller reserves 9. Write down each task.
+1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). Each subsystem gets its own band by default;
+change it only by team agreement. Write down every task you create.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
-| 1 | 23–24 | telemetry reservation |
-| 2 | 6, 22 | `s2_motion` – 6 – core 0; `s2_console` – 22 – core 0 |
-| 3 | 7–8 | barcode / line reservations |
+| 1 | 12–13 | |
+| 2 | 14–15 | `s2_motion` – 6 – core 0; `s2_bench` – 15 – core 0 (`TEST=1` only) |
+| 3 | 16–17 | |
 | 4 | 18–19 | imu_task – 18 – any |
-| 5 | 10–11 | avoidance / scan reservations |
+| 5 | 20–21 | |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
 
 ## 5. Interfaces between subsystems
 
-Every arrow between two subsystems is listed here. Providers expose synchronized APIs or create the kernel objects used by
-consumers. Data formats and units are defined in the owning public header and technical guide.
+Every arrow between two subsystems is listed here. The **provider** creates
+the kernel object and publishes its ID in its own `subsystemN.h`; the **user** only
+sends to it or waits on it. Agree on the data format before coding.
 
 | ID | From → To | Mechanism | Object ID name | Data / meaning | Agreed by |
 |---|---|---|---|---|---|

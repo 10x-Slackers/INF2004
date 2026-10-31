@@ -16,20 +16,21 @@
 #define DRV_MOTION_INTR          (IO_BANK0_BASE + 0xf0u)
 #define DRV_MOTION_INTE          (IO_BANK0_BASE + 0x100u)
 #define DRV_MOTION_INTS          (IO_BANK0_BASE + 0x120u)
-#define DRV_MOTION_SET_ALIAS     0x2000u
 #define DRV_MOTION_EDGE_BOTH     0xcu /* Falling and rising edge bits. */
 #define DRV_MOTION_EDGE_BITS     0xccccccccu
 #define DRV_MOTION_LEFT_A        16u
 #define DRV_MOTION_LEFT_B        17u
 #define DRV_MOTION_RIGHT_A       2u
 #define DRV_MOTION_RIGHT_B       3u
-#define DRV_MOTION_ENCODER_PINS  0x0003000cu
 #define DRV_MOTION_MOTOR_FIRST   8u
 #define DRV_MOTION_MOTOR_LAST    11u
 #define DRV_MOTION_PWM_DIV       16u   /* 8.4 fixed point, divide by 1. */
 #define DRV_MOTION_PWM_TOP       6249u /* 125 MHz / 6250 = 20 kHz. */
-#define DRV_MOTION_DUTY_MAX      1000  /* Permille. */
 #define DRV_MOTION_SKIP          2     /* Decode table: both phases changed. */
+
+#define DRV_MOTION_ENCODER_PINS                                                \
+    ((1u << DRV_MOTION_LEFT_A) | (1u << DRV_MOTION_LEFT_B) |                   \
+     (1u << DRV_MOTION_RIGHT_A) | (1u << DRV_MOTION_RIGHT_B))
 
 /* Wiring polarity measured on the robot (S2-U11, S2-U24). */
 #define DRV_MOTION_LEFT_MOTOR_SIGN    (-1)
@@ -101,8 +102,6 @@ bool drv_motion_init(void)
     out_w(PWM_CH5_BASE + PWM_CHx_DIV, DRV_MOTION_PWM_DIV);
     out_w(PWM_CH4_BASE + PWM_CHx_TOP, DRV_MOTION_PWM_TOP);
     out_w(PWM_CH5_BASE + PWM_CHx_TOP, DRV_MOTION_PWM_TOP);
-    out_w(PWM_CH4_BASE + PWM_CHx_CC, 0u);
-    out_w(PWM_CH5_BASE + PWM_CHx_CC, 0u);
     for (pin = DRV_MOTION_MOTOR_FIRST; pin <= DRV_MOTION_MOTOR_LAST; pin++)
     {
         (void)pwm_set_pin(pin);
@@ -271,32 +270,20 @@ static void drv_motion_enable_edges(uint32_t pins)
             }
         }
         out_w(DRV_MOTION_INTR + (bank * 4u), mask);
-        out_w(DRV_MOTION_INTE + DRV_MOTION_SET_ALIAS + (bank * 4u), mask);
+        set_w(DRV_MOTION_INTE + (bank * 4u), mask);
     }
 }
 
 /*!
- * @brief Set one motor's PWM. Positive duty drives input A, zero brakes.
+ * @brief Set one motor's PWM, duty -1000..1000 permille. Positive duty
+ * drives input A, zero brakes.
  */
 static void drv_motion_output(uint32_t slice, int32_t duty)
 {
     uint32_t magnitude = 0u;
     uint32_t level = 0u;
 
-    if (duty > DRV_MOTION_DUTY_MAX)
-    {
-        duty = DRV_MOTION_DUTY_MAX;
-    }
-    else if (duty < -DRV_MOTION_DUTY_MAX)
-    {
-        duty = -DRV_MOTION_DUTY_MAX;
-    }
-    else
-    {
-        /* Already in range. */
-    }
-
-    /* Duty is now within -1000..1000, so its magnitude fits uint32_t. */
+    /* Duty is within -1000..1000, so its magnitude fits uint32_t. */
     magnitude = (uint32_t)((duty < 0) ? -duty : duty);
     level = (magnitude * (DRV_MOTION_PWM_TOP + 1u)) / 1000u;
 
@@ -320,12 +307,15 @@ static void drv_motion_gpio_isr(UINT intno)
     for (bank = 0u; bank < DRV_MOTION_GPIO_BANKS; bank++)
     {
         edges = in_w(DRV_MOTION_INTS + (bank * 4u)) & DRV_MOTION_EDGE_BITS;
-        out_w(DRV_MOTION_INTR + (bank * 4u), edges);
-        for (pin = 0u; pin < DRV_MOTION_PINS_PER_BANK; pin++)
+        if (0u != edges) /* Usually only one bank has edges. */
         {
-            if (0u != (edges & (DRV_MOTION_EDGE_BOTH << (pin * 4u))))
+            out_w(DRV_MOTION_INTR + (bank * 4u), edges);
+            for (pin = 0u; pin < DRV_MOTION_PINS_PER_BANK; pin++)
             {
-                pins |= 1u << ((bank * DRV_MOTION_PINS_PER_BANK) + pin);
+                if (0u != (edges & (DRV_MOTION_EDGE_BOTH << (pin * 4u))))
+                {
+                    pins |= 1u << ((bank * DRV_MOTION_PINS_PER_BANK) + pin);
+                }
             }
         }
     }

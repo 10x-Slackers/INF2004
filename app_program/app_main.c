@@ -89,15 +89,6 @@ EXPORT INT usermain(void)
     {
     }
 
-#if APP_S2_ONLY
-    /* Bench build (make S2_ONLY=1): only subsystem 2, motion control. */
-    CHECK(subsystem2_init(), "subsystem2_init");
-    CHECK(subsystem2_start(), "subsystem2_start");
-    tm_printf((UB *)"subsystem 2 only (S2_ONLY=1)\n\n");
-#if APP_TEST
-    subsystem2_test();
-#endif
-#else
     /* Phase 1: every subsystem creates its kernel objects */
     CHECK(subsystem1_init(), "subsystem1_init");
     CHECK(subsystem2_init(), "subsystem2_init");
@@ -126,7 +117,6 @@ EXPORT INT usermain(void)
     subsystem5_test();
     tm_printf((UB *)"[TEST] === test run end ===\n");
 #endif
-#endif /* APP_S2_ONLY */
 
     /* Sleep forever.  Returning from usermain() would shut down. */
     tk_slp_tsk(TMO_FEVR);

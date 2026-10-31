@@ -1,4 +1,4 @@
-Debug
+﻿Debug
 Release
 
 # Build artifacts
@@ -27,45 +27,3 @@ config/wifi_secrets.h
 
 # Pico SDK (cloned by the Dev Container)
 .pico-sdk/
-
-# Native firmware and host test outputs.
-/build/
-config/local.mk
-*.pyc
-__pycache__/
-.venv/
-venv/
-.vscode/*.local.*
-*.tmp
-*.bak
-build_make/*backup*/
-
-# Local development environments and old build backups.
-.env
-.vscode/.browse*
-/build_backup*/
-/build_make_backup*/
-
-# Local secrets; sanitized examples remain shareable.
-.env.*
-!.env.example
-!.env.template
-
-# Editor state and temporary files (shared .vscode configuration stays tracked).
-.idea/
-*.code-workspace
-*.swp
-*.swo
-*~
-.vscode/ipch/
-.vscode/*.db
-.vscode/*.log
-
-# Local caches, OS sidecars and scratch logs; testing evidence stays visible.
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-._*
-/*.log
-/logs/
-/tmp/

@@ -3,12 +3,12 @@
 ################################################################################
 
 OBJS += \
-./mtkernel_3/lib/libtm/sysdepend/no_device/tm_com.o
+./mtkernel_3/lib/libtm/sysdepend/no_device/tm_com.o 
 
 C_DEPS += \
-./mtkernel_3/lib/libtm/sysdepend/no_device/tm_com.d
+./mtkernel_3/lib/libtm/sysdepend/no_device/tm_com.d 
 
-mtkernel_3/lib/libtm/sysdepend/no_device/%.o: $(ROOT)/lib/libtm/sysdepend/no_device/%.c
+mtkernel_3/lib/libtm/sysdepend/no_device/%.o: ../lib/libtm/sysdepend/no_device/%.c
 	@echo 'Building file: $<'
 	$(GCC) $(CFLAGS) -D$(TARGET) $(INCPATH) -MF"$(@:%.o=%.d)" -MT"$(@)" -c -o "$@" "$<"
 	@echo 'Finished building: $<'

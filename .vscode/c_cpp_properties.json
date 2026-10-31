@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "MicroT RP2040",
-      "compilerPath": "arm-none-eabi-gcc",
+      "compilerPath": "/usr/bin/arm-none-eabi-gcc",
       "intelliSenseMode": "gcc-arm",
-      "cStandard": "c99",
+      "cStandard": "gnu11",
       "includePath": [
         "${workspaceFolder}/include",
         "${workspaceFolder}/config",

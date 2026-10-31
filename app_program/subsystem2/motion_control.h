@@ -14,8 +14,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define MOTION_CONTROL_PERIOD_US 10000u
-
 /* status.state */
 #define MOTION_CONTROL_IDLE     0u /* Stopped, or a drive target expired. */
 #define MOTION_CONTROL_RUNNING  1u
@@ -40,7 +38,6 @@
 #define MOTION_CONTROL_MAX_ANGLE_DEG   360u
 #define MOTION_CONTROL_MAX_SPEED_MM_S  1000
 
-#define MOTION_CONTROL_SPEED_BIAS   1024 /* Stored speed = mm/s + bias. */
 #define MOTION_CONTROL_PACKET_BYTES 12u
 
 /* Motion status. Forward is positive for every field. */
@@ -52,8 +49,8 @@ typedef struct
     unsigned int faults : 3;
     unsigned int left_count : 16; /* Encoder edges, wraps. */
     unsigned int right_count : 16;
-    unsigned int left_speed : 11; /* mm/s + MOTION_CONTROL_SPEED_BIAS. */
-    unsigned int right_speed : 11;
+    signed int left_speed : 11; /* mm/s. */
+    signed int right_speed : 11;
     unsigned int heading_deg : 9; /* 0..359, anticlockwise from power-up. */
 } motion_control_status_t;
 
@@ -65,10 +62,7 @@ bool motion_control_turn_right(uint32_t angle_deg);
 bool motion_control_drive(int32_t left_mm_s, int32_t right_mm_s);
 void motion_control_stop(void);
 bool motion_control_set_speed(uint32_t speed_mm_s);
-bool motion_control_set_track(uint32_t track_um);
-bool motion_control_set_pid(uint32_t kp, uint32_t ki, uint32_t kd);
 void motion_control_get_status(motion_control_status_t * p_status);
-int32_t motion_control_decode_speed(uint32_t encoded);
 void motion_control_pack(const motion_control_status_t * p_status,
                          uint8_t * p_packet);
 void motion_control_tick(uint32_t now_us);

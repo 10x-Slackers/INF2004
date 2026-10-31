@@ -1,14 +1,13 @@
 /** @file subsystem2.c
  *
- * @brief Subsystem 2 (motion control) start-up, the 10 ms motion task and
- * the console task. Both tasks run on core 0.
+ * @brief Subsystem 2 (motion control) start-up and the 10 ms motion task,
+ * on core 0.
  */
 
 #include "subsystem2.h"
 #include "drv_motion.h"
-#include "console_motion.h"
 
-#define SUBSYSTEM2_PERIOD_MS (MOTION_CONTROL_PERIOD_US / 1000u)
+#define SUBSYSTEM2_PERIOD_MS 10u
 #define SUBSYSTEM2_TICK_MAX  0xffffu
 
 static ID g_motion_task;
@@ -35,43 +34,20 @@ EXPORT ER subsystem2_init(void)
 }
 
 /*!
- * @brief Start the motion and console tasks and the 10 ms cyclic handler.
+ * @brief Start the motion task and the 10 ms cyclic handler.
  */
 EXPORT ER subsystem2_start(void)
 {
     T_CCYC cyclic = {0};
-    ID console_task = 0;
-    ID cyclic_id = 0;
-    ER result = E_OK;
 
     /* FP is the kernel's generic task and handler pointer type. */
     g_motion_task = app_start_task((FP)subsystem2_motion_task, S2_PRI_MOTION,
                                    TP_PRC1, "s2_motion");
-    console_task = app_start_task((FP)console_motion_task, S2_PRI_CONSOLE,
-                                  TP_PRC1, "s2_console");
     cyclic.cycatr = TA_HLNG | TA_STA;
     cyclic.cychdr = (FP)subsystem2_wake; /* Kernel handler type, as above. */
     cyclic.cyctim = SUBSYSTEM2_PERIOD_MS;
     cyclic.cycphs = SUBSYSTEM2_PERIOD_MS;
-    cyclic_id = tk_cre_cyc(&cyclic);
-
-    if (g_motion_task < E_OK)
-    {
-        result = g_motion_task;
-    }
-    else if (console_task < E_OK)
-    {
-        result = console_task;
-    }
-    else if (cyclic_id < E_OK)
-    {
-        result = cyclic_id;
-    }
-    else
-    {
-        /* All created. */
-    }
-    return result;
+    return (g_motion_task < E_OK) ? g_motion_task : tk_cre_cyc(&cyclic);
 }
 
 /*!

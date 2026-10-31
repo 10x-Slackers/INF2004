@@ -6,7 +6,7 @@
  * with a lag, the right motor is 15% weaker, and wheels coast briefly after
  * braking. Geometry matches the firmware (65 mm wheels, 2537 edges/rev,
  * 113.5 mm track), so heading and distance are checked against the model's
- * true motion. Build and run with "make test".
+ * true motion. Build and run as in S2-U21 of testing/subsystem2/TEST_LOG.md.
  */
 
 #include "../../../app_program/subsystem2/drv_motion.h"
@@ -50,11 +50,6 @@ static void test_check(bool b_pass, const char * p_text)
 
 /* ---- Fake driver ------------------------------------------------------- */
 
-bool drv_motion_init(void)
-{
-    return true;
-}
-
 void drv_motion_write(int32_t left_duty, int32_t right_duty)
 {
     g_wheel[0].duty = left_duty;
@@ -81,14 +76,6 @@ void drv_motion_lock(void)
 
 void drv_motion_unlock(void)
 {
-}
-
-bool drv_motion_gpio_register(uint32_t pins,
-                              drv_motion_gpio_callback_t p_callback)
-{
-    (void)pins;
-    (void)p_callback;
-    return false;
 }
 
 /* ---- Robot model ------------------------------------------------------- */
@@ -231,12 +218,12 @@ static void test_drive_and_stop(void)
     {
         test_physics();
         motion_control_tick(g_now_us);
-        (void)motion_control_drive(200,
-                                   100); /* Repeated, as a follower would. */
+        /* Repeated, as a follower would. */
+        (void)motion_control_drive(200, 100);
     }
     motion_control_get_status(&status);
-    left = motion_control_decode_speed(status.left_speed);
-    right = motion_control_decode_speed(status.right_speed);
+    left = status.left_speed;
+    right = status.right_speed;
     snprintf(text, sizeof(text), "drive 200,100 holds %d,%d mm/s after 1 s",
              left, right);
     test_check((MOTION_CONTROL_RUNNING == status.state) &&
@@ -257,15 +244,15 @@ static void test_drive_and_stop(void)
         motion_control_tick(g_now_us);
     }
     motion_control_get_status(&status);
-    left = (int32_t)status.state;
+    test_check(MOTION_CONTROL_RUNNING == status.state,
+               "drive still running after 190 ms");
     for (tick = 0u; tick < 2u; tick++)
     {
         test_physics();
         motion_control_tick(g_now_us);
     }
     motion_control_get_status(&status);
-    test_check((MOTION_CONTROL_RUNNING == (uint32_t)left) &&
-                   (MOTION_CONTROL_IDLE == status.state) &&
+    test_check((MOTION_CONTROL_IDLE == status.state) &&
                    (0 == g_wheel[0].duty) && (0 == g_wheel[1].duty),
                "drive not renewed for 200 ms expires and brakes");
 }
@@ -315,10 +302,7 @@ static void test_limits(void)
             !motion_control_turn_left(0u) &&
             !motion_control_turn_right(MOTION_CONTROL_MAX_ANGLE_DEG + 1u) &&
             !motion_control_drive(1001, 0) && !motion_control_drive(0, -1001) &&
-            !motion_control_set_speed(9u) && !motion_control_set_speed(1001u) &&
-            !motion_control_set_track(49999u) &&
-            !motion_control_set_pid(0u, 0u, 0u) &&
-            !motion_control_set_pid(1u, 4096u, 0u),
+            !motion_control_set_speed(9u) && !motion_control_set_speed(1001u),
         "out-of-range commands and settings are rejected");
     motion_control_get_status(&status);
     test_check(MOTION_CONTROL_IDLE == status.state, "rejection leaves it idle");
@@ -330,14 +314,6 @@ static void test_limits(void)
     test_check((MOTION_CONTROL_COMPLETE == status.state) &&
                    (fabs(test_true_distance() - 300.0) <= 3.0),
                "16-bit encoder counter wrap is handled");
-
-    /* Track calibration scales turns. */
-    test_reset(0u);
-    (void)motion_control_set_track(102150u); /* 90% of 113.5 mm. */
-    (void)motion_control_turn_left(90u);
-    (void)test_run(&status);
-    test_check(fabs(test_true_heading() - 81.0) <= 2.0,
-               "track calibration scales the turn (90% track: 81 deg)");
 }
 
 static void test_pack(void)
@@ -353,8 +329,8 @@ static void test_pack(void)
     status.command = 3u;
     status.faults = 5u;
     status.heading_deg = 345u;
-    status.left_speed = 100u + MOTION_CONTROL_SPEED_BIAS;
-    status.right_speed = (uint32_t)(MOTION_CONTROL_SPEED_BIAS - 500);
+    status.left_speed = 100;
+    status.right_speed = -500;
     status.left_count = 0x1234u;
     status.right_count = 0xabcdu;
     status.distance_mm = 0xef0123u;
@@ -368,7 +344,6 @@ static void test_pack(void)
 
 static void test_timing(void)
 {
-    motion_control_status_t status = {0};
     clock_t start = 0;
     uint32_t ticks = 0u;
     double us = 0.0;
@@ -382,7 +357,6 @@ static void test_timing(void)
         motion_control_tick(g_now_us);
     }
     us = ((double)(clock() - start) / CLOCKS_PER_SEC) * 1e6 / ticks;
-    motion_control_get_status(&status);
     printf("INFO  host cost of one control step: %.3f us\n", us);
 }
 

@@ -25,15 +25,12 @@ These decisions were frozen at the review. Changing one means updating this docu
 
 ## Tasks
 
-`P1` is the highest priority. µT-Kernel uses the same convention (a lower number runs first), but these are an order, not `itskpri` values: priorities 1 to 4 belong to the kernel's own tasks (USB console 3, Wi-Fi 4), and application priorities are assigned in `TEAM.md` section 4.
-Safety uses 5, motion 6, barcode 7, line 8, controller 9, avoidance 10,
-scan 11, IMU 18, diagnostics 22 and application telemetry 23. Kernel USB
-and Wi-Fi service tasks retain 3 and 4.
+`P1` is the highest priority. µT-Kernel uses the same convention (a lower number runs first), but these are an order, not `itskpri` values: priorities 1 to 4 belong to the kernel's own tasks (USB console 3, Wi-Fi 4), and each subsystem's actual priorities come from its band in `TEAM.md` section 4.
 
 | Pri | Task                            | Purpose                                                                              | Trigger                        | Buddy |
 | --- | ------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------ | ----- |
 | P1  | Safety Monitor                  | Stop on collision risk, stale control data or critical fault. Holds the latched stop | 5 ms + events                  | All   |
-| P2  | Wheel Motion Control            | Sole motor writer. Per-wheel PID, odometry, encoder-based turns                      | 10 ms; stop brakes at once                       | 2     |
+| P2  | Wheel Motion Control            | Sole motor writer. Per-wheel PID, odometry, encoder-based turns                      | 10 ms + stop wake              | 2     |
 | P3  | Barcode Decoder                 | Decode the auxiliary IR samples and validate LEFT / RIGHT / STRAIGHT / UTURN         | 10 ms, one DMA block           | 3     |
 | P4  | Line Following                  | Line error and junction detection from two digital IR sensors                        | 10 ms                          | 3     |
 | P5  | Vehicle Controller              | Mission state machine and arbiter of normal motion                                   | Events + 10 ms                 | All   |
@@ -133,14 +130,9 @@ Notes:
 - I3 is a one-slot mailbox: a new target replaces the old one, and the Vehicle Controller must renew it before it expires, otherwise Wheel Motion Control brakes.
 - Safety Monitor reads forward range from I8 directly; sideways readings do not refresh forward clearance. An IMU fault on I9 also asserts the I11 stop.
 - A validated `STOP` from the supervisor also raises a safety request on I11, so it latches like any other stop.
-- Motion invalidates its single active command on I11 under the same lock as
-  output updates. It has no pending command queue; a future queued interface
-  must carry a stop generation and discard old requests (FR11).
+- The stop on I11 carries a generation number. Motion requests issued before the stop are stale and must be discarded (FR11).
 - The supervisor may only start, stop and reset. It never steers or sets speed (FR1).
-- Each interface needs a fixed layout and synchronization agreed between the
-  owners. Motion uses locked command APIs and coherent per-consumer snapshots
-  for I3/I4/I5/I11; telemetry uses explicit packing. See
-  [Motion control](MOTION_CONTROL.md) for units, freshness and stop semantics.
+- Each interface needs a fixed message layout and one kernel object to carry it (message buffer, event flag or mailbox), agreed between the two owners before integrating.
 
 ## System statechart
 

@@ -9,6 +9,7 @@
 #include "ultrasonic_scan.h"
 #include "subsystem5.h"
 #include "../subsystem2/motion_control.h"
+#include "../subsystem3/line_following.h"
 
 #define OBSTACLE_AVOIDANCE_POLL_MS  20    /* Two kernel ticks. */
 #define OBSTACLE_AVOIDANCE_STILL_MS 1000u /* Braking to standstill. */
@@ -362,7 +363,9 @@ static void obstacle_avoidance_avoid(void)
     (void)tk_loc_mtx(g_mutex, TMO_FEVR);
     if (OBSTACLE_AVOIDANCE_PROFILE == g_status.state)
     {
-        motion_control_stop();
+        /* Brakes, and the line follower cannot drive again before the
+         * controller restarts it after the bypass. */
+        line_following_stop();
     }
     (void)tk_unl_mtx(g_mutex);
     if (!obstacle_avoidance_active())

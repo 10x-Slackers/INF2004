@@ -30,7 +30,7 @@ motion_control_drive(left, right);          /* every 10 ms, while... */
 obstacle_avoidance_get_status(&s);          /* ...s.state is MONITOR */
 ```
 
-While avoidance is profiling or bypassing it drives the car itself through the motion API (I3), so the controller must stop sending motion commands until the state is back to `MONITOR` (the car is then stopped on the original line and heading) or `STOPPED`.
+While avoidance is profiling or bypassing it drives the car itself through the motion API (I3). On seeing the obstacle it calls `line_following_stop()` (I1), so the line follower stops steering, and the controller must send no motion commands until the state is back to `MONITOR` (the car is then stopped on the original line and heading) or `STOPPED`.
 
 ### Avoidance status (`obstacle_avoidance_status_t`, 8 bytes)
 
@@ -65,7 +65,7 @@ Servo angles: 80° points right, 90° ahead, 100° left. The sensor's mount stop
 - **Fine scan (servo):** rays every 5° from 80 to 100°, each the median of three readings after a 200 ms servo settle. The obstacle is the run of rays within 350 mm around the closest one. The servo returns ahead and takes a forward reading at the end of every scan.
 - **Side:** the more open side, if it has at least 400 mm; left on a tie. With neither, a safe stop (no reverse: nothing checks behind the car).
 - **Bypass:** seven steps through the motion API, each waited on until `COMPLETE`: turn 90° towards the side, forward 200 mm (300 mm if the obstacle fills the whole fine sweep, so it may be wider than the sweep can see), turn back, forward 700 mm (the 350 mm gap, the obstacle, the car and the beam's spread), turn back, forward the same side-step, turn 90° to the original heading. During each forward step the range ahead is read continuously, and anything within 350 mm is a safe stop, so a side that looked open but is not ends in a stop instead of a collision. The obstacle being passed stays further than that while it is inside the beam. The car ends stopped on the original line, past the obstacle, and avoidance watches again. Finding the line with the IR sensors is up to the controller.
-- **Monitoring:** while started, forward readings follow each other (about one every 60 ms). The first within 350 mm makes avoidance brake, wait for both wheels to read 0 mm/s, look each side and profile. If the fine scan finds nothing within 350 mm, it goes back to watching with the car stopped.
+- **Monitoring:** while started, forward readings follow each other (about one every 60 ms). The first within 350 mm makes avoidance stop line following and brake, wait for both wheels to read 0 mm/s, look each side and profile. If the fine scan finds nothing within 350 mm, it goes back to watching with the car stopped.
 
 ## Calibration
 

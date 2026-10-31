@@ -65,7 +65,7 @@ fixed.
 | GP17 | Motion (Buddy 2) | left encoder phase B (Grove 4) |
 | GP18 | | |
 | GP19 | | |
-| GP20 | Ultrasonic (Buddy 5) | Robo Pico button: steps the avoidance bench sequence (`TEST=1` only) |
+| GP20 | Shared (Vehicle Controller); Ultrasonic (Buddy 5) in `TEST=1` | Robo Pico button: mission Start/Stop/reset in normal builds (`docs/VEHICLE_CONTROLLER.md`); steps the avoidance bench sequence in `TEST=1` builds |
 | GP21 | Motion (Buddy 2) | Robo Pico button: a tap under 0.5 s starts the motion bench sequence; a hold of 1 s or more starts the line following bench run (Buddy 3); a press in between starts neither (`TEST=1` only) |
 | GP22 | IMU (Buddy 4) | Robo Pico buzzer: beeps when calibration is done and on a fault (PWM slice 3 A) |
 | GP26 | Line following (Buddy 3) | barcode IR module AO, ADC0 (Grove 6) |
@@ -149,7 +149,7 @@ agreement. Write down every task you create.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
-| Shared | 5, 10 | Safety Monitor (P1) – 5; Vehicle Controller (P5) – 10 |
+| Shared | 5, 10 | Safety Monitor (P1) – 5; `vc` Vehicle Controller (P5) – 10 – any (normal builds only) |
 | 2 | 6–7 | `s2_motion` (P2) – 6 – core 0; `s2_bench` – 7 – core 0 (`TEST=1` only) |
 | 3 | 8–9 | `s3_barcode` (P3) – 8 – any; `s3_line` (P4) – 9 – any; `s3_bench` – 9 – any (`TEST=1` only) |
 | 5 | 11–12 | `s5_avoid` (P6) – 11 – any; `s5_scan` (P7) – 12 – any; `s5_bench` – 12 – any (`TEST=1` only) |
@@ -173,6 +173,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | I7/I8 | Any task ↔ Ultrasonic scan | function calls; result copy under the scan mutex | `ultrasonic_scan_request()`, `ultrasonic_scan_get()` | forward range and its time, obstacle profile; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | I1 | Line Following ↔ Controller, Avoidance | function calls; line state copy under the line mutex | `line_following_start()`, `_stop()`, `_get()` | follow at 1–500 mm/s until stopped; sensor bits, last side seen, junction flag, following, sample count and time; `line_following.h` | Buddy 3 contract |
 | I2 | Barcode Decoder → Controller | status copy under the barcode mutex | `barcode_decoder_get()` | last validated command (left, right, straight, U-turn for A to D), validated and rejected counts, odometer at the barcode; `barcode_decoder.h` | Buddy 3 contract |
+| I9 | IMU → Controller | record copies under `g_s4_mutex` | `s4_get_tilt()`, `_get_fault()`, `_get_hump()` | calibration done, impact and tilt faults (latched), highest hump of the run | Buddy 4 contract |
 | Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
 Each interface is tested by at least one integration test

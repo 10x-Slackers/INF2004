@@ -1,6 +1,6 @@
 # Telemetry and Commands (Subsystem 1)
 
-The MQTT topics and binary payloads between the car and the supervisor (FR9, interface I12). They follow [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md): every field uses only the bits its range needs, packed with explicit shifts, never C bit-fields. They replace the Week 6 review's JSON messages, and drop its session, challenge and acknowledgement fields for simplicity.
+The MQTT topics and binary payloads between the car and the supervisor (FR9, interface I12). They follow [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md): every field uses only the bits its range needs, packed with explicit shifts, never C bit-fields. They replace the Week 6 review's JSON messages, and drop its version, robot, sequence, session, challenge and acknowledgement fields for simplicity. Without a sequence number the supervisor cannot spot a lost `telemetry` message; MQTT over TCP keeps them in order, and the `heartbeat` count shows gaps in the link.
 
 ## Topics
 
@@ -45,7 +45,7 @@ Each payload is one bit stream, most significant bit first, padded with zero bit
 
 ### Fault byte
 
-The one shared fault bitmask on the network. Bits 0–2 are motion's `faults` as they are, and bits 5–6 avoidance's sensor and blocked bits shifted up by 5.
+The one shared fault bitmask on the network. Bits 0–2 are motion's `faults` as they are, and bits 5–6 are avoidance's sensor and blocked bits: `(faults & 3u) << 5`.
 
 | Bit | Fault                                           | Source                                      |
 | --- | ----------------------------------------------- | ------------------------------------------- |
@@ -74,7 +74,7 @@ Avoidance's motion fault is left out: a failed bypass move is a stall, which bit
 
 ### `cmd`: 8 bits
 
-Bits 0–1 hold the command: 1 START, 2 STOP, 3 RESET. Any other payload is ignored. Bits 2–7 are zero. START and RESET do what GP20 does ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#gp20)): START from READY, RESET from SAFE_STOP, and are ignored in any other state. STOP is accepted in every state: the controller calls `safety_monitor_stop()`, so the car brakes and the controller goes to SAFE_STOP. No command steers or sets a speed.
+Bits 0–1 hold the command: 1 START, 2 STOP, 3 RESET. Any other payload is ignored. Bits 2–7 are zero. START and RESET do what GP20 does ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#gp20)): START from READY, RESET from SAFE_STOP, and are ignored in any other state. STOP is accepted in every state except INIT: the controller calls `safety_monitor_stop()`, so the car brakes and the controller goes to SAFE_STOP. In INIT nothing moves yet, and a stop there would let RESET skip the IMU calibration. No command steers or sets a speed.
 
 ## Inside the car
 
@@ -87,7 +87,7 @@ Only the kernel's Wi-Fi service task may call MQTT (`TEAM.md` section 3), so the
 
 The Telemetry task (Subsystem 1, priority band 20–21 in `TEAM.md` section 4) sends with `TMO_POL` and drops a message when the buffer is full, so a slow network never blocks it. The service reads the buffer with `TMO_POL` too. Event flag set and clear calls are atomic, so the command bits need no lock.
 
-Every 10 ms the Telemetry task reads `cyw43_utk_get_status()` and sets its Wi-Fi lost latch, a `bool` only it touches, whenever the link is down. The latch goes out as fault bit 7 in the next `telemetry` queued after the link returns, and is then cleared.
+Every 10 ms the Telemetry task reads `cyw43_utk_get_status()` and sets its Wi-Fi lost latch, a `bool` only it touches, whenever the link is down. The latch goes out as fault bit 7 in each `telemetry` after the link returns, and is cleared only once one of them is queued: a send dropped by a full buffer keeps it set.
 
 ## Size
 

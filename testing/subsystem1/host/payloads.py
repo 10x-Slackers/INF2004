@@ -3,7 +3,9 @@
 Each payload is a bit stream, most significant bit first, like
 motion_control_pack(). Signed fields are sent with an offset. The script
 round-trips every field at its limits, then compares each payload with the
-same data as JSON in the Week 6 design (common fields v, robot_id, seq).
+same data as JSON in the Week 6 design. The JSON carries the Week 6 common
+fields (v, robot_id, seq) that the binary drops, so part of the saving is
+those fields, not the packing.
 Run as in S1-U01 of testing/subsystem1/TEST_LOG.md.
 """
 
@@ -50,6 +52,13 @@ SAMPLES = {
     "heartbeat": dict(count=1234),
     "cmd": dict(cmd=1, pad=0),
 }
+
+# motion_control_pack() output for these values, from S2-U21's
+# testing/subsystem2/host/test_motion.c, so both sides use one layout.
+C_MOTION = (dict(state=2, command=3, faults=5, heading_deg=345, left_speed=100,
+                 right_speed=-500, left_count=0x1234, right_count=0xABCD,
+                 distance_mm=0xEF0123, pad=0),
+            bytes.fromhex("9dacc644182469579bde0246"))
 
 # The same data as Week 6 JSON: names spelled out, enums as words.
 STATES = ["INIT", "READY", "FOLLOW", "AVOID", "TURN", "SAFE_STOP"]
@@ -104,6 +113,10 @@ def main():
                   f"({'min' if pick == 0 else 'max'})")
 
     per_s = [0, 0]
+    ok = pack("motion", C_MOTION[0]) == C_MOTION[1]
+    failures += not ok
+    print(f"{'PASS' if ok else 'FAIL'}  motion matches motion_control_pack()")
+
     print(f"\n{'Topic':<10} {'Bits':>4} {'Binary B':>9} {'JSON B':>7} "
           f"{'Saved':>6} {'Hz':>3} {'JSON B/s':>9} {'Binary B/s':>11}")
     for name, values in SAMPLES.items():

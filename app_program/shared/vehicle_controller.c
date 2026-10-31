@@ -8,6 +8,7 @@
  * too, so every stop is held the same way.
  *
  * Every variable here belongs to the controller task, so none is locked.
+ * Other tasks only read the state, with vehicle_controller_state().
  */
 
 #include "vehicle_controller.h"

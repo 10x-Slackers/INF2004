@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-26",
+  "revision_note": "Uncommitted working-tree verification; not a formal post-commit target result",
+  "base_commit": "e6efda951f11eb678a7cacc70d01313f098c25b4",
+  "source_sha256": {
+    "app_program/subsystem5/drv_hcsr04.c": "f4063cb44aff8a1e37ac6571ff31c48d73121d44f4449e2d0c35cf864a0c141e",
+    "app_program/subsystem5/drv_hcsr04.h": "cc2d83bd6d60b01df98c646b75756600135a84c0b289748cd358d31d718fa76d",
+    "app_program/subsystem5/drv_sg90.c": "9681b4567f7bffed7d50aa325588ad6c73a93c4af2414b95c64eb9a700930337",
+    "app_program/subsystem5/drv_sg90.h": "2bf0cf40aaa07f55e8d716cd08425f5f3f2bd6bb78ff75b28e47abc94e83bbc6",
+    "app_program/subsystem5/s5_limits.h": "c7f8013985c055b1dff808147fa692b0a15f9e97c2e179bae3986eef6234275c",
+    "app_program/subsystem5/s5_logic.c": "04ae2aed17316b5388051a3c8d522449a55fa4ec3b4ae16f953176758d877f62",
+    "app_program/subsystem5/subsystem5.c": "a8941a97eec62dd9f73edca85637b09273956a041e088e133d2610a7da16b4ed",
+    "app_program/subsystem5/subsystem5.h": "5485e18f683039c8af7d89b3357fb25ca0cef2798c294ec09c5546f622cefbb2",
+    "app_program/subsystem5/subsystem5_test.c": "4f422026943db87b9a85cab86829eab3394773be4ea674c24ad668518002655c",
+    "testing/subsystem5/host/s5_host.h": "58a3d74ab3eefd20fff260d113d3aa8f4710cc2b9bf16b6091a761fa45501a67",
+    "testing/subsystem5/host/tm/tmonitor.h": "39010cad43a6c559c109c744ea76170dd4178077cce14ae86c778938e78eab81",
+    "testing/subsystem5/host/main.c": "6046d4364f665636b3b8982d029226fc390b6aa3761000518b537c8a1dd75ffc",
+    "testing/subsystem5/host/run.sh": "bd1103bde856107da0e9d2657d43c6a81be098c19e7f4ba391ef8565819cb64c"
+  },
+  "commands": [
+    "gcc -std=c11 -Wall -Wextra -Werror -DS5_HOST_TEST -DAPP_TEST=1 (see host/run.sh)",
+    "make -C build_make -j$(nproc)",
+    "make -C build_make TEST=1 -j$(nproc)",
+    "clang-format 23.1.3 --dry-run --Werror app_program/subsystem5/*.[ch]",
+    "git diff --check"
+  ],
+  "host_results": {
+    "passed": 28,
+    "failed": 0
+  },
+  "physical_tests": "Not performed",
+  "sizes_bytes": {
+    "sample": 8,
+    "unpacked_reference_sample": 16,
+    "profile": 16,
+    "scan": 100,
+    "control": 32,
+    "health": 36,
+    "internal_message": 104,
+    "request": 4,
+    "queue_backing_storage": 440
+  },
+  "firmware_builds": "Both compile/link and produce UF2; no warning/error lines in final logs",
+  "sdk_path": "/home/caleb/pico-sdk",
+  "tools": {
+    "arm_gcc": "13.2.1 20231009 (15:13.2.rel1-2)",
+    "host_gcc": "Ubuntu 13.3.0-6ubuntu2~24.04.1",
+    "pico_sdk": "2.3.0",
+    "clang_format": "23.1.3"
+  },
+  "firmware_size": {
+    "normal": {
+      "text": 286308,
+      "data": 88,
+      "bss": 25008
+    },
+    "test": {
+      "text": 291524,
+      "data": 88,
+      "bss": 25008
+    }
+  },
+  "arm_nm_confirmed_bytes": {
+    "inbox_storage": 432,
+    "request_storage": 8,
+    "snapshot": 36,
+    "previous_us": 4
+  }
+}

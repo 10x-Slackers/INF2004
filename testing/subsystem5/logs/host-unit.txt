@@ -1,0 +1,30 @@
+[TEST] S5-U01 PASS  packed layout sizes
+[S5 sizes] sample=8 reference=16 profile=16 scan=100 control=32 health=36
+[TEST] S5-U02 PASS  5800 us converts to 1000 mm
+[TEST] S5-U03 PASS  no echo is invalid
+[TEST] S5-U04 PASS  closest point
+[TEST] S5-U05 PASS  centred sector, width unknown
+[TEST] S5-U06 PASS  left-only clearance
+[TEST] S5-U07 PASS  right-only clearance
+[TEST] S5-U08 PASS  both blocked, no blind reverse
+[TEST] S5-U09 PASS  all invalid retries, never clear
+[TEST] S5-U10 PASS  age boundary and sideways rejection
+[TEST] S5-U11 PASS  two scan retries then latched stop
+[TEST] S5-U12 PASS  seven-bit fault mask
+[TEST] S5-U13 PASS  filter ignores invalid, conservative pair
+[TEST] S5-U14 PASS  timestamp wrap handled by subtraction
+[TEST] S5-U15 PASS  scan requires stop confirmation
+[TEST] S5-U16 PASS  confirmed stop starts coarse scan
+[TEST] S5-U17 PASS  cancel latches, outstanding result must drain
+[TEST] S5-U18 PASS  recovery bounded at two retries
+[TEST] S5-U19 PASS  deterministic tie and calibration gate
+[TEST] S5-U20 PASS  unknown side cannot make a safe profile
+[TEST] S5-U21 PASS  missing stop bounded
+[TEST] S5-U22 PASS  fine duplicate replaces coarse; oldest timestamp retained
+[TEST] S5-U23 PASS  stale profile stops
+[TEST] S5-U24 PASS  critical forward range stops
+[TEST] S5-U25 PASS  activation cannot unlatch
+[TEST] S5-U26 PASS  reset needs new activation and range
+[TEST] S5-U27 PASS  sensor useful range boundaries
+[TEST] S5-U28 PASS  all-invalid filter remains invalid
+[TEST] subsystem5 SUMMARY 28 passed, 0 failed

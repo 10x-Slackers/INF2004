@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-29",
+  "revision": "uncommitted working tree",
+  "physical_before_fix": "User-reported timeout, pending=1; exact flashed revision unknown",
+  "physical_after_fix": "Not tested",
+  "logic_tests": "29 PASS, 0 FAIL",
+  "driver_tests": "8 PASS, 0 FAIL; actual driver against simulated MMIO/time",
+  "builds": "normal, TEST=1 and TEST=1 WIFI=none PASS without warnings",
+  "format": "clang-format 23.1.3 dry-run passed",
+  "bench_image": "build_make/mtk3pico_smp1_usb_cdc_test.uf2",
+  "bench_image_sha256": "bd038ccd489c225452c2065c33f9b708c4f878564eb59a0741f17b36e6052015",
+  "source_sha256": {
+    "app_program/subsystem5/drv_hcsr04.c": "4bceda24f0e4de6041e69314c2abfbeac40cf2ef8690ca38e2bc9f2d14c42126",
+    "app_program/subsystem5/subsystem5.c": "e97520b84e323911d1ac35be98b6cc2c6fd34ded59a57959ffbc3115b8bc79c2",
+    "app_program/subsystem5/subsystem5_test.c": "570dda8b4fa0e5003e95468c2bdf21969508d702e436b811540653c9af2a72c1",
+    "testing/subsystem5/host/hcsr04/driver_test.c": "c86a53d837631924b314199f79641e70ee4c52ba10b3638950e47c004a84b73c",
+    "testing/subsystem5/host/hcsr04/run.sh": "7c1ba0346993b23cd5a98a4df5a740c1c3d5b4a0c231d62f01445bc5ad9ad279",
+    "testing/subsystem5/host/hcsr04/sys/sysdef.h": "fa34607315c25c5998595f9f59f3664865167a599a605db7b8db627d91551fc5",
+    "testing/subsystem5/host/hcsr04/tk/syslib.h": "8f72a7b4a39088cb2e3d6e90b0ca71975630ea6aa37677fcf6b486dcd13c9cf3"
+  },
+  "wifi_check": "Wi-Fi startup message absent from standalone bench ELF; timer diagnostic present"
+}

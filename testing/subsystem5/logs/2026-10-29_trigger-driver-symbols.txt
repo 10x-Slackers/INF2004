@@ -1,0 +1,7 @@
+         U gpio_get_val
+         U gpio_set_pin
+         U gpio_set_val
+         U memset
+         U s5_echo_sample
+         U s5_now_ms
+         U tk_dly_tsk

@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-29",
+  "revision": "uncommitted working tree",
+  "root_cause_source_evidence": "WaitUsec polls per-core SysTick; core 1 entry explicitly disables SysTick; scan task has any-core affinity.",
+  "fix": "Shared 1 MHz timer for >=10 us TRIG, with RTOS fallback that always lowers TRIG on failure. No task affinity, obstacle threshold, freshness limit or deadline change.",
+  "source_sha256": {
+    "app_program/subsystem5/drv_hcsr04.c": "b8e7f639f1bbb83a4ba5a746d13d8b9e13d82760d7e22d661af3d56f00c9f961",
+    "testing/subsystem5/host/hcsr04/driver_test.c": "edb96174e427d1328b906a252746ddc45e8d0a283130db5529b903d670241f06",
+    "lib/libtk/sysdepend/cpu/core/armv6m/wusec_armv6m.c": "741423857d1737bffb42ac93bddfba0bd432a7385837f735b8850b10b719a73c",
+    "kernel/sysdepend/cpu/rp2040/smp_rp2040.c": "63f799fc57b066cee3e11b679ab997cba25bb2314179064decd1fee1e5abe7a6"
+  },
+  "logic_checks": 29,
+  "driver_simulation_checks": 10,
+  "builds": "normal, TEST=1, TEST=1 WIFI=none PASS; no warnings/errors",
+  "bench_image": "build_make/mtk3pico_smp1_usb_cdc_test.uf2",
+  "bench_uf2_sha256": "e0b01126702cc34af1b4e8126015ea4eaa9d29869160120a8e3a72dfdd7e939a",
+  "binary_checks": "HC-SR04 object has no WaitUsec reference; standalone bench ELF has no Wi-Fi startup message. Other kernel drivers may still use WaitUsec.",
+  "physical_after_fix": "Not performed; user must reflash and rerun"
+}

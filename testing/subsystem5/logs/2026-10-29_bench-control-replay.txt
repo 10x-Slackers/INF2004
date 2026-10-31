@@ -1,0 +1,58 @@
+
+SIMULATED BENCH CONTROL REPLAY: A valid far target (NOT physical results)
+[S5-HW] === BUDDY 5 HARDWARE TEST ===
+[S5-HW] Real FORWARD scan requested.
+[S5-HW] FORWARD valid=1 distance_mm=500 servo_angle=90 state=MONITOR action=CONTINUE faults=0x00
+[S5-HW] No detailed scan requested by production logic.
+[S5-HW] PROFILE detected=0 valid=0 closest_mm=0 closest_angle=0
+[S5-HW] EDGES left=0 right=0 left_mm=0 left_valid=0 right_mm=0 right_valid=0
+[S5-HW] RESULT valid_samples=0 state=MONITOR action=CONTINUE faults=0x00 profile_faults=0x00 pending=0
+[S5-HW] === HARDWARE TEST COMPLETE ===
+
+SIMULATED BENCH CONTROL REPLAY: B valid box profile (NOT physical results)
+[S5-HW] === BUDDY 5 HARDWARE TEST ===
+[S5-HW] Real FORWARD scan requested.
+[S5-HW] FORWARD valid=1 distance_mm=250 servo_angle=90 state=WAIT_STOP action=STOP_AND_SCAN faults=0x08
+[S5-HW] BENCH-TEST ONLY: simulating MOTION_STOPPED; assembly is stationary on desk, Buddy 2 unavailable.
+[S5-HW] COARSE SCAN (retry=0).
+[S5-HW] FINE SCAN (retry=0).
+[S5-HW] Profile completed; bypass remains calibration-gated.
+[S5-HW] PROFILE detected=1 valid=1 closest_mm=250 closest_angle=75
+[S5-HW] EDGES left=105 right=75 left_mm=800 left_valid=1 right_mm=800 right_valid=1
+[S5-HW] RESULT valid_samples=11 state=STOPPED action=SAFE_STOP faults=0x18 profile_faults=0x00 pending=0
+[S5-HW] === HARDWARE TEST COMPLETE ===
+
+SIMULATED BENCH CONTROL REPLAY: C critical range (NOT physical results)
+[S5-HW] === BUDDY 5 HARDWARE TEST ===
+[S5-HW] Real FORWARD scan requested.
+[S5-HW] FORWARD valid=1 distance_mm=80 servo_angle=90 state=STOPPED action=SAFE_STOP faults=0x18
+[S5-HW] No detailed scan requested by production logic.
+[S5-HW] PROFILE detected=0 valid=0 closest_mm=0 closest_angle=0
+[S5-HW] EDGES left=0 right=0 left_mm=0 left_valid=0 right_mm=0 right_valid=0
+[S5-HW] RESULT valid_samples=0 state=STOPPED action=SAFE_STOP faults=0x18 profile_faults=0x00 pending=0
+[S5-HW] === HARDWARE TEST COMPLETE ===
+
+SIMULATED BENCH CONTROL REPLAY: D no Echo (NOT physical results)
+[S5-HW] === BUDDY 5 HARDWARE TEST ===
+[S5-HW] Real FORWARD scan requested.
+[S5-HW] FORWARD valid=0 distance_mm=0 servo_angle=90 state=WAIT_STOP action=STOP_AND_SCAN faults=0x09
+[S5-HW] BENCH-TEST ONLY: simulating MOTION_STOPPED; assembly is stationary on desk, Buddy 2 unavailable.
+[S5-HW] COARSE SCAN (retry=0).
+[S5-HW] COARSE SCAN (retry=1).
+[S5-HW] COARSE SCAN (retry=2).
+[S5-HW] Profiling/planning finished.
+[S5-HW] PROFILE detected=0 valid=0 closest_mm=0 closest_angle=0
+[S5-HW] EDGES left=0 right=0 left_mm=0 left_valid=0 right_mm=0 right_valid=0
+[S5-HW] RESULT valid_samples=0 state=STOPPED action=SAFE_STOP faults=0x19 profile_faults=0x01 pending=0
+[S5-HW] === HARDWARE TEST COMPLETE ===
+
+SIMULATED BENCH CONTROL REPLAY: E scanner never starts (NOT physical results)
+[S5-HW] === BUDDY 5 HARDWARE TEST ===
+[S5-HW] Real FORWARD scan requested.
+[S5-HW] TIMEOUT: overall bench deadline reached.
+[S5-HW] CANCEL enqueue result=0; no further bench requests.
+[S5-HW] PROFILE detected=0 valid=0 closest_mm=0 closest_angle=0
+[S5-HW] EDGES left=0 right=0 left_mm=0 left_valid=0 right_mm=0 right_valid=0
+[S5-HW] RESULT valid_samples=0 state=MONITOR action=NONE faults=0x08 profile_faults=0x00 pending=0
+[S5-HW] === HARDWARE TEST COMPLETE ===
+REPLAY SUMMARY: five software scenarios passed; no hardware tested.

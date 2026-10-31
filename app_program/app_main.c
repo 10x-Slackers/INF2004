@@ -26,6 +26,9 @@
 
 #include "app.h"
 
+/* Temporary isolated demo: set to 0 to restore all buddies. */
+#define APP_BUDDY5_ONLY 1
+
 /*
  * Create and start one task (declared in app.h for every subsystem).
  *   prc = TP_PRC1 (core 0), TP_PRC2 (core 1), or 0 for "any core".
@@ -67,6 +70,7 @@ EXPORT ID app_start_task(FP entry, PRI pri, UW prc, const char * name)
 
 EXPORT INT usermain(void)
 {
+#if !APP_BUDDY5_ONLY
     T_RVER ver;
 
     /* tk_ref_ver: ask the kernel who it is */
@@ -80,32 +84,43 @@ EXPORT INT usermain(void)
 #else
     tm_printf((UB *)"single-core build\n");
 #endif
+#endif
 
     /* Phase 1: every subsystem creates its kernel objects */
+#if !APP_BUDDY5_ONLY
     CHECK(subsystem1_init(), "subsystem1_init");
     CHECK(subsystem2_init(), "subsystem2_init");
     CHECK(subsystem3_init(), "subsystem3_init");
     CHECK(subsystem4_init(), "subsystem4_init");
+#endif
     CHECK(subsystem5_init(), "subsystem5_init");
 
     /* Phase 2: every subsystem starts its tasks */
+#if !APP_BUDDY5_ONLY
     CHECK(subsystem1_start(), "subsystem1_start");
     CHECK(subsystem2_start(), "subsystem2_start");
     CHECK(subsystem3_start(), "subsystem3_start");
     CHECK(subsystem4_start(), "subsystem4_start");
+#endif
     CHECK(subsystem5_start(), "subsystem5_start");
 
+#if APP_BUDDY5_ONLY
+    tm_printf((UB *)"Buddy 5 started\n\n");
+#else
     tm_printf((UB *)"all subsystems started\n\n");
+#endif
 
 #if APP_TEST
     /* Test build (make TEST=1): run every subsystem's tests in turn,
        here in the initial task, while the system is running.  Tests may
        call tk_dly_tsk() to let the other tasks work for a while. */
     tm_printf((UB *)"[TEST] === test run start ===\n");
+#if !APP_BUDDY5_ONLY
     subsystem1_test();
     subsystem2_test();
     subsystem3_test();
     subsystem4_test();
+#endif
     subsystem5_test();
     tm_printf((UB *)"[TEST] === test run end ===\n");
 #endif

@@ -74,3 +74,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `barcode_decoder_raw_t.min`, `.max`: barcode sensor level over the last 10 ms | 0 to 4095 ADC counts | 12 each | `unsigned int` bit-field | Readers copy it with `barcode_decoder_get_raw()`, under the barcode mutex |
 | 3 | `.samples`: samples taken | 0 to 65535, wraps | 16 | As above | As above |
 | 3 | `g_ring` (driver): barcode samples | 0 to 4095 | 16 each | `uint16_t`, the ADC FIFO's format written by DMA (out of scope) | DMA writes, the Barcode Decoder task reads |
+| 3 | `barcode_decoder_t.command`: last validated command (none, left, right, straight, U-turn) | 0 to 4 | 3 | `unsigned int` bit-field | Readers copy it with `barcode_decoder_get()`, under the barcode mutex |
+| 3 | `.count`, `.rejects`: barcodes validated and rejected | 0 to 15 each, wrap | 4 each | As above | As above |
+| 3 | `.distance_mm`: odometer at the end of the barcode | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
+| 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in 1/16 mm (0 to 480) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |

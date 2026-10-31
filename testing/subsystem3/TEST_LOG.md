@@ -20,6 +20,10 @@ Define a test here before running it. Test IDs never change.
 | S3-U08 | Barcode ADC samples at 2 ksample/s | FR3 | auto | `TEST=1` image, read the console | `S3-U08 PASS`: 180 to 240 samples in a 100 ms wait |
 | S3-U09 | Raw barcode level is bit-packed | Minimum-bit data | auto | As above | `S3-U09 PASS`: `barcode_decoder_raw_t` is 8 bytes |
 | S3-U10 | Barcode sensor tells black from white | FR3, A3 | manual | Sensor at its final height over the track. Hold it still over white, then over a black bar of a sample barcode, 5 s each; read the `[bar]` lines | White and black readings differ by well over the min-max spread of either, so one threshold separates them. Record both levels |
+| S3-U11 | `*A*` decodes in both reading directions | FR3 | auto | `TEST=1` image, read the console | `S3-U11 PASS`: synthetic 3 mm / 9 mm widths of `*A*`, forwards and reversed, give A |
+| S3-U12 | Invalid barcodes are rejected | FR3 | auto | As above | `S3-U12 PASS`: `*Z*`, and `*A*` with a wide gap, give 0 |
+| S3-U13 | Barcode result is bit-packed | Minimum-bit data | auto | As above | `S3-U13 PASS`: `barcode_decoder_t` is 8 bytes |
+| S3-U14 | Barcodes are read while driving | FR3, NFR3, A3 | manual | `TEST=1` image. Lay a printed `*A*` 20 mm beside a straight line, then a `*Z*`. Hold GP21 for 1 s, put the car on the line before them | `[barcode] command=1` with count +1 for `*A*`; rejects +1 and no new command for `*Z*`; then repeat driving the other way along the line |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).

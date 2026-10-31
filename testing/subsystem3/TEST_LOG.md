@@ -32,3 +32,5 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-31 | S3-U05 | `195db26` | mykacx | PASS | `logs/2026-10-31_unit.txt` | |
 | 2026-10-31 | S3-U03 | `195db26` | mykacx | PASS | `logs/2026-10-31_unit.txt` | Left, right and both over the line read as expected; DO is 1 over black |
 | 2026-10-31 | S3-U06 | `ca4b8b1` | mykacx | FAIL | `logs/2026-10-31_follow.txt` | Ran off the line: after one left=1 reading neither sensor saw the line again. Cause under investigation |
+| 2026-10-31 | S3-U03 | `2e899b0` | mykacx | PASS | `logs/2026-10-31_follow_straight.txt` | Re-run after the left and right sensor cables were swapped back to the pin map (left on Grove 5, right on Grove 7); the earlier PASS was taken with them mirrored |
+| 2026-10-31 | S3-U06 | `2e899b0` | mykacx | PASS | `logs/2026-10-31_follow_straight.txt` | Straight line only, no curve available: followed about 75 cm in 3.8 s without wobbling and stopped at the junction. The curve still needs a run |

@@ -14,11 +14,11 @@ subsystem, ask its owner or open a pull request for them to review.
 
 | # | Subsystem (what it does) | Student ID | GitHub username | Code | Tests |
 |---|---|---|---|---|---|
-| 1 | Wi-Fi, command and telemetry | | | `app_program/subsystem1/` | `testing/subsystem1/` |
-| 2 | Motion control | 2503068 | | `app_program/subsystem2/` | `testing/subsystem2/` |
-| 3 | Line following and barcodes | | | `app_program/subsystem3/` | `testing/subsystem3/` |
-| 4 | IMU and terrain | | | `app_program/subsystem4/` | `testing/subsystem4/` |
-| 5 | Ultrasonic scanning and obstacle avoidance | 2503992 | | `app_program/subsystem5/` | `testing/subsystem5/` |
+| 1 | Wi-Fi, command and telemetry | 2503014 | | `app_program/subsystem1/` | `testing/subsystem1/` |
+| 2 | Motion control | 2503068 | xxcin | `app_program/subsystem2/` | `testing/subsystem2/` |
+| 3 | Line following and barcodes | 2502564 | | `app_program/subsystem3/` | `testing/subsystem3/` |
+| 4 | IMU and terrain | 2503999 | commit2main | `app_program/subsystem4/` | `testing/subsystem4/` |
+| 5 | Ultrasonic scanning and obstacle avoidance | 2503992 | CalebWee | `app_program/subsystem5/` | `testing/subsystem5/` |
 
 Shared files (`app_program/app_main.c`, `app_program/app.h`, this file)
 are changed only by agreement of the team. The exception is claiming an empty
@@ -51,8 +51,8 @@ fixed.
 | GP3 | Motion (Buddy 2) | right encoder phase B (Grove 2) |
 | GP4 | IMU (Buddy 4) | GY-511 SDA, I2C0 (Grove 3) |
 | GP5 | IMU (Buddy 4) | GY-511 SCL, I2C0 (Grove 3) |
-| GP6 | | |
-| GP7 | | |
+| GP6 | Line following (Buddy 3) | left IR module DO (Grove 5) |
+| GP7 | Line following (Buddy 3) | right IR module DO (Grove 7) |
 | GP8 | Motion (Buddy 2) | left motor A, PWM4A |
 | GP9 | Motion (Buddy 2) | left motor B, PWM4B |
 | GP10 | Motion (Buddy 2) | right motor A, PWM5A |
@@ -68,7 +68,7 @@ fixed.
 | GP20 | Ultrasonic (Buddy 5) | Robo Pico button: steps the avoidance bench sequence (`TEST=1` only) |
 | GP21 | Motion (Buddy 2) | Robo Pico button: starts the motion bench sequence (`TEST=1` only) |
 | GP22 | IMU (Buddy 4) | Robo Pico buzzer: beeps when calibration is done and on a fault (PWM slice 3 A) |
-| GP26 | | (ADC0 capable) |
+| GP26 | Line following (Buddy 3) | barcode IR module AO, ADC0 (Grove 6) |
 | GP27 | | (ADC1 capable) |
 | GP28 | | (ADC2 capable) |
 
@@ -107,7 +107,7 @@ the drivers have no locking to stop it.
 | I2C1 | | | |
 | SPI0 | | | |
 | SPI1 | | | |
-| ADC | | | GP26–GP28 |
+| ADC | Line following (Buddy 3) | Barcode Decoder | GP26 (channel 0) |
 | PWM4, PWM5 | Motion (Buddy 2) | `s2_motion` (`motion_control_stop()` may brake from any task) | GP8–GP11 |
 | IRQ13 (GPIO bank 0), core 0 | Motion (Buddy 2) | `drv_motion_gpio_isr` | GP2/3, GP16/17. Other GPIO edge users register a callback with `drv_motion_gpio_register()` |
 | PWM slices (list) | IMU (Buddy 4) | `s4_imu` | Slice 3 A: GP22 buzzer |

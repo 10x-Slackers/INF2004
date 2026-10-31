@@ -1,0 +1,10 @@
+# S4-U06 diagnosis on fe71414 with temporary timing prints (not committed).
+# Run 1: as on main, IMU task on any core
+[dbg] U06 reads=32 window_us=509612
+[dbg] wakes=51 err=0 last=0 reads=32 rd_avg_us=15296 rd_max_us=19596 gap_max_us=20213
+# Run 2: IMU task pinned to core 0
+[dbg] U06 reads=51 window_us=509622
+[dbg] wakes=51 err=0 last=0 reads=51 rd_avg_us=9920 rd_max_us=10294 gap_max_us=10372
+# Run 3: tk_set_flg moved outside the lock in i2c_rp2040.c, any core
+[dbg] U06 reads=51 window_us=509332
+[dbg] wakes=51 err=0 last=0 reads=51 rd_avg_us=458 rd_max_us=557 gap_max_us=10033

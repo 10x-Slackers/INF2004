@@ -13,6 +13,7 @@ PASS  heartbeat round trip (min)
 PASS  heartbeat round trip (max)
 PASS  cmd round trip (min)
 PASS  cmd round trip (max)
+PASS  motion matches motion_control_pack()
 
 Topic      Bits  Binary B  JSON B  Saved  Hz  JSON B/s  Binary B/s
 telemetry    80        10     275    96%   5      1375          50

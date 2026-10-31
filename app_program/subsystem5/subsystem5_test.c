@@ -74,15 +74,18 @@ static bool subsystem5_bench_press(void)
 }
 
 /*!
- * @brief Print the latest scan and avoidance status on two lines.
+ * @brief Print the latest scan, and the avoidance status with the motion
+ * state and faults, on two lines.
  */
 static void subsystem5_bench_report(void)
 {
     obstacle_avoidance_status_t status = {0};
+    motion_control_status_t motion = {0};
     ultrasonic_scan_t scan = {0};
 
     ultrasonic_scan_get(&scan);
     obstacle_avoidance_get_status(&status);
+    motion_control_get_status(&motion);
     /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[scan] forward_mm=%u fault=%u closest=%u@%u "
                     "edges=%u..%u obstacle=%u\n",
@@ -90,16 +93,17 @@ static void subsystem5_bench_report(void)
               scan.profile.closest_deg, scan.profile.right_deg,
               scan.profile.left_deg, scan.profile.b_obstacle);
     tm_printf((UB *)"[avoid] state=%u faults=%u side=%u step=%u "
-                    "bypasses=%u right_mm=%u left_mm=%u\n",
+                    "bypasses=%u right_mm=%u left_mm=%u motion=%u/%u\n",
               status.state, status.faults, status.side, status.step,
-              status.bypasses, status.right_mm, status.left_mm);
+              status.bypasses, status.right_mm, status.left_mm, motion.state,
+              motion.faults);
 }
 
 /*!
  * @brief Bench task. Each short GP20 press: one servo profile scan, car
  * still. A held press: after 5 s, start avoidance and drive forward 1.5 m,
  * printing the status on every change until the drive ends, a bypass
- * finishes or avoidance stops.
+ * finishes or avoidance stops. Then it waits for GP20 again.
  */
 static void subsystem5_bench_task(INT stacd, void * p_exinf)
 {
@@ -107,6 +111,7 @@ static void subsystem5_bench_task(INT stacd, void * p_exinf)
     obstacle_avoidance_status_t last = {0};
     motion_control_status_t motion = {0};
     ultrasonic_scan_t scan = {0};
+    uint32_t bypasses = 0u;
     uint32_t count = 0u;
 
     (void)stacd;
@@ -117,40 +122,45 @@ static void subsystem5_bench_task(INT stacd, void * p_exinf)
     clr_w(GPIO(S5_BENCH_BUTTON), GPIO_PDE);
     set_w(GPIO(S5_BENCH_BUTTON), GPIO_PUE);
 
-    tm_printf((UB *)"[avoid] bench: press GP20 for a profile scan, hold "
-                    "it 1 s to avoid while driving 1500 mm\n");
-    while (!subsystem5_bench_press())
+    for (;;)
     {
-        ultrasonic_scan_get(&scan);
-        count = scan.count;
-        ultrasonic_scan_request(ULTRASONIC_SCAN_PROFILE);
-        while (count == scan.count)
+        tm_printf((UB *)"[avoid] bench: press GP20 for a profile scan, hold "
+                        "it 1 s to avoid while driving 1500 mm\n");
+        while (!subsystem5_bench_press())
+        {
+            ultrasonic_scan_get(&scan);
+            count = scan.count;
+            ultrasonic_scan_request(ULTRASONIC_SCAN_PROFILE);
+            while (count == scan.count)
+            {
+                tk_dly_tsk(S5_BENCH_POLL_MS);
+                ultrasonic_scan_get(&scan);
+            }
+            subsystem5_bench_report();
+        }
+        tk_dly_tsk(S5_BENCH_GO_MS);
+        obstacle_avoidance_get_status(&last);
+        bypasses = last.bypasses;
+        obstacle_avoidance_start();
+        (void)motion_control_move_forward(S5_BENCH_DRIVE_MM);
+        do
         {
             tk_dly_tsk(S5_BENCH_POLL_MS);
-            ultrasonic_scan_get(&scan);
-        }
+            obstacle_avoidance_get_status(&status);
+            motion_control_get_status(&motion);
+            if ((status.state != last.state) || (status.step != last.step))
+            {
+                subsystem5_bench_report();
+                last = status;
+            }
+        } while ((bypasses == status.bypasses) &&
+                 (OBSTACLE_AVOIDANCE_STOPPED != status.state) &&
+                 ((OBSTACLE_AVOIDANCE_MONITOR != status.state) ||
+                  (MOTION_CONTROL_RUNNING == motion.state)));
+        obstacle_avoidance_cancel();
         subsystem5_bench_report();
+        tm_printf((UB *)"[avoid] bench done\n");
     }
-    tk_dly_tsk(S5_BENCH_GO_MS);
-    obstacle_avoidance_start();
-    (void)motion_control_move_forward(S5_BENCH_DRIVE_MM);
-    do
-    {
-        tk_dly_tsk(S5_BENCH_POLL_MS);
-        obstacle_avoidance_get_status(&status);
-        motion_control_get_status(&motion);
-        if ((status.state != last.state) || (status.step != last.step))
-        {
-            subsystem5_bench_report();
-            last = status;
-        }
-    } while ((0u == status.bypasses) &&
-             (OBSTACLE_AVOIDANCE_STOPPED != status.state) &&
-             ((OBSTACLE_AVOIDANCE_MONITOR != status.state) ||
-              (MOTION_CONTROL_RUNNING == motion.state)));
-    obstacle_avoidance_cancel();
-    subsystem5_bench_report();
-    tm_printf((UB *)"[avoid] bench done\n");
 }
 #endif
 

@@ -1,0 +1,47 @@
+S5-U48 second attempt, TEST=1 image from 81fcb83, after the loose right encoder connector was fixed. First the S2 GP21 bench with the wheels in the air (all moves COMPLETE, faults=0), then the held GP20 press on the floor with the obstacle about 80 cm ahead.
+
+[motion] bench: drive +-100, forward/backward 300, left 90, right 90, left 180, forward 300 at 200, left 180, forward 300
+[motion] state=1 cmd=5 faults=0 heading=3 dist_mm=188 counts=2296,2386 speed=88,80 max_tick_us=335
+[motion] state=1 cmd=5 faults=0 heading=3 dist_mm=379 counts=65525,70 speed=-104,-104 max_tick_us=349
+[motion] state=2 cmd=1 faults=0 heading=3 dist_mm=681 counts=3697,3777 speed=40,56 max_tick_us=371
+[motion] state=2 cmd=2 faults=0 heading=3 dist_mm=982 counts=65498,54 speed=-48,-48 max_tick_us=430
+[motion] state=2 cmd=3 faults=0 heading=94 dist_mm=1072 counts=64382,1164 speed=0,24 max_tick_us=430
+[motion] state=2 cmd=4 faults=0 heading=3 dist_mm=1162 counts=65494,54 speed=32,-56 max_tick_us=430
+[motion] state=2 cmd=3 faults=0 heading=183 dist_mm=1341 counts=63271,2263 speed=-40,48 max_tick_us=430
+[motion] state=2 cmd=1 faults=0 heading=184 dist_mm=1643 counts=1475,6020 speed=80,56 max_tick_us=466
+[motion] state=2 cmd=3 faults=0 heading=5 dist_mm=1823 counts=64791,8251 speed=-48,-8 max_tick_us=466
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2124 counts=2997,11978 speed=0,64 max_tick_us=466
+[motion] bench done
+...
+[scan] forward_mm=891 fault=0 closest=473@100 edges=100..100 obstacle=0
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=2/0
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2125 counts=2997,11977 speed=0,0 max_tick_us=466
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2125 counts=2997,11977 speed=0,0 max_tick_us=466
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2125 counts=2997,11977 speed=0,0 max_tick_us=466
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2125 counts=2997,11977 speed=0,0 max_tick_us=466
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2125 counts=2997,11977 speed=0,0 max_tick_us=466
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2125 counts=2997,11977 speed=0,0 max_tick_us=466
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2125 counts=2997,11977 speed=0,0 max_tick_us=466
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2125 counts=2997,11977 speed=0,0 max_tick_us=466
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2125 counts=2997,11977 speed=0,0 max_tick_us=466
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=2125 counts=2997,11977 speed=0,0 max_tick_us=466
+[scan] forward_mm=877 fault=0 closest=473@100 edges=100..100 obstacle=0
+[avoid] state=1 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=1/0
+[motion] state=1 cmd=1 faults=0 heading=5 dist_mm=2185 counts=3732,12722 speed=88,96 max_tick_us=466
+[motion] state=1 cmd=1 faults=0 heading=4 dist_mm=2285 counts=4981,13956 speed=104,96 max_tick_us=466
+[motion] state=1 cmd=1 faults=0 heading=4 dist_mm=2386 counts=6242,15220 speed=104,112 max_tick_us=466
+[motion] state=1 cmd=1 faults=0 heading=4 dist_mm=2488 counts=7500,16481 speed=104,96 max_tick_us=466
+[motion] state=1 cmd=1 faults=0 heading=5 dist_mm=2590 counts=8763,17749 speed=96,96 max_tick_us=466
+[motion] state=1 cmd=1 faults=0 heading=4 dist_mm=2691 counts=10028,18999 speed=104,104 max_tick_us=466
+[scan] forward_mm=349 fault=0 closest=473@100 edges=100..100 obstacle=0
+[avoid] state=2 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0/0
+[motion] state=1 cmd=3 faults=0 heading=18 dist_mm=2772 counts=10729,20044 speed=-88,88 max_tick_us=466
+[motion] state=1 cmd=4 faults=0 heading=14 dist_mm=2841 counts=10762,19970 speed=96,-88 max_tick_us=466
+[motion] state=1 cmd=3 faults=0 heading=340 dist_mm=2915 counts=11191,19560 speed=-80,80 max_tick_us=486
+[motion] state=2 cmd=3 faults=0 heading=5 dist_mm=2940 counts=10860,19864 speed=0,0 max_tick_us=502
+[motion] state=2 cmd=3 faults=0 heading=5 dist_mm=2940 counts=10860,19864 speed=0,0 max_tick_us=502
+[scan] forward_mm=344 fault=0 closest=330@100 edges=85..100 obstacle=1
+[avoid] state=4 faults=2 side=0 step=0 bypasses=0 right_mm=469 left_mm=368 motion=0/0
+[scan] forward_mm=344 fault=0 closest=330@100 edges=85..100 obstacle=1
+[avoid] state=0 faults=2 side=0 step=0 bypasses=0 right_mm=469 left_mm=368 motion=0/0
+[avoid] bench done

@@ -1,0 +1,17 @@
+S5-U48 sixth attempt, TEST=1 image from 410a256 (400 mm side threshold, full-length step checks).
+
+[scan] forward_mm=549 fault=0 closest=550@80 edges=80..80 obstacle=0
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0/0
+[scan] forward_mm=550 fault=0 closest=550@80 edges=80..80 obstacle=0
+[avoid] state=1 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=1/0
+[scan] forward_mm=349 fault=0 closest=550@80 edges=80..80 obstacle=0
+[avoid] state=2 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0/0
+[scan] forward_mm=341 fault=0 closest=340@85 edges=85..100 obstacle=1
+[avoid] state=3 faults=0 side=2 step=1 bypasses=0 right_mm=536 left_mm=409 motion=1/0
+[scan] forward_mm=341 fault=0 closest=340@85 edges=85..100 obstacle=1
+[avoid] state=3 faults=0 side=2 step=2 bypasses=0 right_mm=536 left_mm=409 motion=2/0
+[scan] forward_mm=373 fault=0 closest=340@85 edges=85..100 obstacle=1
+[avoid] state=4 faults=2 side=2 step=0 bypasses=0 right_mm=536 left_mm=409 motion=0/0
+[scan] forward_mm=373 fault=0 closest=340@85 edges=85..100 obstacle=1
+[avoid] state=0 faults=2 side=2 step=0 bypasses=0 right_mm=536 left_mm=409 motion=0/0
+[avoid] bench done

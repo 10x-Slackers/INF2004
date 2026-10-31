@@ -17,22 +17,26 @@
 #define OBSTACLE_AVOIDANCE_STEPS    7u
 #define OBSTACLE_AVOIDANCE_TURN_DEG 90
 #define OBSTACLE_AVOIDANCE_LOOK_DEG 45   /* Car turn for the clearance. */
-#define OBSTACLE_AVOIDANCE_SIDE_MM  300u /* Out to the side and back. */
-#define OBSTACLE_AVOIDANCE_PASS_MM  400u /* Alongside the obstacle. */
+#define OBSTACLE_AVOIDANCE_SIDE_MM  200u /* Out to the side and back. */
+#define OBSTACLE_AVOIDANCE_PASS_MM  700u /* Gap, obstacle and car length. */
+#define OBSTACLE_AVOIDANCE_STEP_MM  300u /* Clear before a side-step. */
 
 /* One bypass step: a turn towards the bypass side (+1) or back (-1), or a
- * move forward (0) by mm. */
+ * move forward (0) by mm, once the way ahead reads over clear_mm. The pass
+ * only needs SCAN_PROFILE_BLOCK_MM: the obstacle being passed is diagonally
+ * ahead, inside the sensor's beam. */
 typedef struct
 {
     int8_t turn;
     uint16_t mm;
+    uint16_t clear_mm;
 } obstacle_avoidance_step_t;
 
 static const obstacle_avoidance_step_t g_steps[OBSTACLE_AVOIDANCE_STEPS] = {
-    {1, 0u},  {0, OBSTACLE_AVOIDANCE_SIDE_MM},
-    {-1, 0u}, {0, OBSTACLE_AVOIDANCE_PASS_MM},
-    {-1, 0u}, {0, OBSTACLE_AVOIDANCE_SIDE_MM},
-    {1, 0u}};
+    {1, 0u, 0u},  {0, OBSTACLE_AVOIDANCE_SIDE_MM, OBSTACLE_AVOIDANCE_STEP_MM},
+    {-1, 0u, 0u}, {0, OBSTACLE_AVOIDANCE_PASS_MM, SCAN_PROFILE_BLOCK_MM},
+    {-1, 0u, 0u}, {0, OBSTACLE_AVOIDANCE_SIDE_MM, OBSTACLE_AVOIDANCE_STEP_MM},
+    {1, 0u, 0u}};
 
 static ID g_mutex;
 static ID g_task;
@@ -315,7 +319,7 @@ static bool obstacle_avoidance_step(uint32_t side, uint32_t step)
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, step + 1u);
     if ((0 == p_step->turn) &&
         obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan) &&
-        (scan.forward_mm <= SCAN_PROFILE_BLOCK_MM))
+        (scan.forward_mm <= p_step->clear_mm))
     {
         obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_BLOCKED);
     }

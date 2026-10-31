@@ -1,0 +1,13 @@
+S5-U48 fourth attempt, TEST=1 image from 01803c1 (900 mm pass).
+
+[scan] forward_mm=570 fault=0 closest=565@85 edges=85..85 obstacle=0
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0/0
+[scan] forward_mm=570 fault=0 closest=565@85 edges=85..85 obstacle=0
+[avoid] state=1 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=1/0
+[scan] forward_mm=349 fault=0 closest=565@85 edges=85..85 obstacle=0
+[avoid] state=2 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0/0
+[scan] forward_mm=336 fault=0 closest=327@100 edges=85..100 obstacle=1
+[avoid] state=4 faults=2 side=0 step=0 bypasses=0 right_mm=458 left_mm=391 motion=0/0
+[scan] forward_mm=336 fault=0 closest=327@100 edges=85..100 obstacle=1
+[avoid] state=0 faults=2 side=0 step=0 bypasses=0 right_mm=458 left_mm=391 motion=0/0
+[avoid] bench done

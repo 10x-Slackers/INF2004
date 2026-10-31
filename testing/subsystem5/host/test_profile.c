@@ -71,11 +71,11 @@ int main(void)
                    (SCAN_PROFILE_LEFT == scan_profile_side(900u, 600u)) &&
                    (SCAN_PROFILE_RIGHT == scan_profile_side(600u, 900u)),
                "the more open side, left on a tie");
-    test_check((SCAN_PROFILE_RIGHT == scan_profile_side(300u, 500u)) &&
-                   (SCAN_PROFILE_LEFT == scan_profile_side(500u, 300u)),
-               "one side under 500 mm: the other side");
-    test_check(SCAN_PROFILE_NONE == scan_profile_side(499u, 300u),
-               "both sides under 500 mm: no side (safe stop)");
+    test_check((SCAN_PROFILE_RIGHT == scan_profile_side(300u, 400u)) &&
+                   (SCAN_PROFILE_LEFT == scan_profile_side(400u, 300u)),
+               "one side under 400 mm: the other side");
+    test_check(SCAN_PROFILE_NONE == scan_profile_side(399u, 300u),
+               "both sides under 400 mm: no side (safe stop)");
 
     test_check((8u == sizeof(scan_profile_t)) &&
                    (16u == sizeof(ultrasonic_scan_t)) &&

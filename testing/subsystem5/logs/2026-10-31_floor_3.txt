@@ -1,0 +1,23 @@
+S5-U48 third attempt, TEST=1 image from 81fcb83, same obstacle, more clear space.
+
+[scan] forward_mm=695 fault=0 closest=588@80 edges=80..80 obstacle=0
+[avoid] state=1 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=1/0
+[scan] forward_mm=344 fault=0 closest=588@80 edges=80..80 obstacle=0
+[avoid] state=2 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0/0
+[scan] forward_mm=335 fault=0 closest=330@90 edges=80..100 obstacle=1
+[avoid] state=3 faults=0 side=1 step=1 bypasses=0 right_mm=548 left_mm=610 motion=1/0
+[scan] forward_mm=335 fault=0 closest=330@90 edges=80..100 obstacle=1
+[avoid] state=3 faults=0 side=1 step=2 bypasses=0 right_mm=548 left_mm=610 motion=2/0
+[scan] forward_mm=573 fault=0 closest=330@90 edges=80..100 obstacle=1
+[avoid] state=3 faults=0 side=1 step=3 bypasses=0 right_mm=548 left_mm=610 motion=1/0
+[scan] forward_mm=573 fault=0 closest=330@90 edges=80..100 obstacle=1
+[avoid] state=3 faults=0 side=1 step=4 bypasses=0 right_mm=548 left_mm=610 motion=2/0
+[scan] forward_mm=928 fault=0 closest=330@90 edges=80..100 obstacle=1
+[avoid] state=3 faults=0 side=1 step=5 bypasses=0 right_mm=548 left_mm=610 motion=1/0
+[scan] forward_mm=928 fault=0 closest=330@90 edges=80..100 obstacle=1
+[avoid] state=3 faults=0 side=1 step=6 bypasses=0 right_mm=548 left_mm=610 motion=2/0
+[scan] forward_mm=172 fault=0 closest=330@90 edges=80..100 obstacle=1
+[avoid] state=4 faults=2 side=1 step=0 bypasses=0 right_mm=548 left_mm=610 motion=0/0
+[scan] forward_mm=172 fault=0 closest=330@90 edges=80..100 obstacle=1
+[avoid] state=0 faults=2 side=1 step=0 bypasses=0 right_mm=548 left_mm=610 motion=0/0
+[avoid] bench done

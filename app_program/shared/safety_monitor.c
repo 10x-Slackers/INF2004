@@ -1,19 +1,16 @@
 /** @file safety_monitor.c
  *
- * @brief Safety Monitor task. Every 10 ms it checks the IMU faults, the
- * range ahead while driving forward, and the motion state, and latches a
- * stop on any of them. The latch is motion control's own
+ * @brief Safety Monitor task. Every 10 ms it checks the IMU faults and the
+ * motion state, and latches a stop on either. Collision risk belongs to
+ * obstacle avoidance, which stops at 350 mm. The latch is motion control's own
  * (motion_control_latch()), so it is kept in one place only.
  */
 
 #include "safety_monitor.h"
 #include "../subsystem2/motion_control.h"
 #include "../subsystem4/subsystem4.h"
-#include "../subsystem5/ultrasonic_scan.h"
 
 #define SAFETY_MONITOR_PERIOD_MS 10u
-#define SAFETY_MONITOR_CLEAR_MM  150u /* Inside avoidance's 350 mm. */
-#define SAFETY_MONITOR_AGE_MS    200u /* Older forward readings are ignored. */
 
 static void safety_monitor_task(INT stacd, void * p_exinf);
 static bool safety_monitor_imu_fault(void);
@@ -64,16 +61,12 @@ bool safety_monitor_clear(void)
 }
 
 /*!
- * @brief Safety Monitor task: latch a stop on an IMU fault, something
- * within SAFETY_MONITOR_CLEAR_MM while driving forward, or a stall.
+ * @brief Safety Monitor task: latch a stop on an IMU fault or a stall.
  */
 static void safety_monitor_task(INT stacd, void * p_exinf)
 {
     motion_control_status_t motion = {0};
-    ultrasonic_scan_t scan = {0};
-    SYSTIM now = {0};
     uint32_t cause = 0u;
-    bool b_forward = false;
 
     (void)stacd;
     (void)p_exinf;
@@ -83,21 +76,6 @@ static void safety_monitor_task(INT stacd, void * p_exinf)
         motion_control_get_status(&motion);
         cause = safety_monitor_imu_fault() ? SAFETY_MONITOR_IMU : 0u;
 
-        /* Forward moves and forward drives only; never a turn. */
-        b_forward = (MOTION_CONTROL_RUNNING == motion.state) &&
-                    ((MOTION_CONTROL_CMD_FORWARD == motion.command) ||
-                     ((MOTION_CONTROL_CMD_DRIVE == motion.command) &&
-                      ((motion.left_speed + motion.right_speed) > 0)));
-        if (b_forward)
-        {
-            ultrasonic_scan_get(&scan);
-            (void)tk_get_otm(&now);
-            if ((scan.forward_mm < SAFETY_MONITOR_CLEAR_MM) &&
-                ((now.lo - scan.forward_ms) < SAFETY_MONITOR_AGE_MS))
-            {
-                cause |= SAFETY_MONITOR_COLLISION;
-            }
-        }
         if (MOTION_CONTROL_FAILED == motion.state)
         {
             cause |= SAFETY_MONITOR_STALL;

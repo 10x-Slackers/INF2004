@@ -1,6 +1,6 @@
 # Safety Monitor (shared)
 
-Latches a stop on a critical fault or collision risk, independently of the Vehicle Controller (design rule 3, FR11). The latch is motion control's own (`motion_control_latch()`), kept in that one place, so no task can drive the car until the stop is cleared.
+Latches a stop on a critical fault, independently of the Vehicle Controller (design rule 3, FR11). The latch is motion control's own (`motion_control_latch()`), kept in that one place, so no task can drive the car until the stop is cleared.
 
 | File (`app_program/shared/`) | Contents                                                  |
 | ---------------------------- | --------------------------------------------------------- |
@@ -15,11 +15,10 @@ Every 10 ms the task latches a stop for any of these. The cause is printed with 
 | Cause           | Value | Condition                                                                                                   |
 | --------------- | ----- | ----------------------------------------------------------------------------------------------------------- |
 | `IMU`           | 1     | `s4_get_fault()` reports an impact or excessive tilt (I9)                                                    |
-| `COLLISION`     | 2     | Motion `RUNNING` a forward move, or a drive with `left_speed + right_speed > 0`, and a forward reading under 150 mm that is under 200 ms old (I8) |
 | `STALL`         | 4     | Motion `FAILED`: a wheel stalled during a move, turn or drive                                                |
 | `CONTROLLER`    | 8     | Raised by the Vehicle Controller for its own stops: GP20, an avoidance safe stop, a failed junction move     |
 
-The 150 mm limit is a backstop inside avoidance's 350 mm, which stays the normal reaction to an obstacle. Turns are never checked, so the look turns during profiling cannot trip it. Forward readings are only taken while avoidance runs; when they stop, the check ignores the old reading.
+Collision risk is not checked here: obstacle avoidance stops on the first forward reading within 350 mm and safe-stops when no side is open, and its safe stop latches through the controller (`CONTROLLER`). A backstop on the forward range cannot act first: avoidance brakes on the same reading, and only avoidance requests readings, so without it the range goes stale.
 
 ## API
 
@@ -34,14 +33,10 @@ The controller enters SAFE_STOP whenever the latch is set, and a GP20 press ther
 ## Console
 
 ```
-[safety] stop, cause 0x2
+[safety] stop, cause 0x4
 [vc] FOLLOW -> SAFE_STOP: safety latched
 [safety] cleared
 ```
-
-## Calibration
-
-`SAFETY_MONITOR_CLEAR_MM` (150) must leave room to brake from line-following speed, and stay below avoidance's `SCAN_PROFILE_BLOCK_MM` (350) so it only acts when avoidance has not.
 
 ## Period
 

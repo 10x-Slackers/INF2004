@@ -162,6 +162,6 @@ static void subsystem5_bench_task(INT stacd, void * p_exinf)
         tm_printf((UB *)"[avoid] bench done\n");
     }
 }
-#endif
+#endif /* APP_TEST */
 
 /*** end of file ***/

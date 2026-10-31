@@ -1,86 +1,98 @@
-/*
- *      subsystem4.h
- *      Subsystem 4 -- IMU and terrain.  Student ID: <student ID>.
+/** @file subsystem4.h
  *
- *      Public interface of subsystem 4.  Put here only what OTHER subsystems
- *      may use (object IDs, message formats, priorities); keep everything
- *      else LOCAL in the .c files.  Other subsystems include it as
- *      "../subsystem4/subsystem4.h".
+ * @brief Subsystem 4 (IMU and terrain). Other subsystems read the latest
+ * tilt, faults, humps and motion class with the s4_get_*() calls.
+ *
+ * The code follows BARR-C:2018, with the team's deviations listed in app.h
+ * and these:
+ * - 5.3.a: x, y, z, pitch and roll are signed bit-fields, packed to the
+ *   minimum bits (docs/DATA_REPRESENTATION.md).
+ * - 7.1.e: struct fields x, y, z and on keep their short names.
+ *
+ * Abbreviations (rule 1.5): s4 subsystem 4, imu inertial measurement unit,
+ * mg milli-g, mm millimetres, ms milliseconds, hz hertz, cal calibrated,
+ * cls class (a C++ keyword).
  */
 
 #ifndef SUBSYSTEM4_H
 #define SUBSYSTEM4_H
 
+#include <stdbool.h>
+#include <stdint.h>
 #include "../app.h"
 
-#define S4_PRI_IMU 18  /* priority band 18-19 (TEAM.md) */
-#define S4_IMU_MS  10  /* sample period, from a cyclic handler */
-#define S4_CAL_N   200 /* start-up calibration samples (2 s, car still) */
-#define S4_CAL_MG  100 /* a sample this far from the mean restarts it */
+#define S4_PRI_IMU 18  /* Priority band 18-19 (TEAM.md). */
+#define S4_IMU_MS  10  /* Sample period, from a cyclic handler. */
+#define S4_CAL_N   200 /* Start-up calibration samples (2 s, car still). */
+#define S4_CAL_MG  100 /* A sample this far from the mean restarts it. */
 
-#define S4_TRACK_MM    114 /* distance between the drive wheel centres */
-#define S4_HUMP_ON_MM  3   /* right wheel this high: on a hump */
-#define S4_HUMP_MIN_MS 200 /* ...for at least this long */
-#define S4_HUMP_OFF_MM 1   /* back below this: the hump is over */
-#define S4_ACCEL_MG    50  /* forward push beyond this: accelerating... */
-#define S4_ACCEL_MS    100 /* ...for at least this long */
+#define S4_TRACK_MM    114 /* Distance between the drive wheel centres. */
+#define S4_HUMP_ON_MM  3   /* Right wheel this high: on a hump... */
+#define S4_HUMP_MIN_MS 200 /* ...for at least this long. */
+#define S4_HUMP_OFF_MM 1   /* Back below this: the hump is over. */
+#define S4_ACCEL_MG    50  /* Forward push beyond this: accelerating... */
+#define S4_ACCEL_MS    100 /* ...for at least this long. */
 
-#define S4_BUZZER_PIN 22   /* Robo Pico buzzer; 18 on the Maker Pi Pico */
-#define S4_BEEP_HZ    4000 /* beep when calibration is done */
+#define S4_BUZZER_PIN 22u   /* Robo Pico buzzer; 18 on the Maker Pi Pico. */
+#define S4_BEEP_HZ    4000u /* Beep when calibration is done. */
 #define S4_BEEP_MS    200
-#define S4_ALARM_MS   1000 /* beep on a fault */
+#define S4_ALARM_MS   1000 /* Beep on a fault. */
 
-#define S4_IMPACT_MG 800 /* jump from the smoothed X or Y: impact */
-#define S4_TILT_MAX  250 /* pitch or roll beyond 25.0 degrees... */
-#define S4_TILT_MS   500 /* ...for this long: excessive tilt */
+#define S4_IMPACT_MG 800 /* Jump from the smoothed X or Y: impact. */
+#define S4_TILT_MAX  250 /* Pitch or roll beyond 25.0 degrees... */
+#define S4_TILT_MS   500 /* ...for this long: excessive tilt. */
 
-/* Private to subsystem 4.  Latest calibrated reading, packed to its range:
-   each axis is -2048..2047 mg (the sensor's 12-bit range at +-2 g); count
-   is a wrapping 8-bit sample counter.  36 + 8 bits, stored in 8 bytes. */
+/* Largest values the packed fields below hold. */
+#define S4_AXIS_MAX_MG 2047
+#define S4_ANGLE_MAX   900 /* 90.0 degrees. */
+#define S4_HUMP_MAX_MM 63
+
+/* Private to subsystem 4. Latest calibrated reading, packed to its range:
+ * each axis is -2048..2047 mg (the sensor's 12-bit range at +-2 g); count
+ * is a wrapping 8-bit sample counter. 36 + 8 bits, stored in 8 bytes. */
 typedef struct
 {
     signed int x : 12;
     signed int y : 12;
     unsigned int count : 8;
     signed int z : 12;
-} S4_ACCEL;
+} s4_accel_t;
 
 /* Tilt relative to the start surface in 0.1 degree, -900..900: pitch is
-   nose up positive, roll is left side up positive.  cal is 1 once
-   start-up calibration is done; until then pitch and roll are 0.
-   11 + 11 + 1 bits, stored in 4 bytes. */
+ * nose up positive, roll is left side up positive. cal is 1 once
+ * start-up calibration is done; until then pitch and roll are 0.
+ * 11 + 11 + 1 bits, stored in 4 bytes. */
 typedef struct
 {
     signed int pitch : 11;
     signed int roll : 11;
     unsigned int cal : 1;
-} S4_TILT;
+} s4_tilt_t;
 
 /* Faults, each latched until reset: a sudden impact, excessive tilt.
-   2 bits, stored in 4 bytes.  They move into the team's shared fault
-   bitmask once that is agreed. */
+ * 2 bits, stored in 4 bytes. They move into the team's shared fault
+ * bitmask once that is agreed. */
 typedef struct
 {
     unsigned int impact : 1;
     unsigned int tilt : 1;
-} S4_FAULT;
+} s4_fault_t;
 
 /* Humps under the right wheel, in mm: peak of the last one, highest of
-   the run, how many so far (wraps), and whether the car is on one now.
-   6 + 6 + 4 + 1 bits, stored in 4 bytes. */
+ * the run, how many so far (wraps), and whether the car is on one now.
+ * 6 + 6 + 4 + 1 bits, stored in 4 bytes. */
 typedef struct
 {
     unsigned int peak : 6;
     unsigned int max : 6;
     unsigned int count : 4;
     unsigned int on : 1;
-} S4_HUMP;
+} s4_hump_t;
 
 /* Current motion class, highest first: impact (latched with the fault),
-   climbing or descending a hump, accelerating or braking, steady (parked
-   or cruising: telling them apart needs encoder speed).  3 bits, stored
-   in 4 bytes. */
-enum
+ * climbing or descending a hump, accelerating or braking, steady (parked
+ * or cruising: telling them apart needs encoder speed). */
+typedef enum
 {
     S4_STEADY,
     S4_ACCELERATING,
@@ -88,19 +100,24 @@ enum
     S4_CLIMBING,
     S4_DESCENDING,
     S4_IMPACT
-};
+} s4_motion_class_t;
 
+/* An s4_motion_class_t in 3 bits, stored in 4 bytes. */
 typedef struct
 {
     unsigned int cls : 3;
-} S4_MOTION;
+} s4_motion_t;
 
-IMPORT ID s4_mtx_accel; /* guards the reading, tilt, faults, humps, motion */
-IMPORT void s4_get_accel(S4_ACCEL * out);   /* copy it under the mutex */
-IMPORT void s4_get_tilt(S4_TILT * out);     /* copy it under the mutex */
-IMPORT void s4_get_fault(S4_FAULT * out);   /* copy it under the mutex */
-IMPORT void s4_get_hump(S4_HUMP * out);     /* copy it under the mutex */
-IMPORT void s4_get_motion(S4_MOTION * out); /* copy it under the mutex */
-IMPORT void imu_task(INT stacd, void * exinf);
+extern ID g_s4_mutex; /* Guards the reading, tilt, faults, humps, motion. */
+
+/* Each copies its record under g_s4_mutex. */
+void s4_get_accel(s4_accel_t * p_accel);
+void s4_get_tilt(s4_tilt_t * p_tilt);
+void s4_get_fault(s4_fault_t * p_fault);
+void s4_get_hump(s4_hump_t * p_hump);
+void s4_get_motion(s4_motion_t * p_motion);
+void s4_imu_task(INT stacd, void * p_exinf);
 
 #endif /* SUBSYSTEM4_H */
+
+/*** end of file ***/

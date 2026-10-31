@@ -1,123 +1,130 @@
-/*
- *      app_main.c
- *      START HERE.  usermain() below is your program's entry point.
+/** @file app_main.c
  *
- *      How micro T-Kernel starts your code
- *      -----------------------------------
- *        reset -> kernel initialises itself -> creates the "initial task"
- *              -> initial task calls usermain()
+ * @brief START HERE. usermain() below is the program's entry point.
  *
- *      usermain() runs inside that initial task at priority 1 (the highest).
- *      On a single core nothing you create runs until usermain() blocks, but
- *      on the dual-core build the OTHER core may start a new task at once.
- *      So usermain() works in two phases:
- *        1. every subsystem creates its kernel objects  (subsystemN_init)
- *        2. every subsystem starts its tasks             (subsystemN_start)
- *      and then puts the initial task to sleep forever.
- *      If usermain() RETURNS, the kernel shuts the whole system down.
+ * Reset -> the kernel initialises itself -> creates the "initial task" ->
+ * the initial task calls usermain(), at priority 1 (the highest). On the
+ * dual-core build the OTHER core may start a new task at once, so
+ * usermain() works in two phases:
+ *   1. every subsystem creates its kernel objects (subsystemN_init)
+ *   2. every subsystem starts its tasks (subsystemN_start)
+ * and then puts the initial task to sleep forever. If usermain() RETURNS,
+ * the kernel shuts the whole system down.
  *
- *      One subsystem per folder (app_program/subsystemN/), one per student.
- *      The interfaces between them are listed in TEAM.md section 5: the
- *      subsystem that RECEIVES or OWNS the data creates the kernel object
- *      and publishes its ID in its header; the other side just uses it.
+ * One subsystem per folder (app_program/subsystemN/), one per student.
+ * The interfaces between them are listed in TEAM.md section 5: the
+ * subsystem that RECEIVES or OWNS the data creates the kernel object and
+ * publishes its ID in its header; the other side just uses it.
  *
- *      Output appears on the USB serial port (115200 8N1 in any terminal).
+ * Output appears on the USB serial port (115200 8N1 in any terminal).
  */
 
 #include "app.h"
 
 #define APP_WATCHDOG_TICK        0x4005802cu /* RP2040 WATCHDOG TICK */
 #define APP_WATCHDOG_TICK_ENABLE (1u << 9)
+#define APP_ANY_CORE             0u
 
-/*
- * Create and start one task (declared in app.h for every subsystem).
- *   prc = TP_PRC1 (core 0), TP_PRC2 (core 1), or 0 for "any core".
+/*!
+ * @brief Create and start one task. prc = TP_PRC1 (core 0), TP_PRC2
+ * (core 1), or 0 for "any core".
  */
-EXPORT ID app_start_task(FP entry, PRI pri, UW prc, const char * name)
+ID app_start_task(FP p_entry, PRI pri, UW prc, const char * p_name)
 {
-    T_CTSK ctsk = {0};
-    ID tid;
-    ER er;
+    T_CTSK task = {0};
+    ID task_id = 0;
 
-    ctsk.task = entry;            /* function the task runs */
-    ctsk.itskpri = pri;           /* initial priority (1 = highest) */
-    ctsk.stksz = TASK_STACK_SIZE; /* kernel allocates the stack */
-    ctsk.tskatr = TA_HLNG         /* written in a high-level language (C) */
-                  | TA_RNG3;      /* runs at user protection level */
+    task.task = p_entry;              /* Function the task runs. */
+    task.itskpri = pri;               /* Initial priority (1 = highest). */
+    task.stksz = APP_TASK_STACK_SIZE; /* The kernel allocates the stack. */
+    task.tskatr = TA_HLNG | TA_RNG3;  /* C code, user protection level. */
 #if TK_SUPPORT_SMP
-    if (prc != 0)
+    if (APP_ANY_CORE != prc)
     {
-        ctsk.tskatr |= TA_ASSPRC; /* honour the affinity below */
-        ctsk.assprc = prc;        /* which core(s) it may run on */
+        task.tskatr |= TA_ASSPRC; /* Honour the affinity below. */
+        task.assprc = prc;        /* Which core(s) it may run on. */
     }
 #else
-    (void)prc; /* single-core build: no affinity */
+    (void)prc; /* Single-core build: no affinity. */
 #endif
 
-    /* tk_cre_tsk: create the task.  It starts in the DORMANT state. */
-    tid = tk_cre_tsk(&ctsk);
-    if (tid < E_OK)
+    /* tk_cre_tsk creates the task DORMANT; tk_sta_tsk makes it READY. */
+    task_id = tk_cre_tsk(&task);
+    if (task_id < E_OK)
     {
-        CHECK(tid, name);
-        return tid;
+        app_check(task_id, p_name);
     }
-
-    /* tk_sta_tsk: DORMANT -> READY.  The int is passed as stacd. */
-    er = tk_sta_tsk(tid, 0);
-    CHECK(er, name);
-    return tid;
+    else
+    {
+        app_check(tk_sta_tsk(task_id, 0), p_name);
+    }
+    return task_id;
 }
 
-EXPORT INT usermain(void)
+/*!
+ * @brief Print a readable message if a kernel call failed.
+ */
+void app_check(ER result, const char * p_what)
 {
-    T_RVER ver;
+    if (result < E_OK)
+    {
+        tm_printf((UB *)"ERROR %s: %d\n", p_what, result);
+    }
+}
 
-    /* tk_ref_ver: ask the kernel who it is */
-    tk_ref_ver(&ver);
+/*!
+ * @brief Entry point, called by the kernel's initial task.
+ */
+INT usermain(void)
+{
+    T_RVER version = {0};
+
+    (void)tk_ref_ver(&version);
     tm_printf((UB *)"\n=== micro T-Kernel on Raspberry Pi Pico W"
                     " (spec 0x%04x, product 0x%04x) ===\n",
-              ver.spver, ver.prver);
+              version.spver, version.prver);
 #if TK_SUPPORT_SMP
     tm_printf((UB *)"dual-core (SMP) build, usermain on core %d\n",
-              tk_get_prc() - 1); /* tk_get_prc() counts from 1 */
+              tk_get_prc() - 1); /* tk_get_prc() counts from 1. */
 #else
     tm_printf((UB *)"single-core build\n");
 #endif
 
     /* The kernel leaves the PWM block in reset (USE_PTMR = 0 in
-       config/config.h).  Release it once here for every PWM pin: motors,
-       servo, buzzer. */
+     * config/config.h). Release it once here for every PWM pin: motors,
+     * servo, buzzer. */
     clr_w(RESETS_RESET, RESETS_RESET_PWM);
-    while ((in_w(RESETS_RESET_DONE) & RESETS_RESET_PWM) == 0)
+    while (0u == (in_w(RESETS_RESET_DONE) & RESETS_RESET_PWM))
     {
+        /* Wait for the reset to finish. */
     }
 
     /* The kernel never starts the watchdog tick that clocks the 1 MHz
-       TIMER block, so after a power-on the timer runs about 20 times too
-       slow (a reboot from BOOTSEL keeps the boot ROM's setting, which
-       hides this).  One tick per microsecond of the 12 MHz crystal. */
+     * TIMER block, so after a power-on the timer runs about 20 times too
+     * slow (a reboot from BOOTSEL keeps the boot ROM's setting, which
+     * hides this). One tick per microsecond of the 12 MHz crystal. */
     out_w(APP_WATCHDOG_TICK, APP_WATCHDOG_TICK_ENABLE | XOSC_MHz);
 
-    /* Phase 1: every subsystem creates its kernel objects */
-    CHECK(subsystem1_init(), "subsystem1_init");
-    CHECK(subsystem2_init(), "subsystem2_init");
-    CHECK(subsystem3_init(), "subsystem3_init");
-    CHECK(subsystem4_init(), "subsystem4_init");
-    CHECK(subsystem5_init(), "subsystem5_init");
+    /* Phase 1: every subsystem creates its kernel objects. */
+    app_check(subsystem1_init(), "subsystem1_init");
+    app_check(subsystem2_init(), "subsystem2_init");
+    app_check(subsystem3_init(), "subsystem3_init");
+    app_check(subsystem4_init(), "subsystem4_init");
+    app_check(subsystem5_init(), "subsystem5_init");
 
-    /* Phase 2: every subsystem starts its tasks */
-    CHECK(subsystem1_start(), "subsystem1_start");
-    CHECK(subsystem2_start(), "subsystem2_start");
-    CHECK(subsystem3_start(), "subsystem3_start");
-    CHECK(subsystem4_start(), "subsystem4_start");
-    CHECK(subsystem5_start(), "subsystem5_start");
+    /* Phase 2: every subsystem starts its tasks. */
+    app_check(subsystem1_start(), "subsystem1_start");
+    app_check(subsystem2_start(), "subsystem2_start");
+    app_check(subsystem3_start(), "subsystem3_start");
+    app_check(subsystem4_start(), "subsystem4_start");
+    app_check(subsystem5_start(), "subsystem5_start");
 
     tm_printf((UB *)"all subsystems started\n\n");
 
 #if APP_TEST
-    /* Test build (make TEST=1): run every subsystem's tests in turn,
-       here in the initial task, while the system is running.  Tests may
-       call tk_dly_tsk() to let the other tasks work for a while. */
+    /* Test build (make TEST=1): run every subsystem's tests in turn, here
+     * in the initial task, while the system is running. Tests may call
+     * tk_dly_tsk() to let the other tasks work for a while. */
     tm_printf((UB *)"[TEST] === test run start ===\n");
     subsystem1_test();
     subsystem2_test();
@@ -127,7 +134,9 @@ EXPORT INT usermain(void)
     tm_printf((UB *)"[TEST] === test run end ===\n");
 #endif
 
-    /* Sleep forever.  Returning from usermain() would shut down. */
-    tk_slp_tsk(TMO_FEVR);
+    /* Sleep forever. Returning from usermain() would shut down. */
+    (void)tk_slp_tsk(TMO_FEVR);
     return 0;
 }
+
+/*** end of file ***/

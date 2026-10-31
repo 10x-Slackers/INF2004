@@ -103,14 +103,14 @@ the drivers have no locking to stop it.
 | Peripheral | Owner subsystem | Owning task | Pins |
 |---|---|---|---|
 | UART1 | | | |
-| I2C0 | IMU (Buddy 4) | `imu_task` | GP4, GP5 (kernel driver `iica`, `DEVCNF_USE_IIC` = 1) |
+| I2C0 | IMU (Buddy 4) | `s4_imu` | GP4, GP5 (kernel driver `iica`, `DEVCNF_USE_IIC` = 1) |
 | I2C1 | | | |
 | SPI0 | | | |
 | SPI1 | | | |
 | ADC | | | GP26–GP28 |
 | PWM4, PWM5 | Motion (Buddy 2) | `s2_motion` (`motion_control_stop()` may brake from any task) | GP8–GP11 |
 | IRQ13 (GPIO bank 0), core 0 | Motion (Buddy 2) | `drv_motion_gpio_isr` | GP2/3, GP16/17. Other GPIO edge users register a callback with `drv_motion_gpio_register()` |
-| PWM slices (list) | IMU (Buddy 4) | `imu_task` | Slice 3 A: GP22 buzzer |
+| PWM slices (list) | IMU (Buddy 4) | `s4_imu` | Slice 3 A: GP22 buzzer |
 | PWM slices (list) | Ultrasonic (Buddy 5) | `s5_scan` | Slice 6 A: GP12 servo |
 | GPIO edge callback on IRQ13 | Ultrasonic (Buddy 5) | `drv_hcsr04_edge`, registered with `drv_motion_gpio_register()` | GP1 echo |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
@@ -152,7 +152,7 @@ agreement. Write down every task you create.
 | 2 | 6–7 | `s2_motion` (P2) – 6 – core 0; `s2_bench` – 7 – core 0 (`TEST=1` only) |
 | 3 | 8–9 | Barcode Decoder (P3), Line Following (P4) |
 | 5 | 11–12 | `s5_avoid` (P6) – 11 – any; `s5_scan` (P7) – 12 – any; `s5_bench` – 12 – any (`TEST=1` only) |
-| 4 | 18–19 | imu_task (P8) – 18 – any |
+| 4 | 18–19 | `s4_imu` (P8) – 18 – any |
 | 1 | 20–21 | Wi-Fi and MQTT Telemetry (P10) |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".

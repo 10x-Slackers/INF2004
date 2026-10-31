@@ -1,0 +1,81 @@
+# Normal image, af4be0d. First boot: tilt held past 45 deg (S4-U16, INT-08). Port closed at the reset.
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[imu] calibrated: offsets x=74 y=0 z=1040 mg
+[vc] INIT -> READY: IMU calibrated
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] FAULT: tilt
+[safety] stop, cause 0x1
+[vc] READY -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+
+# After the reset: a table rap (no fault), then one knuckle tap on the chassis (S4-U15).
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[imu] calibrated: offsets x=80 y=2 z=1040 mg
+
+[vc] INIT -> READY: IMU calibrated
+
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: impact
+[imu] FAULT: impact
+[safety] stop, cause 0x1
+[vc] READY -> SAFE_STOP: safety latched
+[vc] max hump 0 mm

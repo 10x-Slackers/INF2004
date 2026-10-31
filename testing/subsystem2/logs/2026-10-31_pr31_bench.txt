@@ -1,0 +1,2120 @@
+[bar] min=4070 max=4088
+[bar] min=4077 max=4095
+[bar] min=4080 max=4095
+[bar] min=4072 max=4089
+[bar] min=4058 max=4088
+[bar] min=4074 max=4094
+[bar] min=4079 max=4084
+[bar] min=4077 max=4084
+[bar] min=4074 max=4092
+[bar] min=4074 max=4095
+[bar] min=4075 max=4088
+[bar] min=4073 max=4084
+[bar] min=4076 max=4083
+[bar] min=4073 max=4083
+[bar] min=4073 max=4089
+[bar] min=4073 max=4095
+[bar] min=4078 max=4084
+[bar] min=4077 max=4083
+[bar] min=4068 max=4083
+[bar] min=4074 max=4090
+[bar] min=4077 max=4094
+[bar] min=4078 max=4083
+[bar] min=4080 max=4094
+[bar] min=4074 max=4085
+[bar] min=4075 max=4083
+[bar] min=4078 max=4095
+[bar] min=4076 max=4093
+[bar] min=4075 max=4083
+[bar] min=4080 max=4090
+[bar] min=4080 max=4083
+[bar] min=4080 max=4093
+[bar] min=4077 max=4084
+[bar] min=4072 max=4083
+[bar] min=165 max=189
+[bar] min=166 max=188
+[bar] min=165 max=189
+[bar] min=4059 max=4089
+[bar] min=4080 max=4094
+[bar] min=165 max=189
+[bar] min=164 max=189
+[bar] min=166 max=189
+[bar] min=166 max=189
+[bar] min=165 max=188
+[bar] min=153 max=189
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[imu] motion: braking
+[bar] min=4074 max=4090
+[bar] min=4075 max=4092
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4073 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4073 max=4095
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4060 max=4095
+[bar] min=4077 max=4095
+[imu] motion: steady
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4079 max=4095
+[bar] min=4074 max=4094
+[bar] min=4065 max=4090
+[bar] min=4076 max=4093
+[bar] min=4066 max=4094
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4075 max=4093
+[bar] min=4075 max=4095
+[motion] bench: drive +-100, forward/backward 300, left 90, right 90, left 180, forward 300 at 200, left 180, forward 300
+[trace] 89180 0 8
+[trace] 89200 8 56
+[trace] 89220 16 80
+[trace] 89240 48 80
+[trace] 89260 72 88
+[trace] 89280 80 88
+[bar] min=4074 max=4089
+[trace] 89300 80 88
+[trace] 89320 80 96
+[trace] 89340 80 88
+[trace] 89360 88 96
+[trace] 89380 88 96
+[trace] 89400 96 88
+[trace] 89420 88 96
+[trace] 89440 88 80
+[trace] 89460 96 96
+[trace] 89480 88 88
+[trace] 89500 88 96
+[trace] 89520 88 96
+[trace] 89540 88 96
+[trace] 89560 88 96
+[trace] 89580 88 96
+[trace] 89600 88 96
+[trace] 89620 88 96
+[trace] 89640 80 88
+[trace] 89660 88 96
+[trace] 89680 96 88
+[trace] 89700 88 96
+[trace] 89720 88 96
+[trace] 89740 88 96
+[trace] 89760 88 96
+[trace] 89780 88 96
+[bar] min=4077 max=4087
+[trace] 89800 88 96
+[trace] 89820 96 96
+[trace] 89840 88 88
+[trace] 89860 96 88
+[trace] 89880 88 96
+[trace] 89900 96 80
+[trace] 89920 88 80
+[trace] 89940 88 80
+[trace] 89960 96 80
+[trace] 89980 88 96
+[trace] 90000 96 96
+[trace] 90020 96 96
+[trace] 90040 88 96
+[trace] 90060 88 104
+[trace] 90080 96 96
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=85 deg=3
+[trace] 90100 96 104
+[trace] 90120 80 88
+[trace] 90140 96 96
+[trace] 90160 96 104
+[trace] 90180 96 96
+[trace] 90200 88 96
+[trace] 90220 96 96
+[trace] 90240 88 96
+[trace] 90260 96 96
+[trace] 90280 96 96
+[bar] min=4072 max=4090
+[trace] 90300 88 96
+[trace] 90320 88 96
+[trace] 90340 88 88
+[trace] 90360 96 96
+[trace] 90380 96 96
+[trace] 90400 88 96
+[trace] 90420 88 96
+[trace] 90440 88 88
+[trace] 90460 88 96
+[trace] 90480 96 96
+[trace] 90500 96 96
+[trace] 90520 96 96
+[trace] 90540 96 88
+[trace] 90560 88 96
+[trace] 90580 96 96
+[trace] 90600 88 96
+[trace] 90620 96 96
+[trace] 90640 88 88
+[trace] 90660 96 96
+[trace] 90680 88 96
+[trace] 90700 88 88
+[trace] 90720 88 96
+[trace] 90740 88 88
+[trace] 90760 96 96
+[trace] 90780 96 88
+[bar] min=4073 max=4087
+[trace] 90800 96 96
+[trace] 90820 96 96
+[trace] 90840 96 88
+[trace] 90860 96 88
+[trace] 90880 88 96
+[trace] 90900 96 96
+[trace] 90920 96 96
+[trace] 90940 96 88
+[trace] 90960 96 96
+[trace] 90980 96 88
+[trace] 91000 96 96
+[trace] 91020 88 96
+[trace] 91040 88 88
+[trace] 91060 88 96
+[trace] 91080 88 96
+[trace] 91100 88 96
+[trace] 91120 96 96
+[trace] 91140 88 88
+[trace] 91160 96 96
+[motion] state=1 cmd=5 faults=0 heading=3 dist_mm=193 counts=2350,2448 speed=96,96 max_tick_us=540
+[bar] min=4072 max=4095
+[bar] min=4078 max=4095
+[bar] min=4059 max=4095
+[bar] min=4080 max=4088
+[bar] min=4073 max=4091
+[bar] min=4077 max=4090
+[trace] 94190 -8 0
+[trace] 94210 -40 -64
+[trace] 94230 -64 -88
+[trace] 94250 -72 -96
+[trace] 94270 -80 -104
+[trace] 94290 -88 -112
+[bar] min=4065 max=4095
+[trace] 94310 -88 -104
+[trace] 94330 -88 -112
+[trace] 94350 -88 -104
+[trace] 94370 -88 -104
+[trace] 94390 -88 -96
+[trace] 94410 -96 -104
+[trace] 94430 -96 -112
+[trace] 94450 -88 -104
+[trace] 94470 -96 -112
+[trace] 94490 -96 -104
+[trace] 94510 -96 -104
+[trace] 94530 -104 -104
+[trace] 94550 -96 -112
+[trace] 94570 -104 -104
+[trace] 94590 -96 -112
+[trace] 94610 -104 -96
+[trace] 94630 -104 -112
+[trace] 94650 -104 -104
+[trace] 94670 -96 -104
+[trace] 94690 -96 -112
+[trace] 94710 -104 -104
+[trace] 94730 -104 -112
+[trace] 94750 -104 -104
+[trace] 94770 -104 -112
+[trace] 94790 -104 -104
+[bar] min=4068 max=4091
+[trace] 94810 -104 -112
+[trace] 94830 -112 -112
+[trace] 94850 -104 -112
+[trace] 94870 -104 -104
+[trace] 94890 -104 -112
+[trace] 94910 -96 -104
+[trace] 94930 -104 -112
+[trace] 94950 -104 -104
+[trace] 94970 -96 -104
+[trace] 94990 -104 -104
+[trace] 95010 -104 -104
+[trace] 95030 -104 -104
+[trace] 95050 -104 -104
+[trace] 95070 -104 -104
+[trace] 95090 -104 -112
+[trace] 95110 -112 -104
+[trace] 95130 -104 -104
+[trace] 95150 -104 -104
+[trace] 95170 -112 -104
+[trace] 95190 -104 -104
+[trace] 95210 -104 -104
+[trace] 95230 -112 -112
+[trace] 95250 -104 -104
+[trace] 95270 -112 -104
+[trace] 95290 -104 -104
+[bar] min=4067 max=4095
+[trace] 95310 -112 -112
+[trace] 95330 -104 -112
+[trace] 95350 -104 -104
+[trace] 95370 -112 -104
+[trace] 95390 -104 -112
+[trace] 95410 -104 -104
+[trace] 95430 -104 -112
+[trace] 95450 -104 -104
+[trace] 95470 -104 -96
+[trace] 95490 -104 -96
+[trace] 95510 -112 -88
+[trace] 95530 -104 -88
+[trace] 95550 -104 -96
+[trace] 95570 -112 -112
+[trace] 95590 -112 -112
+[trace] 95610 -112 -104
+[trace] 95630 -112 -112
+[trace] 95650 -104 -112
+[trace] 95670 -104 -112
+[trace] 95690 -104 -112
+[trace] 95710 -104 -112
+[trace] 95730 -104 -112
+[trace] 95750 -104 -112
+[trace] 95770 -112 -104
+[trace] 95790 -112 -104
+[bar] min=4076 max=4095
+[trace] 95810 -104 -112
+[trace] 95830 -112 -112
+[trace] 95850 -104 -104
+[trace] 95870 -112 -104
+[trace] 95890 -104 -112
+[trace] 95910 -112 -104
+[trace] 95930 -112 -104
+[trace] 95950 -112 -112
+[trace] 95970 -104 -104
+[trace] 95990 -112 -104
+[trace] 96010 -112 -112
+[trace] 96030 -104 -112
+[trace] 96050 -104 -104
+[trace] 96070 -112 -112
+[trace] 96090 -104 -96
+[trace] 96110 -112 -112
+[trace] 96130 -104 -112
+[trace] 96150 -112 -104
+[trace] 96170 -112 -112
+[motion] state=1 cmd=5 faults=0 heading=0 dist_mm=388 counts=17,34 speed=-112,-112 max_tick_us=540
+[bar] min=4071 max=4089
+[bar] min=4073 max=4094
+[bar] min=4075 max=4092
+[bar] min=4075 max=4094
+[bar] min=4077 max=4095
+[bar] min=4074 max=4095
+[trace] 99200 0 8
+[trace] 99220 16 40
+[trace] 99240 32 48
+[trace] 99260 32 64
+[trace] 99280 48 64
+[bar] min=4072 max=4095
+[trace] 99300 64 64
+[trace] 99320 64 72
+[trace] 99340 72 72
+[trace] 99360 80 88
+[trace] 99380 80 88
+[trace] 99400 80 88
+[trace] 99420 80 88
+[trace] 99440 80 80
+[trace] 99460 88 96
+[trace] 99480 88 88
+[trace] 99500 88 88
+[trace] 99520 88 80
+[trace] 99540 88 80
+[trace] 99560 88 88
+[trace] 99580 88 88
+[trace] 99600 88 80
+[trace] 99620 96 88
+[trace] 99640 96 80
+[trace] 99660 96 88
+[trace] 99680 88 88
+[trace] 99700 96 88
+[trace] 99720 96 80
+[trace] 99740 88 88
+[trace] 99760 96 80
+[trace] 99780 88 88
+[bar] min=4060 max=4088
+[trace] 99800 96 96
+[trace] 99820 96 88
+[trace] 99840 88 80
+[trace] 99860 96 96
+[trace] 99880 88 88
+[trace] 99900 96 80
+[trace] 99920 96 88
+[trace] 99940 96 88
+[trace] 99960 88 88
+[trace] 99980 96 80
+[trace] 100000 96 72
+[trace] 100020 96 80
+[trace] 100040 88 80
+[trace] 100060 96 88
+[trace] 100080 96 96
+[trace] 100100 88 96
+[trace] 100120 96 96
+[trace] 100140 88 96
+[trace] 100160 96 96
+[trace] 100180 88 104
+[trace] 100200 96 96
+[trace] 100220 96 96
+[trace] 100240 88 96
+[trace] 100260 96 96
+[trace] 100280 96 96
+[bar] min=4020 max=4095
+[trace] 100300 96 96
+[trace] 100320 96 96
+[trace] 100340 88 88
+[trace] 100360 96 104
+[trace] 100380 96 96
+[trace] 100400 88 96
+[trace] 100420 96 96
+[trace] 100440 88 96
+[trace] 100460 96 96
+[trace] 100480 96 96
+[trace] 100500 96 96
+[trace] 100520 96 88
+[trace] 100540 88 96
+[trace] 100560 96 96
+[trace] 100580 96 96
+[trace] 100600 96 96
+[trace] 100620 96 96
+[trace] 100640 88 88
+[trace] 100660 96 96
+[trace] 100680 96 88
+[trace] 100700 96 96
+[trace] 100720 96 96
+[trace] 100740 88 96
+[trace] 100760 96 96
+[trace] 100780 96 88
+[bar] min=4071 max=4093
+[trace] 100800 96 96
+[trace] 100820 96 96
+[trace] 100840 88 88
+[trace] 100860 96 96
+[trace] 100880 96 96
+[trace] 100900 88 88
+[trace] 100920 96 96
+[trace] 100940 88 88
+[trace] 100960 96 96
+[trace] 100980 96 96
+[trace] 101000 96 96
+[trace] 101020 96 96
+[trace] 101040 96 88
+[trace] 101060 88 96
+[trace] 101080 96 96
+[trace] 101100 96 96
+[trace] 101120 96 88
+[trace] 101140 88 88
+[trace] 101160 96 96
+[trace] 101180 96 96
+[trace] 101200 88 96
+[trace] 101220 96 96
+[trace] 101240 96 88
+[trace] 101260 88 96
+[trace] 101280 88 96
+[bar] min=4073 max=4093
+[trace] 101300 96 96
+[trace] 101320 96 96
+[trace] 101340 88 88
+[trace] 101360 96 96
+[trace] 101380 96 96
+[trace] 101400 96 96
+[trace] 101420 88 96
+[trace] 101440 96 96
+[trace] 101460 96 88
+[trace] 101480 88 96
+[trace] 101500 88 96
+[trace] 101520 88 96
+[trace] 101540 88 88
+[trace] 101560 88 96
+[trace] 101580 88 96
+[trace] 101600 88 88
+[trace] 101620 96 96
+[trace] 101640 88 88
+[trace] 101660 96 96
+[trace] 101680 96 88
+[trace] 101700 96 96
+[trace] 101720 96 96
+[trace] 101740 88 88
+[trace] 101760 96 96
+[trace] 101780 96 96
+[bar] min=4074 max=4088
+[trace] 101800 96 96
+[trace] 101820 96 96
+[trace] 101840 96 88
+[trace] 101860 96 96
+[trace] 101880 88 88
+[trace] 101900 96 80
+[trace] 101920 96 88
+[trace] 101940 88 72
+[trace] 101960 96 88
+[trace] 101980 96 96
+[trace] 102000 96 96
+[trace] 102020 88 96
+[trace] 102040 88 96
+[trace] 102060 96 104
+[trace] 102080 88 96
+[trace] 102100 88 96
+[trace] 102120 88 96
+[trace] 102140 80 96
+[trace] 102160 80 80
+[trace] 102180 80 80
+[trace] 102200 80 80
+[trace] 102220 72 72
+[trace] 102240 72 64
+[trace] 102260 64 72
+[trace] 102280 64 64
+[bar] min=4069 max=4086
+[trace] 102300 64 64
+[trace] 102320 56 56
+[trace] 102340 56 48
+[trace] 102360 48 48
+[motion] state=2 cmd=1 faults=0 heading=0 dist_mm=690 counts=3726,3738 speed=48,48 max_tick_us=540
+[bar] min=4076 max=4089
+[bar] min=4070 max=4095
+[bar] min=4067 max=4086
+[bar] min=4046 max=4088
+[bar] min=4070 max=4095
+[bar] min=4047 max=4095
+[trace] 105390 0 -16
+[trace] 105410 0 -48
+[trace] 105430 -16 -64
+[trace] 105450 -40 -64
+[trace] 105470 -64 -72
+[trace] 105490 -64 -80
+[trace] 105510 -72 -80
+[trace] 105530 -88 -88
+[trace] 105550 -88 -88
+[trace] 105570 -96 -96
+[trace] 105590 -96 -88
+[trace] 105610 -104 -96
+[trace] 105630 -104 -96
+[trace] 105650 -104 -96
+[trace] 105670 -96 -96
+[trace] 105690 -104 -96
+[trace] 105710 -104 -96
+[trace] 105730 -104 -96
+[trace] 105750 -96 -96
+[trace] 105770 -104 -96
+[trace] 105790 -112 -96
+[bar] min=4078 max=4091
+[trace] 105810 -104 -96
+[trace] 105830 -96 -104
+[trace] 105850 -104 -88
+[trace] 105870 -112 -88
+[trace] 105890 -104 -88
+[trace] 105910 -104 -88
+[trace] 105930 -112 -96
+[trace] 105950 -104 -96
+[trace] 105970 -104 -96
+[trace] 105990 -96 -104
+[trace] 106010 -104 -104
+[trace] 106030 -112 -104
+[trace] 106050 -104 -104
+[trace] 106070 -104 -96
+[trace] 106090 -112 -112
+[trace] 106110 -104 -96
+[trace] 106130 -104 -112
+[trace] 106150 -112 -104
+[trace] 106170 -104 -104
+[trace] 106190 -104 -104
+[trace] 106210 -112 -104
+[trace] 106230 -104 -112
+[trace] 106250 -104 -104
+[trace] 106270 -104 -112
+[trace] 106290 -104 -104
+[bar] min=4066 max=4095
+[trace] 106310 -112 -112
+[trace] 106330 -112 -112
+[trace] 106350 -104 -112
+[trace] 106370 -104 -104
+[trace] 106390 -112 -104
+[trace] 106410 -104 -104
+[trace] 106430 -112 -112
+[trace] 106450 -104 -96
+[trace] 106470 -104 -112
+[trace] 106490 -104 -104
+[trace] 106510 -104 -112
+[trace] 106530 -104 -104
+[trace] 106550 -104 -104
+[trace] 106570 -104 -104
+[trace] 106590 -104 -104
+[trace] 106610 -104 -104
+[trace] 106630 -104 -112
+[trace] 106650 -104 -104
+[trace] 106670 -104 -104
+[trace] 106690 -104 -104
+[trace] 106710 -104 -104
+[trace] 106730 -104 -104
+[trace] 106750 -104 -104
+[trace] 106770 -104 -104
+[trace] 106790 -112 -104
+[bar] min=4069 max=4095
+[trace] 106810 -112 -112
+[trace] 106830 -112 -112
+[trace] 106850 -104 -112
+[trace] 106870 -112 -104
+[trace] 106890 -104 -112
+[trace] 106910 -112 -96
+[trace] 106930 -112 -112
+[trace] 106950 -112 -104
+[trace] 106970 -104 -112
+[trace] 106990 -104 -96
+[trace] 107010 -104 -112
+[trace] 107030 -104 -104
+[trace] 107050 -104 -112
+[trace] 107070 -112 -96
+[trace] 107090 -104 -112
+[trace] 107110 -104 -96
+[trace] 107130 -104 -112
+[trace] 107150 -104 -96
+[trace] 107170 -104 -112
+[trace] 107190 -104 -104
+[trace] 107210 -104 -112
+[trace] 107230 -104 -104
+[trace] 107250 -104 -112
+[trace] 107270 -104 -104
+[trace] 107290 -96 -112
+[bar] min=4075 max=4095
+[trace] 107310 -112 -104
+[trace] 107330 -112 -112
+[trace] 107350 -112 -104
+[trace] 107370 -96 -104
+[trace] 107390 -104 -104
+[trace] 107410 -112 -104
+[trace] 107430 -112 -112
+[trace] 107450 -104 -112
+[trace] 107470 -112 -104
+[trace] 107490 -112 -104
+[trace] 107510 -104 -104
+[trace] 107530 -112 -104
+[trace] 107550 -112 -104
+[trace] 107570 -104 -104
+[trace] 107590 -112 -104
+[trace] 107610 -104 -104
+[trace] 107630 -112 -104
+[trace] 107650 -104 -112
+[trace] 107670 -104 -104
+[trace] 107690 -104 -104
+[trace] 107710 -112 -104
+[trace] 107730 -104 -112
+[trace] 107750 -104 -96
+[trace] 107770 -104 -96
+[trace] 107790 -104 -88
+[bar] min=4049 max=4089
+[trace] 107810 -112 -80
+[trace] 107830 -112 -88
+[trace] 107850 -104 -104
+[trace] 107870 -96 -104
+[trace] 107890 -104 -112
+[trace] 107910 -104 -104
+[trace] 107930 -112 -112
+[trace] 107950 -104 -112
+[trace] 107970 -104 -112
+[trace] 107990 -104 -104
+[trace] 108010 -104 -104
+[trace] 108030 -112 -104
+[trace] 108050 -104 -112
+[trace] 108070 -112 -104
+[trace] 108090 -104 -112
+[trace] 108110 -104 -112
+[trace] 108130 -104 -112
+[trace] 108150 -104 -104
+[trace] 108170 -104 -104
+[trace] 108190 -104 -112
+[trace] 108210 -104 -104
+[trace] 108230 -112 -104
+[trace] 108250 -104 -112
+[trace] 108270 -104 -104
+[trace] 108290 -112 -104
+[bar] min=4075 max=4095
+[trace] 108310 -104 -104
+[trace] 108330 -104 -104
+[trace] 108350 -88 -88
+[trace] 108370 -88 -96
+[trace] 108390 -88 -88
+[trace] 108410 -80 -88
+[trace] 108430 -80 -80
+[trace] 108450 -80 -80
+[trace] 108470 -72 -64
+[trace] 108490 -72 -72
+[trace] 108510 -64 -64
+[trace] 108530 -64 -64
+[trace] 108550 -56 -40
+[motion] state=2 cmd=2 faults=0 heading=0 dist_mm=991 counts=65534,9 speed=-56,-40 max_tick_us=540
+[bar] min=4068 max=4095
+[bar] min=4060 max=4095
+[bar] min=4068 max=4092
+[bar] min=4050 max=4095
+[bar] min=4069 max=4091
+[bar] min=4074 max=4095
+[trace] 111580 0 8
+[trace] 111600 0 48
+[trace] 111620 0 56
+[trace] 111640 -16 56
+[trace] 111660 -40 64
+[trace] 111680 -64 72
+[trace] 111700 -72 72
+[trace] 111720 -80 72
+[trace] 111740 -80 80
+[trace] 111760 -96 80
+[trace] 111780 -88 80
+[bar] min=4034 max=4093
+[trace] 111800 -88 80
+[trace] 111820 -88 80
+[trace] 111840 -88 88
+[trace] 111860 -96 88
+[trace] 111880 -88 88
+[trace] 111900 -88 88
+[trace] 111920 -96 88
+[trace] 111940 -88 80
+[trace] 111960 -96 80
+[trace] 111980 -96 88
+[trace] 112000 -88 80
+[trace] 112020 -96 88
+[trace] 112040 -88 80
+[trace] 112060 -96 88
+[trace] 112080 -88 96
+[trace] 112100 -88 80
+[trace] 112120 -96 88
+[trace] 112140 -88 88
+[trace] 112160 -88 88
+[trace] 112180 -88 88
+[trace] 112200 -88 80
+[trace] 112220 -96 88
+[trace] 112240 -88 80
+[trace] 112260 -96 96
+[trace] 112280 -96 88
+[bar] min=4042 max=4088
+[trace] 112300 -96 96
+[trace] 112320 -88 96
+[trace] 112340 -88 80
+[trace] 112360 -96 80
+[trace] 112380 -88 72
+[trace] 112400 -88 64
+[trace] 112420 -88 72
+[trace] 112440 -72 72
+[trace] 112460 -80 80
+[trace] 112480 -72 80
+[trace] 112500 -64 80
+[trace] 112520 -72 72
+[trace] 112540 -64 64
+[trace] 112560 -56 64
+[trace] 112580 -56 64
+[trace] 112600 -56 56
+[trace] 112620 -48 56
+[trace] 112640 -40 48
+[motion] state=2 cmd=3 faults=0 heading=90 dist_mm=1081 counts=64415,1114 speed=-40,48 max_tick_us=540
+[bar] min=4075 max=4093
+[bar] min=4070 max=4091
+[bar] min=4074 max=4086
+[bar] min=4066 max=4088
+[bar] min=4069 max=4095
+[bar] min=4071 max=4095
+[trace] 115670 0 0
+[trace] 115690 16 -48
+[trace] 115710 40 -56
+[trace] 115730 48 -72
+[trace] 115750 56 -72
+[trace] 115770 56 -80
+[trace] 115790 72 -96
+[bar] min=4070 max=4084
+[trace] 115810 80 -88
+[trace] 115830 88 -96
+[trace] 115850 88 -88
+[trace] 115870 96 -88
+[trace] 115890 96 -96
+[trace] 115910 96 -88
+[trace] 115930 104 -88
+[trace] 115950 96 -80
+[trace] 115970 96 -80
+[trace] 115990 96 -96
+[trace] 116010 96 -96
+[trace] 116030 104 -104
+[trace] 116050 104 -104
+[trace] 116070 96 -104
+[trace] 116090 104 -104
+[trace] 116110 104 -104
+[trace] 116130 104 -104
+[trace] 116150 96 -96
+[trace] 116170 96 -104
+[trace] 116190 96 -96
+[trace] 116210 104 -96
+[trace] 116230 104 -104
+[trace] 116250 96 -104
+[trace] 116270 104 -96
+[trace] 116290 104 -104
+[bar] min=4073 max=4095
+[trace] 116310 104 -112
+[trace] 116330 112 -112
+[trace] 116350 104 -104
+[trace] 116370 104 -104
+[trace] 116390 104 -104
+[trace] 116410 104 -104
+[trace] 116430 112 -104
+[trace] 116450 104 -96
+[trace] 116470 104 -96
+[trace] 116490 96 -96
+[trace] 116510 104 -88
+[trace] 116530 96 -88
+[trace] 116550 88 -96
+[trace] 116570 88 -80
+[trace] 116590 80 -80
+[trace] 116610 72 -80
+[trace] 116630 80 -72
+[trace] 116650 72 -72
+[trace] 116670 72 -64
+[trace] 116690 64 -64
+[trace] 116710 56 -64
+[trace] 116730 56 -64
+[motion] state=2 cmd=4 faults=0 heading=1 dist_mm=1172 counts=65521,12 speed=56,-64 max_tick_us=540
+[bar] min=4070 max=4095
+[bar] min=4074 max=4091
+[bar] min=4070 max=4092
+[bar] min=4044 max=4088
+[bar] min=4051 max=4091
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1172 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1172 deg=0
+[bar] min=4075 max=4089
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1172 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1172 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1172 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1172 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1172 deg=0
+[trace] 119760 0 8
+[trace] 119780 0 32
+[bar] min=4075 max=4092
+[trace] 119800 0 56
+[trace] 119820 0 64
+[trace] 119840 0 64
+[trace] 119860 -8 64
+[trace] 119880 -40 72
+[trace] 119900 -80 72
+[trace] 119920 -88 72
+[trace] 119940 -96 80
+[trace] 119960 -96 80
+[trace] 119980 -104 80
+[trace] 120000 -96 80
+[trace] 120020 -104 80
+[trace] 120040 -104 80
+[trace] 120060 -96 80
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1195 deg=23
+[trace] 120080 -104 80
+[trace] 120100 -96 80
+[trace] 120120 -104 88
+[trace] 120140 -96 80
+[trace] 120160 -96 80
+[trace] 120180 -96 88
+[trace] 120200 -96 80
+[trace] 120220 -104 88
+[trace] 120240 -96 88
+[trace] 120260 -96 88
+[trace] 120280 -96 96
+[bar] min=4075 max=4092
+[trace] 120300 -96 96
+[trace] 120320 -96 96
+[trace] 120340 -96 88
+[trace] 120360 -96 88
+[trace] 120380 -96 88
+[trace] 120400 -96 96
+[trace] 120420 -96 96
+[trace] 120440 -88 96
+[trace] 120460 -96 96
+[trace] 120480 -88 96
+[trace] 120500 -96 88
+[trace] 120520 -96 88
+[trace] 120540 -88 96
+[trace] 120560 -96 72
+[trace] 120580 -96 80
+[trace] 120600 -88 80
+[trace] 120620 -88 88
+[trace] 120640 -88 96
+[trace] 120660 -96 96
+[trace] 120680 -96 96
+[trace] 120700 -96 96
+[trace] 120720 -88 96
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1260 deg=88
+[trace] 120740 -88 96
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1261 deg=89
+[trace] 120760 -88 96
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1264 deg=92
+[trace] 120780 -88 96
+[bar] min=4076 max=4095
+[trace] 120800 -88 96
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1267 deg=96
+[trace] 120820 -96 96
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1270 deg=99
+[trace] 120840 -88 88
+[trace] 120860 -88 88
+[trace] 120880 -88 96
+[trace] 120900 -88 96
+[trace] 120920 -88 96
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1280 deg=108
+[trace] 120940 -88 96
+[trace] 120960 -88 96
+[trace] 120980 -96 88
+[trace] 121000 -96 96
+[trace] 121020 -96 96
+[trace] 121040 -96 88
+[trace] 121060 -88 96
+[trace] 121080 -88 96
+[trace] 121100 -88 88
+[trace] 121120 -96 96
+[trace] 121140 -88 96
+[trace] 121160 -96 88
+[trace] 121180 -96 96
+[trace] 121200 -88 96
+[trace] 121220 -96 96
+[trace] 121240 -88 88
+[trace] 121260 -96 96
+[trace] 121280 -88 96
+[bar] min=4038 max=4095
+[trace] 121300 -96 96
+[trace] 121320 -88 96
+[trace] 121340 -88 96
+[trace] 121360 -96 88
+[trace] 121380 -88 96
+[trace] 121400 -96 88
+[trace] 121420 -96 96
+[trace] 121440 -96 88
+[trace] 121460 -88 88
+[trace] 121480 -96 96
+[trace] 121500 -80 80
+[trace] 121520 -88 80
+[trace] 121540 -72 80
+[trace] 121560 -72 72
+[trace] 121580 -72 72
+[trace] 121600 -64 64
+[trace] 121620 -72 64
+[trace] 121640 -56 56
+[trace] 121660 -64 56
+[trace] 121680 -48 64
+[trace] 121700 -56 56
+[motion] state=2 cmd=3 faults=0 heading=180 dist_mm=1351 counts=63312,2218 speed=-56,56 max_tick_us=540
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1352 deg=181
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1352 deg=181
+[bar] min=4075 max=4093
+[bar] min=4065 max=4090
+[bar] min=4072 max=4094
+[bar] min=4041 max=4088
+[bar] min=4076 max=4090
+[bar] min=4068 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1352 deg=181
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1352 deg=181
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1352 deg=181
+[trace] 124730 0 16
+[trace] 124750 16 48
+[trace] 124770 24 64
+[trace] 124790 48 72
+[bar] min=4077 max=4095
+[trace] 124810 64 72
+[trace] 124830 72 80
+[trace] 124850 80 96
+[trace] 124870 80 88
+[trace] 124890 96 96
+[trace] 124910 96 96
+[trace] 124930 104 112
+[trace] 124950 112 112
+[trace] 124970 120 128
+[trace] 124990 136 128
+[trace] 125010 136 136
+[trace] 125030 144 144
+[trace] 125050 152 144
+[trace] 125070 152 152
+[trace] 125090 160 169
+[trace] 125110 169 169
+[trace] 125130 177 177
+[trace] 125150 177 169
+[trace] 125170 177 177
+[trace] 125190 177 177
+[trace] 125210 177 177
+[trace] 125230 193 193
+[trace] 125250 185 177
+[trace] 125270 193 185
+[trace] 125290 193 185
+[bar] min=4074 max=4086
+[trace] 125310 193 185
+[trace] 125330 201 193
+[trace] 125350 193 185
+[trace] 125370 193 177
+[trace] 125390 193 177
+[trace] 125410 193 185
+[trace] 125430 201 193
+[trace] 125450 193 201
+[trace] 125470 201 201
+[trace] 125490 201 193
+[trace] 125510 201 201
+[trace] 125530 209 209
+[trace] 125550 201 201
+[trace] 125570 201 193
+[trace] 125590 201 209
+[trace] 125610 201 201
+[trace] 125630 209 201
+[trace] 125650 209 201
+[trace] 125670 201 209
+[trace] 125690 201 209
+[trace] 125710 201 209
+[trace] 125730 209 209
+[trace] 125750 201 201
+[trace] 125770 209 201
+[trace] 125790 209 209
+[bar] min=4076 max=4086
+[trace] 125810 209 209
+[trace] 125830 209 209
+[trace] 125850 201 209
+[trace] 125870 201 209
+[trace] 125890 209 201
+[trace] 125910 209 201
+[trace] 125930 209 209
+[trace] 125950 209 201
+[trace] 125970 209 209
+[trace] 125990 209 209
+[trace] 126010 209 209
+[trace] 126030 217 217
+[trace] 126050 209 209
+[trace] 126070 209 209
+[trace] 126090 209 209
+[trace] 126110 209 209
+[trace] 126130 209 217
+[trace] 126150 209 201
+[trace] 126170 217 209
+[trace] 126190 209 209
+[trace] 126210 209 209
+[trace] 126230 217 217
+[trace] 126250 201 201
+[trace] 126270 201 193
+[trace] 126290 193 193
+[bar] min=4076 max=4089
+[trace] 126310 193 193
+[trace] 126330 185 177
+[trace] 126350 169 169
+[trace] 126370 169 152
+[trace] 126390 160 144
+[trace] 126410 144 144
+[trace] 126430 144 152
+[trace] 126450 136 144
+[trace] 126470 128 128
+[trace] 126490 128 128
+[trace] 126510 112 112
+[trace] 126530 112 112
+[trace] 126550 112 104
+[trace] 126570 96 96
+[trace] 126590 88 88
+[trace] 126610 72 88
+[motion] state=2 cmd=1 faults=4 heading=181 dist_mm=1652 counts=1509,5965 speed=72,88 max_tick_us=540
+[bar] min=4062 max=4095
+[bar] min=4069 max=4085
+[bar] min=4072 max=4093
+[bar] min=4076 max=4089
+[bar] min=4075 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1654 deg=181
+[bar] min=4073 max=4095
+[trace] 129640 0 0
+[trace] 129660 -8 32
+[trace] 129680 -24 48
+[trace] 129700 -40 64
+[trace] 129720 -48 72
+[trace] 129740 -56 72
+[trace] 129760 -64 80
+[trace] 129780 -72 88
+[bar] min=4073 max=4095
+[trace] 129800 -80 88
+[trace] 129820 -72 88
+[trace] 129840 -80 80
+[trace] 129860 -80 80
+[trace] 129880 -88 80
+[trace] 129900 -88 88
+[trace] 129920 -80 88
+[trace] 129940 -88 80
+[trace] 129960 -88 80
+[trace] 129980 -96 88
+[trace] 130000 -96 96
+[trace] 130020 -88 80
+[trace] 130040 -88 88
+[trace] 130060 -96 88
+[trace] 130080 -96 80
+[trace] 130100 -96 88
+[trace] 130120 -96 88
+[trace] 130140 -88 80
+[trace] 130160 -88 96
+[trace] 130180 -88 88
+[trace] 130200 -96 88
+[trace] 130220 -96 88
+[trace] 130240 -88 96
+[trace] 130260 -96 88
+[trace] 130280 -96 80
+[bar] min=4076 max=4095
+[trace] 130300 -96 88
+[trace] 130320 -96 80
+[trace] 130340 -88 80
+[trace] 130360 -96 88
+[trace] 130380 -88 80
+[trace] 130400 -96 88
+[trace] 130420 -88 88
+[trace] 130440 -88 88
+[trace] 130460 -96 96
+[trace] 130480 -96 96
+[trace] 130500 -88 96
+[trace] 130520 -88 96
+[trace] 130540 -88 88
+[trace] 130560 -96 96
+[trace] 130580 -96 96
+[trace] 130600 -96 88
+[trace] 130620 -96 96
+[trace] 130640 -88 88
+[trace] 130660 -96 96
+[trace] 130680 -88 96
+[trace] 130700 -88 96
+[trace] 130720 -88 88
+[trace] 130740 -88 96
+[trace] 130760 -96 88
+[trace] 130780 -96 96
+[bar] min=4069 max=4093
+[trace] 130800 -88 88
+[trace] 130820 -96 88
+[trace] 130840 -88 88
+[trace] 130860 -96 96
+[trace] 130880 -96 96
+[trace] 130900 -96 88
+[trace] 130920 -96 96
+[trace] 130940 -88 88
+[trace] 130960 -96 88
+[trace] 130980 -96 96
+[trace] 131000 -96 88
+[trace] 131020 -96 96
+[trace] 131040 -88 88
+[trace] 131060 -96 96
+[trace] 131080 -96 88
+[trace] 131100 -96 96
+[trace] 131120 -96 96
+[trace] 131140 -96 96
+[trace] 131160 -96 88
+[trace] 131180 -96 96
+[trace] 131200 -96 88
+[trace] 131220 -96 96
+[trace] 131240 -88 80
+[trace] 131260 -96 96
+[trace] 131280 -88 96
+[bar] min=4073 max=4092
+[trace] 131300 -96 96
+[trace] 131320 -88 88
+[trace] 131340 -88 64
+[trace] 131360 -88 80
+[trace] 131380 -88 88
+[trace] 131400 -80 88
+[trace] 131420 -80 80
+[trace] 131440 -72 72
+[trace] 131460 -72 72
+[trace] 131480 -64 72
+[trace] 131500 -64 64
+[trace] 131520 -56 64
+[trace] 131540 -56 64
+[trace] 131560 -56 64
+[trace] 131580 -56 56
+[motion] state=2 cmd=3 faults=0 heading=1 dist_mm=1832 counts=64831,8204 speed=-56,56 max_tick_us=540
+[bar] min=4078 max=4095
+[bar] min=4073 max=4095
+[bar] min=4066 max=4095
+[bar] min=4075 max=4095
+[bar] min=4078 max=4095
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1833 deg=2
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1833 deg=2
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1833 deg=2
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1833 deg=2
+[bar] min=4076 max=4088
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1833 deg=2
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1833 deg=2
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1833 deg=2
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1833 deg=2
+[trace] 134610 0 0
+[trace] 134630 24 48
+[trace] 134650 32 64
+[trace] 134670 48 72
+[trace] 134690 64 80
+[trace] 134710 64 80
+[trace] 134730 80 80
+[trace] 134750 80 96
+[trace] 134770 88 96
+[trace] 134790 88 96
+[bar] min=4072 max=4094
+[trace] 134810 88 96
+[trace] 134830 104 96
+[trace] 134850 88 96
+[trace] 134870 96 104
+[trace] 134890 104 96
+[trace] 134910 96 96
+[trace] 134930 104 96
+[trace] 134950 96 96
+[trace] 134970 104 96
+[trace] 134990 96 96
+[trace] 135010 104 96
+[trace] 135030 104 96
+[trace] 135050 96 96
+[trace] 135070 104 104
+[trace] 135090 104 96
+[trace] 135110 104 96
+[trace] 135130 104 96
+[trace] 135150 104 96
+[trace] 135170 104 96
+[trace] 135190 104 96
+[trace] 135210 104 96
+[trace] 135230 104 104
+[trace] 135250 104 96
+[trace] 135270 104 104
+[trace] 135290 104 104
+[bar] min=4075 max=4088
+[trace] 135310 112 104
+[trace] 135330 112 104
+[trace] 135350 104 96
+[trace] 135370 104 96
+[trace] 135390 104 96
+[trace] 135410 104 96
+[trace] 135430 112 104
+[trace] 135450 104 96
+[trace] 135470 104 96
+[trace] 135490 112 96
+[trace] 135510 112 104
+[trace] 135530 112 112
+[trace] 135550 104 112
+[trace] 135570 104 104
+[trace] 135590 104 96
+[trace] 135610 104 104
+[trace] 135630 104 112
+[trace] 135650 104 104
+[trace] 135670 104 96
+[trace] 135690 104 112
+[trace] 135710 104 104
+[trace] 135730 112 104
+[trace] 135750 104 112
+[trace] 135770 104 104
+[trace] 135790 104 104
+[bar] min=4069 max=4092
+[trace] 135810 104 104
+[trace] 135830 104 104
+[trace] 135850 112 112
+[trace] 135870 104 104
+[trace] 135890 104 104
+[trace] 135910 112 104
+[trace] 135930 104 104
+[trace] 135950 112 112
+[trace] 135970 112 96
+[trace] 135990 112 112
+[trace] 136010 112 96
+[trace] 136030 112 112
+[trace] 136050 104 104
+[trace] 136070 112 104
+[trace] 136090 112 104
+[trace] 136110 112 104
+[trace] 136130 112 112
+[trace] 136150 112 104
+[trace] 136170 112 112
+[trace] 136190 112 96
+[trace] 136210 104 112
+[trace] 136230 112 104
+[trace] 136250 104 112
+[trace] 136270 104 104
+[trace] 136290 112 112
+[bar] min=4077 max=4094
+[trace] 136310 112 96
+[trace] 136330 104 112
+[trace] 136350 112 104
+[trace] 136370 104 112
+[trace] 136390 104 104
+[trace] 136410 104 96
+[trace] 136430 112 104
+[trace] 136450 104 104
+[trace] 136470 104 96
+[trace] 136490 104 112
+[trace] 136510 112 104
+[trace] 136530 112 112
+[trace] 136550 104 112
+[trace] 136570 112 96
+[trace] 136590 104 104
+[trace] 136610 104 112
+[trace] 136630 112 104
+[trace] 136650 104 112
+[trace] 136670 104 112
+[trace] 136690 104 104
+[trace] 136710 104 112
+[trace] 136730 104 104
+[trace] 136750 104 104
+[trace] 136770 104 104
+[trace] 136790 104 104
+[bar] min=4062 max=4093
+[trace] 136810 104 112
+[trace] 136830 112 104
+[trace] 136850 104 112
+[trace] 136870 104 104
+[trace] 136890 104 104
+[trace] 136910 112 112
+[trace] 136930 104 104
+[trace] 136950 104 104
+[trace] 136970 104 104
+[trace] 136990 104 112
+[trace] 137010 104 96
+[trace] 137030 104 112
+[trace] 137050 104 104
+[trace] 137070 104 112
+[trace] 137090 104 104
+[trace] 137110 104 104
+[trace] 137130 112 112
+[trace] 137150 104 104
+[trace] 137170 112 104
+[trace] 137190 104 104
+[trace] 137210 112 104
+[trace] 137230 104 104
+[trace] 137250 112 104
+[trace] 137270 104 104
+[trace] 137290 104 112
+[bar] min=4077 max=4094
+[trace] 137310 104 104
+[trace] 137330 112 112
+[trace] 137350 104 104
+[trace] 137370 104 104
+[trace] 137390 112 104
+[trace] 137410 112 104
+[trace] 137430 112 112
+[trace] 137450 104 96
+[trace] 137470 104 112
+[trace] 137490 104 96
+[trace] 137510 104 112
+[trace] 137530 104 104
+[trace] 137550 96 96
+[trace] 137570 88 96
+[trace] 137590 96 88
+[trace] 137610 88 88
+[trace] 137630 80 88
+[trace] 137650 72 80
+[trace] 137670 72 72
+[trace] 137690 72 64
+[trace] 137710 72 72
+[trace] 137730 64 64
+[trace] 137750 64 56
+[trace] 137770 56 48
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2133 counts=3021,11950 speed=56,48 max_tick_us=540
+[bar] min=4067 max=4090
+[bar] min=4075 max=4093
+[bar] min=4075 max=4095
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[bar] min=4077 max=4085
+[bar] min=168 max=190
+[bar] min=165 max=192
+[motion] bench done
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=165 max=190
+[bar] min=168 max=189
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=165 max=192
+[bar] min=165 max=190
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=162 max=189
+[bar] min=165 max=187
+[bar] min=164 max=189
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=164 max=189
+[bar] min=165 max=190
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=165 max=188
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=165 max=189
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=165 max=190
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=165 max=189
+[bar] min=165 max=190
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=161 max=190
+[imu] motion: braking
+[bar] min=4062 max=4094
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[imu] motion: steady
+[bar] min=4077 max=4095
+[bar] min=4076 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4069 max=4095
+[bar] min=4065 max=4095
+[imu] motion: accelerating
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[imu] motion: steady
+[bar] min=4069 max=4087
+[bar] min=4077 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4073 max=4092
+[bar] min=4067 max=4086
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4064 max=4088
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: climbing
+[bar] min=4041 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4074 max=4094
+[imu] motion: descending
+[bar] min=4072 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4072 max=4095
+[bar] min=4075 max=4090
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4077 max=4095
+[imu] FAULT: tilt
+[bar] min=4073 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4075 max=4086
+[bar] min=4068 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4077 max=4084
+[bar] min=4076 max=4089
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4058 max=4091
+[bar] min=4060 max=4086
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4034 max=4095
+[bar] min=4057 max=4093
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4056 max=4095
+[bar] min=4049 max=4091
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4076 max=4095
+[bar] min=4066 max=4085
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4075 max=4091
+[bar] min=4072 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4075 max=4095
+[bar] min=4061 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4074 max=4092
+[bar] min=4072 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4073 max=4095
+[bar] min=4068 max=4093
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4069 max=4095
+[bar] min=4033 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4073 max=4086
+[bar] min=4064 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4074 max=4088
+[bar] min=4066 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4069 max=4095
+[bar] min=4069 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4058 max=4095
+[bar] min=4069 max=4095
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4069 max=4090
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[imu] motion: accelerating
+[imu] hump: peak 71 mm
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[bar] min=4073 max=4090
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4075 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[bar] min=4075 max=4085
+[imu] motion: steady
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4077 max=4094
+[imu] motion: braking
+[bar] min=4069 max=4085
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4077 max=4089
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[bar] min=4076 max=4085
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4068 max=4090
+[bar] min=4074 max=4091
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[imu] motion: steady
+[bar] min=4077 max=4088
+[bar] min=4061 max=4089
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[imu] motion: accelerating
+[bar] min=4066 max=4091
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[imu] motion: steady
+[imu] motion: accelerating
+[bar] min=4070 max=4088
+[imu] motion: steady
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4077 max=4088
+[imu] motion: braking
+[bar] min=4080 max=4090
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[bar] min=4076 max=4085
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[bar] min=4072 max=4092
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4059 max=4091
+[bar] min=4077 max=4086
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4075 max=4089
+[bar] min=4078 max=4086
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4079 max=4086
+[imu] motion: steady
+[bar] min=4076 max=4087
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4065 max=4093
+[bar] min=4078 max=4092
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4075 max=4095
+[imu] motion: braking
+[bar] min=4078 max=4085
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4074 max=4095
+[imu] motion: steady
+[bar] min=4073 max=4095
+[imu] motion: accelerating
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4078 max=4095
+[bar] min=4080 max=4093
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4078 max=4088
+[bar] min=4075 max=4093
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4073 max=4092
+[bar] min=4077 max=4089
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=164 max=190
+[bar] min=165 max=190
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=164 max=190
+[bar] min=164 max=188
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=165 max=189
+[bar] min=157 max=189
+[bar] min=158 max=190
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=165 max=189
+[imu] motion: steady
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2134 deg=2
+[bar] min=4077 max=4086
+[imu] motion: braking
+[motion] state=2 cmd=1 faults=0 heading=2 dist_mm=2134 counts=3028,11950 speed=0,0 max_tick_us=540
+[bar] min=4076 max=4095
+[bar] min=4073 max=4093
+[motion] state=2 cmd=1 faults=0 heading=335 dist_mm=2161 counts=3688,11950 speed=128,0 max_tick_us=540
+[bar] min=4070 max=4086
+[bar] min=4076 max=4095
+[motion] state=2 cmd=1 faults=0 heading=304 dist_mm=2192 counts=4467,11950 speed=160,0 max_tick_us=540
+[bar] min=4062 max=4084
+[bar] min=4060 max=4095
+[motion] state=2 cmd=1 faults=0 heading=261 dist_mm=2235 counts=5523,11950 speed=72,0 max_tick_us=540
+[bar] min=4075 max=4094
+[bar] min=4075 max=4086
+[motion] state=2 cmd=1 faults=0 heading=226 dist_mm=2269 counts=6366,11950 speed=160,0 max_tick_us=540
+[imu] motion: steady
+[bar] min=4065 max=4086
+[imu] motion: braking
+[imu] motion: steady
+[bar] min=4076 max=4095
+[motion] state=2 cmd=1 faults=0 heading=191 dist_mm=2304 counts=7237,11950 speed=0,0 max_tick_us=540
+[imu] motion: braking
+[bar] min=4076 max=4089
+[imu] motion: steady
+[bar] min=4072 max=4095
+[motion] state=2 cmd=1 faults=0 heading=152 dist_mm=2342 counts=8199,11950 speed=160,0 max_tick_us=540
+[bar] min=4066 max=4095
+[bar] min=4076 max=4089
+[motion] state=2 cmd=1 faults=0 heading=98 dist_mm=2395 counts=9519,11950 speed=0,0 max_tick_us=540
+[bar] min=4077 max=4090
+[bar] min=4073 max=4091
+[motion] state=2 cmd=1 faults=0 heading=65 dist_mm=2428 counts=10328,11950 speed=0,0 max_tick_us=540
+[imu] motion: braking
+[bar] min=4073 max=4086
+[imu] motion: steady
+[bar] min=4074 max=4095
+[motion] state=2 cmd=1 faults=0 heading=16 dist_mm=2477 counts=11536,11950 speed=217,0 max_tick_us=540
+[bar] min=4072 max=4092
+[bar] min=4069 max=4087
+[motion] state=2 cmd=1 faults=0 heading=332 dist_mm=2520 counts=12626,11950 speed=0,0 max_tick_us=540
+[bar] min=4044 max=4086
+[bar] min=4073 max=4090
+[motion] state=2 cmd=1 faults=0 heading=301 dist_mm=2551 counts=13392,11950 speed=201,0 max_tick_us=540
+[bar] min=4053 max=4095
+[bar] min=4069 max=4092
+[motion] state=2 cmd=1 faults=0 heading=242 dist_mm=2610 counts=14853,11950 speed=72,0 max_tick_us=540
+[bar] min=4067 max=4095
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2636 deg=216
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2639 deg=213
+[bar] min=4060 max=4092
+[motion] state=2 cmd=1 faults=0 heading=208 dist_mm=2643 counts=15668,11950 speed=0,0 max_tick_us=540
+[bar] min=4062 max=4095
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2674 deg=177
+[bar] min=4074 max=4092
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2681 deg=170
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2690 deg=160
+[motion] state=2 cmd=1 faults=0 heading=157 dist_mm=2694 counts=16935,11950 speed=225,0 max_tick_us=540
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2704 deg=147
+[bar] min=4063 max=4095
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2706 deg=144
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2713 deg=137
+[bar] min=4078 max=4086
+[motion] state=2 cmd=1 faults=0 heading=118 dist_mm=2733 counts=17901,11950 speed=0,0 max_tick_us=540
+[bar] min=4057 max=4088
+[bar] min=4075 max=4085
+[motion] state=2 cmd=1 faults=0 heading=83 dist_mm=2767 counts=18750,11950 speed=152,0 max_tick_us=540
+[bar] min=4080 max=4092
+[bar] min=4073 max=4084
+[motion] state=2 cmd=1 faults=0 heading=25 dist_mm=2825 counts=20185,11950 speed=0,0 max_tick_us=540
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2825 deg=25
+[bar] min=4076 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2852 deg=357
+[bar] min=4078 max=4095
+[motion] state=2 cmd=1 faults=0 heading=357 dist_mm=2852 counts=20868,11950 speed=0,0 max_tick_us=540
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2852 deg=357
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2859 deg=350
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2873 deg=336
+[bar] min=4078 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2885 deg=324
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2885 deg=324
+[imu] motion: accelerating
+[bar] min=4077 max=4084
+[imu] motion: steady
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2898 deg=311
+[motion] state=2 cmd=1 faults=0 heading=299 dist_mm=2910 counts=22299,11950 speed=265,0 max_tick_us=540
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2911 deg=298
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2915 deg=294
+[bar] min=4069 max=4092
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2919 deg=290
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2921 deg=288
+[bar] min=4078 max=4095
+[motion] state=2 cmd=1 faults=0 heading=258 dist_mm=2951 counts=23319,11950 speed=0,0 max_tick_us=540
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2952 deg=257
+[bar] min=4078 max=4085
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2962 deg=247
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2972 deg=236
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2984 deg=224
+[bar] min=4075 max=4095
+[motion] state=2 cmd=1 faults=0 heading=222 dist_mm=2986 counts=24193,11950 speed=144,0 max_tick_us=540
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3009 deg=198
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3011 deg=197
+[bar] min=4074 max=4086
+[bar] min=4070 max=4090
+[motion] state=2 cmd=1 faults=0 heading=167 dist_mm=3040 counts=25539,11950 speed=0,0 max_tick_us=540
+[bar] min=4074 max=4085
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3040 deg=167
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3043 deg=164
+[bar] min=4077 max=4088
+[motion] state=2 cmd=1 faults=0 heading=138 dist_mm=3069 counts=26256,11950 speed=40,0 max_tick_us=540
+[bar] min=4070 max=4090
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3096 deg=111
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3100 deg=107
+[bar] min=4079 max=4087
+[motion] state=2 cmd=1 faults=0 heading=76 dist_mm=3130 counts=27779,11950 speed=0,0 max_tick_us=540
+[bar] min=4073 max=4093
+[bar] min=4060 max=4094
+[motion] state=2 cmd=1 faults=0 heading=64 dist_mm=3142 counts=28080,11950 speed=32,0 max_tick_us=540
+[bar] min=4069 max=4089
+[imu] motion: braking
+[imu] motion: steady
+[bar] min=4075 max=4091
+[motion] state=2 cmd=1 faults=0 heading=52 dist_mm=3155 counts=28381,11950 speed=0,0 max_tick_us=540
+[bar] min=4077 max=4093
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3155 deg=52
+[imu] motion: accelerating
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=52 dist_mm=3155 counts=28381,11950 speed=0,0 max_tick_us=540
+[bar] min=163 max=189
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=52 dist_mm=3155 counts=28381,11950 speed=0,0 max_tick_us=540
+[bar] min=165 max=188
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=52 dist_mm=3155 counts=28381,11950 speed=0,0 max_tick_us=540
+[bar] min=165 max=189
+[bar] min=166 max=189
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3155 deg=52
+[imu] motion: steady
+[motion] state=2 cmd=1 faults=0 heading=52 dist_mm=3155 counts=28381,11950 speed=0,0 max_tick_us=540
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3155 deg=52
+[imu] motion: braking
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3155 deg=52
+[bar] min=4067 max=4093
+[bar] min=4074 max=4095
+[motion] state=2 cmd=1 faults=0 heading=52 dist_mm=3155 counts=28381,11950 speed=0,0 max_tick_us=540
+[bar] min=4070 max=4090
+[bar] min=4077 max=4092
+[motion] state=2 cmd=1 faults=0 heading=52 dist_mm=3155 counts=28381,11950 speed=0,0 max_tick_us=540
+[bar] min=4074 max=4090
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3155 deg=52
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3155 deg=52
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3155 deg=52
+[bar] min=4073 max=4082
+[imu] motion: steady
+[motion] state=2 cmd=1 faults=0 heading=52 dist_mm=3155 counts=28381,11950 speed=0,0 max_tick_us=540
+[imu] motion: braking
+[bar] min=4074 max=4091
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[bar] min=4080 max=4088
+[motion] state=2 cmd=1 faults=0 heading=52 dist_mm=3155 counts=28381,11950 speed=0,0 max_tick_us=540
+[bar] min=4073 max=4085
+[bar] min=4073 max=4084
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3155 deg=52
+[motion] state=2 cmd=1 faults=0 heading=59 dist_mm=3161 counts=28381,12121 speed=0,136 max_tick_us=540
+[bar] min=4077 max=4086
+[bar] min=4076 max=4095
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3216 deg=114
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3216 deg=114
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3216 deg=114
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3216 deg=114
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3216 deg=114
+[motion] state=2 cmd=1 faults=0 heading=114 dist_mm=3216 counts=28381,13476 speed=0,0 max_tick_us=540
+[bar] min=4071 max=4084
+[bar] min=4076 max=4093
+[motion] state=2 cmd=1 faults=0 heading=155 dist_mm=3257 counts=28381,14486 speed=0,0 max_tick_us=540
+[bar] min=4072 max=4086
+[bar] min=4061 max=4086
+[motion] state=2 cmd=1 faults=0 heading=208 dist_mm=3309 counts=28381,15794 speed=0,0 max_tick_us=540
+[bar] min=4077 max=4091
+[bar] min=4062 max=4094
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3350 deg=249
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3354 deg=253
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3355 deg=255
+[motion] state=2 cmd=1 faults=0 heading=257 dist_mm=3358 counts=28381,17006 speed=0,96 max_tick_us=540
+[bar] min=4063 max=4085
+[bar] min=4077 max=4083
+[motion] state=2 cmd=1 faults=0 heading=285 dist_mm=3385 counts=28381,17676 speed=0,169 max_tick_us=540
+[bar] min=4078 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3413 deg=312
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3414 deg=314
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3414 deg=314
+[bar] min=4077 max=4085
+[motion] state=2 cmd=1 faults=0 heading=318 dist_mm=3418 counts=28381,18496 speed=0,144 max_tick_us=540
+[bar] min=4077 max=4088
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3425 deg=325
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3430 deg=330
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3432 deg=332
+[bar] min=4067 max=4084
+[motion] state=2 cmd=1 faults=0 heading=4 dist_mm=3464 counts=28381,19632 speed=0,0 max_tick_us=540
+[bar] min=4077 max=4085
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3477 deg=18
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3485 deg=25
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3486 deg=26
+[bar] min=4078 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3499 deg=40
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3511 deg=52
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3512 deg=53
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3514 deg=55
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3514 deg=55
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3514 deg=55
+[motion] state=2 cmd=1 faults=0 heading=55 dist_mm=3514 counts=28381,20881 speed=0,0 max_tick_us=540
+[bar] min=4071 max=4086
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3514 deg=55
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3514 deg=55
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3514 deg=55
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3529 deg=70
+[bar] min=4060 max=4085
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3536 deg=77
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3536 deg=77
+[motion] state=2 cmd=1 faults=0 heading=105 dist_mm=3563 counts=28381,22106 speed=0,64 max_tick_us=540
+[bar] min=4077 max=4090
+[bar] min=4076 max=4095
+[motion] state=2 cmd=1 faults=0 heading=137 dist_mm=3595 counts=28381,22904 speed=0,160 max_tick_us=540
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3596 deg=138
+[bar] min=4077 max=4094
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3611 deg=153
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3613 deg=155
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3619 deg=161
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3620 deg=161
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3620 deg=161
+[bar] min=4076 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3630 deg=171
+[motion] state=2 cmd=1 faults=0 heading=173 dist_mm=3631 counts=28381,23794 speed=0,152 max_tick_us=540
+[bar] min=4073 max=4094
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3636 deg=178
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3638 deg=180
+[bar] min=4071 max=4092
+[motion] state=2 cmd=1 faults=0 heading=212 dist_mm=3670 counts=28381,24752 speed=0,0 max_tick_us=540
+[bar] min=4077 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3692 deg=235
+[bar] min=4074 max=4084
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3706 deg=248
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3708 deg=250
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3718 deg=261
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3718 deg=261
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3718 deg=261
+[motion] state=2 cmd=1 faults=0 heading=261 dist_mm=3718 counts=28381,25952 speed=0,0 max_tick_us=540
+[bar] min=4075 max=4095
+[bar] min=4077 max=4087
+[bar] min=4073 max=4089
+[motion] state=2 cmd=1 faults=0 heading=312 dist_mm=3769 counts=28381,27206 speed=0,48 max_tick_us=540
+[bar] min=4074 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3780 deg=323
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3802 deg=345
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3805 deg=348
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3807 deg=351
+[bar] min=4069 max=4092
+[motion] state=2 cmd=1 faults=0 heading=353 dist_mm=3810 counts=28381,28225 speed=0,144 max_tick_us=540
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3823 deg=6
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3823 deg=6
+[bar] min=4073 max=4085
+[bar] min=4067 max=4084
+[motion] state=2 cmd=1 faults=0 heading=27 dist_mm=3843 counts=28381,29049 speed=0,193 max_tick_us=540
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3870 deg=54
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3875 deg=59
+[bar] min=4067 max=4095
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3875 deg=59
+[bar] min=4070 max=4094
+[motion] state=2 cmd=1 faults=0 heading=63 dist_mm=3879 counts=28381,29934 speed=0,112 max_tick_us=540
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3886 deg=71
+[bar] min=4061 max=4083
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3924 deg=108
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3924 deg=108
+[bar] min=4072 max=4085
+[motion] state=2 cmd=1 faults=0 heading=108 dist_mm=3924 counts=28381,31061 speed=0,0 max_tick_us=540
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3928 deg=113
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3939 deg=124
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3942 deg=127
+[bar] min=4068 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3952 deg=137
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3963 deg=148
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3964 deg=149
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3971 deg=156
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=3973 deg=158
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=3973 deg=158
+[bar] min=4069 max=4086
+[motion] state=2 cmd=1 faults=0 heading=158 dist_mm=3973 counts=28381,32278 speed=0,0 max_tick_us=540
+[bar] min=4073 max=4086
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3992 deg=177
+[bar] min=4076 max=4089
+[motion] state=2 cmd=1 faults=0 heading=206 dist_mm=4021 counts=28381,33470 speed=0,48 max_tick_us=540
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4021 deg=207
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=4021 deg=207
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4021 deg=207
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4021 deg=207
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=4021 deg=207
+[bar] min=4074 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4027 deg=213
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4038 deg=223
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=4039 deg=225
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4054 deg=239
+[bar] min=4077 max=4094
+[motion] state=2 cmd=1 faults=0 heading=250 dist_mm=4064 counts=28381,34546 speed=0,160 max_tick_us=540
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4066 deg=252
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4067 deg=253
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4077 deg=263
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=4077 deg=263
+[bar] min=4074 max=4091
+[bar] min=4076 max=4085
+[motion] state=2 cmd=1 faults=0 heading=291 dist_mm=4104 counts=28381,35546 speed=0,209 max_tick_us=540
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4111 deg=298
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4129 deg=315
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=4129 deg=316
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4129 deg=316
+[bar] min=4077 max=4095
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4129 deg=316
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=4129 deg=316
+[bar] min=4061 max=4085
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4138 deg=324
+[motion] state=2 cmd=1 faults=0 heading=332 dist_mm=4145 counts=28381,36558 speed=0,185 max_tick_us=540
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4169 deg=355
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=4169 deg=356
+[bar] min=4076 max=4085
+[bar] min=4072 max=4085
+[motion] state=2 cmd=1 faults=0 heading=3 dist_mm=4176 counts=28381,37325 speed=0,104 max_tick_us=540
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4179 deg=6
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4184 deg=11
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=4186 deg=13
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4193 deg=20
+[bar] min=4058 max=4084
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4228 deg=55
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=4228 deg=55
+[bar] min=4067 max=4093
+[motion] state=2 cmd=1 faults=0 heading=55 dist_mm=4228 counts=28381,38618 speed=0,0 max_tick_us=540
+[bar] min=4068 max=4089
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4249 deg=76
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=4254 deg=82
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=4256 deg=83
+[bar] min=4069 max=4086
+[motion] state=2 cmd=1 faults=0 heading=104 dist_mm=4276 counts=28381,39804 speed=0,56 max_tick_us=540
+[bar] min=4069 max=4084
+[bar] min=4068 max=4085
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[imu] motion: accelerating
+[imu] hump: peak 51 mm
+[bar] min=4078 max=4095
+[imu] motion: steady
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4278 deg=106
+[imu] motion: accelerating
+[bar] min=4078 max=4083
+[imu] motion: steady
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[imu] motion: accelerating
+[bar] min=4076 max=4084
+[imu] motion: steady
+[imu] motion: accelerating
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4278 deg=106
+[bar] min=4080 max=4090
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[imu] motion: steady
+[bar] min=164 max=188
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[bar] min=166 max=186
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=163 max=189
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=155 max=187
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=167 max=188
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[imu] motion: steady
+[bar] min=160 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=187
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=168 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=166 max=190
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=158 max=187
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=163 max=188
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=187
+[bar] min=155 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=185
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=163 max=188
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=188
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=186
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=189
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=156 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=187
+[bar] min=167 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=184
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=165 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=165 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=167 max=189
+[bar] min=165 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=172 max=189
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=167 max=189
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=157 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=163 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=187
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=169 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=163 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=155 max=188
+[bar] min=167 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=164 max=189
+[bar] min=167 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=163 max=188
+[bar] min=164 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=166 max=188
+[bar] min=165 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=154 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=166 max=189
+[bar] min=169 max=188
+[bar] min=165 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=156 max=188
+[bar] min=166 max=188
+[bar] min=166 max=187
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=158 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=161 max=188
+[bar] min=168 max=189
+[bar] min=166 max=188
+[bar] min=165 max=189
+[bar] min=166 max=189
+[bar] min=166 max=188
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=187
+[bar] min=160 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=165 max=188
+[bar] min=166 max=188
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=170 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=156 max=189
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=164 max=189
+[bar] min=166 max=189
+[bar] min=157 max=188
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=189
+[bar] min=166 max=190
+g pitch=26 roll=28 (0.1 deg) h=-5 mm
+[bar] min=162 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=165 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=165 max=188
+[bar] min=163 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=166 max=188
+[bar] min=166 max=187
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=164 max=189
+[i[imu] x=49 y=-45 z=1000 mg pitch=25 roll=29 (0.1 deg) h=-5 mm
+[bar] min=166 max=189
+mu] x=52 y=-43 z=1000 mg pitch=25 roll=29 (0.1 deg) h=-5 mm
+[bar] min=166 max=188
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=155 max=188
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=188
+[bar] min=155 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=189
+[bar] min=155 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=168 max=189
+[bar] min=163 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=165 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=186
+[bar] min=168 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=163 max=189
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=190
+[bar] min=165 max=186
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=163 max=188
+[bar] min=154 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=167 max=190
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=165 max=188
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=166 max=190
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=154 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=154 max=189
+[bar] min=168 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=189
+[bar] min=165 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=166 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=157 max=189
+[bar] min=164 max=188
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=166 max=188
+[bar] min=166 max=189
+[motion] state=2 cmd=1 faults=0 heading=106 dist_mm=4278 counts=28381,39852 speed=0,0 max_tick_us=540
+[bar] min=164 max=188

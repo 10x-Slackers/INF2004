@@ -37,7 +37,6 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 2 | `g_run.left_stall`, `.right_stall`: periods driven without an edge | 0 to 100 (1 s) | 7 each | `unsigned int` bit-field | Motion task only |
 | 2 | `g_run.heading`: edge difference × wheel diameter, modulo one turn | 0 to 2 × track × 2537 (< 2^30) | 30 | `unsigned int` bit-field | Motion task only |
 | 2 | `g_run.odometer`: edges rolled by both wheels | 0 to 2^30 − 1, wraps | 30 | `unsigned int` bit-field | Motion task only |
-| 2 | `g_run.last_us`: time of the last step | Full 32-bit timer | 32 | `uint32_t`: elapsed time is a wrap-around difference of the hardware counter | Motion task only |
 | 2 | `g_pid[n].integral`, `.last_error`: PID state per wheel | −32767 to 32767; −2047 to 2047 mm/s | 16; 12 | `signed int` bit-field | Motion task only |
 | 2 | `g_left_count`, `g_right_count`, `g_skipped` (driver): encoder edges, missed phases | 0 to 65535; 0 to 255, wrap | 16 each; 8 | `volatile uint16_t`, `uint8_t`: the ISR writes them, and these loads are atomic on Cortex-M0+ | Encoder ISR writes, motion task reads, no lock |
 | 2 | `drv_motion_wheel_t.phase`, `.b_backward` (driver) | 0 to 3; 0 or 1 | 2; 1 | `unsigned int` bit-field | Encoder ISR only |

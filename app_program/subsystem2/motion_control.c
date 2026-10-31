@@ -61,7 +61,6 @@ static struct
     unsigned int drive_age : 5; /* Ticks since the last drive call. */
     unsigned int heading : 30;  /* (right - left) * D, mod one turn. */
     unsigned int odometer : 30; /* |left| + |right| edges, wraps. */
-    uint32_t last_us;
 } g_run;
 
 static struct
@@ -74,9 +73,8 @@ static int32_t motion_control_clamp(int64_t value, int32_t min, int32_t max);
 static int32_t motion_control_wrap(uint32_t difference);
 static bool motion_control_start(uint32_t command, uint32_t amount);
 static void motion_control_begin(uint32_t command);
-static void motion_control_odometry(int32_t left_delta, int32_t right_delta,
-                                    uint32_t elapsed_us);
-static int32_t motion_control_speed(int32_t delta, int64_t divisor);
+static void motion_control_odometry(int32_t left_delta, int32_t right_delta);
+static int32_t motion_control_speed(int32_t delta);
 static void motion_control_profile(int32_t left_delta, int32_t right_delta,
                                    int32_t * p_left, int32_t * p_right);
 static int32_t motion_control_pid(uint32_t wheel, int32_t target,
@@ -99,7 +97,6 @@ void motion_control_init(void)
     g_run.left_raw = counts.left;
     g_run.right_raw = counts.right;
     g_run.skipped = counts.skipped;
-    g_run.last_us = drv_motion_time_us();
     drv_motion_write(0, 0);
 }
 
@@ -253,7 +250,7 @@ void motion_control_pack(const motion_control_status_t * p_status,
 /*!
  * @brief One 10 ms control step. Called only by the motion task.
  */
-void motion_control_tick(uint32_t now_us)
+void motion_control_tick(void)
 {
     drv_motion_counts_t counts = {0};
     int32_t left_delta = 0;
@@ -270,8 +267,7 @@ void motion_control_tick(uint32_t now_us)
     right_delta = motion_control_wrap((uint32_t)counts.right - g_run.right_raw);
     g_run.left_raw = counts.left;
     g_run.right_raw = counts.right;
-    motion_control_odometry(left_delta, right_delta, now_us - g_run.last_us);
-    g_run.last_us = now_us;
+    motion_control_odometry(left_delta, right_delta);
 
     if (MOTION_CONTROL_RUNNING == g_status.state)
     {
@@ -413,8 +409,7 @@ static void motion_control_begin(uint32_t command)
 /*!
  * @brief Update counts, speeds, heading and distance from new edges.
  */
-static void motion_control_odometry(int32_t left_delta, int32_t right_delta,
-                                    uint32_t elapsed_us)
+static void motion_control_odometry(int32_t left_delta, int32_t right_delta)
 {
     /* int64_t keeps every product below in range. */
     int64_t full_turn = 2 * (int64_t)MOTION_TRACK_UM * MOTION_COUNTS_PER_REV;
@@ -422,7 +417,6 @@ static void motion_control_odometry(int32_t left_delta, int32_t right_delta,
         ((int64_t)g_run.heading +
          ((int64_t)(right_delta - left_delta) * MOTION_WHEEL_DIAMETER_UM)) %
         full_turn;
-    int64_t divisor = (int64_t)MOTION_COUNTS_PER_REV * (int64_t)elapsed_us;
 
     if (heading < 0)
     {
@@ -442,22 +436,20 @@ static void motion_control_odometry(int32_t left_delta, int32_t right_delta,
     g_status.distance_mm =
         (uint32_t)(((int64_t)g_run.odometer * MOTION_CIRCUMFERENCE_UM) /
                    (2 * MOTION_COUNTS_PER_REV * 1000));
-
-    if (0u != elapsed_us)
-    {
-        g_status.left_speed = motion_control_speed(left_delta, divisor);
-        g_status.right_speed = motion_control_speed(right_delta, divisor);
-    }
+    g_status.left_speed = motion_control_speed(left_delta);
+    g_status.right_speed = motion_control_speed(right_delta);
 }
 
 /*!
- * @brief Wheel speed in mm/s, limited to -1023..1023.
+ * @brief Wheel speed in mm/s from one period's edges, limited to
+ * -1023..1023. The period is the kernel's cyclic handler, not measured.
  */
-static int32_t motion_control_speed(int32_t delta, int64_t divisor)
+static int32_t motion_control_speed(int32_t delta)
 {
-    /* um per edge * edges / us = m/s; * 1000 gives mm/s. */
+    /* um per edge * edges / ms = mm/s. */
     return motion_control_clamp(
-        ((int64_t)delta * MOTION_CIRCUMFERENCE_UM * 1000) / divisor,
+        ((int64_t)delta * MOTION_CIRCUMFERENCE_UM) /
+            (MOTION_COUNTS_PER_REV * (int64_t)MOTION_CONTROL_PERIOD_MS),
         -MOTION_SPEED_LIMIT, MOTION_SPEED_LIMIT);
 }
 

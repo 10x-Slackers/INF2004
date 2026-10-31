@@ -20,7 +20,6 @@
 #define TEST_PI        3.14159265358979
 #define TEST_EDGE_MM   (TEST_PI * 65.0 / 2537.0)
 #define TEST_TRACK_MM  113.5
-#define TEST_TICK_US   10000u
 #define TEST_TICKS_MAX 3000u
 
 typedef struct
@@ -33,7 +32,6 @@ typedef struct
 } test_wheel_t;
 
 static test_wheel_t g_wheel[2];
-static uint32_t g_now_us;
 static uint8_t g_skipped;
 static uint32_t g_count_origin;
 static int g_failures;
@@ -65,11 +63,6 @@ void drv_motion_read(drv_motion_counts_t * p_counts)
     p_counts->skipped = g_skipped;
 }
 
-uint32_t drv_motion_time_us(void)
-{
-    return g_now_us;
-}
-
 void drv_motion_lock(void)
 {
 }
@@ -85,7 +78,6 @@ static void test_reset(uint32_t count_origin)
     memset(g_wheel, 0, sizeof(g_wheel));
     g_wheel[0].gain = 0.6;
     g_wheel[1].gain = 0.6 * 0.85; /* Weaker right motor. */
-    g_now_us = 123456u;
     g_skipped = 0u;
     g_count_origin = count_origin;
     motion_control_init();
@@ -117,7 +109,6 @@ static void test_physics(void)
             }
             p_wheel->edges += p_wheel->speed_mm_s * 0.001 / TEST_EDGE_MM;
         }
-        g_now_us += 1000u;
     }
 }
 
@@ -129,7 +120,7 @@ static uint32_t test_run(motion_control_status_t * p_status)
     do
     {
         test_physics();
-        motion_control_tick(g_now_us);
+        motion_control_tick();
         motion_control_get_status(p_status);
         ticks++;
     } while ((MOTION_CONTROL_RUNNING == p_status->state) &&
@@ -139,7 +130,7 @@ static uint32_t test_run(motion_control_status_t * p_status)
     for (uint32_t settle = 0u; settle < 20u; settle++)
     {
         test_physics();
-        motion_control_tick(g_now_us);
+        motion_control_tick();
     }
     motion_control_get_status(p_status);
     return ticks;
@@ -217,7 +208,7 @@ static void test_drive_and_stop(void)
     for (tick = 0u; tick < 100u; tick++)
     {
         test_physics();
-        motion_control_tick(g_now_us);
+        motion_control_tick();
         /* Repeated, as a follower would. */
         (void)motion_control_drive(200, 100);
     }
@@ -241,7 +232,7 @@ static void test_drive_and_stop(void)
     for (tick = 0u; tick < 19u; tick++)
     {
         test_physics();
-        motion_control_tick(g_now_us);
+        motion_control_tick();
     }
     motion_control_get_status(&status);
     test_check(MOTION_CONTROL_RUNNING == status.state,
@@ -249,7 +240,7 @@ static void test_drive_and_stop(void)
     for (tick = 0u; tick < 2u; tick++)
     {
         test_physics();
-        motion_control_tick(g_now_us);
+        motion_control_tick();
     }
     motion_control_get_status(&status);
     test_check((MOTION_CONTROL_IDLE == status.state) &&
@@ -275,7 +266,7 @@ static void test_faults(void)
     test_reset(0u);
     (void)motion_control_move_forward(200u);
     test_physics();
-    motion_control_tick(g_now_us);
+    motion_control_tick();
     g_skipped++;
     (void)test_run(&status);
     test_check((MOTION_CONTROL_COMPLETE == status.state) &&
@@ -353,8 +344,7 @@ static void test_timing(void)
     start = clock();
     for (ticks = 0u; ticks < 100000u; ticks++)
     {
-        g_now_us += TEST_TICK_US;
-        motion_control_tick(g_now_us);
+        motion_control_tick();
     }
     us = ((double)(clock() - start) / CLOCKS_PER_SEC) * 1e6 / ticks;
     printf("INFO  host cost of one control step: %.3f us\n", us);

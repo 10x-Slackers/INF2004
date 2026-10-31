@@ -86,6 +86,7 @@ static void subsystem2_bench_report(void)
 static void subsystem2_bench_run(bool b_drive, int32_t left, int32_t right)
 {
     motion_control_status_t status = {0};
+    SYSTIM now = {0};
     uint32_t elapsed_ms = 0u;
 
     do
@@ -98,8 +99,9 @@ static void subsystem2_bench_run(bool b_drive, int32_t left, int32_t right)
         elapsed_ms += S2_BENCH_POLL_MS;
         motion_control_get_status(&status);
         /* (UB *): tm_printf() takes unsigned chars. */
-        tm_printf((UB *)"[trace] %u %d %d\n", drv_motion_time_us() / 1000u,
-                  status.left_speed, status.right_speed);
+        (void)tk_get_otm(&now);
+        tm_printf((UB *)"[trace] %u %d %d\n", now.lo, status.left_speed,
+                  status.right_speed);
     } while ((MOTION_CONTROL_RUNNING == status.state) &&
              (!b_drive || (elapsed_ms < S2_BENCH_DRIVE_MS)));
     subsystem2_bench_report();

@@ -14,6 +14,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define MOTION_CONTROL_PERIOD_MS 10u /* motion_control_tick() period. */
+
 /* status.state */
 #define MOTION_CONTROL_IDLE     0u /* Stopped, or a drive target expired. */
 #define MOTION_CONTROL_RUNNING  1u
@@ -65,7 +67,7 @@ bool motion_control_set_speed(uint32_t speed_mm_s);
 void motion_control_get_status(motion_control_status_t * p_status);
 void motion_control_pack(const motion_control_status_t * p_status,
                          uint8_t * p_packet);
-void motion_control_tick(uint32_t now_us);
+void motion_control_tick(void);
 
 #endif /* MOTION_CONTROL_H */
 

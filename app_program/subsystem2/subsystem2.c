@@ -7,8 +7,7 @@
 #include "subsystem2.h"
 #include "drv_motion.h"
 
-#define SUBSYSTEM2_PERIOD_MS 10u
-#define SUBSYSTEM2_TICK_MAX  0xffffu
+#define SUBSYSTEM2_TICK_MAX 0xffffu
 
 static ID g_motion_task;
 
@@ -45,8 +44,8 @@ EXPORT ER subsystem2_start(void)
                                    TP_PRC1, "s2_motion");
     cyclic.cycatr = TA_HLNG | TA_STA;
     cyclic.cychdr = (FP)subsystem2_wake; /* Kernel handler type, as above. */
-    cyclic.cyctim = SUBSYSTEM2_PERIOD_MS;
-    cyclic.cycphs = SUBSYSTEM2_PERIOD_MS;
+    cyclic.cyctim = MOTION_CONTROL_PERIOD_MS;
+    cyclic.cycphs = MOTION_CONTROL_PERIOD_MS;
     return (g_motion_task < E_OK) ? g_motion_task : tk_cre_cyc(&cyclic);
 }
 
@@ -81,7 +80,7 @@ static void subsystem2_motion_task(INT stacd, void * p_exinf)
     {
         (void)tk_slp_tsk(TMO_FEVR);
         start_us = drv_motion_time_us();
-        motion_control_tick(start_us);
+        motion_control_tick();
         elapsed_us = drv_motion_time_us() - start_us;
         if (elapsed_us > g_max_tick_us)
         {

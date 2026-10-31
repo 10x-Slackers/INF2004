@@ -59,7 +59,7 @@ GP26 appears on both Grove 5 and Grove 6. Connect the barcode sensor once, throu
 | GP13, GP14, GP15       | Free. Spare servo headers                                                                |
 | GP18                   | Robo Pico NeoPixel RGB LEDs                                                              |
 | GP19                   | Free                                                                                     |
-| GP20, GP21             | Robo Pico programmable buttons. GP21 starts the motion bench (`TEST=1`); GP20 is a candidate Start/Stop input |
+| GP20, GP21             | Robo Pico programmable buttons. GP21 starts the motion bench and GP20 steps the avoidance bench (`TEST=1` only); GP20 is a candidate Start/Stop input in normal builds |
 | GP22                   | Robo Pico piezo buzzer (has a mute switch)                                               |
 | GP27                   | Free. ADC1                                                                               |
 | GP28                   | Free. ADC2. Reads VBAT / 2 if the VBAT sense jumper on the back of the board is soldered |
@@ -144,6 +144,10 @@ No SG90 datasheet was supplied. The values below are the usual ones for this ser
 
 Let the servo settle before taking a range reading at a new angle.
 
+On the car, the sensor's mount stops the servo about 15° either side of straight ahead. The firmware sweeps only 10° either side, so the servo never stalls against the stops, and turns the car itself to look further to the side.
+
+The servo runs on PWM slice 6 A at 50 Hz (1 MHz counter, TOP 19999). GP13 shares slice 6, so it shares that frequency.
+
 ## HC-SR04 ultrasonic sensor
 
 | Parameter                 | Value                        |
@@ -165,6 +169,10 @@ To take a reading:
 Power the module from 5 V, not from the Grove port's 3.3 V: the datasheet specifies 5 V, and the wiring slide's 3.3 V is outside that rating. Share ground with the board.
 
 **ECHO is then a 5 V signal.** Bring it down to 3.3 V with a level shifter or a resistor divider (for example 1 kΩ in series, 2 kΩ to ground) before it reaches GP1.
+
+The [HC-SR04-R](https://cdn.sparkfun.com/assets/6/7/a/d/1/Ultrasonic_Ranging_Module_HC-SR04-R__SEN-28798.pdf) (RCWL-9610A) variant is rated for 3.3 V. Powered from the Grove port's 3.3 V, with M1 and M2 open (GPIO mode), its ECHO needs no divider.
+
+The driver gets ECHO's edges through subsystem 2's GPIO interrupt and times them on the RP2040's 1 MHz TIMER, whose tick `usermain()` starts. With nothing in range, ECHO stays high for about 38 ms (much longer on some modules) and the driver reads 4000 mm: clear.
 
 Narrow, angled or soft objects reflect poorly. The datasheet's accuracy figure assumes a smooth target of at least 0.5 m².
 

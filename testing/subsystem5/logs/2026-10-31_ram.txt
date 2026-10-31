@@ -1,0 +1,30 @@
+Minimum-bit change: RAM before and after (subsystem 5: scan_profile.c, ultrasonic_scan.c, obstacle_avoidance.c)
+Code: 774f912 (unsigned bit-fields in scan_profile_t, ultrasonic_scan_t, obstacle_avoidance_status_t; uint8_t g_mode, g_angle)
+Tool: the build's arm-none-eabi-gcc command for app_program/subsystem5 (-mcpu=cortex-m0plus -mthumb -O2 -std=gnu11) -c; arm-none-eabi-nm -S; arm-none-eabi-size
+BEFORE: the same source with every bit-field widened to a 32-bit integer
+  sed -E 's/unsigned int ([a-z_]+) *: *[0-9]+;/uint32_t \1;/; s/signed int ([a-z_]+) *: *[0-9]+;/int32_t \1;/' app_program/subsystem5/*.[ch]
+AFTER:  app_program/subsystem5/
+
+== BEFORE
+   text	   data	    bss	    dec	    hex	filename
+   1244	      0	     28	   1272	    4f8	wide_obstacle_avoidance.o
+    400	      0	      0	    400	    190	wide_scan_profile.o
+    700	      0	     54	    754	    2f2	wide_ultrasonic_scan.o
+00000000 00000014 b g_status
+00000000 0000002c b g_scan
+
+== AFTER
+   text	   data	    bss	    dec	    hex	filename
+   1444	      0	     12	   1456	    5b0	packed_obstacle_avoidance.o
+    508	      0	      0	    508	    1fc	packed_scan_profile.o
+    752	      0	     26	    778	    30a	packed_ultrasonic_scan.o
+00000000 00000004 b g_status
+00000000 00000010 b g_scan
+
+Records (sizeof on the host): scan_profile_t 28 B -> 8 B; ultrasonic_scan_t 44 B -> 16 B; obstacle_avoidance_status_t 20 B -> 4 B.
+Each get() copies the whole record under the mutex, so the copy shrinks by the same amount.
+
+Same behaviour: the BEFORE version run through the host test (S5-U43):
+  FAIL  packed profile 8, scan 16, avoidance status 4 bytes
+  FAILED: 1 failure(s)
+  Only the size check differs, as expected; every profile check passes.

@@ -1,37 +1,34 @@
 /** @file subsystem5.c
  *
- * @brief Subsystem 5 (Ultrasonic scanning and obstacle avoidance) start-up.
- *
- * subsystem5_init() creates this subsystem's kernel objects (semaphores,
- * mailboxes, ...) and starts no tasks. subsystem5_start() creates and
- * starts its tasks, e.g.
- *
- *     ID task_id = app_start_task((FP)subsystem5_task, S5_PRI_MAIN, 0,
- *                                 "s5_main");
- *     return (task_id < E_OK) ? task_id : E_OK;
- *
- * Drivers for this subsystem's hardware go in this folder as
- * drv_<name>.c / drv_<name>.h, called only from the task that owns the
- * peripheral (TEAM.md section 3). Record every pin, task, object and
- * interface in TEAM.md.
+ * @brief Subsystem 5 (ultrasonic scanning and obstacle avoidance) start-up.
  */
 
 #include "subsystem5.h"
 
 /*!
- * @brief Create this subsystem's kernel objects.
+ * @brief Set up the sensor, the servo and the locks. Runs after
+ * subsystem2_init(), whose GPIO interrupt carries the echo edges.
  */
 ER subsystem5_init(void)
 {
-    return E_OK;
+    bool b_scan = ultrasonic_scan_init();
+    bool b_avoid = obstacle_avoidance_init();
+
+    return (b_scan && b_avoid) ? E_OK : E_SYS;
 }
 
 /*!
- * @brief Create and start this subsystem's tasks.
+ * @brief Start the avoidance and scan tasks.
  */
 ER subsystem5_start(void)
 {
-    return E_OK;
+    /* FP is the kernel's generic task pointer type. */
+    ID avoid = app_start_task((FP)obstacle_avoidance_task, S5_PRI_AVOID, 0,
+                              "s5_avoid");
+    ID scan =
+        app_start_task((FP)ultrasonic_scan_task, S5_PRI_SCAN, 0, "s5_scan");
+
+    return (avoid < E_OK) ? avoid : ((scan < E_OK) ? scan : E_OK);
 }
 
 /*** end of file ***/

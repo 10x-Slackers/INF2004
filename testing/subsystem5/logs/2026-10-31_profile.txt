@@ -1,0 +1,13 @@
+S5-U47 on the car, TEST=1 image from b66c3c3. Object about 5-10 cm wide, 250 mm ahead (ruler, from the front of the cans), nothing else within 350 mm. Short GP20 presses: centred, then about 40 mm left and right of centre.
+
+First press, before the object was in place (something at 181 mm to the right, likely the tester's hand):
+[scan] forward_mm=390 fault=0 closest=181@80 edges=80..80 obstacle=1
+
+Object presses:
+[scan] forward_mm=250 fault=0 closest=247@85 edges=80..100 obstacle=1
+[scan] forward_mm=250 fault=0 closest=247@85 edges=80..100 obstacle=1
+[scan] forward_mm=250 fault=0 closest=250@85 edges=80..100 obstacle=1
+[scan] forward_mm=258 fault=0 closest=258@85 edges=80..100 obstacle=1
+[scan] forward_mm=259 fault=0 closest=258@90 edges=80..100 obstacle=1
+[scan] forward_mm=247 fault=0 closest=247@85 edges=80..100 obstacle=1
+[scan] forward_mm=247 fault=0 closest=247@85 edges=80..100 obstacle=1

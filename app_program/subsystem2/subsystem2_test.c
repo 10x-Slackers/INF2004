@@ -125,11 +125,12 @@ static void subsystem2_bench_task(INT stacd, void * p_exinf)
     (void)stacd;
     (void)p_exinf;
 
-    /* Pull-up: the button connects the pin to ground. */
+    /* Pull-up only (both on is bus keeper): the button grounds the pin. */
     (void)gpio_set_pin(S2_BENCH_BUTTON, GPIO_MODE_IN);
+    clr_w(GPIO(S2_BENCH_BUTTON), GPIO_PDE);
     set_w(GPIO(S2_BENCH_BUTTON), GPIO_PUE);
     tm_printf((UB *)"[motion] bench: press GP21 to start\n");
-    while (0u != (in_w(GPIO_IN) & (1u << S2_BENCH_BUTTON)))
+    while (0u != gpio_get_val(S2_BENCH_BUTTON))
     {
         tk_dly_tsk(S2_BENCH_POLL_MS);
     }

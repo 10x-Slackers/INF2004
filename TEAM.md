@@ -170,7 +170,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | I11 | Safety, Controller → Motion | function call | `motion_control_stop()` | brakes both wheels before returning; cancels the command | Buddy 2 contract |
 | I6 | Controller ↔ Avoidance | function calls; status copy under the avoidance mutex | `obstacle_avoidance_start()`, `_cancel()`, `_get_status()` | state, faults, bypass side and step, bypasses done, side clearances; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | I7/I8 | Any task ↔ Ultrasonic scan | function calls; result copy under the scan mutex | `ultrasonic_scan_request()`, `ultrasonic_scan_get()` | forward range and its time, obstacle profile; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
-| I1 | Line Following → Controller, Avoidance | line state copy under the line mutex | `line_following_get()` | sensor bits, last side seen, junction flag, sample count and time; `line_following.h` | Buddy 3 contract |
+| I1 | Line Following ↔ Controller, Avoidance | function calls; line state copy under the line mutex | `line_following_start()`, `_stop()`, `_get()` | follow at 1–500 mm/s until stopped; sensor bits, last side seen, junction flag, following, sample count and time; `line_following.h` | Buddy 3 contract |
 | Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
 Each interface is tested by at least one integration test

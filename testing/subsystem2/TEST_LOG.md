@@ -25,6 +25,8 @@ Define a test here before running it. Test IDs never change.
 | S2-U25 | Stall protection, wheels lifted | FR11 | manual | Wheels lifted. Bench sequence: hold the left wheel during the forward drive, the right during the backward drive | `state=3`, `faults=2` (right) or `1` (left) within about 1 s; both wheels stop |
 | S2-U26 | Moves and turns finish, wheels lifted | FR4 | manual | Wheels lifted. Bench sequence, move and turn steps | Each ends with `state=2 faults=0`; turns change `heading` by about 90° |
 | S2-U27 | Whole bench sequence returns to its start | FR4, NFR4 | manual | Floor, power bank, USB unplugged. Tape the start position (wheel centres) and direction, press GP21, place the car within 5 s. After `bench done`, measure the wheel centres from the tape and the heading from the start direction | Within 20 mm of the start and 5° of the start direction (about 1.6 m of driving and 540° of turns) |
+| S2-U28 | A latched safety stop refuses every command | FR11 | auto | `subsystem2_test.c` | `[TEST] S2-U28 PASS` |
+| S2-U29 | Commands are accepted again after the latch is released | FR11 | auto | `subsystem2_test.c` | `[TEST] S2-U29 PASS` |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).

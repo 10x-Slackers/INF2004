@@ -63,6 +63,8 @@ bool motion_control_turn_left(uint32_t angle_deg);
 bool motion_control_turn_right(uint32_t angle_deg);
 bool motion_control_drive(int32_t left_mm_s, int32_t right_mm_s);
 void motion_control_stop(void);
+void motion_control_latch(bool b_latched);
+bool motion_control_latched(void);
 bool motion_control_set_speed(uint32_t speed_mm_s);
 void motion_control_get_status(motion_control_status_t * p_status);
 void motion_control_pack(const motion_control_status_t * p_status,

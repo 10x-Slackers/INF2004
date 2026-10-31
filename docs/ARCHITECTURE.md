@@ -43,7 +43,7 @@ These decisions were frozen at the review. Changing one means updating this docu
 The periods are design targets, not measurements. P9 is left free.
 
 > [!NOTE]
-> `tk_dly_tsk` cannot wait for less than one kernel tick (`CNF_TIMER_PERIOD` in `config/config.h`, 10 ms as shipped). The 5 ms periods above need the tick lowered to 1 ms, as the review assumes.
+> `tk_dly_tsk` cannot wait for less than one kernel tick (`CNF_TIMER_PERIOD` in `config/config.h`, 10 ms as shipped). The 5 ms periods above need the tick lowered to 1 ms, as the review assumes; on the 10 ms tick the Safety Monitor runs every 10 ms.
 
 ### Barcode acquisition
 

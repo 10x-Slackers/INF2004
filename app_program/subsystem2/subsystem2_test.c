@@ -62,6 +62,16 @@ void subsystem2_test(void)
                (subsystem2_max_tick_us() > 0u) &&
                    (subsystem2_max_tick_us() < S2_TEST_TICK_US),
                "control step runs and takes under 1 ms");
+    motion_control_latch(true);
+    TEST_CHECK("S2-U28",
+               motion_control_latched() && !motion_control_move_forward(100u) &&
+                   !motion_control_turn_left(90u) &&
+                   !motion_control_drive(100, 100),
+               "a latched safety stop refuses every command");
+    motion_control_latch(false);
+    TEST_CHECK("S2-U29", motion_control_drive(0, 0),
+               "commands are accepted again after the latch is released");
+    motion_control_stop();
     TEST_SUMMARY("subsystem2");
 
     /* FP is the kernel's generic task pointer type. */

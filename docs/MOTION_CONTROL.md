@@ -21,6 +21,7 @@ Tests and results: [testing/subsystem2](../testing/subsystem2/TEST_LOG.md).
 | `motion_control_turn_right(deg)`     | Turn clockwise on the spot, 1–360°                                                               |
 | `motion_control_drive(left, right)`  | Hold wheel speeds, −1000 to 1000 mm/s. Lasts 200 ms, so call it every cycle; otherwise both wheels brake. After a stall it returns false until `stop()` or another command |
 | `motion_control_stop()`              | Brake both wheels now and cancel the command                                                     |
+| `motion_control_latch(latched)`      | Safety latch ([SAFETY_MONITOR.md](SAFETY_MONITOR.md)): `true` brakes like `stop()` and makes every move, turn and drive return false until `false`. `motion_control_latched()` reads it |
 | `motion_control_get_status(&status)` | Copy the status (below)                                                                          |
 | `motion_control_set_speed(mm_s)`     | Speed of later moves and turns, 10–1000 mm/s (default 100)                                       |
 | `motion_control_pack(&status, buf)`  | 12-byte telemetry payload                                                                        |

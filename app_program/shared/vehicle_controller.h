@@ -5,7 +5,7 @@
  * runs only in normal builds (TEST=1 keeps GP20 for the avoidance bench).
  *
  * Abbreviations (rule 1.5): vc vehicle controller, mm millimetres,
- * ms milliseconds, cmd command.
+ * ms milliseconds, deg degrees.
  */
 
 #ifndef VEHICLE_CONTROLLER_H

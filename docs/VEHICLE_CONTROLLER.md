@@ -19,10 +19,10 @@ stateDiagram-v2
     AVOID --> FOLLOW: avoidance back to MONITOR
     FOLLOW --> TURN: junction with a barcode pending
     TURN --> FOLLOW: turn complete
-    FOLLOW --> SAFE_STOP: GP20 / IMU fault / avoidance STOPPED / wheel stalled
-    AVOID --> SAFE_STOP: GP20 / IMU fault / avoidance STOPPED
-    TURN --> SAFE_STOP: GP20 / IMU fault / move failed or over 5 s
-    SAFE_STOP --> READY: GP20, no IMU fault latched
+    FOLLOW --> SAFE_STOP: GP20 / safety latched / avoidance STOPPED
+    AVOID --> SAFE_STOP: GP20 / safety latched / avoidance STOPPED
+    TURN --> SAFE_STOP: GP20 / safety latched / move failed or over 5 s
+    SAFE_STOP --> READY: GP20, safety latch cleared
 ```
 
 | State     | What happens                                                                                                                                                                                             |
@@ -32,7 +32,7 @@ stateDiagram-v2
 | FOLLOW    | `line_following_start(200)` and `obstacle_avoidance_start()`. A newly validated barcode becomes the pending command; a later one replaces it                                                              |
 | AVOID     | Hands off: avoidance has already stopped line following and drives the car until it is back to `MONITOR`, stopped on the original line                                                                   |
 | TURN      | Stops line following, cancels avoidance, rolls forward `VC_AXLE_MM` onto the junction, then turns for the pending command: A left 90°, B right 90°, C none, D left 180°. Each move must finish in 5 s |
-| SAFE_STOP | Cancels avoidance and stops line following (which brakes). Latched: GP20 returns to READY and a second press starts again (FR11). An IMU fault stays latched until reset, so the car stays here          |
+| SAFE_STOP | Entered whenever the Safety Monitor is latched, from any state; the controller's own stops latch it too. Cancels avoidance and stops line following (which brakes). GP20 clears the latch and returns to READY, and a second press starts again (FR11). An IMU fault stays latched until reset, so the car stays here |
 
 A barcode or junction seen during TURN or AVOID is taken once FOLLOW resumes. A junction is acted on at its first sample (`b_junction` rising), and only with a command pending.
 
@@ -50,7 +50,7 @@ One button, low when pressed, sampled every 10 ms. A press counts after 50 ms re
 | ------------------------ | -------------------------- |
 | READY                    | Start: FOLLOW              |
 | FOLLOW, AVOID, TURN      | Stop: SAFE_STOP            |
-| SAFE_STOP                | Reset to READY, if no IMU fault |
+| SAFE_STOP                | Reset to READY, if `safety_monitor_clear()` succeeds |
 | INIT                     | Nothing                    |
 
 ## Calibration
@@ -73,6 +73,7 @@ Every state change prints its cause, for example:
 [vc] FOLLOW -> TURN: junction
 [vc] TURN -> FOLLOW: turn done
 [vc] FOLLOW -> SAFE_STOP: avoidance stopped
+[safety] stop, cause 0x8
 [vc] max hump 12 mm
 ```
 

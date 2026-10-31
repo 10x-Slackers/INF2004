@@ -17,7 +17,9 @@ Define a test here before running it. Test IDs never change.
 | INT-05 | Controller start, stop and reset with GP20 | I1, I11, FR11 | manual | Normal build, car on the line. 1. Wait for `READY`. 2. Press GP20. 3. After 1 m press GP20. 4. Press GP20 twice | 2: follows the line. 3: brakes, `SAFE_STOP: GP20`. 4: `READY`, then follows again |
 | INT-06 | Controller hands the car to avoidance and back | I1, I6 | manual | Obstacle on a straight line 1 m ahead with one side open; then repeat with both sides blocked | Open side: `FOLLOW -> AVOID`, bypass, `AVOID -> FOLLOW`, follows the line on. Blocked: `SAFE_STOP: avoidance stopped`, no contact |
 | INT-07 | Controller executes barcodes at the next junction | I2, I3, FR3 | manual | For each of A, B, C, D: barcode before a junction, start 0.5 m before it | `barcode N pending`, then at the junction a left 90°, right 90°, straight on, or U-turn, and follows the outgoing line |
-| INT-08 | IMU fault latches a safe stop | I9, FR11 | manual | Car following; tilt it past 25° for 1 s; then press GP20 | `SAFE_STOP: IMU fault`, motors stop; GP20 does not leave the safe stop until reset |
+| INT-08 | IMU fault latches a safe stop | I9, FR11 | manual | Car following; tilt it past 25° for 1 s; then press GP20 | `[safety] stop, cause 0x1`, `SAFE_STOP: safety latched`, motors stop; GP20 does not leave the safe stop until reset |
+| INT-09 | Safety Monitor collision backstop | I8, I11, NFR5 | manual | Normal build. Start following; hold a flat target 100 mm in front of the sensor while the car drives | `[safety] stop, cause 0x2`, motors brake at once, `SAFE_STOP: safety latched`; drive commands are refused until GP20 |
+| INT-10 | Safety Monitor latches a wheel stall | I4, I11, FR11 | manual | Normal build, car following. Hold one wheel still for over 1 s | `[safety] stop, cause 0x4`, `SAFE_STOP: safety latched`; GP20 clears it, a second press follows again |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).

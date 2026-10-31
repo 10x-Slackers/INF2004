@@ -1,0 +1,385 @@
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+subsystem 2 only (S2_ONLY=1)
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[motion] ready: forward/backward mm, left/right deg, drive l r, stop, speed, track, pid, status, trace
+[motion] state=0 cmd=0 faults=0 heading=0 dist_mm=0 counts=0,0 speed=0,0 max_tick_us=742
+[motion] OK
+[motion] state=0 cmd=0 faults=0 heading=159 dist_mm=555 counts=12719,0 speed=0,0 max_tick_us=742
+[motion] OK
+[motion] state=0 cmd=0 faults=0 heading=355 dist_mm=1106 counts=12719,12619 speed=0,0 max_tick_us=742
+[motion] OK
+[motion] OK
+[motion] state=1 cmd=5 faults=0 heading=352 dist_mm=17108 counts=30072,21737 speed=-723,-766 max_tick_us=742
+[motion] OK
+[motion] OK
+[motion] OK
+[motion] state=0 cmd=0 faults=4 heading=75 dist_mm=28533 counts=33372,18740 speed=-724,-758 max_tick_us=742
+[motion] state=0 cmd=0 faults=4 heading=76 dist_mm=28565 counts=33000,18396 speed=0,0 max_tick_us=742
+[motion] OK
+[motion] state=0 cmd=0 faults=4 heading=273 dist_mm=29117 counts=33000,31046 speed=0,0 max_tick_us=742
+[motion] OK
+[motion] REJECTED
+[motion] REJECTED
+[motion] state=0 cmd=0 faults=4 heading=273 dist_mm=29117 counts=33000,31046 speed=0,0 max_tick_us=742
+[motion] OK
+[motion] REJECTED
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+subsystem 2 only (S2_ONLY=1)
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[motion] ready: forward/backward mm, left/right deg, drive l r, stop, speed, track, pid, status, trace
+[motion] OK
+[motion] state=1 cmd=5 faults=0 heading=359 dist_mm=513 counts=5881,5877 speed=95,95 max_tick_us=181
+[motion] OK
+[motion] OK
+[motion] state=0 cmd=0 faults=0 heading=359 dist_mm=780 counts=8942,8939 speed=95,104 max_tick_us=181
+[motion] OK
+[motion] state=1 cmd=5 faults=0 heading=0 dist_mm=1256 counts=3540,3543 speed=-104,-104 max_tick_us=181
+[motion] OK
+[motion] OK
+[motion] state=0 cmd=0 faults=0 heading=0 dist_mm=1699 counts=63993,63995 speed=-95,-95 max_tick_us=181
+[motion] REJECTED
+[motion] state=0 cmd=0 faults=0 heading=232 dist_mm=2898 counts=25841,63968 speed=0,0 max_tick_us=181
+[motion] OK
+[motion] state=0 cmd=0 faults=0 heading=232 dist_mm=2898 counts=25841,63968 speed=0,0 max_tick_us=181
+[motion] OK
+[motion] state=0 cmd=0 faults=0 heading=266 dist_mm=4002 counts=25841,23713 speed=0,0 max_tick_us=181
+[motion] OK
+[motion] REJECTED
+[motion] state=0 cmd=0 faults=0 heading=266 dist_mm=4002 counts=25841,23713 speed=0,0 max_tick_us=181
+[motion] OK
+[motion] state=0 cmd=0 faults=0 heading=227 dist_mm=5111 counts=51231,23713 speed=0,0 max_tick_us=181
+[motion] OK
+[motion] state=0 cmd=0 faults=0 heading=227 dist_mm=5111 counts=51231,23713 speed=0,0 max_tick_us=181
+[motion] OK
+[motion] state=0 cmd=0 faults=0 heading=264 dist_mm=6218 counts=51231,49071 speed=0,0 max_tick_us=181
+[motion] OK
+
+
+microT-Kernel Version 3.00
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+subsystem 2 only (S2_ONLY=1)
+
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[motion] ready: forward/backward mm, left/right deg, drive l r, stop, speed, track, pid, status, trace
+[motion] OK
+[motion] OK
+[motion] state=2 cmd=1 faults=0 heading=359 dist_mm=2262 counts=28120,28110 speed=55,47 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=3 faults=0 heading=89 dist_mm=2353 counts=27023,29231 speed=-56,56 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=4 faults=0 heading=81 dist_mm=2364 counts=27131,29125 speed=47,-55 max_tick_us=1939
+[motion] OK
+[motion] state=3 cmd=5 faults=2 heading=348 dist_mm=2538 counts=30421,30132 speed=88,-16 max_tick_us=1939
+[motion] OK
+[motion] state=3 cmd=5 faults=1 heading=59 dist_mm=2980 counts=34878,36348 speed=-15,87 max_tick_us=1939
+[motion] REJECTED
+[motion] OK
+[motion] state=2 cmd=1 faults=0 heading=65 dist_mm=3286 counts=38481,40098 speed=55,55 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=3 faults=0 heading=155 dist_mm=3377 counts=37383,41217 speed=-56,56 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=4 faults=0 heading=66 dist_mm=3467 counts=38482,40122 speed=55,-55 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=1 faults=0 heading=65 dist_mm=3969 counts=44720,46324 speed=24,64 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=1 faults=0 heading=65 dist_mm=4021 counts=45350,46953 speed=7,39 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=2 faults=0 heading=65 dist_mm=4072 counts=44719,46330 speed=-47,-39 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=1 faults=0 heading=64 dist_mm=4174 counts=45972,47561 speed=47,55 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=2 faults=0 heading=64 dist_mm=4275 counts=44734,46326 speed=-23,-63 max_tick_us=1939
+[motion] state=2 cmd=2 faults=0 heading=64 dist_mm=4276 counts=44730,46314 speed=0,0 max_tick_us=1939
+[motion] OK
+[motion] OK
+[motion] state=2 cmd=4 faults=0 heading=333 dist_mm=4366 counts=45846,45198 speed=55,-39 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=4 faults=0 heading=242 dist_mm=4456 counts=46970,44082 speed=23,-31 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=3 faults=0 heading=333 dist_mm=4546 counts=45853,45191 speed=-24,40 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=3 faults=0 heading=153 dist_mm=4725 counts=43632,47419 speed=7,39 max_tick_us=1939
+[motion] OK
+[motion] state=2 cmd=4 faults=0 heading=153 dist_mm=5083 counts=48067,42976 speed=64,-40 max_tick_us=1939
+[motion] OK
+[motion] OK
+[trace] 664139 0 0
+[trace] 664159 7 7
+[trace] 664179 38 54
+[trace] 664199 46 62
+[trace] 664219 54 70
+[trace] 664239 62 78
+[trace] 664259 70 77
+[trace] 664279 77 77
+[trace] 664299 85 85
+[trace] 664319 93 93
+[trace] 664339 93 93
+[trace] 664359 101 93
+[trace] 664379 93 93
+[trace] 664399 93 93
+[trace] 664419 101 93
+[trace] 664439 93 93
+[trace] 664459 101 93
+[trace] 664479 101 101
+[trace] 664499 101 93
+[trace] 664519 101 93
+[trace] 664539 93 93
+[trace] 664559 93 93
+[trace] 664579 101 101
+[trace] 664599 101 93
+[trace] 664619 101 101
+[trace] 664639 101 93
+[trace] 664659 101 101
+[trace] 664679 93 93
+[trace] 664699 101 93
+[trace] 664719 101 101
+[trace] 664739 93 101
+[trace] 664759 93 93
+[trace] 664779 93 93
+[trace] 664799 101 93
+[trace] 664819 101 109
+[trace] 664839 93 101
+[trace] 664859 108 93
+[trace] 664879 101 101
+[trace] 664899 93 93
+[trace] 664919 101 101
+[trace] 664939 101 93
+[trace] 664959 93 108
+[trace] 664979 93 101
+[trace] 664999 109 93
+[trace] 665019 101 101
+[trace] 665039 101 108
+[trace] 665059 101 101
+[trace] 665079 101 93
+[trace] 665099 93 101
+[trace] 665119 101 101
+[trace] 665139 101 93
+[trace] 665159 101 101
+[trace] 665179 93 101
+[trace] 665199 101 93
+[trace] 665219 101 101
+[trace] 665239 101 101
+[trace] 665259 101 93
+[trace] 665279 101 101
+[trace] 665299 93 101
+[trace] 665319 101 101
+[trace] 665339 101 101
+[trace] 665359 101 109
+[trace] 665379 101 101
+[trace] 665399 101 101
+[trace] 665419 101 109
+[trace] 665439 93 101
+[trace] 665459 101 101
+[trace] 665479 101 93
+[trace] 665499 109 101
+[trace] 665519 101 101
+[trace] 665539 93 101
+[trace] 665559 101 101
+[trace] 665579 101 108
+[trace] 665599 101 93
+[trace] 665619 93 93
+[trace] 665639 101 101
+[trace] 665659 101 101
+[trace] 665679 93 101
+[trace] 665699 101 101
+[trace] 665719 93 101
+[trace] 665739 108 101
+[trace] 665759 101 101
+[trace] 665779 93 101
+[trace] 665799 101 101
+[trace] 665819 101 93
+[trace] 665839 101 101
+[trace] 665859 101 101
+[trace] 665879 108 101
+[trace] 665899 93 101
+[trace] 665919 101 93
+[trace] 665939 101 108
+[trace] 665959 100 100
+[trace] 665979 101 108
+[trace] 665999 101 93
+[trace] 666019 101 101
+[trace] 666039 101 93
+[trace] 666059 101 101
+[trace] 666079 101 101
+[trace] 666099 93 101
+[trace] 666119 93 109
+[trace] 666139 101 93
+[trace] 666159 101 101
+[trace] 666179 101 101
+[trace] 666199 101 93
+[trace] 666219 108 108
+[trace] 666239 93 101
+[trace] 666259 93 101
+[trace] 666279 109 101
+[trace] 666299 101 101
+[trace] 666319 93 101
+[trace] 666339 101 101
+[trace] 666359 101 101
+[trace] 666379 101 93
+[trace] 666399 101 101
+[trace] 666419 101 101
+[trace] 666439 93 101
+[trace] 666459 101 101
+[trace] 666479 101 108
+[trace] 666499 101 93
+[trace] 666519 101 101
+[trace] 666539 93 93
+[trace] 666559 108 108
+[trace] 666579 101 101
+[trace] 666599 101 101
+[trace] 666619 101 101
+[trace] 666639 101 93
+[trace] 666659 101 108
+[trace] 666679 101 93
+[trace] 666699 101 109
+[trace] 666719 101 93
+[trace] 666739 93 93
+[trace] 666759 101 101
+[trace] 666779 101 93
+[trace] 666799 108 101
+[trace] 666819 93 101
+[trace] 666839 101 93
+[trace] 666859 101 101
+[trace] 666879 93 101
+[trace] 666899 101 109
+[trace] 666919 101 101
+[trace] 666939 93 93
+[trace] 666959 101 101
+[trace] 666979 108 101
+[trace] 666999 101 101
+[trace] 667019 93 101
+[trace] 667039 101 93
+[trace] 667059 93 93
+[trace] 667079 93 101
+[trace] 667099 85 93
+[trace] 667119 93 85
+[trace] 667139 77 77
+[trace] 667159 70 78
+[trace] 667179 70 70
+[trace] 667199 77 70
+[trace] 667219 62 54
+[trace] 667239 62 62
+[trace] 667259 62 62
+[trace] 667279 54 54
+[motion] state=2 cmd=1 faults=0 heading=152 dist_mm=5384 counts=51817,46711 speed=31,46 max_tick_us=1939
+[motion] OK
+[motion] OK
+[trace] 710019 0 0
+[trace] 710039 8 8
+[trace] 710059 24 49
+[trace] 710079 49 65
+[trace] 710099 49 73
+[trace] 710119 65 65
+[trace] 710139 73 73
+[trace] 710159 82 90
+[trace] 710179 90 98
+[trace] 710199 98 90
+[trace] 710219 90 98
+[trace] 710239 114 106
+[trace] 710259 114 114
+[trace] 710279 122 122
+[trace] 710299 131 123
+[trace] 710319 131 131
+[trace] 710339 147 139
+[trace] 710359 156 139
+[trace] 710379 164 147
+[trace] 710399 164 156
+[trace] 710419 172 164
+[trace] 710439 172 163
+[trace] 710459 164 164
+[trace] 710479 172 164
+[trace] 710499 172 164
+[trace] 710519 172 172
+[trace] 710539 180 180
+[trace] 710559 180 172
+[trace] 710579 180 180
+[trace] 710599 180 180
+[trace] 710619 189 180
+[trace] 710639 180 180
+[trace] 710659 189 180
+[trace] 710679 188 188
+[trace] 710699 180 180
+[trace] 710719 180 180
+[trace] 710739 181 181
+[trace] 710759 189 189
+[trace] 710779 188 188
+[trace] 710799 189 189
+[trace] 710819 197 188
+[trace] 710839 197 189
+[trace] 710859 180 197
+[trace] 710879 188 197
+[trace] 710899 197 197
+[trace] 710919 189 197
+[trace] 710939 189 197
+[trace] 710959 188 197
+[trace] 710979 189 197
+[trace] 710999 189 197
+[trace] 711019 189 197
+[trace] 711039 189 197
+[trace] 711059 197 197
+[trace] 711079 189 197
+[trace] 711099 197 197
+[trace] 711119 196 196
+[trace] 711139 197 197
+[trace] 711159 205 197
+[trace] 711179 197 205
+[trace] 711199 197 197
+[trace] 711219 197 197
+[trace] 711239 197 197
+[trace] 711259 205 196
+[trace] 711279 196 196
+[trace] 711299 205 197
+[trace] 711319 189 197
+[trace] 711339 196 205
+[trace] 711359 205 197
+[trace] 711379 197 189
+[trace] 711399 205 197
+[trace] 711419 197 205
+[trace] 711439 205 205
+[trace] 711459 205 205
+[trace] 711479 197 197
+[trace] 711499 197 197
+[trace] 711519 197 197
+[trace] 711539 197 189
+[trace] 711559 180 180
+[trace] 711579 188 180
+[trace] 711599 172 172
+[trace] 711619 172 164
+[trace] 711639 156 164
+[trace] 711659 156 156
+[trace] 711679 147 147
+[trace] 711699 139 139
+[trace] 711719 131 131
+[trace] 711739 123 131
+[trace] 711759 115 123
+[trace] 711779 106 115
+[trace] 711799 106 106
+[trace] 711819 90 106
+[trace] 711839 90 90
+[trace] 711859 82 82
+[trace] 711879 82 82
+[motion] state=2 cmd=1 faults=0 heading=161 dist_mm=5695 counts=55329,50448 speed=65,73 max_tick_us=1939
+[motion] OK

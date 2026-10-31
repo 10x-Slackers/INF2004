@@ -57,7 +57,7 @@ Every `.c` file in `app_program/` and in its subfolders is compiled automaticall
 Each subsystem lives in `app_program/subsystemN/`. `subsystemN.h` is its public interface (object IDs, message formats, priorities); everything else stays `LOCAL` in its `.c` files. Device drivers go in the owning subsystem's folder as `drv_<name>.c` / `drv_<name>.h`. A task is started with `app_start_task()` from `app.h`:
 
 ```c
-#define S2_PRI_RANGE 14 /* from the subsystem's band in TEAM.md */
+#define S5_PRI_RANGE 12 /* from the subsystem's band in TEAM.md */
 #define RANGE_MS     60
 
 LOCAL void range_task(INT stacd, void * exinf)
@@ -74,7 +74,7 @@ LOCAL void range_task(INT stacd, void * exinf)
 
 EXPORT ER subsystem2_start(void)
 {
-    ID tid = app_start_task(range_task, S2_PRI_RANGE, 0, "range_task");
+    ID tid = app_start_task(range_task, S5_PRI_RANGE, 0, "range_task");
     return (tid < E_OK) ? tid : E_OK;
 }
 ```

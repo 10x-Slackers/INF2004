@@ -26,6 +26,9 @@
 
 #include "app.h"
 
+#define APP_WATCHDOG_TICK        0x4005802cu /* RP2040 WATCHDOG TICK */
+#define APP_WATCHDOG_TICK_ENABLE (1u << 9)
+
 /*
  * Create and start one task (declared in app.h for every subsystem).
  *   prc = TP_PRC1 (core 0), TP_PRC2 (core 1), or 0 for "any core".
@@ -88,6 +91,12 @@ EXPORT INT usermain(void)
     while ((in_w(RESETS_RESET_DONE) & RESETS_RESET_PWM) == 0)
     {
     }
+
+    /* The kernel never starts the watchdog tick that clocks the 1 MHz
+       TIMER block, so after a power-on the timer runs about 20 times too
+       slow (a reboot from BOOTSEL keeps the boot ROM's setting, which
+       hides this).  One tick per microsecond of the 12 MHz crystal. */
+    out_w(APP_WATCHDOG_TICK, APP_WATCHDOG_TICK_ENABLE | XOSC_MHz);
 
     /* Phase 1: every subsystem creates its kernel objects */
     CHECK(subsystem1_init(), "subsystem1_init");

@@ -15,7 +15,7 @@ subsystem, ask its owner or open a pull request for them to review.
 | # | Subsystem (what it does) | Student ID | GitHub username | Code | Tests |
 |---|---|---|---|---|---|
 | 1 | Wi-Fi, command and telemetry | | | `app_program/subsystem1/` | `testing/subsystem1/` |
-| 2 | Motion control | | | `app_program/subsystem2/` | `testing/subsystem2/` |
+| 2 | Motion control | 2503068 | | `app_program/subsystem2/` | `testing/subsystem2/` |
 | 3 | Line following and barcodes | | | `app_program/subsystem3/` | `testing/subsystem3/` |
 | 4 | IMU and terrain | | | `app_program/subsystem4/` | `testing/subsystem4/` |
 | 5 | Ultrasonic scanning and obstacle avoidance | | | `app_program/subsystem5/` | `testing/subsystem5/` |
@@ -47,26 +47,26 @@ fixed.
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
 | GP0 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
 | GP1 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP2 | Motion (Buddy 2) | left encoder phase A (Grove 2) |
-| GP3 | Motion (Buddy 2) | left encoder phase B (Grove 2) |
+| GP2 | Motion (Buddy 2) | right encoder phase A (Grove 2) |
+| GP3 | Motion (Buddy 2) | right encoder phase B (Grove 2) |
 | GP4 | IMU (Buddy 4) | GY-511 SDA, I2C0 (Grove 3) |
 | GP5 | IMU (Buddy 4) | GY-511 SCL, I2C0 (Grove 3) |
 | GP6 | | |
 | GP7 | | |
-| GP8 | | |
-| GP9 | | |
-| GP10 | | |
-| GP11 | | |
+| GP8 | Motion (Buddy 2) | left motor A, PWM4A |
+| GP9 | Motion (Buddy 2) | left motor B, PWM4B |
+| GP10 | Motion (Buddy 2) | right motor A, PWM5A |
+| GP11 | Motion (Buddy 2) | right motor B, PWM5B |
 | GP12 | | |
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
-| GP16 | | |
-| GP17 | | |
+| GP16 | Motion (Buddy 2) | left encoder phase A (Grove 4) |
+| GP17 | Motion (Buddy 2) | left encoder phase B (Grove 4) |
 | GP18 | IMU (Buddy 4) | Maker Pi Pico buzzer, beeps when calibration is done (PWM slice 1 A). On the Robo Pico this pin is the NeoPixel and the buzzer is GP22 |
 | GP19 | | |
 | GP20 | | |
-| GP21 | | |
+| GP21 | Motion (Buddy 2) | Robo Pico button: starts the motion bench sequence (`TEST=1` only) |
 | GP22 | | |
 | GP26 | | (ADC0 capable) |
 | GP27 | | (ADC1 capable) |
@@ -108,6 +108,8 @@ the drivers have no locking to stop it.
 | SPI0 | | | |
 | SPI1 | | | |
 | ADC | | | GP26–GP28 |
+| PWM4, PWM5 | Motion (Buddy 2) | `s2_motion` (`motion_control_stop()` may brake from any task) | GP8–GP11 |
+| IRQ13 (GPIO bank 0), core 0 | Motion (Buddy 2) | `drv_motion_gpio_isr` | GP2/3, GP16/17. Other GPIO edge users register a callback with `drv_motion_gpio_register()` |
 | PWM slices (list) | IMU (Buddy 4) | `imu_task` | Slice 1 A: GP18 buzzer |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
@@ -134,20 +136,22 @@ What students *can* do:
   reads it with `TMO_POL` (never blocking) and publishes it.
   Because this changes shared library code, **agree it with the team and
   the instructor first**, and record it as an interface in section 5.
-  It needs the `NET=lwip MQTT=1` build (README section 3).
+  It needs the `NET=lwip MQTT=1` build (`make help`).
 
 ## 4. Task priorities
 
-1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). Each subsystem gets its own band by default;
-change it only by team agreement. Write down every task you create.
+1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). The bands follow the task order in
+`docs/ARCHITECTURE.md` (Tasks), so a lower `P` number always gets a higher priority. Change a band only by team
+agreement. Write down every task you create.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
-| 1 | 12–13 | |
-| 2 | 14–15 | |
-| 3 | 16–17 | |
-| 4 | 18–19 | imu_task – 18 – any |
-| 5 | 20–21 | |
+| Shared | 5, 10 | Safety Monitor (P1) – 5; Vehicle Controller (P5) – 10 |
+| 2 | 6–7 | `s2_motion` (P2) – 6 – core 0; `s2_bench` – 7 – core 0 (`TEST=1` only) |
+| 3 | 8–9 | Barcode Decoder (P3), Line Following (P4) |
+| 5 | 11–12 | Obstacle Avoidance (P6), Ultrasonic Scan (P7) |
+| 4 | 18–19 | imu_task (P8) – 18 – any |
+| 1 | 20–21 | Wi-Fi and MQTT Telemetry (P10) |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
 
@@ -159,7 +163,10 @@ sends to it or waits on it. Agree on the data format before coding.
 
 | ID | From → To | Mechanism | Object ID name | Data / meaning | Agreed by |
 |---|---|---|---|---|---|
-| IF-01 | | | | | |
+| I3 | Controller, Buddies 3/5 → Motion | function calls under the motion mutex | `motion_control_move_*()`, `_turn_*()`, `_drive()`, `_stop()` | mm, degrees, mm/s; a new command replaces the running one | Buddy 2 contract |
+| I4/I5 | Motion → any task | snapshot copy under the motion mutex | `motion_control_get_status()` | state, faults, speeds, counts, odometer, heading | Buddy 2 contract |
+| I11 | Safety, Controller → Motion | function call | `motion_control_stop()` | brakes both wheels before returning; cancels the command | Buddy 2 contract |
+| Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
 Each interface is tested by at least one integration test
 (`testing/integration/TEST_LOG.md`).
@@ -171,15 +178,15 @@ limit there. Fill in each subsystem's usage.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | | | | 1 | |
+| Task | 32 | | 2 | | 1 | |
 | Semaphore | 16 | | | | | |
 | Event flag | 16 | | | | | |
 | Mailbox | 12 | | | | | |
-| Mutex | 12 | | | | 1 | |
+| Mutex | 12 | | 1 | | 1 | |
 | Message buffer | 12 | | | | | |
 | Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |
-| Cyclic handler | 12 | | | | 1 | |
+| Cyclic handler | 12 | | 1 | | 1 | |
 | Alarm handler | 12 | | | | | |
 
 (The kernel's USB and WiFi service tasks also use a few of these.)

@@ -1,16 +1,20 @@
-/*
- *      subsystem2.h
- *      Subsystem 2 -- Motion control.  Student ID: <student ID>.
+/** @file subsystem2.h
  *
- *      Public interface of subsystem 2.  Put here only what OTHER subsystems
- *      may use (object IDs, message formats, priorities); keep everything
- *      else LOCAL in the .c files.  Other subsystems include it as
- *      "../subsystem2/subsystem2.h".
+ * @brief Subsystem 2 (motion control) start-up and tasks. Other
+ * subsystems use motion_control.h.
  */
 
 #ifndef SUBSYSTEM2_H
 #define SUBSYSTEM2_H
 
 #include "../app.h"
+#include "motion_control.h"
+
+#define S2_PRI_MOTION 6 /* Priority band 6-7 (TEAM.md). */
+#define S2_PRI_BENCH  7 /* TEST=1 only. */
+
+uint32_t subsystem2_max_tick_us(void);
 
 #endif /* SUBSYSTEM2_H */
+
+/*** end of file ***/

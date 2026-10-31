@@ -1,0 +1,28 @@
+Minimum-bit change: RAM before and after (subsystem 2, motion_control.c)
+Code: 48f7ea3 (signed bit-fields, g_config merged into g_run, no last_us)
+Tool: arm-none-eabi-gcc -mcpu=cortex-m0plus -mthumb -O2 -std=c99 -c; arm-none-eabi-nm -S; arm-none-eabi-size
+BEFORE: the same source with every bit-field widened to a 32-bit integer
+  sed -E 's/unsigned int ([a-z_]+) *: *[0-9]+;/uint32_t \1;/; s/signed int ([a-z_]+) *: *[0-9]+;/int32_t \1;/' motion_control.[ch]
+AFTER:  app_program/subsystem2/motion_control.c
+
+== BEFORE
+   text	   data	    bss	    dec	    hex	filename
+   2672	      0	    112	   2784	    ae0	wide/mc.o
+00000000 00000010 b g_pid
+00000034 0000003c b g_run
+00000010 00000024 b g_status
+
+== AFTER
+   text	   data	    bss	    dec	    hex	filename
+   3064	      0	     52	   3116	    c2c	packed/mc.o
+00000000 00000008 b g_pid
+00000014 00000020 b g_run
+00000008 0000000c b g_status
+
+Messages: status 36 B -> 12 B (sizeof on the host); MQTT payload 12 B (96 bits).
+Driver: encoder counts are 2 x uint16_t + uint8_t (5 B) instead of 3 x 32 bits (12 B).
+
+Same behaviour: the BEFORE version run through the host test:
+  FAIL  status snapshot is 12 bytes (full-width equivalent 36 bytes)
+  FAILED: 1 failure(s)
+  Only the 12-byte size check differs, as expected; every motion check passes.

@@ -2,7 +2,7 @@ Minimum-bit change: RAM before and after (subsystem 4: task_imu.c)
 Code: 2aabbff (normal build, SMP=1)
 Tool: make -C build_make; arm-none-eabi-size and arm-none-eabi-nm -S on the build's object files
 BEFORE: a copy of the tree with every bit-field in app_program widened to a 32-bit integer, built the same way
-  sed -E 's/unsigned int ([a-z_]+) *: *[0-9]+;/uint32_t \1;/; s/signed int ([a-z_]+) *: *[0-9]+;/int32_t \1;/' $(find app_program -name "*.[ch]")
+  sed -i -E 's/unsigned int ([a-z_]+) *: *[0-9]+;/uint32_t \1;/; s/signed int ([a-z_]+) *: *[0-9]+;/int32_t \1;/' $(find app_program -name "*.[ch]")
 AFTER:  2aabbff as built
 
 == BEFORE

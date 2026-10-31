@@ -79,14 +79,15 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `.count`, `.rejects`: barcodes validated and rejected | 0 to 15 each, wrap | 4 each | As above | As above |
 | 3 | `.distance_mm`: odometer at the end of the barcode | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
 | 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in 1/16 mm (0 to 480) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
-| Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `unsigned int` bit-field | Controller task only |
-| Shared | `g_vc.cycles`: 10 ms cycles since the state or junction move began | 0 to 1023, wraps (only TURN reads it, below 502) | 10 | As above | As above |
-| Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | As above |
-| Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | As above |
-| Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | As above | As above |
+| Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `unsigned int` bit-field | Controller task writes; telemetry reads it with `vehicle_controller_state()`, a single byte load, atomic, no lock (the controller is the only writer) |
+| Shared | `g_vc.cycles`: 10 ms cycles since the state or junction move began | 0 to 1023, wraps (only TURN reads it, below 502) | 10 | As above | Controller task only |
+| Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
+| Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | Controller task only |
+| Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | As above | Controller task only |
 | Shared | `safety_monitor_stop()` `cause`: IMU, stall, controller | One bit each (1, 4, 8) | 4 | `uint32_t` argument, printed only; the Safety Monitor keeps no state, its latch is `g_b_latched` | Passed by the caller |
 | 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 80, 96, 64, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
 | 1 | Fault byte: stalls, encoder, impact, tilt, no echo, no safe path, Wi-Fi lost | One bit each | 8 | Explicit shifts, inside `telemetry` | As above |
+| 1 | Wi-Fi lost latch: link down since the last `telemetry` | 0 or 1 | 1 | `bool`, the smallest type | Telemetry task only |
 | 1 | Telemetry message buffer entry: topic number + payload | 0 to 3; payload as above | 8 + payload | `uint8_t`, the smallest unit of a message, + the packed payload | Telemetry task sends with `TMO_POL`, Wi-Fi service receives with `TMO_POL` |
 | 1 | Command event flag: START, STOP, RESET | One bit each | 3 | Event flag bits: set and clear are atomic | Wi-Fi service sets, Vehicle Controller clears |
 

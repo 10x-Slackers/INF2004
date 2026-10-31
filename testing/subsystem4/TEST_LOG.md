@@ -31,7 +31,7 @@ Define a test here before running it. Test IDs never change.
 | S4-U19 | sliding the module forward and stopping it reads accelerating then braking | FR10 | manual | 1. Flash normal image, module flat and still until `[imu] calibrated`. 2. Slide it sharply forward (−Y edge leading) about 10 cm and stop it sharply. | `[imu] motion: accelerating`, then `braking`, then `steady` |
 | S4-U20 | a hump under the right wheel reads climbing then descending | FR10 | manual | 1. As above. 2. Lay the module on the 6° ramp right side up for ~3 s, then slowly lower that side back to flat. | `climbing` while on the ramp, `descending` while lowering, then `steady` |
 | S4-U21 | an impact reads impact and stays | FR10 | manual | 1. As above. 2. Rap the table next to the module. | `[imu] motion: impact`, with no further motion lines |
-| S4-U22 | RAM and record sizes before/after minimum-bit, every record | Minimum-bit CR | host | Commands in `logs/2026-10-31_ram_all.txt` | Packed is smaller |
+| S4-U22 | RAM and record sizes before/after minimum-bit, every record | Minimum-bit CR | host | Commands in `logs/2026-10-31_ram_all.txt` | No record larger; total smaller |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).

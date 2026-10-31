@@ -4,7 +4,7 @@ Tool: make -C build_make; arm-none-eabi-size and arm-none-eabi-nm -S on the obje
 BEFORE: Vehicle Controller: fdc9ef9, its last unpacked version (enum and uint32_t globals).
         Whole image: a copy of 2aabbff with every bit-field in app_program widened to a 32-bit integer and
         vehicle_controller.c from fdc9ef9, built the same way:
-  sed -E 's/unsigned int ([a-z_]+) *: *[0-9]+;/uint32_t \1;/; s/signed int ([a-z_]+) *: *[0-9]+;/int32_t \1;/' $(find app_program -name "*.[ch]")
+  sed -i -E 's/unsigned int ([a-z_]+) *: *[0-9]+;/uint32_t \1;/; s/signed int ([a-z_]+) *: *[0-9]+;/int32_t \1;/' $(find app_program -name "*.[ch]")
 AFTER:  2aabbff as built
 
 == Vehicle Controller BEFORE (fdc9ef9)

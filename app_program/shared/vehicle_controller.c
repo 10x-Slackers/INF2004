@@ -49,6 +49,10 @@ static struct
     unsigned int b_turning : 1; /* TURN: past the roll forward, turning. */
 } g_vc;
 
+/* The fields must hold their limits. */
+_Static_assert(VC_MOVE_CYCLES < 1023u, "cycles must pass the move limit");
+_Static_assert(VC_RELEASED <= 7u, "released must reach VC_RELEASED");
+
 static void vehicle_controller_task(INT stacd, void * p_exinf);
 static void vc_step(bool b_press, bool b_barcode, bool b_junction,
                     uint32_t command, uint32_t avoid_state,
@@ -73,6 +77,15 @@ ER vehicle_controller_start(void)
     task = app_start_task((FP)vehicle_controller_task, VC_PRI, 0, "vc");
 
     return (task < E_OK) ? task : E_OK;
+}
+
+/*!
+ * @brief The controller state (0 INIT to 5 SAFE_STOP), for telemetry. Safe
+ * from any task: the controller is the only writer, and this is one load.
+ */
+uint32_t vehicle_controller_state(void)
+{
+    return g_vc.state;
 }
 
 /*!

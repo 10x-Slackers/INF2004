@@ -70,8 +70,8 @@ typedef struct
 } s4_tilt_t;
 
 /* Faults, each latched until reset: a sudden impact, excessive tilt.
- * 2 bits, stored in 4 bytes. They move into the team's shared fault
- * bitmask once that is agreed. */
+ * 2 bits, stored in 4 bytes. Telemetry sends them as bits 3-4 of the
+ * shared fault byte (docs/TELEMETRY.md). */
 typedef struct
 {
     unsigned int impact : 1;

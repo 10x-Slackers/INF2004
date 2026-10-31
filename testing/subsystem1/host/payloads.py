@@ -45,7 +45,7 @@ SAMPLES = {
     "motion": dict(state=1, command=5, faults=0, heading_deg=271,
                    left_speed=198, right_speed=203, left_count=48211,
                    right_count=48902, distance_mm=12450, pad=0),
-    "scan": dict(closest_mm=310, closest_deg=90, right_deg=84, left_deg=97,
+    "scan": dict(closest_mm=310, closest_deg=90, right_deg=85, left_deg=95,
                  width_mm=71, left_mm=820, right_mm=0),
     "heartbeat": dict(count=1234),
     "cmd": dict(cmd=1, pad=0),

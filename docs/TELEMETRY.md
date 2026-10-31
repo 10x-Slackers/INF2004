@@ -24,7 +24,7 @@ Each payload is one bit stream, most significant bit first, padded with zero bit
 
 | Bits  | Field          | Source                                                    | Range                                                          |
 | ----- | -------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
-| 0–2   | `state`        | Vehicle Controller `g_vc.state`                           | 0 INIT, 1 READY, 2 FOLLOW, 3 AVOID, 4 TURN, 5 SAFE_STOP        |
+| 0–2   | `state`        | `vehicle_controller_state()`                              | 0 INIT, 1 READY, 2 FOLLOW, 3 AVOID, 4 TURN, 5 SAFE_STOP        |
 | 3     | `latched`      | `motion_control_latched()`                                | 0 or 1                                                         |
 | 4–11  | `faults`       | Fault byte, below                                         | One bit each                                                   |
 | 12–13 | `line`         | `line_following_t.bits`                                   | Left and right sensor over black                               |
@@ -56,7 +56,7 @@ The one shared fault bitmask on the network. Bits 0–2 are motion's `faults` as
 | 4   | Excessive tilt                                  | `s4_fault_t.tilt`                           |
 | 5   | No echo                                         | `OBSTACLE_AVOIDANCE_FAULT_SENSOR`           |
 | 6   | No safe path                                    | `OBSTACLE_AVOIDANCE_FAULT_BLOCKED`          |
-| 7   | Wi-Fi lost since the last `telemetry`           | `cyw43_utk_get_status()`                    |
+| 7   | Wi-Fi lost since the last `telemetry`           | The Telemetry task's latch, below           |
 
 Avoidance's motion fault is left out: a failed bypass move is a stall, which bits 0–1 already carry.
 
@@ -74,7 +74,7 @@ Avoidance's motion fault is left out: a failed bypass move is a stall, which bit
 
 ### `cmd`: 8 bits
 
-Bits 0–1 hold the command: 1 START, 2 STOP, 3 RESET. Any other payload is ignored. Bits 2–7 are zero. The commands do what GP20 does in the same state ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#gp20)): START from READY, STOP from FOLLOW, AVOID or TURN, RESET from SAFE_STOP. STOP is always accepted. No command steers or sets a speed.
+Bits 0–1 hold the command: 1 START, 2 STOP, 3 RESET. Any other payload is ignored. Bits 2–7 are zero. START and RESET do what GP20 does ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#gp20)): START from READY, RESET from SAFE_STOP, and are ignored in any other state. STOP is accepted in every state: the controller calls `safety_monitor_stop()`, so the car brakes and the controller goes to SAFE_STOP. No command steers or sets a speed.
 
 ## Inside the car
 
@@ -85,7 +85,9 @@ Only the kernel's Wi-Fi service task may call MQTT (`TEAM.md` section 3), so the
 | Telemetry task → Wi-Fi service         | Message buffer | 1 byte topic number (0 `telemetry`, 1 `motion`, 2 `scan`, 3 `heartbeat`) + the payload: at most 13 bytes |
 | Wi-Fi service → Vehicle Controller     | Event flag     | One bit per command: 1 START, 2 STOP, 4 RESET                        |
 
-The Telemetry task sends with `TMO_POL` and drops a message when the buffer is full, so a slow network never blocks it. The service reads the buffer with `TMO_POL` too. Event flag set and clear calls are atomic, so the command bits need no lock.
+The Telemetry task (Subsystem 1, priority band 20–21 in `TEAM.md` section 4) sends with `TMO_POL` and drops a message when the buffer is full, so a slow network never blocks it. The service reads the buffer with `TMO_POL` too. Event flag set and clear calls are atomic, so the command bits need no lock.
+
+Every 10 ms the Telemetry task reads `cyw43_utk_get_status()` and sets its Wi-Fi lost latch, a `bool` only it touches, whenever the link is down. The latch goes out as fault bit 7 in the next `telemetry` queued after the link returns, and is then cleared.
 
 ## Size
 

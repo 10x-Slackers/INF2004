@@ -11,11 +11,13 @@
 #ifndef VEHICLE_CONTROLLER_H
 #define VEHICLE_CONTROLLER_H
 
+#include <stdint.h>
 #include "../app.h"
 
 #define VC_PRI 10 /* Shared priority band (TEAM.md). */
 
 ER vehicle_controller_start(void);
+uint32_t vehicle_controller_state(void);
 
 #endif /* VEHICLE_CONTROLLER_H */
 

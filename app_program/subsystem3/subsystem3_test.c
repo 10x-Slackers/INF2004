@@ -12,6 +12,7 @@
 #include "subsystem3.h"
 #include "code39.h"
 #include "../test_report.h"
+#include "../subsystem2/motion_control.h"
 
 #if APP_TEST
 #define S3_TEST_WAIT_MS     100 /* Ten sampling periods. */
@@ -113,31 +114,38 @@ static void subsystem3_symbol(uint16_t * p_widths, uint32_t pattern,
 }
 
 /*!
- * @brief Print the line state if it changed since *p_last.
+ * @brief Print the line state, with the odometer, if it changed since
+ * *p_last. The odometer shows how far the car runs with both sensors
+ * white, to set LINE_FOLLOWING_LOST_MM.
  *
- * @return True if both sensors see a junction.
+ * @return True if both sensors see a junction, or the line was lost.
  */
 static bool subsystem3_bench_report(line_following_t * p_last)
 {
     line_following_t line = {0};
+    motion_control_status_t motion = {0};
 
     line_following_get(&line);
-    if ((line.bits != p_last->bits) || (line.b_junction != p_last->b_junction))
+    if ((line.bits != p_last->bits) ||
+        (line.b_junction != p_last->b_junction) ||
+        (line.b_lost != p_last->b_lost))
     {
+        motion_control_get_status(&motion);
         /* (UB *): tm_printf() takes unsigned chars. */
         tm_printf((UB *)"[line] left=%u right=%u junction=%u last=%u "
-                        "following=%u\n",
+                        "following=%u lost=%u mm=%u deg=%u\n",
                   line.bits & DRV_LINE_LEFT, (line.bits & DRV_LINE_RIGHT) >> 1,
-                  line.b_junction, line.last_side, line.b_following);
+                  line.b_junction, line.last_side, line.b_following,
+                  line.b_lost, motion.distance_mm, motion.heading_deg);
         *p_last = line;
     }
-    return line.b_junction;
+    return line.b_junction || line.b_lost;
 }
 
 /*!
  * @brief Bench task. Prints the line state on every change. Releasing GP21
  * after holding it for 1 s starts a run: after 5 s the car follows the
- * line at 200 mm/s until a junction or for 15 s, then stops.
+ * line at 200 mm/s until a junction, a lost line or 15 s, then stops.
  */
 static void subsystem3_bench_task(INT stacd, void * p_exinf)
 {

@@ -25,6 +25,9 @@ Define a test here before running it. Test IDs never change.
 | S3-U13 | Barcode result is bit-packed | Minimum-bit data | auto | As above | `S3-U13 PASS`: `barcode_decoder_t` is 8 bytes |
 | S3-U14 | Barcodes are read while driving | FR3, NFR3, A3 | manual | `TEST=1` image. Lay a printed `*A*` 20 mm beside a straight line, then a `*Z*`. Hold GP21 for 1 s, put the car on the line before them | `[barcode] command=1` with count +1 for `*A*`; rejects +1 and no new command for `*Z*`; then repeat driving the other way along the line |
 | S3-U15 | RAM and record sizes before/after minimum-bit | Minimum-bit CR | host | Commands in `logs/2026-10-31_ram.txt` | Packed is smaller |
+| S3-U16 | A lost line is found again | FR2, NFR5 | manual | `TEST=1` image. Tape an L: a straight line ending in a 90° left corner. Hold GP21 for 1 s, put the car on the straight. Repeat with a right corner | The car follows the corner or, if it runs off, pivots towards the corner and follows the new branch; `lost=0` throughout. Record with a video |
+| S3-U17 | A failed search stops the car | FR2, NFR5 | manual | `TEST=1` image. A straight line that ends with no line within 300 mm. Hold GP21 for 1 s, put the car on the line | About 150 mm past the end the car pivots about 135° towards `last`, then back to about 135° the other side, and brakes; `[line] … following=0 lost=1` (its `deg=` and the previous line's differ by about 270°), then `[line] bench done` |
+| S3-U18 | Longest all-white stretch on a straight | FR2, NFR3 | manual | `TEST=1` image on the longest straight, as S3-U06. From the `[line]` lines, the largest `mm=` gap after a `left=0 right=0` line | Record the stretch. `LINE_FOLLOWING_LOST_MM` is about 1.5 times it and under 185 mm (`docs/LINE_FOLLOWING.md`, Calibration) |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).

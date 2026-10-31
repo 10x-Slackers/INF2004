@@ -19,7 +19,7 @@ Tests and results: [testing/subsystem2](../testing/subsystem2/TEST_LOG.md).
 | `motion_control_move_backward(mm)`   | Reverse straight, 1–5000 mm                                                                      |
 | `motion_control_turn_left(deg)`      | Turn anticlockwise on the spot, 1–360° (180 is a U-turn)                                         |
 | `motion_control_turn_right(deg)`     | Turn clockwise on the spot, 1–360°                                                               |
-| `motion_control_drive(left, right)`  | Hold wheel speeds, −1000 to 1000 mm/s. Lasts 200 ms, so call it every cycle; otherwise both wheels brake |
+| `motion_control_drive(left, right)`  | Hold wheel speeds, −1000 to 1000 mm/s. Lasts 200 ms, so call it every cycle; otherwise both wheels brake. After a stall it returns false until `stop()` or another command |
 | `motion_control_stop()`              | Brake both wheels now and cancel the command                                                     |
 | `motion_control_get_status(&status)` | Copy the status (below)                                                                          |
 | `motion_control_set_speed(mm_s)`     | Speed of later moves and turns, 10–1000 mm/s (default 100)                                       |
@@ -55,7 +55,7 @@ To measure part of a route, save `distance_mm` or `heading_deg` at the start and
 ## How it works
 
 - **Encoders:** 2537 edges per wheel turn (measured), 0.080 mm per edge. Each edge interrupts core 0. If a phase is missed, the ISR counts two edges in the last direction and sets fault bit 4.
-- **Speed control:** every 10 ms, one PID per wheel: `duty = (Kp·e + Ki·Σe + Kd·Δe) / 256 + 100‰`, limited to 800‰. The integral holds while the output is limited. Defaults Kp 256, Ki 16, Kd 0. Measured speed is the edges counted in one period; the period is set by the kernel's cyclic handler, not timed.
+- **Speed control:** every 10 ms, one PID per wheel: `duty = (Kp·e + Ki·Σe + Kd·Δe) / 256 + 100‰`, limited to 800‰. The integral holds while the output is limited. Defaults Kp 256, Ki 16, Kd 0. Measured speed is the edges counted since the last step over the kernel time since then (10 ms, or 20 ms then 0 ms after a late wake-up); the hardware timer is not used.
 - **Moves and turns:** each wheel rolls a set number of edges: `mm × 2537 / (π × 65)` for a move, `track × angle × 2537 / (360 × 65)` for a turn. Speed ramps up at 500 mm/s² and slows to 30 mm/s at the end, so stops are repeatable.
 - **Going straight:** the wheel that is ahead slows by (edge difference ÷ 4) mm/s and the other speeds up by the same amount.
 - **PWM:** 20 kHz on slices 4 (left, GP8/9) and 5 (right, GP10/11). Zero duty brakes.

@@ -67,7 +67,7 @@ bool motion_control_set_speed(uint32_t speed_mm_s);
 void motion_control_get_status(motion_control_status_t * p_status);
 void motion_control_pack(const motion_control_status_t * p_status,
                          uint8_t * p_packet);
-void motion_control_tick(void);
+void motion_control_tick(uint32_t elapsed_ms);
 
 #endif /* MOTION_CONTROL_H */
 

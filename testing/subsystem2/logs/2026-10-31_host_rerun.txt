@@ -1,5 +1,5 @@
 Subsystem 2 host test (S2-U21 command, simulated robot)
-Code: dfe3e46
+Code: 48f7ea3
 
 PASS  left 90 deg: turned 91.2 deg in 1.23 s, heading field 91
 PASS  right 90 deg: turned 91.2 deg in 1.23 s, heading field 268
@@ -22,5 +22,5 @@ PASS  rejection leaves it idle
 PASS  16-bit encoder counter wrap is handled
 PASS  telemetry: 12 bytes, big-endian, fixed bit layout
 PASS  status snapshot is 12 bytes (full-width equivalent 36 bytes)
-INFO  host cost of one control step: 0.020 us
+INFO  host cost of one control step: 0.027 us
 ALL PASS: 0 failure(s)

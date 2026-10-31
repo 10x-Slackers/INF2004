@@ -71,16 +71,24 @@ static void subsystem2_wake(void * p_exinf)
  */
 static void subsystem2_motion_task(INT stacd, void * p_exinf)
 {
+    SYSTIM now = {0};
+    uint32_t last_ms = 0u;
     uint32_t start_us = 0u;
     uint32_t elapsed_us = 0u;
 
     (void)stacd;
     (void)p_exinf;
+    (void)tk_get_otm(&now);
+    last_ms = now.lo;
     for (;;)
     {
         (void)tk_slp_tsk(TMO_FEVR);
         start_us = drv_motion_time_us();
-        motion_control_tick();
+        /* Kernel time since the last step: 10 ms, or 20 ms then 0 ms when a
+         * late wake-up was queued. The low word wraps after 49 days. */
+        (void)tk_get_otm(&now);
+        motion_control_tick(now.lo - last_ms);
+        last_ms = now.lo;
         elapsed_us = drv_motion_time_us() - start_us;
         if (elapsed_us > g_max_tick_us)
         {

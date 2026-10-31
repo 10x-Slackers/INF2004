@@ -120,7 +120,7 @@ static uint32_t test_run(motion_control_status_t * p_status)
     do
     {
         test_physics();
-        motion_control_tick();
+        motion_control_tick(10u);
         motion_control_get_status(p_status);
         ticks++;
     } while ((MOTION_CONTROL_RUNNING == p_status->state) &&
@@ -130,7 +130,7 @@ static uint32_t test_run(motion_control_status_t * p_status)
     for (uint32_t settle = 0u; settle < 20u; settle++)
     {
         test_physics();
-        motion_control_tick();
+        motion_control_tick(10u);
     }
     motion_control_get_status(p_status);
     return ticks;
@@ -208,7 +208,7 @@ static void test_drive_and_stop(void)
     for (tick = 0u; tick < 100u; tick++)
     {
         test_physics();
-        motion_control_tick();
+        motion_control_tick(10u);
         /* Repeated, as a follower would. */
         (void)motion_control_drive(200, 100);
     }
@@ -221,6 +221,17 @@ static void test_drive_and_stop(void)
                    (abs(left - 200) <= 15) && (abs(right - 100) <= 15),
                text);
 
+    /* A late wake-up: one step covers 20 ms, the queued one 0 ms. */
+    test_physics();
+    test_physics();
+    motion_control_tick(20u);
+    (void)motion_control_drive(200, 100);
+    motion_control_tick(0u);
+    motion_control_get_status(&status);
+    test_check((abs(status.left_speed - 200) <= 15) &&
+                   (abs(status.right_speed - 100) <= 15),
+               "a late, queued step does not upset the speed");
+
     motion_control_stop();
     motion_control_get_status(&status);
     test_check((MOTION_CONTROL_IDLE == status.state) &&
@@ -232,7 +243,7 @@ static void test_drive_and_stop(void)
     for (tick = 0u; tick < 19u; tick++)
     {
         test_physics();
-        motion_control_tick();
+        motion_control_tick(10u);
     }
     motion_control_get_status(&status);
     test_check(MOTION_CONTROL_RUNNING == status.state,
@@ -240,7 +251,7 @@ static void test_drive_and_stop(void)
     for (tick = 0u; tick < 2u; tick++)
     {
         test_physics();
-        motion_control_tick();
+        motion_control_tick(10u);
     }
     motion_control_get_status(&status);
     test_check((MOTION_CONTROL_IDLE == status.state) &&
@@ -263,10 +274,28 @@ static void test_faults(void)
                    (0 == g_wheel[0].duty) && (0 == g_wheel[1].duty),
                "blocked right wheel: stall fault after 1 s, both braked");
 
+    /* A follower keeps renewing drive(): the stall must still latch. */
+    test_reset(0u);
+    g_wheel[1].b_blocked = true;
+    for (ticks = 0u; ticks < 150u; ticks++)
+    {
+        (void)motion_control_drive(150, 150);
+        test_physics();
+        motion_control_tick(10u);
+    }
+    motion_control_get_status(&status);
+    test_check((MOTION_CONTROL_FAILED == status.state) &&
+                   (MOTION_CONTROL_FAULT_STALL_RIGHT == status.faults) &&
+                   (0 == g_wheel[0].duty) && (0 == g_wheel[1].duty) &&
+                   !motion_control_drive(150, 150),
+               "renewed drive: stall latches and further drives are refused");
+    motion_control_stop();
+    test_check(motion_control_drive(150, 150), "stop clears a stalled drive");
+
     test_reset(0u);
     (void)motion_control_move_forward(200u);
     test_physics();
-    motion_control_tick();
+    motion_control_tick(10u);
     g_skipped++;
     (void)test_run(&status);
     test_check((MOTION_CONTROL_COMPLETE == status.state) &&
@@ -344,7 +373,7 @@ static void test_timing(void)
     start = clock();
     for (ticks = 0u; ticks < 100000u; ticks++)
     {
-        motion_control_tick();
+        motion_control_tick(10u);
     }
     us = ((double)(clock() - start) / CLOCKS_PER_SEC) * 1e6 / ticks;
     printf("INFO  host cost of one control step: %.3f us\n", us);

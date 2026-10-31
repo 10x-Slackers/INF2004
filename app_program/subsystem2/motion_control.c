@@ -73,8 +73,9 @@ static int32_t motion_control_clamp(int64_t value, int32_t min, int32_t max);
 static int32_t motion_control_wrap(uint32_t difference);
 static bool motion_control_start(uint32_t command, uint32_t amount);
 static void motion_control_begin(uint32_t command);
-static void motion_control_odometry(int32_t left_delta, int32_t right_delta);
-static int32_t motion_control_speed(int32_t delta);
+static void motion_control_odometry(int32_t left_delta, int32_t right_delta,
+                                    uint32_t elapsed_ms);
+static int32_t motion_control_speed(int32_t delta, uint32_t elapsed_ms);
 static void motion_control_profile(int32_t left_delta, int32_t right_delta,
                                    int32_t * p_left, int32_t * p_right);
 static int32_t motion_control_pid(uint32_t wheel, int32_t target,
@@ -148,11 +149,12 @@ bool motion_control_turn_right(uint32_t angle_deg)
  * @brief Hold each wheel at a speed (line following, bypass arcs).
  *
  * The target lasts 200 ms. Call again before then, or both wheels brake
- * and the state becomes IDLE.
+ * and the state becomes IDLE. After a stall the drive stays FAILED until
+ * motion_control_stop() or another command.
  *
  * @param[in] left_mm_s  -1000..1000 mm/s, positive is forward.
  * @param[in] right_mm_s -1000..1000 mm/s.
- * @return False if out of range; nothing changes.
+ * @return False if out of range or stalled; nothing changes.
  */
 bool motion_control_drive(int32_t left_mm_s, int32_t right_mm_s)
 {
@@ -164,14 +166,19 @@ bool motion_control_drive(int32_t left_mm_s, int32_t right_mm_s)
     if (b_valid)
     {
         drv_motion_lock();
-        if ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
-            (MOTION_CONTROL_RUNNING != g_status.state))
+        b_valid = ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
+                   (MOTION_CONTROL_FAILED != g_status.state));
+        if (b_valid)
         {
-            motion_control_begin(MOTION_CONTROL_CMD_DRIVE);
+            if ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
+                (MOTION_CONTROL_RUNNING != g_status.state))
+            {
+                motion_control_begin(MOTION_CONTROL_CMD_DRIVE);
+            }
+            g_run.left_target = left_mm_s;
+            g_run.right_target = right_mm_s;
+            g_run.drive_age = 0u;
         }
-        g_run.left_target = left_mm_s;
-        g_run.right_target = right_mm_s;
-        g_run.drive_age = 0u;
         drv_motion_unlock();
     }
     return b_valid;
@@ -250,7 +257,7 @@ void motion_control_pack(const motion_control_status_t * p_status,
 /*!
  * @brief One 10 ms control step. Called only by the motion task.
  */
-void motion_control_tick(void)
+void motion_control_tick(uint32_t elapsed_ms)
 {
     drv_motion_counts_t counts = {0};
     int32_t left_delta = 0;
@@ -267,7 +274,7 @@ void motion_control_tick(void)
     right_delta = motion_control_wrap((uint32_t)counts.right - g_run.right_raw);
     g_run.left_raw = counts.left;
     g_run.right_raw = counts.right;
-    motion_control_odometry(left_delta, right_delta);
+    motion_control_odometry(left_delta, right_delta, elapsed_ms);
 
     if (MOTION_CONTROL_RUNNING == g_status.state)
     {
@@ -409,7 +416,8 @@ static void motion_control_begin(uint32_t command)
 /*!
  * @brief Update counts, speeds, heading and distance from new edges.
  */
-static void motion_control_odometry(int32_t left_delta, int32_t right_delta)
+static void motion_control_odometry(int32_t left_delta, int32_t right_delta,
+                                    uint32_t elapsed_ms)
 {
     /* int64_t keeps every product below in range. */
     int64_t full_turn = 2 * (int64_t)MOTION_TRACK_UM * MOTION_COUNTS_PER_REV;
@@ -436,20 +444,22 @@ static void motion_control_odometry(int32_t left_delta, int32_t right_delta)
     g_status.distance_mm =
         (uint32_t)(((int64_t)g_run.odometer * MOTION_CIRCUMFERENCE_UM) /
                    (2 * MOTION_COUNTS_PER_REV * 1000));
-    g_status.left_speed = motion_control_speed(left_delta);
-    g_status.right_speed = motion_control_speed(right_delta);
+    if (0u != elapsed_ms) /* Zero for a queued wake-up: keep the speeds. */
+    {
+        g_status.left_speed = motion_control_speed(left_delta, elapsed_ms);
+        g_status.right_speed = motion_control_speed(right_delta, elapsed_ms);
+    }
 }
 
 /*!
- * @brief Wheel speed in mm/s from one period's edges, limited to
- * -1023..1023. The period is the kernel's cyclic handler, not measured.
+ * @brief Wheel speed in mm/s, limited to -1023..1023.
  */
-static int32_t motion_control_speed(int32_t delta)
+static int32_t motion_control_speed(int32_t delta, uint32_t elapsed_ms)
 {
     /* um per edge * edges / ms = mm/s. */
     return motion_control_clamp(
         ((int64_t)delta * MOTION_CIRCUMFERENCE_UM) /
-            (MOTION_COUNTS_PER_REV * (int64_t)MOTION_CONTROL_PERIOD_MS),
+            (MOTION_COUNTS_PER_REV * (int64_t)elapsed_ms),
         -MOTION_SPEED_LIMIT, MOTION_SPEED_LIMIT);
 }
 

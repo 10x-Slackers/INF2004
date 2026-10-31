@@ -1,0 +1,76 @@
+INT-05 at 7739da3 (#23) merged with cd9aa1f (#25), normal build, wheels lifted, no line
+Capture: serial from boot; [imu] x= sample lines removed
+
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[imu] calibrated: offsets x=1 y=43 z=1040 mg
+[vc] INIT -> READY: IMU calibrated
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[vc] READY -> FOLLOW: GP20
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[vc] FOLLOW -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[safety] cleared
+[vc] SAFE_STOP -> INIT: GP20
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[vc] FOLLOW -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: accelerating
+[imu] motion: steady
+[safety] cleared
+[vc] SAFE_STOP -> INIT: GP20
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[vc] FOLLOW -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[safety] cleared
+[vc] SAFE_STOP -> INIT: GP20
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[vc] FOLLOW -> AVOID: obstacle
+[vc] AVOID -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: accelerating
+[safety] cleared
+[vc] SAFE_STOP -> INIT: GP20
+[vc] INIT -> READY: IMU calibrated
+[imu] motion: steady
+[vc] READY -> FOLLOW: GP20
+[vc] FOLLOW -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+[safety] cleared
+[vc] SAFE_STOP -> INIT: GP20
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[vc] FOLLOW -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: impact
+[imu] FAULT: impact

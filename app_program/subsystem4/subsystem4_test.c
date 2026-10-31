@@ -16,6 +16,7 @@ EXPORT void subsystem4_test(void)
     S4_TILT tilt;
     S4_FAULT fault;
     S4_HUMP hump = {0};
+    S4_MOTION motion;
     INT i;
 
     TEST_INIT();
@@ -68,6 +69,11 @@ EXPORT void subsystem4_test(void)
     TEST_CHECK("S4-U13",
                sizeof(S4_HUMP) == 4 && hump.peak == 63 && hump.count == 0,
                "packed hump record keeps 0..63 mm and a wrapping count");
+
+    /* Board still since power-on: steady */
+    s4_get_motion(&motion);
+    TEST_CHECK("S4-U18", sizeof(S4_MOTION) == 4 && motion.cls == S4_STEADY,
+               "motion is steady on a still board");
 
     TEST_SUMMARY("subsystem4");
 }

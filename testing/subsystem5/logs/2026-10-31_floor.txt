@@ -1,19 +1,29 @@
-S5-U48 first attempt on the floor, TEST=1 image from 6488bf2. Obstacle about 80 cm ahead. Held GP20 press. USB cable attached for the log; the tester reports it was coiled up and got in the way.
+S5-U48 with the 700 mm pass, TEST=1 image from b39e2dc (200 mm side-step, repeatable bench). Bottle centred about 80 cm ahead.
+Tester's observation: perfect, no issues (past the bottle, on the line, same heading).
 
-[scan] forward_mm=892 fault=0 closest=0@0 edges=0..0 obstacle=0
-[avoid] state=1 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0
-[scan] forward_mm=310 fault=0 closest=0@0 edges=0..0 obstacle=0
-[avoid] state=2 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0
-[scan] forward_mm=404 fault=0 closest=304@100 edges=95..100 obstacle=1
-[avoid] state=3 faults=0 side=1 step=1 bypasses=0 right_mm=270 left_mm=518
-[scan] forward_mm=404 fault=0 closest=304@100 edges=95..100 obstacle=1
-[avoid] state=4 faults=4 side=1 step=0 bypasses=0 right_mm=270 left_mm=518
-[scan] forward_mm=404 fault=0 closest=304@100 edges=95..100 obstacle=1
-[avoid] state=0 faults=4 side=1 step=0 bypasses=0 right_mm=270 left_mm=518
+[scan] forward_mm=701 fault=0 closest=697@85 edges=85..85 obstacle=0
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0/0
+[scan] forward_mm=697 fault=0 closest=697@85 edges=85..85 obstacle=0
+[avoid] state=1 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=1/0
+[scan] forward_mm=349 fault=0 closest=697@85 edges=85..85 obstacle=0
+[avoid] state=2 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0/0
+[scan] forward_mm=346 fault=0 closest=346@85 edges=85..95 obstacle=1
+[avoid] state=3 faults=0 side=1 step=1 bypasses=0 right_mm=547 left_mm=616 motion=1/0
+[scan] forward_mm=346 fault=0 closest=346@85 edges=85..95 obstacle=1
+[avoid] state=3 faults=0 side=1 step=2 bypasses=0 right_mm=547 left_mm=616 motion=2/0
+[scan] forward_mm=527 fault=0 closest=346@85 edges=85..95 obstacle=1
+[avoid] state=3 faults=0 side=1 step=3 bypasses=0 right_mm=547 left_mm=616 motion=1/0
+[scan] forward_mm=527 fault=0 closest=346@85 edges=85..95 obstacle=1
+[avoid] state=3 faults=0 side=1 step=4 bypasses=0 right_mm=547 left_mm=616 motion=2/0
+[scan] forward_mm=439 fault=0 closest=346@85 edges=85..95 obstacle=1
+[avoid] state=3 faults=0 side=1 step=5 bypasses=0 right_mm=547 left_mm=616 motion=1/0
+[scan] forward_mm=439 fault=0 closest=346@85 edges=85..95 obstacle=1
+[avoid] state=3 faults=0 side=1 step=6 bypasses=0 right_mm=547 left_mm=616 motion=2/0
+[scan] forward_mm=506 fault=0 closest=346@85 edges=85..95 obstacle=1
+[avoid] state=3 faults=0 side=1 step=7 bypasses=0 right_mm=547 left_mm=616 motion=1/0
+[scan] forward_mm=506 fault=0 closest=346@85 edges=85..95 obstacle=1
+[avoid] state=1 faults=0 side=1 step=0 bypasses=1 right_mm=547 left_mm=616 motion=2/0
+[scan] forward_mm=506 fault=0 closest=346@85 edges=85..95 obstacle=1
+[avoid] state=0 faults=0 side=1 step=0 bypasses=1 right_mm=547 left_mm=616 motion=2/0
 [avoid] bench done
-*** Hard fault ***  prc:2 ctxtsk:9
-    scheduler slot guards intact
-    ctxtsk[0]=2 ctxtsk[1]=9 schedtsk[0]=2 schedtsk[1]=9
-    last publish: core0=2 core1=9 (counts 42856/36144)
-    pc=00000000 lr=100030ff psr=20000000
-    r0=00000013 r1=00000000 r2=20003efc r3=1000eb49 r12=20003eec
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm

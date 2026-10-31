@@ -29,7 +29,7 @@ These decisions were frozen at the review. Changing one means updating this docu
 
 | Pri | Task                            | Purpose                                                                              | Trigger                        | Buddy |
 | --- | ------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------ | ----- |
-| P1  | Safety Monitor                  | Stop on collision risk, stale control data or critical fault. Holds the latched stop | 5 ms + events                  | All   |
+| P1  | Safety Monitor                  | Stop on stale control data, a critical fault or an explicit stop. Holds the latched stop | 5 ms + events                  | All   |
 | P2  | Wheel Motion Control            | Sole motor writer. Per-wheel PID, odometry, encoder-based turns                      | 10 ms + stop wake              | 2     |
 | P3  | Barcode Decoder                 | Decode the auxiliary IR samples and validate LEFT / RIGHT / STRAIGHT / UTURN         | 10 ms                          | 3     |
 | P4  | Line Following                  | Line error and junction detection from two digital IR sensors                        | 10 ms                          | 3     |
@@ -97,7 +97,6 @@ flowchart LR
     VC -- I7 --> US
     US -- I8 --> VC
     US -- I8 --> OA
-    US -- I8 --> SM
     IMU -- I9 --> VC
     IMU -- I9 --> SM
     SM -- I11 --> VC
@@ -119,7 +118,7 @@ Not drawn: every task reports health to the Safety Monitor over I10.
 | I5  | Wheel Motion Control → Barcode Decoder, IMU, Obstacle Avoidance, Safety Monitor | Odometry snapshot: counts, speed, distance, yaw estimate                              |
 | I6  | Vehicle Controller ↔ Obstacle Avoidance                                         | Activate / cancel one way; proposed bypass, progress and faults the other             |
 | I7  | Vehicle Controller → Ultrasonic Scan                                            | Scan request: `FORWARD`, `COARSE` or `FINE`                                           |
-| I8  | Ultrasonic Scan → Vehicle Controller, Obstacle Avoidance, Safety Monitor        | Range or profile, angle, validity                                                     |
+| I8  | Ultrasonic Scan → Vehicle Controller, Obstacle Avoidance                        | Range or profile, angle, validity                                                     |
 | I9  | IMU and Terrain Monitor → Vehicle Controller, Safety Monitor                    | Pitch, turn rate, hump height, impact / tilt fault                                    |
 | I10 | Every task → Safety Monitor                                                     | Health, data freshness, faults                                                        |
 | I11 | Safety Monitor → Vehicle Controller, Wheel Motion Control                       | Latched stop, cause, generation                                                       |
@@ -128,7 +127,7 @@ Not drawn: every task reports health to the Safety Monitor over I10.
 Notes:
 
 - I3 is a one-slot mailbox: a new target replaces the old one, and the Vehicle Controller must renew it before it expires, otherwise Wheel Motion Control brakes.
-- Safety Monitor reads forward range from I8 directly; sideways readings do not refresh forward clearance. An IMU fault on I9 also asserts the I11 stop.
+- Collision risk belongs to Obstacle Avoidance, which brakes on the first forward reading within 350 mm. The Safety Monitor does not read I8: a range backstop could never act before avoidance, which brakes on the same reading, and only avoidance requests readings. An IMU fault on I9 asserts the I11 stop.
 - A validated `STOP` from the supervisor also raises a safety request on I11, so it latches like any other stop.
 - The stop on I11 carries a generation number. Motion requests issued before the stop are stale and must be discarded (FR11).
 - The supervisor may only start, stop and reset. It never steers or sets speed (FR1).

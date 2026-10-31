@@ -67,6 +67,13 @@ void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
     p_profile->right_deg =
         SCAN_PROFILE_MIN_DEG + (right * SCAN_PROFILE_STEP_DEG);
     p_profile->left_deg = SCAN_PROFILE_MIN_DEG + (left * SCAN_PROFILE_STEP_DEG);
+
+    /* Arc length r * angle, with pi / 180 as 1745 / 100000. */
+    p_profile->width_mm = p_profile->b_obstacle
+                              ? ((p_rays[closest] * (left - right) *
+                                  SCAN_PROFILE_STEP_DEG * 1745u) /
+                                 100000u)
+                              : 0u;
 }
 
 /*!

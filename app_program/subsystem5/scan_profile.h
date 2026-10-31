@@ -29,7 +29,9 @@
 #define SCAN_PROFILE_RIGHT 2u
 
 /* Obstacle profile. The edges are the outermost blocked rays next to the
- * closest one. */
+ * closest one. The width is rough: the arc between the edges at the
+ * closest distance, at most about 120 mm when the obstacle fills the
+ * sweep. */
 typedef struct
 {
     unsigned int closest_mm : 12;
@@ -37,6 +39,7 @@ typedef struct
     unsigned int right_deg : 7;
     unsigned int b_obstacle : 1; /* closest_mm <= SCAN_PROFILE_BLOCK_MM. */
     unsigned int left_deg : 7;
+    unsigned int width_mm : 7; /* 0 if no obstacle. */
 } scan_profile_t;
 
 uint32_t scan_profile_mm(uint32_t echo_us);

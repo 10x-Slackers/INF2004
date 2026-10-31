@@ -18,30 +18,27 @@
 #define OBSTACLE_AVOIDANCE_TURN_DEG 90
 #define OBSTACLE_AVOIDANCE_LOOK_DEG 45   /* Car turn for the clearance. */
 #define OBSTACLE_AVOIDANCE_SIDE_MM  200u /* Out to the side and back. */
-#define OBSTACLE_AVOIDANCE_PASS_MM  700u /* Gap, obstacle and car length. */
-#define OBSTACLE_AVOIDANCE_STEP_MM  300u /* Clear before a side-step. */
-
+#define OBSTACLE_AVOIDANCE_WIDE_MM                                             \
+    300u                                /* For an obstacle filling the sweep.  \
+                                         */
+#define OBSTACLE_AVOIDANCE_PASS_MM 700u /* Gap, obstacle and car length. */
 /* One bypass step: a turn towards the bypass side (+1) or back (-1), or a
- * move forward (0) by mm, once the way ahead reads over clear_mm. The pass
- * only needs SCAN_PROFILE_BLOCK_MM: the obstacle being passed is diagonally
- * ahead, inside the sensor's beam. */
+ * move forward (0): the pass alongside the obstacle, or a side-step. */
 typedef struct
 {
     int8_t turn;
-    uint16_t mm;
-    uint16_t clear_mm;
+    bool b_pass;
 } obstacle_avoidance_step_t;
 
 static const obstacle_avoidance_step_t g_steps[OBSTACLE_AVOIDANCE_STEPS] = {
-    {1, 0u, 0u},  {0, OBSTACLE_AVOIDANCE_SIDE_MM, OBSTACLE_AVOIDANCE_STEP_MM},
-    {-1, 0u, 0u}, {0, OBSTACLE_AVOIDANCE_PASS_MM, SCAN_PROFILE_BLOCK_MM},
-    {-1, 0u, 0u}, {0, OBSTACLE_AVOIDANCE_SIDE_MM, OBSTACLE_AVOIDANCE_STEP_MM},
-    {1, 0u, 0u}};
+    {1, false},  {0, false}, {-1, false}, {0, true},
+    {-1, false}, {0, false}, {1, false}};
 
 static ID g_mutex;
 static ID g_task;
 static obstacle_avoidance_status_t g_status;
 
+static bool obstacle_avoidance_running(uint32_t state);
 static void obstacle_avoidance_set(uint32_t state, uint32_t step);
 static void obstacle_avoidance_stop(uint32_t fault);
 static bool obstacle_avoidance_active(void);
@@ -50,7 +47,8 @@ static bool obstacle_avoidance_still(void);
 static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm);
 static bool obstacle_avoidance_look(uint32_t * p_left_mm,
                                     uint32_t * p_right_mm);
-static bool obstacle_avoidance_step(uint32_t side, uint32_t step);
+static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
+                                    uint32_t side_mm);
 static void obstacle_avoidance_avoid(void);
 
 /*!
@@ -74,14 +72,13 @@ bool obstacle_avoidance_init(void)
 void obstacle_avoidance_start(void)
 {
     (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-    if ((OBSTACLE_AVOIDANCE_IDLE == g_status.state) ||
-        (OBSTACLE_AVOIDANCE_STOPPED == g_status.state))
+    if (!obstacle_avoidance_running(g_status.state))
     {
         g_status.state = OBSTACLE_AVOIDANCE_MONITOR;
         g_status.faults = 0u;
+        (void)tk_wup_tsk(g_task);
     }
     (void)tk_unl_mtx(g_mutex);
-    (void)tk_wup_tsk(g_task);
 }
 
 /*!
@@ -143,14 +140,22 @@ void obstacle_avoidance_task(INT stacd, void * p_exinf)
 }
 
 /*!
+ * @brief True for a state that is neither cancelled nor stopped.
+ */
+static bool obstacle_avoidance_running(uint32_t state)
+{
+    return (OBSTACLE_AVOIDANCE_IDLE != state) &&
+           (OBSTACLE_AVOIDANCE_STOPPED != state);
+}
+
+/*!
  * @brief Set the state and the bypass step, unless cancelled or stopped
  * meanwhile.
  */
 static void obstacle_avoidance_set(uint32_t state, uint32_t step)
 {
     (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-    if ((OBSTACLE_AVOIDANCE_IDLE != g_status.state) &&
-        (OBSTACLE_AVOIDANCE_STOPPED != g_status.state))
+    if (obstacle_avoidance_running(g_status.state))
     {
         g_status.state = state;
         g_status.step = step;
@@ -160,14 +165,18 @@ static void obstacle_avoidance_set(uint32_t state, uint32_t step)
 
 /*!
  * @brief Safe stop: brake, record the fault, wait for the next start.
+ * Nothing happens if cancelled meanwhile, so the car is the caller's again.
  */
 static void obstacle_avoidance_stop(uint32_t fault)
 {
-    motion_control_stop();
     (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-    g_status.state = OBSTACLE_AVOIDANCE_STOPPED;
-    g_status.faults |= fault;
-    g_status.step = 0u;
+    if (obstacle_avoidance_running(g_status.state))
+    {
+        motion_control_stop();
+        g_status.state = OBSTACLE_AVOIDANCE_STOPPED;
+        g_status.faults |= fault;
+        g_status.step = 0u;
+    }
     (void)tk_unl_mtx(g_mutex);
 }
 
@@ -179,8 +188,7 @@ static bool obstacle_avoidance_active(void)
     obstacle_avoidance_status_t status = {0};
 
     obstacle_avoidance_get_status(&status);
-    return (OBSTACLE_AVOIDANCE_IDLE != status.state) &&
-           (OBSTACLE_AVOIDANCE_STOPPED != status.state);
+    return obstacle_avoidance_running(status.state);
 }
 
 /*!
@@ -234,19 +242,21 @@ static bool obstacle_avoidance_still(void)
 
 /*!
  * @brief Turn the car (positive is left) or, with no turn, drive forward
- * by mm, and wait for the move to finish.
+ * by mm, and wait for the move to finish. A forward move keeps reading the
+ * range and stops within SCAN_PROFILE_BLOCK_MM of anything ahead.
  *
  * @return False if cancelled or stopped.
  */
 static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
 {
     motion_control_status_t status = {0};
-    uint32_t waited = 0u;
+    ultrasonic_scan_t scan = {0};
+    SYSTIM start = {0};
+    SYSTIM now = {0};
 
     /* Under the lock, so a cancel cannot slip in before the command. */
     (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-    if ((OBSTACLE_AVOIDANCE_IDLE == g_status.state) ||
-        (OBSTACLE_AVOIDANCE_STOPPED == g_status.state))
+    if (!obstacle_avoidance_running(g_status.state))
     {
         /* Cancelled or stopped. */
     }
@@ -264,14 +274,27 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
     }
     (void)tk_unl_mtx(g_mutex);
 
+    (void)tk_get_otm(&start);
     do
     {
-        tk_dly_tsk(OBSTACLE_AVOIDANCE_POLL_MS);
-        waited += OBSTACLE_AVOIDANCE_POLL_MS;
+        if (0 != turn_deg)
+        {
+            tk_dly_tsk(OBSTACLE_AVOIDANCE_POLL_MS);
+        }
+        else if (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan) &&
+                 (scan.forward_mm <= SCAN_PROFILE_BLOCK_MM))
+        {
+            obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_BLOCKED);
+        }
+        else
+        {
+            /* Clear ahead, or already stopped by the scan. */
+        }
         motion_control_get_status(&status);
+        (void)tk_get_otm(&now);
     } while (obstacle_avoidance_active() &&
              (MOTION_CONTROL_RUNNING == status.state) &&
-             (waited < OBSTACLE_AVOIDANCE_MOVE_MS));
+             ((now.lo - start.lo) < OBSTACLE_AVOIDANCE_MOVE_MS));
     if (obstacle_avoidance_active() &&
         (MOTION_CONTROL_COMPLETE != status.state))
     {
@@ -304,27 +327,21 @@ static bool obstacle_avoidance_look(uint32_t * p_left_mm, uint32_t * p_right_mm)
 }
 
 /*!
- * @brief Run one bypass step and wait for it to finish. Before a forward
- * move, check that the way ahead is clear.
+ * @brief Run one bypass step and wait for it to finish.
  *
  * @return False if cancelled or stopped.
  */
-static bool obstacle_avoidance_step(uint32_t side, uint32_t step)
+static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
+                                    uint32_t side_mm)
 {
     const obstacle_avoidance_step_t * p_step = &g_steps[step];
-    ultrasonic_scan_t scan = {0};
     /* Towards the bypass side or back; left is positive. */
     int32_t turn_deg = p_step->turn * OBSTACLE_AVOIDANCE_TURN_DEG;
 
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, step + 1u);
-    if ((0 == p_step->turn) &&
-        obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan) &&
-        (scan.forward_mm <= p_step->clear_mm))
-    {
-        obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_BLOCKED);
-    }
     return obstacle_avoidance_move(
-        (SCAN_PROFILE_LEFT == side) ? turn_deg : -turn_deg, p_step->mm);
+        (SCAN_PROFILE_LEFT == side) ? turn_deg : -turn_deg,
+        p_step->b_pass ? OBSTACLE_AVOIDANCE_PASS_MM : side_mm);
 }
 
 /*!
@@ -338,6 +355,7 @@ static void obstacle_avoidance_avoid(void)
     uint32_t left_mm = 0u;
     uint32_t right_mm = 0u;
     uint32_t side = SCAN_PROFILE_NONE;
+    uint32_t side_mm = OBSTACLE_AVOIDANCE_SIDE_MM;
     uint32_t step = 0u;
 
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_PROFILE, 0u);
@@ -360,6 +378,12 @@ static void obstacle_avoidance_avoid(void)
              (0u != scan.profile.b_obstacle))
     {
         side = scan_profile_side(left_mm, right_mm);
+        /* Filling the sweep, the obstacle may be wider than it can see. */
+        if ((SCAN_PROFILE_MIN_DEG == scan.profile.right_deg) &&
+            (SCAN_PROFILE_MAX_DEG == scan.profile.left_deg))
+        {
+            side_mm = OBSTACLE_AVOIDANCE_WIDE_MM;
+        }
         (void)tk_loc_mtx(g_mutex, TMO_FEVR);
         g_status.side = side;
         g_status.left_mm = left_mm;
@@ -371,7 +395,7 @@ static void obstacle_avoidance_avoid(void)
         }
         for (step = 0u;
              (SCAN_PROFILE_NONE != side) && (step < OBSTACLE_AVOIDANCE_STEPS) &&
-             obstacle_avoidance_step(side, step);
+             obstacle_avoidance_step(side, step, side_mm);
              step++)
         {
         }

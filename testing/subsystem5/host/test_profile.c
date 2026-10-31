@@ -52,6 +52,8 @@ int main(void)
                    (1u == p.b_obstacle) && (85u == p.right_deg) &&
                    (95u == p.left_deg),
                "centred obstacle: closest point and edges at 85..95");
+    test_check(34u == p.width_mm,
+               "width: 200 mm x 10 degrees = 34 mm (arc length)");
 
     p = test_profile(200u, 800u, 800u, 300u, 300u);
     test_check((200u == p.closest_mm) && (80u == p.closest_deg) &&
@@ -60,12 +62,16 @@ int main(void)
 
     p = test_profile(300u, 300u, 300u, 300u, 250u);
     test_check((100u == p.closest_deg) && (80u == p.right_deg) &&
-                   (100u == p.left_deg),
-               "obstacle filling the sweep: edges at both ends");
+                   (100u == p.left_deg) && (87u == p.width_mm),
+               "obstacle filling the sweep: edges at both ends, width 87 mm");
+    p = test_profile(4000u, 4000u, 350u, 4000u, 4000u);
+    test_check((0u == p.width_mm) && (1u == p.b_obstacle),
+               "single blocked ray: width 0");
 
     p = test_profile(4000u, 4000u, 4000u, 4000u, 4000u);
-    test_check((0u == p.b_obstacle) && (4000u == p.closest_mm),
-               "open space: no obstacle");
+    test_check((0u == p.b_obstacle) && (4000u == p.closest_mm) &&
+                   (0u == p.width_mm),
+               "open space: no obstacle, no width");
 
     test_check((SCAN_PROFILE_LEFT == scan_profile_side(800u, 800u)) &&
                    (SCAN_PROFILE_LEFT == scan_profile_side(900u, 600u)) &&

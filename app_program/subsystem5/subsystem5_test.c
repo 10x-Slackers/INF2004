@@ -88,10 +88,11 @@ static void subsystem5_bench_report(void)
     motion_control_get_status(&motion);
     /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[scan] forward_mm=%u fault=%u closest=%u@%u "
-                    "edges=%u..%u obstacle=%u\n",
+                    "edges=%u..%u width=%u obstacle=%u\n",
               scan.forward_mm, scan.b_fault, scan.profile.closest_mm,
               scan.profile.closest_deg, scan.profile.right_deg,
-              scan.profile.left_deg, scan.profile.b_obstacle);
+              scan.profile.left_deg, scan.profile.width_mm,
+              scan.profile.b_obstacle);
     tm_printf((UB *)"[avoid] state=%u faults=%u side=%u step=%u "
                     "bypasses=%u right_mm=%u left_mm=%u motion=%u/%u\n",
               status.state, status.faults, status.side, status.step,

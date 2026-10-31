@@ -11,7 +11,10 @@
  */
 ER subsystem5_init(void)
 {
-    return (ultrasonic_scan_init() && obstacle_avoidance_init()) ? E_OK : E_SYS;
+    bool b_scan = ultrasonic_scan_init();
+    bool b_avoid = obstacle_avoidance_init();
+
+    return (b_scan && b_avoid) ? E_OK : E_SYS;
 }
 
 /*!

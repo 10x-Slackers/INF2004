@@ -18,7 +18,7 @@ subsystem, ask its owner or open a pull request for them to review.
 | 2 | Motion control | 2503068 | | `app_program/subsystem2/` | `testing/subsystem2/` |
 | 3 | Line following and barcodes | | | `app_program/subsystem3/` | `testing/subsystem3/` |
 | 4 | IMU and terrain | | | `app_program/subsystem4/` | `testing/subsystem4/` |
-| 5 | Ultrasonic scanning and obstacle avoidance | | | `app_program/subsystem5/` | `testing/subsystem5/` |
+| 5 | Ultrasonic scanning and obstacle avoidance | 2503992 | | `app_program/subsystem5/` | `testing/subsystem5/` |
 
 Shared files (`app_program/app_main.c`, `app_program/app.h`, this file)
 are changed only by agreement of the team. The exception is claiming an empty
@@ -45,8 +45,8 @@ fixed.
 | Pin | Owner | Used for |
 |---|---|---|
 | GP23, GP24, GP25, GP29 | *reserved* | Pico W radio |
-| GP0 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
-| GP1 | | (taken whenever the team builds with `CRASH_REPORT=1`) |
+| GP0 | Ultrasonic (Buddy 5) | HC-SR04 TRIG (Grove 1). Unplug the sensor for `CRASH_REPORT=1` builds |
+| GP1 | Ultrasonic (Buddy 5) | HC-SR04 ECHO, level shifted (Grove 1). Unplug the sensor for `CRASH_REPORT=1` builds |
 | GP2 | Motion (Buddy 2) | right encoder phase A (Grove 2) |
 | GP3 | Motion (Buddy 2) | right encoder phase B (Grove 2) |
 | GP4 | IMU (Buddy 4) | GY-511 SDA, I2C0 (Grove 3) |
@@ -57,7 +57,7 @@ fixed.
 | GP9 | Motion (Buddy 2) | left motor B, PWM4B |
 | GP10 | Motion (Buddy 2) | right motor A, PWM5A |
 | GP11 | Motion (Buddy 2) | right motor B, PWM5B |
-| GP12 | | |
+| GP12 | Ultrasonic (Buddy 5) | SG90 servo signal (PWM slice 6 A) |
 | GP13 | | |
 | GP14 | | |
 | GP15 | | |
@@ -65,7 +65,7 @@ fixed.
 | GP17 | Motion (Buddy 2) | left encoder phase B (Grove 4) |
 | GP18 | | |
 | GP19 | | |
-| GP20 | | |
+| GP20 | Ultrasonic (Buddy 5) | Robo Pico button: steps the avoidance bench sequence (`TEST=1` only) |
 | GP21 | Motion (Buddy 2) | Robo Pico button: starts the motion bench sequence (`TEST=1` only) |
 | GP22 | IMU (Buddy 4) | Robo Pico buzzer: beeps when calibration is done and on a fault (PWM slice 3 A) |
 | GP26 | | (ADC0 capable) |
@@ -111,6 +111,8 @@ the drivers have no locking to stop it.
 | PWM4, PWM5 | Motion (Buddy 2) | `s2_motion` (`motion_control_stop()` may brake from any task) | GP8–GP11 |
 | IRQ13 (GPIO bank 0), core 0 | Motion (Buddy 2) | `drv_motion_gpio_isr` | GP2/3, GP16/17. Other GPIO edge users register a callback with `drv_motion_gpio_register()` |
 | PWM slices (list) | IMU (Buddy 4) | `imu_task` | Slice 3 A: GP22 buzzer |
+| PWM slices (list) | Ultrasonic (Buddy 5) | `s5_scan` | Slice 6 A: GP12 servo |
+| GPIO edge callback on IRQ13 | Ultrasonic (Buddy 5) | `drv_hcsr04_edge`, registered with `drv_motion_gpio_register()` | GP1 echo |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### WiFi and MQTT are special
@@ -149,7 +151,7 @@ agreement. Write down every task you create.
 | Shared | 5, 10 | Safety Monitor (P1) – 5; Vehicle Controller (P5) – 10 |
 | 2 | 6–7 | `s2_motion` (P2) – 6 – core 0; `s2_bench` – 7 – core 0 (`TEST=1` only) |
 | 3 | 8–9 | Barcode Decoder (P3), Line Following (P4) |
-| 5 | 11–12 | Obstacle Avoidance (P6), Ultrasonic Scan (P7) |
+| 5 | 11–12 | `s5_avoid` (P6) – 11 – any; `s5_scan` (P7) – 12 – any; `s5_bench` – 12 – any (`TEST=1` only) |
 | 4 | 18–19 | imu_task (P8) – 18 – any |
 | 1 | 20–21 | Wi-Fi and MQTT Telemetry (P10) |
 
@@ -166,6 +168,8 @@ sends to it or waits on it. Agree on the data format before coding.
 | I3 | Controller, Buddies 3/5 → Motion | function calls under the motion mutex | `motion_control_move_*()`, `_turn_*()`, `_drive()`, `_stop()` | mm, degrees, mm/s; a new command replaces the running one | Buddy 2 contract |
 | I4/I5 | Motion → any task | snapshot copy under the motion mutex | `motion_control_get_status()` | state, faults, speeds, counts, odometer, heading | Buddy 2 contract |
 | I11 | Safety, Controller → Motion | function call | `motion_control_stop()` | brakes both wheels before returning; cancels the command | Buddy 2 contract |
+| I6 | Controller ↔ Avoidance | function calls; status copy under the avoidance mutex | `obstacle_avoidance_start()`, `_cancel()`, `_get_status()` | state, faults, bypass side and step, bypasses done; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
+| I7/I8 | Any task ↔ Ultrasonic scan | function calls; result copy under the scan mutex | `ultrasonic_scan_request()`, `ultrasonic_scan_get()` | forward range and its time, obstacle profile; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
 Each interface is tested by at least one integration test
@@ -178,11 +182,11 @@ limit there. Fill in each subsystem's usage.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | | 2 | | 1 | |
-| Semaphore | 16 | | | | | |
+| Task | 32 | | 2 | | 1 | 3 |
+| Semaphore | 16 | | | | | 1 |
 | Event flag | 16 | | | | | |
 | Mailbox | 12 | | | | | |
-| Mutex | 12 | | 1 | | 1 | |
+| Mutex | 12 | | 1 | | 1 | 2 |
 | Message buffer | 12 | | | | | |
 | Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |

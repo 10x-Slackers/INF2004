@@ -1,0 +1,16 @@
+S5-U43 host test, commit fbdac9e
+cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 app_program/subsystem5/scan_profile.c testing/subsystem5/host/test_profile.c -o /tmp/test_profile && /tmp/test_profile
+
+PASS  echo time to mm; past 4 m reads as 4000 (nothing there)
+PASS  median of three
+PASS  centred obstacle: closest point, edges, both sides 800 mm
+PASS  both sides open: left on a tie
+PASS  blocked to the left edge of the sweep: pass on the right
+PASS  both sides under 500 mm: no side (safe stop)
+PASS  open space: no obstacle
+PASS  obstacle at the right end: no rays right of it
+PASS  fine rays narrow the edges to 80..100 degrees
+PASS  angles not taken do not split the obstacle
+PASS  no rays: empty profile, no side
+PASS  packed profile 8, scan 16, avoidance status 4 bytes
+ALL PASS: 0 failure(s)

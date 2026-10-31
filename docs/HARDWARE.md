@@ -59,7 +59,7 @@ GP26 appears on both Grove 5 and Grove 6. Connect the barcode sensor once, throu
 | GP13, GP14, GP15       | Free. Spare servo headers                                                                |
 | GP18                   | Robo Pico NeoPixel RGB LEDs                                                              |
 | GP19                   | Free                                                                                     |
-| GP20, GP21             | Robo Pico programmable buttons. GP21 starts the motion bench (`TEST=1`); GP20 is a candidate Start/Stop input |
+| GP20, GP21             | Robo Pico programmable buttons. GP21 starts the motion bench and GP20 steps the avoidance bench (`TEST=1` only); GP20 is a candidate Start/Stop input in normal builds |
 | GP22                   | Robo Pico piezo buzzer (has a mute switch)                                               |
 | GP27                   | Free. ADC1                                                                               |
 | GP28                   | Free. ADC2. Reads VBAT / 2 if the VBAT sense jumper on the back of the board is soldered |
@@ -170,7 +170,7 @@ Power the module from 5 V, not from the Grove port's 3.3 V: the datasheet specif
 
 The [HC-SR04-R](https://cdn.sparkfun.com/assets/6/7/a/d/1/Ultrasonic_Ranging_Module_HC-SR04-R__SEN-28798.pdf) (RCWL-9610A) variant is rated for 3.3 V. Powered from the Grove port's 3.3 V, with M1 and M2 open (GPIO mode), its ECHO needs no divider.
 
-The driver times ECHO with the RP2040's 1 MHz TIMER, whose tick `usermain()` starts.
+The driver gets ECHO's edges through subsystem 2's GPIO interrupt and times them on the RP2040's 1 MHz TIMER, whose tick `usermain()` starts. With nothing in range, ECHO stays high for about 38 ms (much longer on some modules) and the driver reads 4000 mm: clear.
 
 Narrow, angled or soft objects reflect poorly. The datasheet's accuracy figure assumes a smooth target of at least 0.5 m².
 

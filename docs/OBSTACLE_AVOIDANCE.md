@@ -37,11 +37,12 @@ While avoidance is profiling or bypassing it drives the car itself through the m
 | Field      | Range | Meaning                                                                                           |
 | ---------- | ----- | ------------------------------------------------------------------------------------------------- |
 | `state`    | 0–4   | `IDLE`, `MONITOR`, `PROFILE`, `BYPASS`, `STOPPED` (safe stop, until the next `start()`)          |
-| `faults`   | bits  | 1 sensor (no echo, or no scan result in 8 s), 2 blocked (no open side, or the way ahead closed during a bypass), 4 motion (did not stop in 1 s, a move failed or took over 10 s, or someone else stopped it). Cleared by `start()` |
 | `side`     | 0–2   | Side of the last bypass: none, left, right                                                         |
 | `step`     | 0–7   | Bypass step running, 0 outside a bypass                                                            |
 | `bypasses` | 0–15  | Bypasses finished, wraps                                                                           |
 | `left_mm`, `right_mm` | 0–4000 | Clearance of the last profile, with the car turned 45° left and right; 0 if not measured |
+
+Faults are bits in the shared fault bitmask (`app_faults()`, `app_fault.h`), cleared by `start()`: `APP_FAULT_AVOID_SENSOR` (no echo, or no scan result in 8 s), `_BLOCKED` (no open side, or the way ahead closed during a bypass), `_MOTION` (did not stop in 1 s, a move failed or took over 10 s, or someone else stopped it).
 
 ### Scan results (`ultrasonic_scan_t`, 16 bytes)
 
@@ -49,11 +50,12 @@ While avoidance is profiling or bypassing it drives the car itself through the m
 | ---------------------- | ------------- | ------------------------------------------------------------------------------ |
 | `forward_mm`           | 20–4000       | Latest range straight ahead. 4000 means nothing within the sensor's range      |
 | `forward_ms`           | wraps         | Kernel time of `forward_mm`, to check its age                                  |
-| `b_fault`              | 0–1           | A ray of the last scan got no echo pulse: sensor missing or faulty             |
 | `count`                | 0–15, wraps   | Scans finished                                                                 |
 | `profile.closest_mm`   | 20–4000       | Closest point of the last profile scan, at `profile.closest_deg`               |
 | `profile.right_deg`, `.left_deg` | 80–100 | Obstacle edges: outermost rays within 350 mm next to the closest point |
 | `profile.b_obstacle`   | 0–1           | Closest point within 350 mm                                                    |
+
+Each scan also sets `APP_FAULT_NO_ECHO` in the shared fault bitmask when one of its rays got no echo pulse (sensor missing or faulty), and clears it otherwise, before `count` moves on.
 | `profile.width_mm`     | 0–122         | Rough obstacle width: the arc between the edges at `closest_mm`; 0 with no obstacle |
 
 Servo angles: 80° points right, 90° ahead, 100° left. The sensor's mount stops the servo about 15° either side, so the servo only does the fine scan; the car turns for the coarse one. The width (FR6) is rough: the beam is about as wide as the sweep, and an obstacle that fills the sweep reads at most about 120 mm at 350 mm, whatever its real width.
@@ -82,7 +84,7 @@ Constants are in the `.c` files; change one, rebuild and rerun the bench sequenc
 The `make -C build_make TEST=1` image starts task `s5_bench` after the checks. It waits for the GP20 button, so other subsystems' `TEST=1` runs never move the robot:
 
 1. **Short press (any number of times):** one servo profile scan with the car still, then `[scan] …` with the forward range, closest point and edges. The car does not move.
-2. **Press held for 1 s:** after 5 s, `obstacle_avoidance_start()` and `motion_control_move_forward(1500)`. It prints `[scan] …` and `[avoid] state=… faults=… side=… step=… bypasses=… right_mm=… left_mm=… motion=state/faults` whenever the state or step changes, and stops after one bypass, a safe stop, or the 1.5 m drive ending with no obstacle. Then `[avoid] bench done`, and it waits for GP20 again (no reset needed).
+2. **Press held for 1 s:** after 5 s, `obstacle_avoidance_start()` and `motion_control_move_forward(1500)`. It prints `[scan] …` and `[avoid] state=… faults=… side=… step=… bypasses=… right_mm=… left_mm=… motion=state` whenever the state or step changes, and stops after one bypass, a safe stop, or the 1.5 m drive ending with no obstacle. Then `[avoid] bench done`, and it waits for GP20 again (no reset needed).
 
 ## Resources
 

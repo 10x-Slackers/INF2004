@@ -103,7 +103,15 @@ void ultrasonic_scan_task(INT stacd, void * p_exinf)
         (void)tk_loc_mtx(g_mutex, TMO_FEVR);
         g_scan.forward_mm = mm;
         g_scan.forward_ms = now.lo;
-        g_scan.b_fault = b_fault;
+        /* APP_FAULT_NO_ECHO, before count tells readers it is done. */
+        if (b_fault)
+        {
+            app_fault_set(APP_FAULT_NO_ECHO);
+        }
+        else
+        {
+            app_fault_clear(APP_FAULT_NO_ECHO);
+        }
         if (ULTRASONIC_SCAN_PROFILE == mode)
         {
             g_scan.profile = profile;

@@ -1,7 +1,7 @@
 /** @file subsystem4.h
  *
  * @brief Subsystem 4 (IMU and terrain). Other subsystems read the latest
- * tilt, faults, humps and motion class with the s4_get_*() calls.
+ * tilt, humps and motion class with the s4_get_*() calls. Faults: app_fault.h.
  *
  * The code follows BARR-C:2018, with the team's deviations listed in app.h
  * and these:
@@ -69,15 +69,6 @@ typedef struct
     unsigned int cal : 1;
 } s4_tilt_t;
 
-/* Faults, each latched until reset: a sudden impact, excessive tilt.
- * 2 bits, stored in 4 bytes. They move into the team's shared fault
- * bitmask once that is agreed. */
-typedef struct
-{
-    unsigned int impact : 1;
-    unsigned int tilt : 1;
-} s4_fault_t;
-
 /* Humps under the right wheel, in mm: peak of the last one, highest of
  * the run, how many so far (wraps), and whether the car is on one now.
  * 6 + 6 + 4 + 1 bits, stored in 4 bytes. */
@@ -108,12 +99,11 @@ typedef struct
     unsigned int cls : 3;
 } s4_motion_t;
 
-extern ID g_s4_mutex; /* Guards the reading, tilt, faults, humps, motion. */
+extern ID g_s4_mutex; /* Guards the reading, tilt, humps, motion. */
 
 /* Each copies its record under g_s4_mutex. */
 void s4_get_accel(s4_accel_t * p_accel);
 void s4_get_tilt(s4_tilt_t * p_tilt);
-void s4_get_fault(s4_fault_t * p_fault);
 void s4_get_hump(s4_hump_t * p_hump);
 void s4_get_motion(s4_motion_t * p_motion);
 void s4_imu_task(INT stacd, void * p_exinf);

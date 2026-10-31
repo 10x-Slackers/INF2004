@@ -19,7 +19,7 @@ Define a test here before running it. Test IDs never change.
 | S5-U46 | Servo angles | FR6 | manual | Flash the normal image, then the `TEST=1` image; watch the sensor during a short bench press | Points straight ahead (within 3°) at start-up; sweeps from about 10° right to 10° left and back ahead; never reaches the mount's stops; no buzzing |
 | S5-U47 | Profile of a box | FR6, A5 | manual | Object about 50–100 mm wide (box, bottle, book on edge), 250 mm ahead, nothing else within 350 mm. Short bench press; repeat with the box 40 mm left and right of centre | `obstacle=1`; `closest` within ±10% of the true distance; the edges include the box's direction (90° centred, above 90 left, below 90 right); `width` printed (rough, at most about 120 mm) |
 | S5-U48 | Avoidance on the floor | FR7, I3, I6 | manual | Box on the car's path about 800 mm ahead, open floor around it. Held bench press | Stops with the box at about 350 mm, turns 45° left, 90° right and back, profiles, `right_mm` or `left_mm` at least 400, `BYPASS` steps 1–7, `bypasses=1`, `faults=0`; car ends past the box, within 50 mm of the original line and 10° of the original heading |
-| S5-U49 | No open side | FR7, NFR5 | manual | As S5-U48, with walls 250 mm either side of the box | `state=4` (stopped), `faults=2`, before any forward bypass move (it may look both ways and turn towards a side first); no reverse |
+| S5-U49 | No open side | FR7, NFR5 | manual | As S5-U48, with walls 250 mm either side of the box | `state=4` (stopped), `faults=0x80`, before any forward bypass move (it may look both ways and turn towards a side first); no reverse |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **host** = runs on the PC;

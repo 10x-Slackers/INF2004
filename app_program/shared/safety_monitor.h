@@ -18,7 +18,7 @@
 #define SAFETY_MONITOR_PRI 5 /* Shared priority band (TEAM.md). */
 
 /* Causes of a stop, printed on the console. */
-#define SAFETY_MONITOR_IMU        1u /* Impact or excessive tilt (I9). */
+#define SAFETY_MONITOR_IMU        1u /* APP_FAULT_IMU set (I9). */
 #define SAFETY_MONITOR_STALL      4u /* Motion FAILED: a wheel stalled. */
 #define SAFETY_MONITOR_CONTROLLER 8u /* Raised by the Vehicle Controller. */
 

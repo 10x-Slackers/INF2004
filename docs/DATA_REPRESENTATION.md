@@ -15,18 +15,17 @@ Application data uses only the bits its valid range needs (change requirement "M
 
 | Subsystem | Field | Valid range | Bits | Representation | Shared with |
 | --- | --- | --- | --- | --- | --- |
+| Shared | Fault bitmask: one bit per fault of S1, S2, S4 and S5 (`APP_FAULT_...` in `app_fault.h`) | One bit each | 10 | Kernel event flag pattern, read with `app_faults()` | Every task and ISR: `tk_set_flg` and `tk_clr_flg` are atomic across both cores, and each owner changes only its own bits |
 | 4 | `s4_accel_t.x`, `.y`, `.z`: latest acceleration per axis | −2048 to 2047 mg (sensor's 12-bit output at ±2 g) | 12 each | `signed int` bit-field | Readers copy it with `s4_get_accel()`, under mutex `g_s4_mutex` |
 | 4 | `s4_accel_t.count`: readings taken | 0 to 255, wraps | 8 | `unsigned int` bit-field | As above |
 | 4 | `s4_tilt_t.pitch`, `.roll`: tilt from the start surface | −900 to 900 (0.1 degree) | 11 each | `signed int` bit-field | Readers copy it with `s4_get_tilt()`, under mutex `g_s4_mutex` |
 | 4 | `s4_tilt_t.cal`: start-up calibration done | 0 or 1 | 1 | `unsigned int` bit-field | As above |
-| 4 | `s4_fault_t.impact`, `.tilt`: impact and excessive-tilt faults, latched until reset | 0 or 1 | 1 each | `unsigned int` bit-field (moves into the shared fault bitmask once agreed) | Readers copy it with `s4_get_fault()`, under mutex `g_s4_mutex` |
 | 4 | `s4_hump_t.peak`, `.max`: last hump peak and highest of the run | 0 to 63 mm | 6 each | `unsigned int` bit-field | Readers copy it with `s4_get_hump()`, under mutex `g_s4_mutex` |
 | 4 | `s4_hump_t.count`: humps seen | 0 to 15, wraps | 4 | `unsigned int` bit-field | As above |
 | 4 | `s4_hump_t.on`: right wheel on a hump now | 0 or 1 | 1 | `unsigned int` bit-field | As above |
 | 4 | `s4_motion_t.cls`: current motion class (steady, accelerating, braking, climbing, descending, impact) | 0 to 5 | 3 | `unsigned int` bit-field | Readers copy it with `s4_get_motion()`, under mutex `g_s4_mutex` |
 | 2 | `motion_control_status_t.state`: idle, running, complete, failed | 0 to 3 | 2 | `unsigned int` bit-field | Readers copy it with `motion_control_get_status()`, under the motion mutex; packed with shifts for telemetry |
 | 2 | `.command`: none, forward, backward, left, right, drive | 0 to 5 | 3 | As above | As above |
-| 2 | `.faults`: stall left, stall right, missed encoder phase | One bit each | 3 | As above (moves into the shared fault bitmask once agreed) | As above |
 | 2 | `.heading_deg`: anticlockwise from power-up | 0 to 359° | 9 | As above | As above |
 | 2 | `.left_speed`, `.right_speed` | −1023 to 1023 mm/s | 11 each | `signed int` bit-field | As above |
 | 2 | `.left_count`, `.right_count`: encoder edges | 0 to 65535, wraps | 16 each | `unsigned int` bit-field | As above |
@@ -48,7 +47,6 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 2 | `g_b_latched`: safety stop latched | 0 or 1 | 1 | `bool`, the smallest type | Safety Monitor and Controller write it with `motion_control_latch()`, any task reads it with `motion_control_latched()`, under the motion mutex |
 | 2 | `g_callback_pins` (driver): GPIO pins of the registered edge callback | Bank 0 pin mask | 32 | `uint32_t` in the hardware register's format (out of scope) | Set once at init, read by the encoder ISR |
 | 5 | `ultrasonic_scan_t.forward_mm`: latest range straight ahead | 20 to 4000 mm (4000: nothing in range) | 12 | `unsigned int` bit-field | Readers copy it with `ultrasonic_scan_get()`, under the scan mutex |
-| 5 | `.b_fault`: a ray of the last scan had no echo | 0 or 1 | 1 | As above | As above |
 | 5 | `.count`: scans finished | 0 to 15, wraps | 4 | As above | As above |
 | 5 | `.forward_ms`: kernel time of `forward_mm` | 0 to 2³²−1 ms, wraps | 32 | As above | As above |
 | 5 | `scan_profile_t.closest_mm`: closest point of the servo sweep | 20 to 4000 mm | 12 | `unsigned int` bit-field | Inside `ultrasonic_scan_t`, as above |
@@ -56,7 +54,6 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 5 | `.b_obstacle`: closest point within 350 mm | 0 or 1 | 1 | As above | As above |
 | 5 | `.width_mm`: rough obstacle width, the arc between the edges at the closest distance | 0 to 122 mm (350 mm × 20°) | 7 | As above | As above |
 | 5 | `obstacle_avoidance_status_t.state`: idle, monitor, profile, bypass, stopped | 0 to 4 | 3 | `unsigned int` bit-field | Readers copy it with `obstacle_avoidance_get_status()`, under the avoidance mutex |
-| 5 | `.faults`: sensor, blocked, motion | One bit each | 3 | As above (moves into the shared fault bitmask once agreed) | As above |
 | 5 | `.side`: none, left, right | 0 to 2 | 2 | As above | As above |
 | 5 | `.step`: bypass step | 0 to 7 | 3 | As above | As above |
 | 5 | `.bypasses`: bypasses finished | 0 to 15, wraps | 4 | As above | As above |

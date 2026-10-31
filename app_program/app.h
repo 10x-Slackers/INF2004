@@ -30,6 +30,7 @@
 #include <tk/tkernel.h>  /* micro T-Kernel API (tk_xxx_yyy). */
 #include <tm/tmonitor.h> /* T-Monitor API: tm_printf() console output. */
 #include <bsp/libbsp.h>  /* Board helpers: gpio_set_pin/val, pwm_... */
+#include "app_fault.h"   /* The shared fault bitmask. */
 
 #define APP_TASK_STACK_SIZE 2048 /* Bytes; tm_printf needs ~1 KB. */
 

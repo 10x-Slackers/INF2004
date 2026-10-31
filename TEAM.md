@@ -20,7 +20,7 @@ subsystem, ask its owner or open a pull request for them to review.
 | 4 | IMU and terrain | 2503999 | commit2main | `app_program/subsystem4/` | `testing/subsystem4/` |
 | 5 | Ultrasonic scanning and obstacle avoidance | 2503992 | CalebWee | `app_program/subsystem5/` | `testing/subsystem5/` |
 
-Shared files (`app_program/app_main.c`, `app_program/app.h`, this file)
+Shared files (`app_program/app_main.c`, `app_program/app.h`, `app_program/app_fault.h`, this file)
 are changed only by agreement of the team. The exception is claiming an empty
 row in this file (a pin, a peripheral, an interface ID), which anyone may do
 (section 2).
@@ -167,14 +167,15 @@ sends to it or waits on it. Agree on the data format before coding.
 | ID | From → To | Mechanism | Object ID name | Data / meaning | Agreed by |
 |---|---|---|---|---|---|
 | I3 | Controller, Buddies 3/5 → Motion | function calls under the motion mutex | `motion_control_move_*()`, `_turn_*()`, `_drive()`, `_stop()` | mm, degrees, mm/s; a new command replaces the running one | Buddy 2 contract |
-| I4/I5 | Motion → any task | snapshot copy under the motion mutex | `motion_control_get_status()` | state, faults, speeds, counts, odometer, heading | Buddy 2 contract |
+| I4/I5 | Motion → any task | snapshot copy under the motion mutex | `motion_control_get_status()` | state, speeds, counts, odometer, heading | Buddy 2 contract |
 | I11 | Safety, Controller → Motion; Controller → Safety | function calls | `motion_control_stop()`, `_latch()`, `_latched()`; `safety_monitor_stop()`, `_clear()` | stop brakes both wheels before returning and cancels the command; while latched every command is refused; clear is refused while an IMU fault is set; `docs/SAFETY_MONITOR.md` | Buddy 2 contract, shared |
-| I6 | Controller ↔ Avoidance | function calls; status copy under the avoidance mutex | `obstacle_avoidance_start()`, `_cancel()`, `_get_status()` | state, faults, bypass side and step, bypasses done, side clearances; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
+| I6 | Controller ↔ Avoidance | function calls; status copy under the avoidance mutex | `obstacle_avoidance_start()`, `_cancel()`, `_get_status()` | state, bypass side and step, bypasses done, side clearances; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | I7/I8 | Any task ↔ Ultrasonic scan | function calls; result copy under the scan mutex | `ultrasonic_scan_request()`, `ultrasonic_scan_get()` | forward range and its time, obstacle profile; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | I1 | Line Following ↔ Controller, Avoidance | function calls; line state copy under the line mutex | `line_following_start()`, `_stop()`, `_get()` | follow at 1–500 mm/s until stopped; sensor bits, last side seen, junction flag, following, sample count and time; `line_following.h` | Buddy 3 contract |
 | I2 | Barcode Decoder → Controller | status copy under the barcode mutex | `barcode_decoder_get()` | last validated command (left, right, straight, U-turn for A to D), validated and rejected counts, odometer at the barcode; `barcode_decoder.h` | Buddy 3 contract |
-| I9 | IMU → Safety, Controller | record copies under `g_s4_mutex` | `s4_get_tilt()`, `_get_fault()`, `_get_hump()` | calibration done, impact and tilt faults (latched), highest hump of the run | Buddy 4 contract |
+| I9 | IMU → Safety, Controller | record copies under `g_s4_mutex` | `s4_get_tilt()`, `_get_hump()` | calibration done, highest hump of the run | Buddy 4 contract |
 | I12 | Telemetry ↔ Wi-Fi service ↔ Controller | message buffer (`TMO_POL` both ends); event flag | | Topic number + binary payload, at most 13 bytes; START, STOP, RESET bits; `docs/TELEMETRY.md` | Proposed, Buddy 1 to agree |
+| Faults | Every subsystem → any task | one kernel event flag (atomic set and clear) | `app_fault_set()`, `_clear()`, `app_faults()` (`app_fault.h`) | one bit per fault, each owner sets and clears only its own bits; `docs/DATA_REPRESENTATION.md` | shared |
 | Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
 Each interface is tested by at least one integration test
@@ -198,4 +199,4 @@ limit there. Fill in each subsystem's usage.
 | Cyclic handler | 12 | | 1 | 1 | 1 | |
 | Alarm handler | 12 | | | | | |
 
-(The kernel's USB and WiFi service tasks also use a few of these.)
+The shared fault bitmask (`app_main.c`) uses 1 event flag. (The kernel's USB and WiFi service tasks also use a few of these.)

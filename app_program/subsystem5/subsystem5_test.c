@@ -40,7 +40,7 @@ void subsystem5_test(void)
                "a forward scan finishes within 500 ms");
     /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[scan] forward_mm=%u fault=%u\n", scan.forward_mm,
-              scan.b_fault);
+              (0u != (app_faults() & APP_FAULT_NO_ECHO)));
     TEST_CHECK("S5-U42",
                (8u == sizeof(status)) && (16u == sizeof(scan)) &&
                    (8u == sizeof(scan_profile_t)),
@@ -89,15 +89,15 @@ static void subsystem5_bench_report(void)
     /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[scan] forward_mm=%u fault=%u closest=%u@%u "
                     "edges=%u..%u width=%u obstacle=%u\n",
-              scan.forward_mm, scan.b_fault, scan.profile.closest_mm,
-              scan.profile.closest_deg, scan.profile.right_deg,
-              scan.profile.left_deg, scan.profile.width_mm,
-              scan.profile.b_obstacle);
-    tm_printf((UB *)"[avoid] state=%u faults=%u side=%u step=%u "
-                    "bypasses=%u right_mm=%u left_mm=%u motion=%u/%u\n",
-              status.state, status.faults, status.side, status.step,
-              status.bypasses, status.right_mm, status.left_mm, motion.state,
-              motion.faults);
+              scan.forward_mm, (0u != (app_faults() & APP_FAULT_NO_ECHO)),
+              scan.profile.closest_mm, scan.profile.closest_deg,
+              scan.profile.right_deg, scan.profile.left_deg,
+              scan.profile.width_mm, scan.profile.b_obstacle);
+    tm_printf((UB *)"[avoid] state=%u faults=0x%x side=%u step=%u "
+                    "bypasses=%u right_mm=%u left_mm=%u motion=%u\n",
+              status.state, app_faults() & APP_FAULT_AVOID, status.side,
+              status.step, status.bypasses, status.right_mm, status.left_mm,
+              motion.state);
 }
 
 /*!

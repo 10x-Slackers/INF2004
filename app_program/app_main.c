@@ -25,6 +25,8 @@
 
 #define APP_ANY_CORE 0u
 
+static ID g_fault_flag; /* The shared fault bitmask (app_fault.h). */
+
 /*!
  * @brief Create and start one task. prc = TP_PRC1 (core 0), TP_PRC2
  * (core 1), or 0 for "any core".
@@ -73,11 +75,41 @@ void app_check(ER result, const char * p_what)
 }
 
 /*!
+ * @brief Set fault bits (APP_FAULT_..., app_fault.h). Safe from interrupts.
+ */
+void app_fault_set(uint32_t bits)
+{
+    (void)tk_set_flg(g_fault_flag, bits);
+}
+
+/*!
+ * @brief Clear fault bits (APP_FAULT_...).
+ */
+void app_fault_clear(uint32_t bits)
+{
+    (void)tk_clr_flg(g_fault_flag, ~bits); /* Keeps the bits it is given. */
+}
+
+/*!
+ * @brief Read the shared fault bitmask.
+ *
+ * @return APP_FAULT_... bits currently set.
+ */
+uint32_t app_faults(void)
+{
+    T_RFLG flag = {0};
+
+    (void)tk_ref_flg(g_fault_flag, &flag);
+    return flag.flgptn;
+}
+
+/*!
  * @brief Entry point, called by the kernel's initial task.
  */
 INT usermain(void)
 {
     T_RVER version = {0};
+    T_CFLG flag = {0};
 
     (void)tk_ref_ver(&version);
     tm_printf((UB *)"\n=== micro T-Kernel on Raspberry Pi Pico W"
@@ -98,6 +130,10 @@ INT usermain(void)
     {
         /* Wait for the reset to finish. */
     }
+
+    /* The fault bitmask first: any subsystem may set a fault. */
+    g_fault_flag = tk_cre_flg(&flag);
+    app_check(g_fault_flag, "fault flag");
 
     /* Phase 1: every subsystem creates its kernel objects. */
     app_check(subsystem1_init(), "subsystem1_init");

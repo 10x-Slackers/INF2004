@@ -65,20 +65,20 @@ To measure part of a route, save `distance_mm` or `heading_deg` at the start and
 Measured values are in the [test log](../testing/subsystem2/TEST_LOG.md). Constants are in `motion_control.c`; change one, rebuild and rerun the bench sequence.
 
 1. **Edges per turn:** wheels lifted, after `bench done`, turn a wheel 10 turns by hand between two status lines. The count should rise by about 25 370; otherwise set `MOTION_COUNTS_PER_REV` to the rise ÷ 10.
-2. **Distance:** measure the 300 mm moves. If off by more than 1%, scale `MOTION_WHEEL_DIAMETER_UM` by actual ÷ commanded.
+2. **Distance:** measure the 200 mm moves. If off by more than 1%, scale `MOTION_WHEEL_DIAMETER_UM` by actual ÷ commanded.
 3. **Turns:** measure the turns. Set `MOTION_TRACK_UM` to `113500 × commanded ÷ actual` and repeat until within ±3°.
-4. **PID:** plot the `[trace] time_ms left right` lines of the two `forward 300` moves (100 and 200 mm/s). Adjust `MOTION_KP`, `MOTION_KI`, `MOTION_KD`.
+4. **PID:** plot the `[trace] time_ms left right` lines of the two `forward 200` moves (100 and 200 mm/s). Adjust `MOTION_KP`, `MOTION_KI`, `MOTION_KD`.
 
 ## Bench sequence
 
 The `make -C build_make TEST=1` image starts task `s2_bench` after the checks. It waits 10 s, so the other subsystems' tests run on a still robot, then runs:
 
-1. `drive(100, 100)` for 2 s, then `drive(-100, -100)` for 2 s
-2. `move_forward(300)`, `move_backward(300)`
+1. `drive(100, 100)` for 1 s, then `drive(-100, -100)` for 1 s
+2. `move_forward(200)`, `move_backward(200)`
 3. `turn_left(90)`, `turn_right(90)`, `turn_left(180)`
-4. `move_forward(300)` at 200 mm/s
+4. `move_forward(200)` at 200 mm/s
 
-While each step runs it prints `[trace] time_ms left_mm_s right_mm_s` every 10 ms, and a `[motion] state=… max_tick_us=…` status line when the step ends (before the stop, for drive steps). After `[motion] bench done` it prints the status every second.
+While each step runs it prints `[trace] time_ms left_mm_s right_mm_s` every 20 ms (two kernel ticks), and a `[motion] state=… max_tick_us=…` status line when the step ends (before the stop, for drive steps). After `[motion] bench done` it prints the status every second.
 
 ## Telemetry payload
 

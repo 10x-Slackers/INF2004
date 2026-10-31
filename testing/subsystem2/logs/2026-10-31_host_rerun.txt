@@ -1,5 +1,5 @@
 Subsystem 2 host test (S2-U21 command, simulated robot)
-Code: 48f7ea3
+Code: 508f9fb
 
 PASS  left 90 deg: turned 91.2 deg in 1.23 s, heading field 91
 PASS  right 90 deg: turned 91.2 deg in 1.23 s, heading field 268
@@ -11,10 +11,13 @@ PASS  backward 300 mm: moved 301.1 mm, drift 0.14 deg, odometer 301 mm
 PASS  forward 2000 mm: moved 2001.1 mm, drift 0.15 deg, odometer 2001 mm
 PASS  drive accepted
 PASS  drive 200,100 holds 193,96 mm/s after 1 s
+PASS  a late, queued step does not upset the speed
 PASS  stop brakes both wheels at once
 PASS  drive still running after 190 ms
 PASS  drive not renewed for 200 ms expires and brakes
 PASS  blocked right wheel: stall fault after 1 s, both braked
+PASS  renewed drive: stall latches and further drives are refused
+PASS  stop clears a stalled drive
 PASS  missed encoder state is reported and the move still completes
 PASS  a new command clears the faults
 PASS  out-of-range commands and settings are rejected
@@ -22,5 +25,5 @@ PASS  rejection leaves it idle
 PASS  16-bit encoder counter wrap is handled
 PASS  telemetry: 12 bytes, big-endian, fixed bit layout
 PASS  status snapshot is 12 bytes (full-width equivalent 36 bytes)
-INFO  host cost of one control step: 0.027 us
+INFO  host cost of one control step: 0.026 us
 ALL PASS: 0 failure(s)

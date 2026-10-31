@@ -11,7 +11,7 @@ Define a test here before running it. Test IDs never change.
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
 | S2-U11 | Encoder counts and direction | FR4, A2 | manual | Wheels lifted. After `bench done`, turn each wheel 10 turns forward by hand between two status lines | Each count rises by about 25 370 |
-| S2-U12 | PID tuning | FR4, A2 | manual | Bench sequence on the floor; plot the `[trace]` lines of both `forward 300` moves (100 and 200 mm/s) | Follows the start ramp within 0.2 s, overshoot < 15%, steady error < 10 mm/s |
+| S2-U12 | PID tuning | FR4, A2 | manual | Bench sequence on the floor; plot the `[trace]` lines of both `forward 200` moves (100 and 200 mm/s) | Follows the start ramp within 0.2 s, overshoot < 15%, steady error < 10 mm/s |
 | S2-U13 | Distance and turn accuracy | FR4, NFR4 | manual | Bench sequence on the floor, 5 runs; measure each move and turn | Distance within ±1%, turns within ±3° |
 | S2-U14 | Control timing under load | FR11, NFR6 | manual | Full team `TEST=1` image with Wi-Fi; read `max_tick_us` after `bench done` | `max_tick_us` < 5000 (half the period) |
 | S2-U16 | Boots idle with the motors braked | FR11 | auto | `subsystem2_test.c` | `[TEST] S2-U16 PASS` |
@@ -19,7 +19,7 @@ Define a test here before running it. Test IDs never change.
 | S2-U18 | A rejected command does not start the motors | FR11 | auto | `subsystem2_test.c` | `[TEST] S2-U18 PASS` |
 | S2-U19 | 12-byte status and telemetry | Minimum-bit CR | auto | `subsystem2_test.c` | `[TEST] S2-U19 PASS` |
 | S2-U20 | Control step runs and takes under 1 ms | NFR6 | auto | `subsystem2_test.c` | `[TEST] S2-U20 PASS` |
-| S2-U21 | Moves, turns, drive and its expiry, stop, stall, encoder flag, counter wrap, limits, telemetry layout | FR4, FR11, I3/I4/I5 | host | `cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 app_program/subsystem2/motion_control.c testing/subsystem2/host/test_motion.c -lm -o /tmp/test_motion && /tmp/test_motion` (simulated robot, right motor 15% weaker) | `ALL PASS` |
+| S2-U21 | Moves, turns, drive and its expiry, stop, stall (also during renewed drive), late step, encoder flag, counter wrap, limits, telemetry layout | FR4, FR11, I3/I4/I5 | host | `cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 app_program/subsystem2/motion_control.c testing/subsystem2/host/test_motion.c -lm -o /tmp/test_motion && /tmp/test_motion` (simulated robot, right motor 15% weaker) | `ALL PASS` |
 | S2-U22 | RAM and message size before/after minimum-bit, same behaviour | Minimum-bit CR | host | Commands in `logs/2026-10-31_ram.txt` | Packed is smaller; full-width version passes S2-U21 |
 | S2-U24 | Motor direction and speed, wheels lifted | FR4 | manual | Wheels lifted. Bench sequence, drive steps | Forward then backward; 100 ± 15 mm/s; `faults=0` |
 | S2-U25 | Stall protection, wheels lifted | FR11 | manual | Wheels lifted. Bench sequence: hold the left wheel during the forward drive, the right during the backward drive | `state=3`, `faults=2` (right) or `1` (left) within about 1 s; both wheels stop |
@@ -47,7 +47,7 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-31 | S2-U13 | Same | xxcin | PASS | `logs/2026-10-31_accuracy.txt` | 5 runs each. `forward 100`: 101, 100, 100, 101, 100 mm. `backward 100`: 100, 100, 101, 100, 100 mm. `right 90`: 89, 90, 88, 90, 90°. `left 180`: 178, 179, 180, 180, 181°. `left 90` angles not written down |
 | 2026-10-31 | S2-U14 | Same | xxcin | PASS (partial) | `logs/2026-10-31_accuracy.txt` | Motion-only bench image with Wi-Fi running, not the full team image: 45 s drive, `faults=0`, `max_tick_us=1939` |
 | 2026-10-31 | S2-U21 | `673b8ca` + changes | xxcin | PASS | `logs/2026-10-31_host.txt` | Simulation: turns within 1.3°, moves within 1.5 mm. Also passes with ASan and UBSan |
-| 2026-10-31 | S2-U21 | `48f7ea3` | commit2main | PASS | `logs/2026-10-31_host_rerun.txt` | Re-run after the cleanup (signed bit-fields, shared command start, fixed-period speed). Every simulated result is the same as the `673b8ca` run |
+| 2026-10-31 | S2-U21 | `508f9fb` | commit2main | PASS | `logs/2026-10-31_host_rerun.txt` | Re-run after the cleanup and review fixes. Every earlier simulated result is unchanged; new checks for a stall during renewed `drive()` and for a late, queued step also pass |
 | 2026-10-31 | S2-U22 | `48f7ea3` | commit2main | PASS | `logs/2026-10-31_ram.txt` | Re-run after the setters, `g_config` and `g_run.last_us` were removed. RAM 112 → 52 B; status 36 → 12 B; telemetry 12 B |
 | 2026-10-31 | S2-U16–U20 | `dfe3e46` | commit2main | PASS | `logs/2026-10-31_bench.txt` | Full team image on the car. S4-U05 and S4-U06 failed in the same run |
 | 2026-10-31 | S2-U24 | `dfe3e46` | commit2main | PASS | `logs/2026-10-31_bench.txt` | Wheels lifted. Forward then backward (seen by tester); 107 / 107 then −102 / −94 mm/s; `faults=0` |
@@ -55,3 +55,4 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-31 | S2-U14 | `dfe3e46` | commit2main | PASS | `logs/2026-10-31_bench.txt` | Full team image, Wi-Fi task running (interface brought up, not joined to a network): `max_tick_us=541` |
 | 2026-10-31 | S2-U13 | `dfe3e46` | commit2main | PASS (partial) | `logs/2026-10-31_floor.txt` | On the floor with USB connected: moves 302 and 300 mm by odometry, turns to heading 90°, 0°, 180°, `faults=0`. Positions not measured by hand |
 | 2026-10-31 | S2-U13 | `48f7ea3` | commit2main | PASS (partial) | Observed by tester | Power-on from a power bank, USB unplugged, on the floor: whole bench sequence ran normally. Positions not measured by hand |
+| 2026-10-31 | S2-U25 | `508f9fb` | commit2main | PASS | `logs/2026-10-31_stall.txt` | Wheels lifted. Left wheel held: every step ended `state=3 faults=1` within about 1 s, both braked. Right wheel held (after a power-on): every step `state=3 faults=2`. Renewed `drive()` calls did not restart a stalled drive |

@@ -219,7 +219,7 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
         case VC_SAFE_STOP:
             if (b_press && safety_monitor_clear())
             {
-                vc_enter(VC_READY, "GP20");
+                vc_enter(VC_INIT, "GP20"); /* READY once calibrated. */
             }
             break;
 

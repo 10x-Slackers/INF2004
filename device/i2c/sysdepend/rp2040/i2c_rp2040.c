@@ -163,9 +163,14 @@ LOCAL void i2c_inthdr( UINT intno )
 
 	if(wup) {
 		out_w(I2C_INTR_MASK(unit), 0);
-		(void)tk_set_flg(p_cb->done_flgid, 1);
 	}
 	I2C_UNLOCK(unit, intsts);
+
+	/* Outside the lock: with interrupts masked the kernel does not
+	   dispatch, and the waiting task would only run at the next tick. */
+	if(wup) {
+		(void)tk_set_flg(p_cb->done_flgid, 1);
+	}
 }
 /*----------------------------------------------------------------------
  * Execution of communication

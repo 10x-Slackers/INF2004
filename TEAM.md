@@ -149,7 +149,7 @@ agreement. Write down every task you create.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|
-| Shared | 5, 10 | Safety Monitor (P1) – 5; `vc` Vehicle Controller (P5) – 10 – any (normal builds only) |
+| Shared | 5, 10 | `safety` Safety Monitor (P1) – 5 – any (normal builds only); `vc` Vehicle Controller (P5) – 10 – any (normal builds only) |
 | 2 | 6–7 | `s2_motion` (P2) – 6 – core 0; `s2_bench` – 7 – core 0 (`TEST=1` only) |
 | 3 | 8–9 | `s3_barcode` (P3) – 8 – any; `s3_line` (P4) – 9 – any; `s3_bench` – 9 – any (`TEST=1` only) |
 | 5 | 11–12 | `s5_avoid` (P6) – 11 – any; `s5_scan` (P7) – 12 – any; `s5_bench` – 12 – any (`TEST=1` only) |
@@ -168,12 +168,12 @@ sends to it or waits on it. Agree on the data format before coding.
 |---|---|---|---|---|---|
 | I3 | Controller, Buddies 3/5 → Motion | function calls under the motion mutex | `motion_control_move_*()`, `_turn_*()`, `_drive()`, `_stop()` | mm, degrees, mm/s; a new command replaces the running one | Buddy 2 contract |
 | I4/I5 | Motion → any task | snapshot copy under the motion mutex | `motion_control_get_status()` | state, faults, speeds, counts, odometer, heading | Buddy 2 contract |
-| I11 | Safety, Controller → Motion | function call | `motion_control_stop()` | brakes both wheels before returning; cancels the command | Buddy 2 contract |
+| I11 | Safety, Controller → Motion; Controller → Safety | function calls | `motion_control_stop()`, `_latch()`, `_latched()`; `safety_monitor_stop()`, `_clear()` | stop brakes both wheels before returning and cancels the command; while latched every command is refused; clear is refused while an IMU fault is set; `docs/SAFETY_MONITOR.md` | Buddy 2 contract, shared |
 | I6 | Controller ↔ Avoidance | function calls; status copy under the avoidance mutex | `obstacle_avoidance_start()`, `_cancel()`, `_get_status()` | state, faults, bypass side and step, bypasses done, side clearances; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | I7/I8 | Any task ↔ Ultrasonic scan | function calls; result copy under the scan mutex | `ultrasonic_scan_request()`, `ultrasonic_scan_get()` | forward range and its time, obstacle profile; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | I1 | Line Following ↔ Controller, Avoidance | function calls; line state copy under the line mutex | `line_following_start()`, `_stop()`, `_get()` | follow at 1–500 mm/s until stopped; sensor bits, last side seen, junction flag, following, sample count and time; `line_following.h` | Buddy 3 contract |
 | I2 | Barcode Decoder → Controller | status copy under the barcode mutex | `barcode_decoder_get()` | last validated command (left, right, straight, U-turn for A to D), validated and rejected counts, odometer at the barcode; `barcode_decoder.h` | Buddy 3 contract |
-| I9 | IMU → Controller | record copies under `g_s4_mutex` | `s4_get_tilt()`, `_get_fault()`, `_get_hump()` | calibration done, impact and tilt faults (latched), highest hump of the run | Buddy 4 contract |
+| I9 | IMU → Safety, Controller | record copies under `g_s4_mutex` | `s4_get_tilt()`, `_get_fault()`, `_get_hump()` | calibration done, impact and tilt faults (latched), highest hump of the run | Buddy 4 contract |
 | Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
 Each interface is tested by at least one integration test

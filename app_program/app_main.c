@@ -20,6 +20,7 @@
  */
 
 #include "app.h"
+#include "shared/safety_monitor.h"
 #include "shared/vehicle_controller.h"
 
 #define APP_ANY_CORE 0u
@@ -112,7 +113,9 @@ INT usermain(void)
     app_check(subsystem4_start(), "subsystem4_start");
     app_check(subsystem5_start(), "subsystem5_start");
 #if !APP_TEST
-    /* Test builds keep GP20 for the avoidance bench. */
+    /* Test builds keep GP20 for the avoidance bench, and the benches drive
+     * without a safety latch. The monitor first: the controller uses it. */
+    app_check(safety_monitor_start(), "safety_monitor_start");
     app_check(vehicle_controller_start(), "vehicle_controller_start");
 #endif
 

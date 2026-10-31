@@ -43,6 +43,7 @@
 #define MOTION_Q8             256
 
 static motion_control_status_t g_status;
+static bool g_b_latched; /* Safety stop: every command refused. */
 
 static struct
 {
@@ -154,7 +155,7 @@ bool motion_control_turn_right(uint32_t angle_deg)
  *
  * @param[in] left_mm_s  -1000..1000 mm/s, positive is forward.
  * @param[in] right_mm_s -1000..1000 mm/s.
- * @return False if out of range or stalled; nothing changes.
+ * @return False if out of range, stalled or latched; nothing changes.
  */
 bool motion_control_drive(int32_t left_mm_s, int32_t right_mm_s)
 {
@@ -166,8 +167,9 @@ bool motion_control_drive(int32_t left_mm_s, int32_t right_mm_s)
     if (b_valid)
     {
         drv_motion_lock();
-        b_valid = ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
-                   (MOTION_CONTROL_FAILED != g_status.state));
+        b_valid =
+            !g_b_latched && ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
+                             (MOTION_CONTROL_FAILED != g_status.state));
         if (b_valid)
         {
             if ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
@@ -194,6 +196,37 @@ void motion_control_stop(void)
     g_status.command = MOTION_CONTROL_CMD_NONE;
     drv_motion_write(0, 0);
     drv_motion_unlock();
+}
+
+/*!
+ * @brief Latch or release a safety stop. Latching brakes like
+ * motion_control_stop(); while latched every move, turn and drive is
+ * refused.
+ */
+void motion_control_latch(bool b_latched)
+{
+    drv_motion_lock();
+    g_b_latched = b_latched;
+    if (b_latched)
+    {
+        g_status.state = MOTION_CONTROL_IDLE;
+        g_status.command = MOTION_CONTROL_CMD_NONE;
+        drv_motion_write(0, 0);
+    }
+    drv_motion_unlock();
+}
+
+/*!
+ * @brief True while a safety stop is latched.
+ */
+bool motion_control_latched(void)
+{
+    bool b_latched = false;
+
+    drv_motion_lock();
+    b_latched = g_b_latched;
+    drv_motion_unlock();
+    return b_latched;
 }
 
 /*!
@@ -360,7 +393,7 @@ static int32_t motion_control_wrap(uint32_t difference)
  * @brief Start a move or turn. amount is 1..5000 mm, or 1..360 degrees for
  * a turn.
  *
- * @return False if out of range; nothing changes.
+ * @return False if out of range or latched; nothing changes.
  */
 static bool motion_control_start(uint32_t command, uint32_t amount)
 {
@@ -389,11 +422,15 @@ static bool motion_control_start(uint32_t command, uint32_t amount)
     if (b_valid)
     {
         drv_motion_lock();
-        g_run.goal = (uint32_t)goal; /* The limits keep it under 62120. */
-        g_run.left_progress = 0u;
-        g_run.right_progress = 0u;
-        g_run.profile_speed = MOTION_APPROACH_MM_S;
-        motion_control_begin(command);
+        b_valid = !g_b_latched;
+        if (b_valid)
+        {
+            g_run.goal = (uint32_t)goal; /* Limits keep it under 62120. */
+            g_run.left_progress = 0u;
+            g_run.right_progress = 0u;
+            g_run.profile_speed = MOTION_APPROACH_MM_S;
+            motion_control_begin(command);
+        }
         drv_motion_unlock();
     }
     return b_valid;

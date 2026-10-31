@@ -2,13 +2,16 @@
  *
  * @brief Vehicle Controller task. Every 10 ms it starts and stops line
  * following, hands the car to obstacle avoidance and takes it back,
- * executes the last validated barcode at the next junction, and latches a
- * safe stop on GP20, an IMU fault or an avoidance safe stop.
+ * executes the last validated barcode at the next junction, and goes to a
+ * safe stop when the Safety Monitor latches one. Its own stops (GP20, an
+ * avoidance safe stop, a failed junction move) latch the Safety Monitor
+ * too, so every stop is held the same way.
  *
  * Every variable here belongs to the controller task, so none is locked.
  */
 
 #include "vehicle_controller.h"
+#include "safety_monitor.h"
 #include "../subsystem2/motion_control.h"
 #include "../subsystem3/barcode_decoder.h"
 #include "../subsystem3/line_following.h"
@@ -21,6 +24,8 @@
 #define VC_SPEED_MM_S  200u /* Line following speed. */
 #define VC_AXLE_MM     110u /* Line sensors ahead of the axle. */
 #define VC_MOVE_CYCLES 500u /* 5 s limit on each junction move. */
+#define VC_TURN_DEG    90u  /* Barcode A and B. */
+#define VC_UTURN_DEG   180u /* Barcode D. */
 
 typedef enum
 {
@@ -29,7 +34,7 @@ typedef enum
     VC_FOLLOW,   /* Line following, avoidance watching ahead. */
     VC_AVOID,    /* Avoidance drives the car. */
     VC_TURN,     /* Executing a barcode at a junction. */
-    VC_SAFE_STOP /* Latched until GP20 with no IMU fault. */
+    VC_SAFE_STOP /* Until GP20 clears the Safety Monitor. */
 } vc_state_t;
 
 static const char * const g_names[] = {"INIT",  "READY", "FOLLOW",
@@ -42,6 +47,9 @@ static uint32_t g_pending;  /* BARCODE_DECODER_... for the next junction. */
 static bool g_b_turning;    /* TURN: past the roll forward, turning. */
 
 static void vehicle_controller_task(INT stacd, void * p_exinf);
+static void vc_step(bool b_press, bool b_barcode, bool b_junction,
+                    uint32_t command, uint32_t avoid_state,
+                    const motion_control_status_t * p_motion);
 static void vc_enter(vc_state_t state, const char * p_cause);
 static bool vc_pressed(void);
 static void vc_turn_step(const motion_control_status_t * p_motion);
@@ -51,24 +59,25 @@ static void vc_turn_step(const motion_control_status_t * p_motion);
  */
 ER vehicle_controller_start(void)
 {
+    ID task = 0;
+
     /* Pull-up only (both on is bus keeper): the button grounds the pin. */
     (void)gpio_set_pin(VC_BUTTON, GPIO_MODE_IN);
     clr_w(GPIO(VC_BUTTON), GPIO_PDE);
     set_w(GPIO(VC_BUTTON), GPIO_PUE);
 
     /* FP is the kernel's generic task pointer type. */
-    ID task = app_start_task((FP)vehicle_controller_task, VC_PRI, 0, "vc");
+    task = app_start_task((FP)vehicle_controller_task, VC_PRI, 0, "vc");
 
     return (task < E_OK) ? task : E_OK;
 }
 
 /*!
- * @brief Controller task: read every input, then step the state machine.
+ * @brief Controller task: read every input, take a safe stop if one is due,
+ * otherwise step the state machine.
  */
 static void vehicle_controller_task(INT stacd, void * p_exinf)
 {
-    s4_fault_t fault = {0};
-    s4_tilt_t tilt = {0};
     barcode_decoder_t barcode = {0};
     line_following_t line = {0};
     obstacle_avoidance_status_t avoid = {0};
@@ -76,7 +85,7 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
     uint32_t barcodes = 0u;      /* barcode.count last taken. */
     bool b_was_junction = false; /* line.b_junction last taken. */
     bool b_press = false;
-    bool b_fault = false;
+    bool b_latched = false; /* Safety stop held by motion control. */
     bool b_junction = false;
     bool b_barcode = false;
     bool b_moving = false;
@@ -85,11 +94,10 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
     (void)p_exinf;
     for (;;)
     {
-        tk_dly_tsk(VC_PERIOD_MS);
+        (void)tk_dly_tsk(VC_PERIOD_MS);
         g_cycles++;
         b_press = vc_pressed();
-        s4_get_fault(&fault);
-        b_fault = (0u != fault.impact) || (0u != fault.tilt);
+        b_latched = motion_control_latched();
         barcode_decoder_get(&barcode);
         line_following_get(&line);
         obstacle_avoidance_get_status(&avoid);
@@ -106,9 +114,9 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
         }
         b_moving = (g_state >= VC_FOLLOW) && (g_state <= VC_TURN);
 
-        if (b_fault && (VC_SAFE_STOP != g_state))
+        if (b_latched && (VC_SAFE_STOP != g_state))
         {
-            vc_enter(VC_SAFE_STOP, "IMU fault");
+            vc_enter(VC_SAFE_STOP, "safety latched");
         }
         else if (b_moving && b_press)
         {
@@ -120,76 +128,94 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
         }
         else
         {
-            switch (g_state)
-            {
-                case VC_INIT:
-                    s4_get_tilt(&tilt);
-                    if (0u != tilt.cal)
-                    {
-                        vc_enter(VC_READY, "IMU calibrated");
-                    }
-                    break;
-
-                case VC_READY:
-                    if (b_press)
-                    {
-                        vc_enter(VC_FOLLOW, "GP20");
-                    }
-                    break;
-
-                case VC_FOLLOW:
-                    if (b_barcode)
-                    {
-                        g_pending = barcode.command;
-                        tm_printf((UB *)"[vc] barcode %d pending\n",
-                                  (int)g_pending);
-                    }
-                    if ((OBSTACLE_AVOIDANCE_PROFILE == avoid.state) ||
-                        (OBSTACLE_AVOIDANCE_BYPASS == avoid.state))
-                    {
-                        vc_enter(VC_AVOID, "obstacle");
-                    }
-                    else if (MOTION_CONTROL_FAILED == motion.state)
-                    {
-                        vc_enter(VC_SAFE_STOP, "wheel stalled");
-                    }
-                    else if (b_junction && (BARCODE_DECODER_NONE != g_pending))
-                    {
-                        vc_enter(VC_TURN, "junction");
-                    }
-                    else
-                    {
-                        /* Keep following. */
-                    }
-                    break;
-
-                case VC_AVOID:
-                    if (OBSTACLE_AVOIDANCE_MONITOR == avoid.state)
-                    {
-                        vc_enter(VC_FOLLOW, "obstacle passed");
-                    }
-                    break;
-
-                case VC_TURN:
-                    vc_turn_step(&motion);
-                    break;
-
-                case VC_SAFE_STOP:
-                    if (b_press && !b_fault)
-                    {
-                        vc_enter(VC_READY, "GP20");
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+            vc_step(b_press, b_barcode, b_junction, barcode.command,
+                    avoid.state, &motion);
         }
     }
 }
 
 /*!
+ * @brief One step of the state machine, when no safe stop is due.
+ *
+ * @param[in] b_press     GP20 was pressed.
+ * @param[in] b_barcode   A barcode was validated since FOLLOW last ran.
+ * @param[in] b_junction  A junction began since FOLLOW last ran.
+ * @param[in] command     The last validated barcode command.
+ * @param[in] avoid_state Obstacle avoidance state.
+ * @param[in] p_motion    Motion status.
+ */
+static void vc_step(bool b_press, bool b_barcode, bool b_junction,
+                    uint32_t command, uint32_t avoid_state,
+                    const motion_control_status_t * p_motion)
+{
+    s4_tilt_t tilt = {0};
+
+    switch (g_state)
+    {
+        case VC_INIT:
+            s4_get_tilt(&tilt);
+            if (0u != tilt.cal)
+            {
+                vc_enter(VC_READY, "IMU calibrated");
+            }
+            break;
+
+        case VC_READY:
+            if (b_press)
+            {
+                vc_enter(VC_FOLLOW, "GP20");
+            }
+            break;
+
+        case VC_FOLLOW:
+            if (b_barcode)
+            {
+                g_pending = command;
+                tm_printf((UB *)"[vc] barcode %u pending\n", g_pending);
+            }
+            if ((OBSTACLE_AVOIDANCE_PROFILE == avoid_state) ||
+                (OBSTACLE_AVOIDANCE_BYPASS == avoid_state))
+            {
+                vc_enter(VC_AVOID, "obstacle");
+            }
+            else if (b_junction && (BARCODE_DECODER_NONE != g_pending))
+            {
+                vc_enter(VC_TURN, "junction");
+            }
+            else
+            {
+                /* Keep following. */
+            }
+            break;
+
+        case VC_AVOID:
+            if (OBSTACLE_AVOIDANCE_MONITOR == avoid_state)
+            {
+                vc_enter(VC_FOLLOW, "obstacle passed");
+            }
+            break;
+
+        case VC_TURN:
+            vc_turn_step(p_motion);
+            break;
+
+        case VC_SAFE_STOP:
+            if (b_press && safety_monitor_clear())
+            {
+                vc_enter(VC_READY, "GP20");
+            }
+            break;
+
+        default:
+            break;
+    }
+}
+
+/*!
  * @brief Change state, print why, and run the new state's entry actions.
+ *
+ * @param[in] state   The new state.
+ * @param[in] p_cause Why, for the console.
  */
 static void vc_enter(vc_state_t state, const char * p_cause)
 {
@@ -219,9 +245,10 @@ static void vc_enter(vc_state_t state, const char * p_cause)
 
         case VC_SAFE_STOP:
             obstacle_avoidance_cancel(); /* First, so it sees no fault. */
-            line_following_stop();       /* Also brakes. */
+            safety_monitor_stop(SAFETY_MONITOR_CONTROLLER); /* If ours. */
+            line_following_stop();                          /* Stop steering. */
             s4_get_hump(&hump);
-            tm_printf((UB *)"[vc] max hump %d mm\n", (int)hump.max);
+            tm_printf((UB *)"[vc] max hump %u mm\n", hump.max);
             break;
 
         default:
@@ -251,6 +278,8 @@ static bool vc_pressed(void)
 /*!
  * @brief TURN: after the roll forward onto the junction, turn for the
  * pending barcode (none for straight on), then follow the line again.
+ *
+ * @param[in] p_motion Motion status.
  */
 static void vc_turn_step(const motion_control_status_t * p_motion)
 {
@@ -271,15 +300,15 @@ static void vc_turn_step(const motion_control_status_t * p_motion)
         g_cycles = 0u;
         if (BARCODE_DECODER_LEFT == g_pending)
         {
-            (void)motion_control_turn_left(90u);
+            (void)motion_control_turn_left(VC_TURN_DEG);
         }
         else if (BARCODE_DECODER_RIGHT == g_pending)
         {
-            (void)motion_control_turn_right(90u);
+            (void)motion_control_turn_right(VC_TURN_DEG);
         }
         else if (BARCODE_DECODER_UTURN == g_pending)
         {
-            (void)motion_control_turn_left(180u);
+            (void)motion_control_turn_left(VC_UTURN_DEG);
         }
         else
         {

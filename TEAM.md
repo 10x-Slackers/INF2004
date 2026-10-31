@@ -16,7 +16,7 @@ subsystem, ask its owner or open a pull request for them to review.
 |---|---|---|---|---|---|
 | 1 | Wi-Fi, command and telemetry | 2503014 | | `app_program/subsystem1/` | `testing/subsystem1/` |
 | 2 | Motion control | 2503068 | xxcin | `app_program/subsystem2/` | `testing/subsystem2/` |
-| 3 | Line following and barcodes | 2502564 | | `app_program/subsystem3/` | `testing/subsystem3/` |
+| 3 | Line following and barcodes | 2502564 | mykacx | `app_program/subsystem3/` | `testing/subsystem3/` |
 | 4 | IMU and terrain | 2503999 | commit2main | `app_program/subsystem4/` | `testing/subsystem4/` |
 | 5 | Ultrasonic scanning and obstacle avoidance | 2503992 | CalebWee | `app_program/subsystem5/` | `testing/subsystem5/` |
 

@@ -37,7 +37,7 @@
 #define APP_GPIO_EDGE_BITS     0xccccccccu
 #define APP_GPIO_CALLBACKS     2u /* Encoders (S2) and echo (S5). */
 
-static ID g_fault_flag; /* The shared fault bitmask (app_fault.h). */
+static ID gh_fault_flag; /* The shared fault bitmask (app_fault.h). */
 
 /* GPIO edge callbacks, read by the interrupt. pins is 0 in a free slot. */
 static volatile struct
@@ -56,7 +56,7 @@ static void app_gpio_isr(UINT intno);
 ID app_start_task(FP p_entry, PRI pri, UW prc, const char * p_name)
 {
     T_CTSK task = {0};
-    ID task_id = 0;
+    ID h_task = 0;
 
     task.task = p_entry;              /* Function the task runs. */
     task.itskpri = pri;               /* Initial priority (1 = highest). */
@@ -73,16 +73,16 @@ ID app_start_task(FP p_entry, PRI pri, UW prc, const char * p_name)
 #endif
 
     /* tk_cre_tsk creates the task DORMANT; tk_sta_tsk makes it READY. */
-    task_id = tk_cre_tsk(&task);
-    if (task_id < E_OK)
+    h_task = tk_cre_tsk(&task);
+    if (h_task < E_OK)
     {
-        app_check(task_id, p_name);
+        app_check(h_task, p_name);
     }
     else
     {
-        app_check(tk_sta_tsk(task_id, 0), p_name);
+        app_check(tk_sta_tsk(h_task, 0), p_name);
     }
-    return task_id;
+    return h_task;
 }
 
 /*!
@@ -112,18 +112,18 @@ void app_pull_up(UW pin)
  *
  * @return The cyclic handler ID, or a negative error code.
  */
-ER app_start_cyclic(ID task_id, RELTIM period_ms)
+ER app_start_cyclic(ID h_task, RELTIM period_ms)
 {
     T_CCYC cyclic = {0};
 
     /* An ID is a 32-bit int: it fits the pointer and app_wake() gets it
      * back unchanged. */
-    cyclic.exinf = (void *)task_id;
+    cyclic.exinf = (void *)h_task;
     cyclic.cycatr = TA_HLNG | TA_STA;
     cyclic.cychdr = (FP)app_wake; /* FP is the kernel's handler type. */
     cyclic.cyctim = period_ms;
     cyclic.cycphs = period_ms;
-    return (task_id < E_OK) ? task_id : tk_cre_cyc(&cyclic);
+    return (h_task < E_OK) ? h_task : tk_cre_cyc(&cyclic);
 }
 
 /*!
@@ -135,23 +135,23 @@ ER app_start_cyclic(ID task_id, RELTIM period_ms)
 bool app_gpio_register(uint32_t pins, app_gpio_callback_t p_callback)
 {
     uint32_t taken = 0u;
-    uint32_t i = 0u;
+    uint32_t slot = 0u;
     uint32_t bank = 0u;
     uint32_t pin = 0u;
     uint32_t mask = 0u;
     bool b_accepted = false;
 
-    for (i = 0u; i < APP_GPIO_CALLBACKS; i++)
+    for (slot = 0u; slot < APP_GPIO_CALLBACKS; slot++)
     {
-        taken |= g_gpio[i].pins;
+        taken |= g_gpio[slot].pins;
     }
-    for (i = 0u; (i < APP_GPIO_CALLBACKS) && (!b_accepted); i++)
+    for (slot = 0u; (slot < APP_GPIO_CALLBACKS) && (!b_accepted); slot++)
     {
-        b_accepted = (0u == g_gpio[i].pins) && (0u == (pins & taken));
+        b_accepted = (0u == g_gpio[slot].pins) && (0u == (pins & taken));
         if (b_accepted)
         {
-            g_gpio[i].p_callback = p_callback;
-            g_gpio[i].pins = pins;
+            g_gpio[slot].p_callback = p_callback;
+            g_gpio[slot].pins = pins;
         }
     }
 
@@ -177,7 +177,7 @@ bool app_gpio_register(uint32_t pins, app_gpio_callback_t p_callback)
  */
 void app_fault_set(uint32_t bits)
 {
-    (void)tk_set_flg(g_fault_flag, bits);
+    (void)tk_set_flg(gh_fault_flag, bits);
 }
 
 /*!
@@ -185,7 +185,7 @@ void app_fault_set(uint32_t bits)
  */
 void app_fault_clear(uint32_t bits)
 {
-    (void)tk_clr_flg(g_fault_flag, ~bits); /* Keeps the bits it is given. */
+    (void)tk_clr_flg(gh_fault_flag, ~bits); /* Keeps the bits it is given. */
 }
 
 /*!
@@ -197,7 +197,7 @@ uint32_t app_faults(void)
 {
     T_RFLG flag = {0};
 
-    (void)tk_ref_flg(g_fault_flag, &flag);
+    (void)tk_ref_flg(gh_fault_flag, &flag);
     return flag.flgptn;
 }
 
@@ -232,8 +232,8 @@ INT usermain(void)
     }
 
     /* The fault bitmask first: any subsystem may set a fault. */
-    g_fault_flag = tk_cre_flg(&flag);
-    app_check(g_fault_flag, "fault flag");
+    gh_fault_flag = tk_cre_flg(&flag);
+    app_check(gh_fault_flag, "fault flag");
 
     /* The GPIO interrupt next, on this core (0): subsystems register with
      * app_gpio_register() in their _init(). */
@@ -300,7 +300,7 @@ static void app_gpio_isr(UINT intno)
     uint32_t bank = 0u;
     uint32_t pin = 0u;
     uint32_t edges = 0u;
-    uint32_t i = 0u;
+    uint32_t slot = 0u;
 
     (void)intno;
     for (bank = 0u; bank < APP_GPIO_BANKS; bank++)
@@ -321,11 +321,11 @@ static void app_gpio_isr(UINT intno)
 
     /* Callbacks run after the flags are cleared, so a later edge is not
      * lost. Only enabled pins have edges, so a slot is never half set. */
-    for (i = 0u; i < APP_GPIO_CALLBACKS; i++)
+    for (slot = 0u; slot < APP_GPIO_CALLBACKS; slot++)
     {
-        if (0u != (pins & g_gpio[i].pins))
+        if (0u != (pins & g_gpio[slot].pins))
         {
-            g_gpio[i].p_callback(pins & g_gpio[i].pins);
+            g_gpio[slot].p_callback(pins & g_gpio[slot].pins);
         }
     }
 }

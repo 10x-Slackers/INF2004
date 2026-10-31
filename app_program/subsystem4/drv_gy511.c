@@ -18,7 +18,7 @@
 #define DRV_GY511_JUSTIFY    16     /* 12 bits left-justified in 16. */
 #define DRV_GY511_SIGN       32768u /* Bit 15, the sign of a 16-bit value. */
 
-static ID g_i2c;
+static ID gh_i2c;
 
 static int32_t drv_gy511_axis(const uint8_t * p_raw);
 
@@ -29,16 +29,16 @@ ER drv_gy511_init(void)
 {
     ER result = E_OK;
 
-    g_i2c = tk_opn_dev((UB *)"iica", TD_UPDATE); /* Kernel takes UB names. */
-    result = g_i2c;
+    gh_i2c = tk_opn_dev((UB *)"iica", TD_UPDATE); /* Kernel takes UB names. */
+    result = gh_i2c;
     if (result >= E_OK)
     {
-        result = i2c_write_reg(g_i2c, DRV_GY511_ADDR, DRV_GY511_CTRL_REG1,
+        result = i2c_write_reg(gh_i2c, DRV_GY511_ADDR, DRV_GY511_CTRL_REG1,
                                DRV_GY511_RATE_100HZ);
     }
     if (result >= E_OK)
     {
-        result = i2c_write_reg(g_i2c, DRV_GY511_ADDR, DRV_GY511_CTRL_REG4,
+        result = i2c_write_reg(gh_i2c, DRV_GY511_ADDR, DRV_GY511_CTRL_REG4,
                                DRV_GY511_RANGE_2G);
     }
     return result;
@@ -56,7 +56,7 @@ ER drv_gy511_read(int32_t * p_x_mg, int32_t * p_y_mg, int32_t * p_z_mg)
     ER result = E_OK;
 
     /* Write the register address, then read X, Y and Z. */
-    result = tk_swri_dev(g_i2c, TDN_I2C_EXEC, &exec, sizeof(exec), &size);
+    result = tk_swri_dev(gh_i2c, TDN_I2C_EXEC, &exec, sizeof(exec), &size);
     if (result >= E_OK)
     {
         *p_x_mg = drv_gy511_axis(&raw[0]);

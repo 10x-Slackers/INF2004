@@ -44,7 +44,7 @@
 #define MOTION_Q8             256
 
 static motion_control_status_t g_status;
-static bool g_b_latched; /* Safety stop: every command refused. */
+static bool gb_latched; /* Safety stop: every command refused. */
 
 static struct
 {
@@ -168,7 +168,7 @@ bool motion_control_drive(int32_t left_mm_s, int32_t right_mm_s)
                     (right_mm_s <= MOTION_CONTROL_MAX_SPEED_MM_S));
 
     drv_motion_lock();
-    b_valid = b_valid && (!g_b_latched) &&
+    b_valid = b_valid && (!gb_latched) &&
               ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
                (MOTION_CONTROL_FAILED != g_status.state));
     if (b_valid)
@@ -210,8 +210,8 @@ bool motion_control_latch(bool b_latched)
     bool b_was_latched = false;
 
     drv_motion_lock();
-    b_was_latched = g_b_latched;
-    g_b_latched = b_latched;
+    b_was_latched = gb_latched;
+    gb_latched = b_latched;
     if (b_latched && (!b_was_latched))
     {
         g_status.state = MOTION_CONTROL_IDLE;
@@ -230,7 +230,7 @@ bool motion_control_latched(void)
     bool b_latched = false;
 
     drv_motion_lock();
-    b_latched = g_b_latched;
+    b_latched = gb_latched;
     drv_motion_unlock();
     return b_latched;
 }
@@ -469,7 +469,7 @@ static bool motion_control_start(uint32_t command, uint32_t amount)
     if (b_valid)
     {
         drv_motion_lock();
-        b_valid = !g_b_latched;
+        b_valid = !gb_latched;
         if (b_valid)
         {
             g_run.goal = (uint32_t)goal; /* Limits keep it under 62120. */

@@ -21,12 +21,12 @@ ER subsystem5_init(void)
  */
 ER subsystem5_start(void)
 {
-    ID const avoid = obstacle_avoidance_start_task();
+    ID const h_avoid = obstacle_avoidance_start_task();
     /* FP is the kernel's generic task pointer type. */
-    ID const scan =
+    ID const h_scan =
         app_start_task((FP)ultrasonic_scan_task, S5_PRI_SCAN, 0u, "s5_scan");
 
-    return (avoid < E_OK) ? avoid : ((scan < E_OK) ? scan : E_OK);
+    return (h_avoid < E_OK) ? h_avoid : ((h_scan < E_OK) ? h_scan : E_OK);
 }
 
 /*** end of file ***/

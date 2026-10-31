@@ -75,10 +75,10 @@ static void subsystem5_range_task(INT stacd, void * p_exinf)
 ER subsystem5_start(void)
 {
     /* FP is the kernel's generic task pointer type. */
-    ID task_id = app_start_task((FP)subsystem5_range_task, S5_PRI_RANGE, 0,
+    ID h_task = app_start_task((FP)subsystem5_range_task, S5_PRI_RANGE, 0,
                                 "s5_range");
 
-    return (task_id < E_OK) ? task_id : E_OK;
+    return (h_task < E_OK) ? h_task : E_OK;
 }
 ```
 

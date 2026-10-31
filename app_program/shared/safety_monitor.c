@@ -19,10 +19,10 @@ static void safety_monitor_task(INT stacd, void * p_exinf);
 ER safety_monitor_start(void)
 {
     /* FP is the kernel's generic task pointer type. */
-    ID const task = app_start_task((FP)safety_monitor_task, SAFETY_MONITOR_PRI,
-                                   0u, "safety");
+    ID const h_task = app_start_task((FP)safety_monitor_task,
+                                     SAFETY_MONITOR_PRI, 0u, "safety");
 
-    return (task < E_OK) ? task : E_OK;
+    return (h_task < E_OK) ? h_task : E_OK;
 }
 
 /*!

@@ -8,10 +8,13 @@
  * - 5.3.a: x, y, z, pitch and roll are signed bit-fields, packed to the
  *   minimum bits (docs/DATA_REPRESENTATION.md).
  * - 7.1.e: struct fields x, y, z and on keep their short names.
+ * - 4.2.a, 4.3.c, 6.2.d: task_imu.c has no header of its own; this file
+ *   declares its functions and gh_s4_mutex, shared with subsystem4.c.
  *
  * Abbreviations (rule 1.5): s4 subsystem 4, imu inertial measurement unit,
  * mg milli-g, mm millimetres, ms milliseconds, hz hertz, cal calibrated,
- * cls class (a C++ keyword).
+ * cls class (a C++ keyword), accel acceleration, decideg 0.1 degree,
+ * pri task priority.
  */
 
 #ifndef SUBSYSTEM4_H
@@ -99,9 +102,9 @@ typedef struct
     unsigned int cls : 3;
 } s4_motion_t;
 
-extern ID g_s4_mutex; /* Guards the reading, tilt, humps, motion. */
+extern ID gh_s4_mutex; /* Guards the reading, tilt, humps, motion. */
 
-/* Each copies its record under g_s4_mutex. */
+/* Each copies its record under gh_s4_mutex. */
 void s4_get_accel(s4_accel_t * p_accel);
 void s4_get_tilt(s4_tilt_t * p_tilt);
 void s4_get_hump(s4_hump_t * p_hump);

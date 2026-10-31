@@ -61,7 +61,7 @@ static volatile uint8_t g_skipped;
 
 static volatile drv_motion_wheel_t g_left_wheel;
 static volatile drv_motion_wheel_t g_right_wheel;
-static ID g_mutex;
+static ID gh_mutex;
 
 static uint32_t drv_motion_phase(uint32_t levels, uint32_t pin_a,
                                  uint32_t pin_b);
@@ -110,9 +110,9 @@ bool drv_motion_init(void)
         drv_motion_phase(levels, DRV_MOTION_RIGHT_A, DRV_MOTION_RIGHT_B);
 
     mutex.mtxatr = TA_INHERIT;
-    g_mutex = tk_cre_mtx(&mutex);
+    gh_mutex = tk_cre_mtx(&mutex);
     return (app_gpio_register(DRV_MOTION_ENCODER_PINS, drv_motion_edge)) &&
-           (g_mutex > 0);
+           (gh_mutex > 0);
 }
 
 /*!
@@ -151,7 +151,7 @@ uint32_t drv_motion_time_us(void)
  */
 void drv_motion_lock(void)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
 }
 
 /*!
@@ -159,7 +159,7 @@ void drv_motion_lock(void)
  */
 void drv_motion_unlock(void)
 {
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!

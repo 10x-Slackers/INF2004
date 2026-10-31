@@ -13,8 +13,8 @@
 #define ULTRASONIC_SCAN_SETTLE_MS 200 /* Servo travel before a reading. */
 #define ULTRASONIC_SCAN_READS     3u  /* Readings per ray, for a median. */
 
-static ID g_mutex;
-static ID g_request; /* Semaphore: a scan was requested. */
+static ID gh_mutex;
+static ID gh_request; /* Semaphore: a scan was requested. */
 static struct
 {
     unsigned int mode : 1;    /* ULTRASONIC_SCAN_... */
@@ -25,7 +25,7 @@ static uint8_t g_angle = ULTRASONIC_SCAN_AHEAD; /* Scan task only. */
 
 static void ultrasonic_scan_serve(uint32_t mode, uint32_t request);
 static void ultrasonic_scan_aim(uint32_t angle_deg);
-static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * p_b_fault);
+static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * pb_fault);
 
 /*!
  * @brief Create the lock and the request semaphore, set up the sensor and
@@ -39,12 +39,12 @@ bool ultrasonic_scan_init(void)
     T_CSEM semaphore = {0};
 
     mutex.mtxatr = TA_INHERIT;
-    g_mutex = tk_cre_mtx(&mutex);
+    gh_mutex = tk_cre_mtx(&mutex);
     semaphore.sematr = TA_TFIFO;
     semaphore.maxsem = 1;
-    g_request = tk_cre_sem(&semaphore);
+    gh_request = tk_cre_sem(&semaphore);
     drv_sg90_init();
-    return (drv_hcsr04_init()) && (g_mutex > 0) && (g_request > 0);
+    return (drv_hcsr04_init()) && (gh_mutex > 0) && (gh_request > 0);
 }
 
 /*!
@@ -59,11 +59,11 @@ uint32_t ultrasonic_scan_request(uint32_t mode)
 {
     uint32_t request = 0u;
 
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     g_next.mode = mode;
     request = ++g_next.request;
-    (void)tk_unl_mtx(g_mutex);
-    (void)tk_sig_sem(g_request, 1);
+    (void)tk_unl_mtx(gh_mutex);
+    (void)tk_sig_sem(gh_request, 1);
     return request;
 }
 
@@ -72,9 +72,9 @@ uint32_t ultrasonic_scan_request(uint32_t mode)
  */
 void ultrasonic_scan_get(ultrasonic_scan_t * p_scan)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     *p_scan = g_scan;
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -90,14 +90,14 @@ void ultrasonic_scan_task(INT stacd, void * p_exinf)
     (void)p_exinf;
     for (;;)
     {
-        (void)tk_wai_sem(g_request, 1, TMO_FEVR);
-        (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+        (void)tk_wai_sem(gh_request, 1, TMO_FEVR);
+        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         mode = g_next.mode;
         request = g_next.request;
         /* A request made while the task woke is read with the one before
          * it; its own signal then finds it already served. */
         b_new = (request != g_scan.request);
-        (void)tk_unl_mtx(g_mutex);
+        (void)tk_unl_mtx(gh_mutex);
         if (b_new)
         {
             ultrasonic_scan_serve(mode, request);
@@ -114,7 +114,7 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
     scan_profile_t profile = {0};
     SYSTIM now = {0};
     uint32_t ray = 0u;
-    uint32_t mm = 0u;
+    uint32_t range_mm = 0u;
     bool b_fault = false;
 
     if (ULTRASONIC_SCAN_PROFILE == mode)
@@ -127,11 +127,11 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
         scan_profile_build(rays, &profile);
     }
     ultrasonic_scan_aim(ULTRASONIC_SCAN_AHEAD);
-    b_fault = (!drv_hcsr04_measure(&mm)) || b_fault;
+    b_fault = (!drv_hcsr04_measure(&range_mm)) || b_fault;
     (void)tk_get_otm(&now);
 
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-    g_scan.forward_mm = mm;
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+    g_scan.forward_mm = range_mm;
     g_scan.forward_ms = now.lo;
     /* APP_FAULT_NO_ECHO, before request tells readers it is done. */
     if (b_fault)
@@ -147,7 +147,7 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
         g_scan.profile = profile;
     }
     g_scan.request = request;
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -168,19 +168,20 @@ static void ultrasonic_scan_aim(uint32_t angle_deg)
  *
  * @return mm, or 0 if the sensor gave no echo.
  */
-static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * p_b_fault)
+static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * pb_fault)
 {
-    uint32_t mm[ULTRASONIC_SCAN_READS] = {0};
+    uint32_t range_mm[ULTRASONIC_SCAN_READS] = {0};
     bool b_echo = true;
-    uint32_t i = 0u;
+    uint32_t reading = 0u;
 
     ultrasonic_scan_aim(SCAN_PROFILE_MIN_DEG + (ray * SCAN_PROFILE_STEP_DEG));
-    for (i = 0u; i < ULTRASONIC_SCAN_READS; i++)
+    for (reading = 0u; reading < ULTRASONIC_SCAN_READS; reading++)
     {
-        b_echo = (drv_hcsr04_measure(&mm[i])) && b_echo;
+        b_echo = (drv_hcsr04_measure(&range_mm[reading])) && b_echo;
     }
-    *p_b_fault = (*p_b_fault) || (!b_echo);
-    return b_echo ? scan_profile_median(mm[0], mm[1], mm[2]) : 0u;
+    *pb_fault = (*pb_fault) || (!b_echo);
+    return b_echo ? scan_profile_median(range_mm[0], range_mm[1], range_mm[2])
+                  : 0u;
 }
 
 /*** end of file ***/

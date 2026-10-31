@@ -22,9 +22,9 @@
 /* Written by the edge callback, read after it wakes the task. */
 static volatile uint32_t g_rise_us;
 static volatile uint32_t g_width_us;
-static volatile bool g_b_rose;
-static volatile bool g_b_fell;
-static volatile ID g_task;
+static volatile bool gb_rose;
+static volatile bool gb_fell;
+static volatile ID gh_task;
 
 static uint32_t g_trigger_us; /* Scan task only. */
 
@@ -64,9 +64,9 @@ bool drv_hcsr04_measure(uint32_t * p_mm)
         tk_dly_tsk(DRV_HCSR04_POLL_MS);
         waited += DRV_HCSR04_POLL_MS;
     }
-    g_b_rose = false;
-    g_b_fell = false;
-    g_task = tk_get_tid();
+    gb_rose = false;
+    gb_fell = false;
+    gh_task = tk_get_tid();
     (void)tk_can_wup(TSK_SELF);
 
     /* Timed on TIMER: WaitUsec uses the SysTick, which is off on core 1. */
@@ -80,8 +80,8 @@ bool drv_hcsr04_measure(uint32_t * p_mm)
     g_trigger_us = in_w(TIMER_TIMERAWL);
 
     (void)tk_slp_tsk(DRV_HCSR04_ECHO_MS);
-    *p_mm = g_b_fell ? scan_profile_mm(g_width_us) : SCAN_PROFILE_FAR_MM;
-    return g_b_rose;
+    *p_mm = gb_fell ? scan_profile_mm(g_width_us) : SCAN_PROFILE_FAR_MM;
+    return gb_rose;
 }
 
 /*!
@@ -96,13 +96,13 @@ static void drv_hcsr04_edge(uint32_t pins)
     if (0u != gpio_get_val(DRV_HCSR04_ECHO))
     {
         g_rise_us = now_us;
-        g_b_rose = true;
+        gb_rose = true;
     }
-    else if (g_b_rose && (!g_b_fell))
+    else if (gb_rose && (!gb_fell))
     {
         g_width_us = now_us - g_rise_us;
-        g_b_fell = true;
-        (void)tk_wup_tsk(g_task);
+        gb_fell = true;
+        (void)tk_wup_tsk(gh_task);
     }
     else
     {

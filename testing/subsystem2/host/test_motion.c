@@ -382,7 +382,7 @@ static void test_timing(void)
 {
     clock_t start = 0;
     uint32_t ticks = 0u;
-    double us = 0.0;
+    double step_us = 0.0;
 
     test_reset(0u);
     (void)motion_control_drive(150, 150);
@@ -391,8 +391,8 @@ static void test_timing(void)
     {
         motion_control_tick(10u);
     }
-    us = ((double)(clock() - start) / CLOCKS_PER_SEC) * 1e6 / ticks;
-    printf("INFO  host cost of one control step: %.3f us\n", us);
+    step_us = ((double)(clock() - start) / CLOCKS_PER_SEC) * 1e6 / ticks;
+    printf("INFO  host cost of one control step: %.3f us\n", step_us);
 }
 
 int main(void)

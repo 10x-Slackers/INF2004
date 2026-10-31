@@ -68,14 +68,14 @@ static void vc_turn_step(const motion_control_status_t * p_motion);
  */
 ER vehicle_controller_start(void)
 {
-    ID task = 0;
+    ID h_task = 0;
 
     app_pull_up(VC_BUTTON);
 
     /* FP is the kernel's generic task pointer type. */
-    task = app_start_task((FP)vehicle_controller_task, VC_PRI, 0u, "vc");
+    h_task = app_start_task((FP)vehicle_controller_task, VC_PRI, 0u, "vc");
 
-    return (task < E_OK) ? task : E_OK;
+    return (h_task < E_OK) ? h_task : E_OK;
 }
 
 /*!

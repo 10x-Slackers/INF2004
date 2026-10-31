@@ -25,7 +25,7 @@
 #define LINE_FOLLOWING_SEARCH_DEG 135 /* Pivot each side of the heading. */
 #define LINE_FOLLOWING_PIVOT_MM_S 100 /* Wheel speed while pivoting. */
 
-/* Line search, under g_mutex. */
+/* Line search, under gh_mutex. */
 typedef struct
 {
     unsigned int from_mm : 24;  /* Odometer when a sensor last saw black. */
@@ -33,9 +33,9 @@ typedef struct
     unsigned int start_deg : 9; /* Heading when the search began. */
 } line_following_search_t;
 
-static ID g_mutex;
+static ID gh_mutex;
 static line_following_t g_line;
-static uint16_t g_speed_mm_s; /* Under g_mutex. */
+static uint16_t g_speed_mm_s; /* Under gh_mutex. */
 static line_following_search_t g_search;
 
 static void line_following_steer(uint32_t bits);
@@ -51,9 +51,9 @@ bool line_following_init(void)
     T_CMTX mutex = {0};
 
     mutex.mtxatr = TA_INHERIT;
-    g_mutex = tk_cre_mtx(&mutex);
+    gh_mutex = tk_cre_mtx(&mutex);
     drv_line_init();
-    return (g_mutex > 0);
+    return (gh_mutex > 0);
 }
 
 /*!
@@ -61,9 +61,9 @@ bool line_following_init(void)
  */
 void line_following_get(line_following_t * p_line)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     *p_line = g_line;
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
 }
 
 /*!
@@ -79,11 +79,11 @@ bool line_following_start(uint32_t speed_mm_s)
 
     if (b_valid)
     {
-        (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_speed_mm_s = (uint16_t)speed_mm_s; /* <= MAX_MM_S: fits. */
         g_line.b_following = true;
         g_line.b_lost = false;
-        (void)tk_unl_mtx(g_mutex);
+        (void)tk_unl_mtx(gh_mutex);
     }
     return b_valid;
 }
@@ -94,9 +94,9 @@ bool line_following_start(uint32_t speed_mm_s)
  */
 void line_following_stop(void)
 {
-    (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     g_line.b_following = false;
-    (void)tk_unl_mtx(g_mutex);
+    (void)tk_unl_mtx(gh_mutex);
     motion_control_stop();
 }
 
@@ -121,7 +121,7 @@ void line_following_task(INT stacd, void * p_exinf)
         (void)tk_get_otm(&now);
         motion_control_get_status(&motion);
 
-        (void)tk_loc_mtx(g_mutex, TMO_FEVR);
+        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_line.bits = bits;
         if ((DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits))
         {
@@ -159,13 +159,13 @@ void line_following_task(INT stacd, void * p_exinf)
             line_following_search(&motion);
         }
         g_line.b_searching = (g_line.b_following) && (0u != g_search.phase);
-        (void)tk_unl_mtx(g_mutex);
+        (void)tk_unl_mtx(gh_mutex);
     }
 }
 
 /*!
  * @brief Steer towards the side whose sensor sees black. Call under
- * g_mutex while following.
+ * gh_mutex while following.
  *
  * @param[in] bits Sensors over black.
  */
@@ -192,7 +192,7 @@ static void line_following_steer(uint32_t bits)
 /*!
  * @brief Pivot towards last_side up to LINE_FOLLOWING_SEARCH_DEG, then the
  * other way to as far past the start heading; then brake and set b_lost.
- * Call under g_mutex while following.
+ * Call under gh_mutex while following.
  *
  * @param[in] p_motion Motion status, for the heading.
  */

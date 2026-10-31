@@ -53,9 +53,9 @@ void app_check(ER result, const char * p_what);
 void app_pull_up(UW pin);
 
 /* Wake a task every period_ms from a cyclic handler (tk_dly_tsk() would
- * add a tick to every period). A negative task_id, from a failed
+ * add a tick to every period). A negative h_task, from a failed
  * app_start_task(), is returned as it is. */
-ER app_start_cyclic(ID task_id, RELTIM period_ms);
+ER app_start_cyclic(ID h_task, RELTIM period_ms);
 
 /* GPIO edge interrupt (IRQ13, GPIO bank 0), shared by every subsystem.
  * Register in subsystemN_init(): the callback runs in the interrupt with

@@ -76,7 +76,7 @@ void subsystem3_test(void)
     TEST_CHECK("S3-U08",
                ((uint16_t)(raw.samples - samples) >= 180u) &&
                    ((uint16_t)(raw.samples - samples) <= 240u),
-               "barcode ADC at 2 ksample/s (180..240 in 100 ms)");
+               "barcode ADC position 2 ksample/s (180..240 in 100 ms)");
     TEST_CHECK("S3-U09", 8u == sizeof(raw), "packed raw barcode level 8 bytes");
     subsystem3_symbol(widths, S3_TEST_A, false);
     letter = code39_decode(widths);

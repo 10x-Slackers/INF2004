@@ -28,7 +28,6 @@ void subsystem4_test(void)
     s4_accel_t after = {0};
     s4_accel_t packed = {0};
     s4_tilt_t tilt = {0};
-    s4_fault_t fault = {0};
     s4_hump_t hump = {0};
     s4_motion_t motion = {0};
     uint8_t reads = 0u;
@@ -75,10 +74,7 @@ void subsystem4_test(void)
                "packed reading keeps -2048..2047 per axis in 8 bytes");
 
     /* Board still since power-on: no fault latched. */
-    s4_get_fault(&fault);
-    TEST_CHECK("S4-U14",
-               (S4_TEST_WORD_SIZE == sizeof(s4_fault_t)) && !fault.impact &&
-                   !fault.tilt,
+    TEST_CHECK("S4-U14", 0u == (app_faults() & APP_FAULT_IMU),
                "no impact or tilt fault on a still board");
     hump.peak = S4_HUMP_MAX_MM;
     hump.count = S4_TEST_HUMPS_MAX;

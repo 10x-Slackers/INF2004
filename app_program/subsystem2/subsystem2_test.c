@@ -90,9 +90,10 @@ static void subsystem2_bench_report(void)
     /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[motion] state=%u cmd=%u faults=%u heading=%u "
                     "dist_mm=%u counts=%u,%u speed=%d,%d max_tick_us=%u\n",
-              status.state, status.command, status.faults, status.heading_deg,
-              status.distance_mm, status.left_count, status.right_count,
-              status.left_speed, status.right_speed, subsystem2_max_tick_us());
+              status.state, status.command, app_faults() & APP_FAULT_MOTION,
+              status.heading_deg, status.distance_mm, status.left_count,
+              status.right_count, status.left_speed, status.right_speed,
+              subsystem2_max_tick_us());
 }
 
 /*!

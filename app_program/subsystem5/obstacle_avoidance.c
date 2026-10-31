@@ -76,7 +76,7 @@ void obstacle_avoidance_start(void)
     if (!obstacle_avoidance_running(g_status.state))
     {
         g_status.state = OBSTACLE_AVOIDANCE_MONITOR;
-        g_status.faults = 0u;
+        app_fault_clear(APP_FAULT_AVOID);
         (void)tk_wup_tsk(g_task);
     }
     (void)tk_unl_mtx(g_mutex);
@@ -165,7 +165,8 @@ static void obstacle_avoidance_set(uint32_t state, uint32_t step)
 }
 
 /*!
- * @brief Safe stop: brake, record the fault, wait for the next start.
+ * @brief Safe stop: brake, set the fault (APP_FAULT_AVOID_...), wait for
+ * the next start.
  * Nothing happens if cancelled meanwhile, so the car is the caller's again.
  */
 static void obstacle_avoidance_stop(uint32_t fault)
@@ -175,7 +176,7 @@ static void obstacle_avoidance_stop(uint32_t fault)
     {
         motion_control_stop();
         g_status.state = OBSTACLE_AVOIDANCE_STOPPED;
-        g_status.faults |= fault;
+        app_fault_set(fault);
         g_status.step = 0u;
     }
     (void)tk_unl_mtx(g_mutex);
@@ -214,9 +215,10 @@ static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan)
         ultrasonic_scan_get(p_scan);
     }
     if (obstacle_avoidance_active() &&
-        ((count == p_scan->count) || (0u != p_scan->b_fault)))
+        ((count == p_scan->count) ||
+         (0u != (app_faults() & APP_FAULT_NO_ECHO))))
     {
-        obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_SENSOR);
+        obstacle_avoidance_stop(APP_FAULT_AVOID_SENSOR);
     }
     return obstacle_avoidance_active();
 }
@@ -285,7 +287,7 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
         else if (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan) &&
                  (scan.forward_mm <= SCAN_PROFILE_BLOCK_MM))
         {
-            obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_BLOCKED);
+            obstacle_avoidance_stop(APP_FAULT_AVOID_BLOCKED);
         }
         else
         {
@@ -299,7 +301,7 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
     if (obstacle_avoidance_active() &&
         (MOTION_CONTROL_COMPLETE != status.state))
     {
-        obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_MOTION);
+        obstacle_avoidance_stop(APP_FAULT_AVOID_MOTION);
     }
     return obstacle_avoidance_active();
 }
@@ -374,7 +376,7 @@ static void obstacle_avoidance_avoid(void)
     }
     else if (!obstacle_avoidance_still())
     {
-        obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_MOTION);
+        obstacle_avoidance_stop(APP_FAULT_AVOID_MOTION);
     }
     else if (obstacle_avoidance_look(&left_mm, &right_mm) &&
              obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan) &&
@@ -394,7 +396,7 @@ static void obstacle_avoidance_avoid(void)
         (void)tk_unl_mtx(g_mutex);
         if (SCAN_PROFILE_NONE == side)
         {
-            obstacle_avoidance_stop(OBSTACLE_AVOIDANCE_FAULT_BLOCKED);
+            obstacle_avoidance_stop(APP_FAULT_AVOID_BLOCKED);
         }
         for (step = 0u;
              (SCAN_PROFILE_NONE != side) && (step < OBSTACLE_AVOIDANCE_STEPS) &&

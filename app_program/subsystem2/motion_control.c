@@ -10,6 +10,7 @@
 
 #include "motion_control.h"
 #include "drv_motion.h"
+#include "../app_fault.h"
 #include <string.h>
 
 /* Geometry. Turn edges per wheel: track * angle * counts / (360 * D).
@@ -263,7 +264,7 @@ void motion_control_get_status(motion_control_status_t * p_status)
  * @brief Pack a status into the 12-byte telemetry payload.
  *
  * Fields are written most significant bit first, in the order given in
- * docs/MOTION_CONTROL.md. The last bit is always zero.
+ * docs/MOTION_CONTROL.md. The last 4 bits are always zero.
  */
 void motion_control_pack(const motion_control_status_t * p_status,
                          uint8_t * p_packet)
@@ -273,7 +274,6 @@ void motion_control_pack(const motion_control_status_t * p_status,
     memset(p_packet, 0, MOTION_CONTROL_PACKET_BYTES);
     motion_control_put(p_packet, &bit, p_status->state, 2u);
     motion_control_put(p_packet, &bit, p_status->command, 3u);
-    motion_control_put(p_packet, &bit, p_status->faults, 3u);
     motion_control_put(p_packet, &bit, p_status->heading_deg, 9u);
     /* Speeds are -1023..1023, so the offset values are positive. */
     motion_control_put(p_packet, &bit,
@@ -313,7 +313,7 @@ void motion_control_tick(uint32_t elapsed_ms)
     {
         if (counts.skipped != g_run.skipped)
         {
-            g_status.faults |= MOTION_CONTROL_FAULT_ENCODER;
+            app_fault_set(APP_FAULT_ENCODER);
         }
         if ((MOTION_CONTROL_CMD_DRIVE == g_status.command) &&
             (g_run.drive_age >= MOTION_DRIVE_TICKS))
@@ -340,12 +340,12 @@ void motion_control_tick(uint32_t elapsed_ms)
                                 : 0u;
         if (g_run.left_stall >= MOTION_STALL_TICKS)
         {
-            g_status.faults |= MOTION_CONTROL_FAULT_STALL_LEFT;
+            app_fault_set(APP_FAULT_STALL_LEFT);
             g_status.state = MOTION_CONTROL_FAILED;
         }
         if (g_run.right_stall >= MOTION_STALL_TICKS)
         {
-            g_status.faults |= MOTION_CONTROL_FAULT_STALL_RIGHT;
+            app_fault_set(APP_FAULT_STALL_RIGHT);
             g_status.state = MOTION_CONTROL_FAILED;
         }
     }
@@ -446,7 +446,7 @@ static void motion_control_begin(uint32_t command)
     g_run.left_stall = 0u;
     g_run.right_stall = 0u;
     g_status.command = command;
-    g_status.faults = 0u;
+    app_fault_clear(APP_FAULT_MOTION);
     g_status.state = MOTION_CONTROL_RUNNING;
 }
 

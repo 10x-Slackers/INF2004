@@ -1,0 +1,3651 @@
+[imu] x=1 y=1 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=4 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=155 max=190
+[imu] x=0 y=0 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=4 y=-1 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=1 y=1 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=-4 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=5 y=0 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=1 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=-3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=3 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=-4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=2 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[bar] min=161 max=189
+[imu] x=4 y=4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=4 y=3 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=172 max=189
+[imu] x=0 y=4 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=[imu] x=4 y=1 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[bar] min=170 max=190
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=163 max=191
+[imu] x=0 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
+[bar] min=167 max=190
+[imu] x=3 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-5 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=159 max=189
+[imu] x=-3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=191
+[imu] x=-1 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=191
+[imu] x=2 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-2 y=-2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-5 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=8 y=6 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=4 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=164 max=189
+[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=6 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-5 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=161 max=190
+[imu] x=-5 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=5 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-5 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=8 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=9 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=3 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=-3 y=-6 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=4 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=166 max=190
+[imu] x=-2 y=-7 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=1 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=0 y=0 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=5 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=156 max=189
+[imu] x=3 y=-3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=163 max=190
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=6 y=6 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=9 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=7 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=166 max=190
+[imu] x=-4 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=170 max=189
+[imu] x=2 y=23 z=1000 mg pitch=-2 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=5 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=8 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=7 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=-6 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-2 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=6 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-1 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=7 y=8 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=6 y=2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=1 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=5 y=-3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=6 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=4 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=156 max=189
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=165 max=189
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=166 max=189
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=5 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=161 max=189
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=0 y=1 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=5 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=156 max=189
+[imu] x=4 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=-1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=0 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-4 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-6 y=0 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=157 max=190
+[imu] x=6 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-6 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=166 max=190
+[imu] x=4 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=4 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=0 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=167 max=190
+[imu] x=3 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=1 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-3 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=3 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=1 y=2 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=0 y=5 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=156 max=189
+[imu] x=3 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=6 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=5 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=6 y=5 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=-1 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=1 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-5 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=0 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=1 y=5 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=7 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=7 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=158 max=189
+[imu] x=1 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=5 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
+[imu] x=-5 y=-5 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=191
+[imu] x=-1 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-5 y=-7 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-10 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-9 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-2 y=-4 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=7 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=9 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=5 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=191
+[imu] x=3 y=4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-4 y=6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=7 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-4 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-2 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=0 y=0 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=5 y=3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=9 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=8 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=7 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=-2 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=-5 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=6 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=164 max=190
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=7 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=165 max=190
+[imu] x=0 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=5 y=-3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-3 y=-5 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=-4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=-2 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=7 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=9 y=14 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=4 y=12 z=1000 mg pitch=-2 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-1 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=8 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-5 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-8 y=-9 z=1000 mg pitch=1 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-3 y=2 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=0 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=-4 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=6 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-2 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=6 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=0 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=5 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-6 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-3 y=5 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-5 y=7 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=170 max=190
+[imu] x=0 y=-1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-5 y=-7 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=188
+[imu] x=5 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=-4 y=-2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-9 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-10 y=-9 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=3 y=-5 z=1000 mg pitch=1 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-3 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=170 max=190
+[imu] x=-3 y=-2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-5 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-8 y=-4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-8 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-7 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=5 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=4 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=5 y=4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=161 max=190
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=7 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=1 y=11 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=6 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=5 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=3 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=0 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-5 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-4 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-1 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=166 max=190
+[imu] x=0 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=0 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=3 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-5 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=3 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=0 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-2 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=0 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-4 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-4 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=157 max=190
+[imu] x=0 y=-1 z=1000 mg pitch=1 roll=-1 (0.1 deg) h=0 mm
+[imu] x=5 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-6 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=7 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=8 y=7 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=4 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[bar] min=160 max=190
+[imu] x=5 y=3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=4 y=6 z=1000 mg pitch=-2 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=3 z=1000 mg pitch=-2 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=-4 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=188
+[imu] x=-5 y=-5 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-3 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=156 max=189
+[imu] x=1 y=5 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=10 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=5 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-3 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-4 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-4 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=166 max=189
+[imu] x=3 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=188
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-6 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[bar] min=164 max=189
+[imu] x=0 y=-1 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-2 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=166 max=189
+[imu] x=1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=5 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=4 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=0 y=0 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=166 max=190
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-1 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-3 y=-3 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-3 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=0 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=7 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=3 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=170 max=190
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-2 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=159 max=189
+[imu] x=-1 y=0 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=0 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-5 y=0 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=15 y=22 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=7 y=18 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=167 max=190
+[imu] x=3 y=20 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
+[imu] x=5 y=17 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
+[imu] x=-5 y=6 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=11 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=8 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=0 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-7 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=8 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=4 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=2 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=0 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-5 y=3 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=0 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=-7 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=166 max=190
+[imu] x=0 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-4 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-4 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=3 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=170 max=190
+[imu] x=4 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=3 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=1 y=-2 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=163 max=190
+[imu] x=-3 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-3 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=3 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-2 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-2 y=1 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=-4 y=0 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=5 y=-3 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-4 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=-3 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-5 z=1000 mg pitch=1 roll=1 (0.1 deg) h=0 mm
+[imu] x=0 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=20 z=1000 mg pitch=-1 roll=-1 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=9 y=9 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=8 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=6 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=7 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=190
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=161 max=190
+[imu] x=0 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-7 y=-2 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-6 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=3 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-5 y=0 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=0 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=3 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-12 y=-14 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=156 max=190
+[imu] x=0 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=8 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[imu] x=1 y=7 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=12 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-2 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-7 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=164 max=190
+[imu] x=5 y=5 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=7 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-5 z=1000 mg pitch=1 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=171 max=190
+[imu] x=0 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-6 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=1 y=-2 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=6 y=2 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-3 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=167 max=189
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=0 z=1000 mg pitch=1 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-4 z=1000 mg pitch=1 roll=-1 (0.1 deg) h=0 mm
+[imu] x=-2 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-4 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=6 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=1 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=168 max=189
+[imu] x=1 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=5 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=2 y=2 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=3 y=1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-3 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=4 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=2 y=0 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
+[imu] x=-1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-1 y=-4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=170 max=189
+[imu] x=1 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=0 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=0 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=1 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-2 y=3 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=4 y=7 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=1 y=4 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=0 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-2 y=2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=0 y=-2 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=3 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=0 y=-2 z=1000 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[imu] x=-4 y=-3 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-3 y=-2 z=1000 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=169 max=189
+[imu] x=-2 y=0 z=1000 mg pitch=1 roll=-1 (0.1 deg) h=0 mm
+[imu] x=0 y=-4 z=1000 mg pitch=1 roll=0 (0.1 deg) h=0 mm
+[imu] x=-11 y=37 z=1000 mg pitch=-7 roll=-1 (0.1 deg) h=0 mm
+[imu] x=7 y=-3 z=1000 mg pitch=3 roll=-3 (0.1 deg) h=0 mm
+[imu] x=0 y=32 z=1000 mg pitch=-20 roll=-1 (0.1 deg) h=0 mm
+[bar] min=169 max=191
+[imu] x=7 y=4 z=1000 mg pitch=-3 roll=0 (0.1 deg) h=0 mm
+[imu] x=25 y=27 z=1000 mg pitch=-6 roll=7 (0.1 deg) h=-1 mm
+[imu] x=-43 y=152 z=1000 mg pitch=-11 roll=3 (0.1 deg) h=0 mm
+[imu] x=15 y=2 z=1000 mg pitch=-1 roll=4 (0.1 deg) h=0 mm
+[imu] x=20 y=-4 z=1000 mg pitch=7 roll=-1 (0.1 deg) h=0 mm
+[bar] min=169 max=190
+[imu] x=-53 y=6 z=1000 mg pitch=3 roll=-13 (0.1 deg) h=2 mm
+[imu] x=-75 y=-68 z=1000 mg pitch=11 roll=-29 (0.1 deg) h=5 mm
+[imu] x=-25 y=112 z=1000 mg pitch=-29 roll=-33 (0.1 deg) h=6 mm
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 3 mm
+[imu] motion: braking
+[imu] x=184 y=102 z=1000 mg pitch=-60 roll=34 (0.1 deg) h=-6 mm
+[imu] x=192 y=66 z=1000 mg pitch=-50 roll=96 (0.1 deg) h=-19 mm
+[bar] min=4067 max=4085
+[imu] x=222 y=93 z=1000 mg pitch=-39 roll=113 (0.1 deg) h=-22 mm
+[imu] x=208 y=88 z=1000 mg pitch=-42 roll=126 (0.1 deg) h=-25 mm
+[imu] x=202 y=48 z=1000 mg pitch=-43 roll=109 (0.1 deg) h=-21 mm
+[imu] x=140 y=70 z=1000 mg pitch=-39 roll=88 (0.1 deg) h=-17 mm
+[imu] x=91 y=98 z=1000 mg pitch=-37 roll=68 (0.1 deg) h=-13 mm
+[bar] min=166 max=192
+[imu] x=52 y=85 z=1000 mg pitch=-40 roll=50 (0.1 deg) h=-9 mm
+[imu] x=90 y=71 z=1000 mg pitch=-46 roll=40 (0.1 deg) h=-7 mm
+[imu] x=69 y=101 z=1000 mg pitch=-47 roll=32 (0.1 deg) h=-6 mm
+[imu] x=36 y=38 z=1000 mg pitch=-34 roll=26 (0.1 deg) h=-5 mm
+[imu] motion: steady
+[imu] x=64 y=61 z=1000 mg pitch=-25 roll=29 (0.1 deg) h=-5 mm
+[bar] min=166 max=186
+[imu] x=11 y=48 z=1000 mg pitch=-29 roll=21 (0.1 deg) h=-4 mm
+[imu] x=39 y=45 z=1000 mg pitch=-35 roll=23 (0.1 deg) h=-4 mm
+[imu] x=48 y=42 z=1000 mg pitch=-27 roll=27 (0.1 deg) h=-5 mm
+[imu] x=19 y=67 z=1000 mg pitch=-30 roll=22 (0.1 deg) h=-4 mm
+[imu] x=45 y=38 z=1000 mg pitch=-22 roll=19 (0.1 deg) h=-3 mm
+[bar] min=4078 max=4092
+[imu] x=41 y=41 z=1000 mg pitch=-27 roll=23 (0.1 deg) h=-4 mm
+[imu] x=43 y=22 z=1000 mg pitch=-18 roll=24 (0.1 deg) h=-4 mm
+[imu] x=45 y=14 z=1000 mg pitch=-15 roll=24 (0.1 deg) h=-4 mm
+[imu] x=39 y=70 z=1000 mg pitch=-29 roll=22 (0.1 deg) h=-4 mm
+[imu] x=42 y=42 z=1000 mg pitch=-32 roll=18 (0.1 deg) h=-3 mm
+[bar] min=4079 max=4095
+[imu] x=49 y=27 z=1000 mg pitch=-22 roll=20 (0.1 deg) h=-4 mm
+[imu] x=33 y=41 z=1000 mg pitch=-33 roll=24 (0.1 deg) h=-4 mm
+[imu] x=31 y=36 z=1000 mg pitch=-25 roll=24 (0.1 deg) h=-4 mm
+[imu] x=49 y=23 z=1000 mg pitch=-18 roll=24 (0.1 deg) h=-4 mm
+[imu] x=55 y=29 z=1000 mg pitch=-16 roll=24 (0.1 deg) h=-4 mm
+[bar] min=4061 max=4088
+[imu] x=39 y=20 z=1000 mg pitch=-14 roll=22 (0.1 deg) h=-4 mm
+[imu] x=34 y=18 z=1000 mg pitch=-16 roll=21 (0.1 deg) h=-4 mm
+[imu] x=48 y=6 z=1000 mg pitch=-11 roll=26 (0.1 deg) h=-5 mm
+[imu] x=39 y=43 z=1000 mg pitch=-16 roll=24 (0.1 deg) h=-4 mm
+[imu] x=34 y=21 z=1000 mg pitch=-20 roll=19 (0.1 deg) h=-3 mm
+[bar] min=4072 max=4086
+[imu] x=31 y=34 z=1000 mg pitch=-14 roll=19 (0.1 deg) h=-3 mm
+[imu] x=59 y=-43 z=1000 mg pitch=-12 roll=14 (0.1 deg) h=-2 mm
+[line] left=1 right=0 junction=0 last=1 following=0
+[imu] x=94 y=1 z=1000 mg pitch=-15 roll=29 (0.1 deg) h=-5 mm
+[imu] x=214 y=34 z=1000 mg pitch=-36 roll=86 (0.1 deg) h=-17 mm
+[imu] x=440 y=39 z=1000 mg pitch=-11 roll=160 (0.1 deg) h=-31 mm
+[bar] min=4077 max=4094
+[imu] x=366 y=11 z=1000 mg pitch=-14 roll=205 (0.1 deg) h=-40 mm
+[imu] x=359 y=65 z=1000 mg pitch=-21 roll=200 (0.1 deg) h=-39 mm
+[imu] x=366 y=70 z=1000 mg pitch=-33 roll=216 (0.1 deg) h=-42 mm
+[imu] x=446 y=116 z=1000 mg pitch=-47 roll=223 (0.1 deg) h=-44 mm
+[imu] x=488 y=97 z=1000 mg pitch=-53 roll=251 (0.1 deg) h=-49 mm
+[imu] motion: braking
+[bar] min=4063 max=4087
+[imu] x=470 y=97 z=1000 mg pitch=-52 roll=259 (0.1 deg) h=-51 mm
+[imu] x=417 y=76 z=1000 mg pitch=-46 roll=262 (0.1 deg) h=-52 mm
+[imu] x=443 y=92 z=1000 mg pitch=-52 roll=259 (0.1 deg) h=-51 mm
+[imu] x=417 y=84 z=1000 mg pitch=-49 roll=247 (0.1 deg) h=-49 mm
+[line] left=0 right=0 junction=0 last=1 following=0
+[imu] x=331 y=104 z=1000 mg pitch=-58 roll=205 (0.1 deg) h=-40 mm
+[bar] min=166 max=202
+[imu] x=177 y=140 z=1000 mg pitch=-64 roll=119 (0.1 deg) h=-23 mm
+[imu] x=106 y=46 z=1000 mg pitch=-62 roll=79 (0.1 deg) h=-15 mm
+[imu] motion: steady
+[imu] x=77 y=26 z=1000 mg pitch=-38 roll=49 (0.1 deg) h=-9 mm
+[imu] x=116 y=19 z=1000 mg pitch=-25 roll=58 (0.1 deg) h=-11 mm
+[imu] x=80 y=29 z=1000 mg pitch=-25 roll=58 (0.1 deg) h=-11 mm
+[bar] min=4067 max=4085
+[imu] x=67 y=21 z=1000 mg pitch=-19 roll=52 (0.1 deg) h=-10 mm
+[imu] x=90 y=33 z=1000 mg pitch=-18 roll=52 (0.1 deg) h=-10 mm
+[imu] x=79 y=24 z=1000 mg pitch=-16 roll=49 (0.1 deg) h=-9 mm
+[imu] x=66 y=30 z=1000 mg pitch=-14 roll=43 (0.1 deg) h=-8 mm
+[imu] x=57 y=14 z=1000 mg pitch=-13 roll=42 (0.1 deg) h=-8 mm
+[bar] min=4077 max=4091
+[imu] x=81 y=33 z=1000 mg pitch=-17 roll=50 (0.1 deg) h=-10 mm
+[imu] x=85 y=-9 z=1000 mg pitch=-10 roll=42 (0.1 deg) h=-8 mm
+[imu] x=63 y=36 z=1000 mg pitch=-6 roll=45 (0.1 deg) h=-8 mm
+[imu] x=60 y=10 z=1000 mg pitch=-10 roll=45 (0.1 deg) h=-9 mm
+[imu] x=85 y=16 z=1000 mg pitch=-9 roll=49 (0.1 deg) h=-9 mm
+[bar] min=4078 max=4088
+[imu] x=81 y=25 z=1000 mg pitch=-11 roll=48 (0.1 deg) h=-9 mm
+[imu] x=57 y=22 z=1000 mg pitch=-12 roll=43 (0.1 deg) h=-8 mm
+[imu] x=75 y=34 z=1000 mg pitch=-16 roll=41 (0.1 deg) h=-8 mm
+[imu] x=70 y=34 z=1000 mg pitch=-17 roll=41 (0.1 deg) h=-8 mm
+[imu] x=74 y=26 z=1000 mg pitch=-14 roll=41 (0.1 deg) h=-8 mm
+[bar] min=4080 max=4085
+[imu] x=73 y=38 z=1000 mg pitch=-17 roll=42 (0.1 deg) h=-8 mm
+[imu] x=73 y=46 z=1000 mg pitch=-19 roll=38 (0.1 deg) h=-7 mm
+[imu] x=58 y=27 z=1000 mg pitch=-20 roll=49 (0.1 deg) h=-9 mm
+[imu] x=108 y=19 z=1000 mg pitch=-9 roll=45 (0.1 deg) h=-9 mm
+[imu] x=64 y=16 z=1000 mg pitch=-13 roll=42 (0.1 deg) h=-8 mm
+[bar] min=4069 max=4095
+[imu] x=90 y=17 z=1000 mg pitch=-13 roll=42 (0.1 deg) h=-8 mm
+[imu] x=98 y=2 z=1000 mg pitch=-8 roll=51 (0.1 deg) h=-10 mm
+[imu] x=121 y=50 z=1000 mg pitch=-21 roll=61 (0.1 deg) h=-12 mm
+[imu] x=82 y=47 z=1000 mg pitch=-11 roll=53 (0.1 deg) h=-10 mm
+[imu] x=139 y=90 z=1000 mg pitch=-27 roll=60 (0.1 deg) h=-11 mm
+[bar] min=4081 max=4084
+[imu] x=71 y=38 z=1000 mg pitch=-30 roll=45 (0.1 deg) h=-9 mm
+[imu] x=85 y=44 z=1000 mg pitch=-23 roll=51 (0.1 deg) h=-10 mm
+[imu] x=81 y=30 z=1000 mg pitch=-19 roll=47 (0.1 deg) h=-9 mm
+[imu] x=89 y=48 z=1000 mg pitch=-18 roll=52 (0.1 deg) h=-10 mm
+[imu] x=55 y=35 z=1000 mg pitch=-18 roll=53 (0.1 deg) h=-10 mm
+[bar] min=4081 max=4088
+[imu] x=116 y=39 z=1000 mg pitch=-13 roll=56 (0.1 deg) h=-11 mm
+[imu] x=117 y=5 z=1000 mg pitch=-11 roll=58 (0.1 deg) h=-11 mm
+[imu] x=87 y=-21 z=1000 mg pitch=2 roll=55 (0.1 deg) h=-11 mm
+[imu] x=85 y=-5 z=1000 mg pitch=4 roll=51 (0.1 deg) h=-10 mm
+[imu] x=70 y=15 z=1000 mg pitch=0 roll=55 (0.1 deg) h=-11 mm
+[bar] min=4074 max=4083
+[imu] x=59 y=-8 z=1000 mg pitch=4 roll=51 (0.1 deg) h=-10 mm
+[imu] x=71 y=-40 z=1000 mg pitch=13 roll=47 (0.1 deg) h=-9 mm
+[imu] x=93 y=-36 z=1000 mg pitch=14 roll=56 (0.1 deg) h=-11 mm
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] x=149 y=123 z=1000 mg pitch=-17 roll=62 (0.1 deg) h=-12 mm
+[imu] x=59 y=10 z=1000 mg pitch=-23 roll=71 (0.1 deg) h=-14 mm
+[bar] min=4078 max=4083
+[imu] x=96 y=-53 z=1000 mg pitch=20 roll=41 (0.1 deg) h=-8 mm
+[imu] x=93 y=51 z=1000 mg pitch=-19 roll=66 (0.1 deg) h=-13 mm
+[imu] x=126 y=-1 z=1000 mg pitch=-20 roll=63 (0.1 deg) h=-12 mm
+[imu] x=154 y=45 z=1000 mg pitch=-18 roll=64 (0.1 deg) h=-12 mm
+[imu] x=135 y=-18 z=1000 mg pitch=-3 roll=67 (0.1 deg) h=-13 mm
+[bar] min=4067 max=4095
+[imu] x=83 y=57 z=1000 mg pitch=-11 roll=64 (0.1 deg) h=-12 mm
+[imu] x=131 y=4 z=1000 mg pitch=-11 roll=39 (0.1 deg) h=-7 mm
+[imu] x=175 y=24 z=1000 mg pitch=-2 roll=68 (0.1 deg) h=-13 mm
+[imu] x=184 y=217 z=1000 mg pitch=-26 roll=76 (0.1 deg) h=-15 mm
+[imu] motion: braking
+[imu] x=226 y=-8 z=1000 mg pitch=-50 roll=112 (0.1 deg) h=-22 mm
+[imu] motion: steady
+[bar] min=4064 max=4085
+[imu] x=184 y=18 z=1000 mg pitch=-15 roll=110 (0.1 deg) h=-22 mm
+[imu] x=102 y=55 z=1000 mg pitch=-25 roll=74 (0.1 deg) h=-14 mm
+[imu] x=109 y=60 z=1000 mg pitch=-29 roll=61 (0.1 deg) h=-12 mm
+[imu] x=97 y=55 z=1000 mg pitch=-35 roll=56 (0.1 deg) h=-11 mm
+[imu] x=128 y=66 z=1000 mg pitch=-31 roll=56 (0.1 deg) h=-11 mm
+[bar] min=4069 max=4083
+[imu] x=87 y=9 z=1000 mg pitch=-16 roll=62 (0.1 deg) h=-12 mm
+[motion] bench: drive +-100, forward/backward 300, left 90, right 90, left 180, forward 300 at 200, left 180, forward 300
+[trace] 209890 0 8
+[imu] x=140 y=36 z=1000 mg pitch=-14 roll=81 (0.1 deg) h=-16 mm
+[trace] 209910 8 56
+[trace] 209930 24 72
+[trace] 209950 64 80
+[trace] 209970 80 88
+[trace] 209990 88 88
+[imu] x=78 y=77 z=1000 mg pitch=-29 roll=59 (0.1 deg) h=-11 mm
+[trace] 210010 96 88
+[trace] 210030 88 88
+[trace] 210050 88 96
+[trace] 210070 96 96
+[trace] 210090 88 96
+[imu] x=175 y=48 z=1000 mg pitch=-30 roll=75 (0.1 deg) h=-15 mm
+[trace] 210110 88 96
+[trace] 210130 88 80
+[trace] 210150 96 96
+[trace] 210170 96 96
+[trace] 210190 96 96
+[imu] x=83 y=44 z=1000 mg pitch=-23 roll=69 (0.1 deg) h=-13 mm
+[trace] 210210 96 96
+[trace] 210230 96 88
+[trace] 210250 96 96
+[trace] 210270 88 88
+[trace] 210290 96 96
+[bar] min=4069 max=4083
+[imu] x=116 y=36 z=1000 mg pitch=-16 roll=69 (0.1 deg) h=-13 mm
+[trace] 210310 88 88
+[trace] 210330 88 96
+[trace] 210350 96 96
+[trace] 210370 88 96
+[trace] 210390 96 88
+[imu] x=108 y=24 z=1000 mg pitch=-27 roll=59 (0.1 deg) h=-11 mm
+[trace] 210410 96 96
+[trace] 210430 88 88
+[trace] 210450 88 96
+[trace] 210470 96 96
+[trace] 210490 88 96
+[imu] x=91 y=11 z=1000 mg pitch=-20 roll=65 (0.1 deg) h=-12 mm
+[trace] 210510 96 96
+[trace] 210530 88 96
+[trace] 210550 96 88
+[trace] 210570 88 96
+[trace] 210590 96 88
+[imu] x=89 y=82 z=1000 mg pitch=-32 roll=54 (0.1 deg) h=-10 mm
+[trace] 210610 96 96
+[trace] 210630 80 96
+[trace] 210650 80 96
+[trace] 210670 72 96
+[trace] 210690 80 88
+[imu] x=113 y=43 z=1000 mg pitch=-37 roll=60 (0.1 deg) h=-11 mm
+[trace] 210710 80 96
+[trace] 210730 80 96
+[trace] 210750 64 96
+[trace] 210770 56 96
+[trace] 210790 24 88
+[bar] min=4080 max=4090
+[imu] x=51 y=68 z=1000 mg pitch=-51 roll=61 (0.1 deg) h=-12 mm
+[trace] 210810 24 96
+[trace] 210830 24 88
+[trace] 210850 32 88
+[trace] 210870 32 96
+[trace] 210890 40 96
+[imu] x=169 y=-11 z=1000 mg pitch=-12 roll=97 (0.1 deg) h=-19 mm
+[trace] 210910 24 88
+[trace] 210930 0 96
+[trace] 210950 0 96
+[trace] 210970 0 88
+[trace] 210990 0 88
+[imu] x=170 y=-26 z=1000 mg pitch=10 roll=97 (0.1 deg) h=-19 mm
+[trace] 211010 0 88
+[trace] 211030 0 96
+[trace] 211050 0 96
+[trace] 211070 0 96
+[trace] 211090 0 88
+[imu] x=169 y=-43 z=1000 mg pitch=11 roll=101 (0.1 deg) h=-20 mm
+[trace] 211110 0 88
+[trace] 211130 0 80
+[trace] 211150 0 88
+[trace] 211170 8 80
+[trace] 211190 24 88
+[imu] x=155 y=55 z=1000 mg pitch=1 roll=98 (0.1 deg) h=-19 mm
+[trace] 211210 0 88
+[trace] 211230 0 88
+[trace] 211250 0 88
+[trace] 211270 0 80
+[trace] 211290 0 64
+[bar] min=4077 max=4090
+[imu] x=127 y=29 z=1000 mg pitch=0 roll=91 (0.1 deg) h=-18 mm
+[trace] 211310 0 72
+[trace] 211330 0 80
+[trace] 211350 0 80
+[trace] 211370 0 88
+[trace] 211390 0 96
+[imu] x=167 y=-21 z=1000 mg pitch=6 roll=94 (0.1 deg) h=-18 mm
+[trace] 211410 0 88
+[trace] 211430 0 88
+[trace] 211450 0 96
+[trace] 211470 0 88
+[trace] 211490 0 96
+[imu] x=175 y=1 z=1000 mg pitch=0 roll=96 (0.1 deg) h=-19 mm
+[trace] 211510 0 88
+[trace] 211530 0 96
+[trace] 211550 0 88
+[trace] 211570 0 88
+[trace] 211590 0 96
+[imu] x=164 y=-9 z=1000 mg pitch=0 roll=94 (0.1 deg) h=-18 mm
+[trace] 211610 0 96
+[trace] 211630 0 80
+[trace] 211650 0 88
+[trace] 211670 0 96
+[trace] 211690 0 96
+[imu] x=158 y=0 z=1000 mg pitch=0 roll=93 (0.1 deg) h=-18 mm
+[trace] 211710 0 88
+[trace] 211730 0 88
+[trace] 211750 0 88
+[trace] 211770 0 96
+[trace] 211790 0 96
+[bar] min=4072 max=4090
+[imu] x=162 y=15 z=1000 mg pitch=-6 roll=94 (0.1 deg) h=-18 mm
+[trace] 211810 0 88
+[trace] 211830 0 88
+[trace] 211850 0 96
+[trace] 211870 0 96
+[motion] state=1 cmd=5 faults=0 heading=54 dist_mm=139 counts=1058,2400 speed=0,96 max_tick_us=430
+[imu] x=164 y=-10 z=1000 mg pitch=-7 roll=91 (0.1 deg) h=-18 mm
+[imu] x=152 y=60 z=1000 mg pitch=-3 roll=90 (0.1 deg) h=-17 mm
+[imu] x=179 y=10 z=1000 mg pitch=-21 roll=88 (0.1 deg) h=-17 mm
+[imu] x=141 y=54 z=1000 mg pitch=-27 roll=84 (0.1 deg) h=-16 mm
+[bar] min=4078 max=4084
+[imu] x=132 y=34 z=1000 mg pitch=-23 roll=83 (0.1 deg) h=-16 mm
+[imu] x=134 y=50 z=1000 mg pitch=-24 roll=83 (0.1 deg) h=-16 mm
+[imu] x=149 y=23 z=1000 mg pitch=-22 roll=82 (0.1 deg) h=-16 mm
+[imu] x=130 y=46 z=1000 mg pitch=-24 roll=81 (0.1 deg) h=-16 mm
+[imu] x=149 y=37 z=1000 mg pitch=-21 roll=81 (0.1 deg) h=-16 mm
+[bar] min=4076 max=4095
+[imu] x=136 y=40 z=1000 mg pitch=-24 roll=79 (0.1 deg) h=-15 mm
+[imu] x=139 y=48 z=1000 mg pitch=-25 roll=78 (0.1 deg) h=-15 mm
+[imu] x=137 y=47 z=1000 mg pitch=-25 roll=77 (0.1 deg) h=-15 mm
+[imu] x=133 y=52 z=1000 mg pitch=-25 roll=77 (0.1 deg) h=-15 mm
+[imu] x=124 y=47 z=1000 mg pitch=-26 roll=76 (0.1 deg) h=-15 mm
+[bar] min=4079 max=4095
+[imu] x=139 y=29 z=1000 mg pitch=-22 roll=76 (0.1 deg) h=-15 mm
+[imu] x=138 y=49 z=1000 mg pitch=-22 roll=77 (0.1 deg) h=-15 mm
+[imu] x=142 y=37 z=1000 mg pitch=-25 roll=76 (0.1 deg) h=-15 mm
+[imu] x=138 y=47 z=1000 mg pitch=-27 roll=75 (0.1 deg) h=-15 mm
+[imu] x=132 y=45 z=1000 mg pitch=-26 roll=75 (0.1 deg) h=-15 mm
+[bar] min=4079 max=4084
+[imu] x=132 y=41 z=1000 mg pitch=-25 roll=75 (0.1 deg) h=-15 mm
+[imu] x=115 y=53 z=1000 mg pitch=-19 roll=77 (0.1 deg) h=-15 mm
+[imu] x=111 y=69 z=1000 mg pitch=-31 roll=71 (0.1 deg) h=-14 mm
+[imu] x=144 y=-2 z=1000 mg pitch=-14 roll=81 (0.1 deg) h=-16 mm
+[imu] x=131 y=58 z=1000 mg pitch=-11 roll=72 (0.1 deg) h=-14 mm
+[bar] min=4074 max=4095
+[imu] x=120 y=62 z=1000 mg pitch=-33 roll=73 (0.1 deg) h=-14 mm
+[imu] x=113 y=44 z=1000 mg pitch=-26 roll=66 (0.1 deg) h=-13 mm
+[imu] x=109 y=42 z=1000 mg pitch=-25 roll=65 (0.1 deg) h=-13 mm
+[imu] x=115 y=49 z=1000 mg pitch=-26 roll=66 (0.1 deg) h=-13 mm
+[imu] x=116 y=36 z=1000 mg pitch=-22 roll=65 (0.1 deg) h=-13 mm
+[bar] min=4064 max=4083
+[imu] x=112 y=33 z=1000 mg pitch=-22 roll=67 (0.1 deg) h=-13 mm
+[trace] 214900 0 -16
+[imu] x=112 y=40 z=1000 mg pitch=-22 roll=64 (0.1 deg) h=-12 mm
+[trace] 214920 -8 -72
+[trace] 214940 -64 -80
+[trace] 214960 -88 -104
+[trace] 214980 -96 -96
+[imu] x=120 y=71 z=1000 mg pitch=-32 roll=70 (0.1 deg) h=-14 mm
+[trace] 215000 -104 -104
+[trace] 215020 -104 -104
+[trace] 215040 -104 -104
+[trace] 215060 -96 -112
+[trace] 215080 -104 -104
+[imu] x=118 y=25 z=1000 mg pitch=-25 roll=63 (0.1 deg) h=-12 mm
+[trace] 215100 -104 -104
+[trace] 215120 -104 -112
+[trace] 215140 -96 -112
+[trace] 215160 -104 -104
+[trace] 215180 -104 -104
+[trace] 215200 -104 -112
+[imu] x=81 y=55 z=1000 mg pitch=-26 roll=61 (0.1 deg) h=-12 mm
+[trace] 215220 -104 -112
+[trace] 215240 -104 -104
+[trace] 215260 -104 -104
+[trace] 215280 -96 -104
+[bar] min=4074 max=4085
+[trace] 215300 -104 -112
+[imu] x=129 y=30 z=1000 mg pitch=-18 roll=69 (0.1 deg) h=-13 mm
+[trace] 215320 -112 -104
+[trace] 215340 -96 -104
+[trace] 215360 -104 -104
+[trace] 215380 -104 -104
+[imu] x=98 y=64 z=1000 mg pitch=-30 roll=61 (0.1 deg) h=-12 mm
+[trace] 215400 -112 -104
+[trace] 215420 -104 -104
+[trace] 215440 -104 -112
+[trace] 215460 -104 -104
+[trace] 215480 -104 -96
+[imu] x=76 y=79 z=1000 mg pitch=-38 roll=48 (0.1 deg) h=-9 mm
+[trace] 215500 -112 -96
+[trace] 215520 -112 -96
+[trace] 215540 -112 -88
+[trace] 215560 -104 -88
+[trace] 215580 -104 -96
+[trace] 215600 -104 -112
+[imu] x=112 y=5 z=1000 mg pitch=-20 roll=61 (0.1 deg) h=-12 mm
+[trace] 215620 -112 -112
+[trace] 215640 -112 -112
+[trace] 215660 -104 -104
+[trace] 215680 -104 -104
+[trace] 215700 -104 -112
+[imu] x=140 y=34 z=1000 mg pitch=-6 roll=66 (0.1 deg) h=-13 mm
+[trace] 215720 -104 -112
+[trace] 215740 -112 -112
+[trace] 215760 -104 -104
+[trace] 215780 -104 -112
+[bar] min=4081 max=4084
+[trace] 215800 -104 -104
+[imu] x=82 y=119 z=1000 mg pitch=-39 roll=58 (0.1 deg) h=-11 mm
+[trace] 215820 -112 -112
+[trace] 215840 -104 -104
+[trace] 215860 -88 -104
+[trace] 215880 -80 -104
+[trace] 215900 -64 -112
+[imu] x=84 y=4 z=1000 mg pitch=-22 roll=57 (0.1 deg) h=-11 mm
+[trace] 215920 -48 -112
+[trace] 215940 -32 -104
+[trace] 215960 -16 -104
+[trace] 215980 -32 -104
+[imu] x=131 y=133 z=1000 mg pitch=-57 roll=57 (0.1 deg) h=-11 mm
+[trace] 216000 -40 -96
+[trace] 216020 -24 -112
+[trace] 216040 0 -104
+[trace] 216060 0 -104
+[trace] 216080 0 -112
+[trace] 216100 0 -104
+[imu] x=99 y=158 z=1000 mg pitch=-54 roll=61 (0.1 deg) h=-12 mm
+[trace] 216120 0 -104
+[trace] 216140 -16 -104
+[trace] 216160 -32 -112
+[trace] 216180 -8 -104
+[imu] x=104 y=68 z=1000 mg pitch=-44 roll=62 (0.1 deg) h=-12 mm
+[trace] 216200 -32 -96
+[trace] 216220 -24 -112
+[trace] 216240 0 -104
+[trace] 216260 0 -104
+[imu] motion: braking
+[trace] 216280 0 -96
+[bar] min=4070 max=4082
+[trace] 216300 0 -104
+[imu] x=63 y=81 z=1000 mg pitch=-63 roll=47 (0.1 deg) h=-9 mm
+[trace] 216320 0 -112
+[trace] 216340 0 -104
+[trace] 216360 0 -112
+[trace] 216380 0 -104
+[trace] 216400 0 -104
+[imu] x=93 y=139 z=1000 mg pitch=-66 roll=59 (0.1 deg) h=-11 mm
+[trace] 216420 0 -96
+[trace] 216440 0 -104
+[trace] 216460 0 -104
+[trace] 216480 0 -104
+[trace] 216500 0 -104
+[imu] x=127 y=117 z=1000 mg pitch=-67 roll=57 (0.1 deg) h=-11 mm
+[trace] 216520 0 -112
+[trace] 216540 0 -96
+[trace] 216560 0 -96
+[trace] 216580 0 -96
+[trace] 216600 0 -104
+[imu] x=95 y=121 z=1000 mg pitch=-66 roll=59 (0.1 deg) h=-11 mm
+[trace] 216620 0 -104
+[trace] 216640 0 -104
+[trace] 216660 0 -104
+[trace] 216680 0 -104
+[trace] 216700 0 -104
+[imu] x=107 y=137 z=1000 mg pitch=-71 roll=58 (0.1 deg) h=-11 mm
+[trace] 216720 0 -112
+[trace] 216740 0 -104
+[trace] 216760 0 -112
+[trace] 216780 0 -96
+[bar] min=4075 max=4083
+[trace] 216800 0 -112
+[imu] x=105 y=118 z=1000 mg pitch=-68 roll=59 (0.1 deg) h=-11 mm
+[trace] 216820 0 -112
+[trace] 216840 0 -104
+[trace] 216860 0 -104
+[trace] 216880 0 -104
+[motion] state=1 cmd=5 faults=0 heading=9 dist_mm=287 counts=65336,24 speed=0,-104 max_tick_us=430
+[imu] x=107 y=125 z=1000 mg pitch=-67 roll=63 (0.1 deg) h=-12 mm
+[imu] x=115 y=91 z=1000 mg pitch=-73 roll=57 (0.1 deg) h=-11 mm
+[imu] x=74 y=113 z=1000 mg pitch=-57 roll=61 (0.1 deg) h=-12 mm
+[imu] motion: steady
+[imu] x=93 y=99 z=1000 mg pitch=-52 roll=66 (0.1 deg) h=-13 mm
+[bar] min=4076 max=4094
+[imu] x=108 y=100 z=1000 mg pitch=-56 roll=65 (0.1 deg) h=-13 mm
+[imu] x=114 y=87 z=1000 mg pitch=-53 roll=66 (0.1 deg) h=-13 mm
+[imu] x=127 y=84 z=1000 mg pitch=-54 roll=65 (0.1 deg) h=-12 mm
+[imu] x=122 y=92 z=1000 mg pitch=-54 roll=64 (0.1 deg) h=-12 mm
+[imu] x=106 y=107 z=1000 mg pitch=-57 roll=62 (0.1 deg) h=-12 mm
+[bar] min=4080 max=4095
+[imu] x=111 y=95 z=1000 mg pitch=-52 roll=66 (0.1 deg) h=-13 mm
+[imu] x=124 y=90 z=1000 mg pitch=-56 roll=65 (0.1 deg) h=-13 mm
+[imu] x=123 y=87 z=1000 mg pitch=-52 roll=65 (0.1 deg) h=-12 mm
+[imu] x=122 y=90 z=1000 mg pitch=-53 roll=66 (0.1 deg) h=-13 mm
+[imu] x=116 y=89 z=1000 mg pitch=-52 roll=64 (0.1 deg) h=-12 mm
+[bar] min=4067 max=4089
+[imu] x=109 y=95 z=1000 mg pitch=-53 roll=64 (0.1 deg) h=-12 mm
+[imu] x=113 y=93 z=1000 mg pitch=-50 roll=64 (0.1 deg) h=-12 mm
+[imu] x=101 y=94 z=1000 mg pitch=-53 roll=63 (0.1 deg) h=-12 mm
+[imu] x=114 y=92 z=1000 mg pitch=-57 roll=61 (0.1 deg) h=-12 mm
+[imu] x=105 y=91 z=1000 mg pitch=-54 roll=60 (0.1 deg) h=-12 mm
+[bar] min=4077 max=4084
+[imu] x=102 y=92 z=1000 mg pitch=-57 roll=60 (0.1 deg) h=-12 mm
+[imu] x=114 y=93 z=1000 mg pitch=-53 roll=61 (0.1 deg) h=-12 mm
+[imu] x=109 y=99 z=1000 mg pitch=-56 roll=59 (0.1 deg) h=-11 mm
+[imu] x=101 y=103 z=1000 mg pitch=-59 roll=58 (0.1 deg) h=-11 mm
+[imu] x=99 y=101 z=1000 mg pitch=-59 roll=58 (0.1 deg) h=-11 mm
+[bar] min=168 max=190
+[imu] x=102 y=107 z=1000 mg pitch=-59 roll=59 (0.1 deg) h=-11 mm
+[imu] x=107 y=103 z=1000 mg pitch=-61 roll=56 (0.1 deg) h=-11 mm
+[imu] x=107 y=92 z=1000 mg pitch=-58 roll=57 (0.1 deg) h=-11 mm
+[imu] x=104 y=101 z=1000 mg pitch=-61 roll=57 (0.1 deg) h=-11 mm
+[imu] x=102 y=103 z=1000 mg pitch=-58 roll=58 (0.1 deg) h=-11 mm
+[bar] min=168 max=192
+[imu] x=101 y=101 z=1000 mg pitch=-60 roll=57 (0.1 deg) h=-11 mm
+[imu] x=93 y=105 z=1000 mg pitch=-59 roll=57 (0.1 deg) h=-11 mm
+[trace] 219910 8 8
+[trace] 219930 32 40
+[trace] 219950 48 56
+[trace] 219970 48 64
+[trace] 219990 32 64
+[imu] x=87 y=118 z=1000 mg pitch=-64 roll=49 (0.1 deg) h=-9 mm
+[trace] 220010 32 80
+[trace] 220030 16 72
+[trace] 220050 24 72
+[trace] 220070 24 80
+[trace] 220090 16 80
+[imu] x=139 y=20 z=1000 mg pitch=-38 roll=66 (0.1 deg) h=-13 mm
+[trace] 220110 24 80
+[trace] 220130 24 80
+[trace] 220150 24 72
+[trace] 220170 24 64
+[trace] 220190 8 72
+[imu] x=101 y=83 z=1000 mg pitch=-50 roll=59 (0.1 deg) h=-11 mm
+[trace] 220210 0 64
+[trace] 220230 0 64
+[trace] 220250 0 56
+[trace] 220270 0 48
+[trace] 220290 0 56
+[bar] min=4057 max=4088
+[imu] x=120 y=65 z=1000 mg pitch=-40 roll=67 (0.1 deg) h=-13 mm
+[trace] 220310 0 64
+[trace] 220330 0 48
+[trace] 220350 0 48
+[trace] 220370 0 56
+[trace] 220390 0 56
+[imu] x=114 y=63 z=1000 mg pitch=-34 roll=71 (0.1 deg) h=-14 mm
+[trace] 220410 0 56
+[trace] 220430 0 56
+[trace] 220450 0 48
+[trace] 220470 0 48
+[trace] 220490 0 48
+[imu] x=116 y=74 z=1000 mg pitch=-44 roll=68 (0.1 deg) h=-13 mm
+[trace] 220510 0 48
+[trace] 220530 0 40
+[trace] 220550 0 48
+[trace] 220570 0 48
+[trace] 220590 0 48
+[imu] x=120 y=65 z=1000 mg pitch=-39 roll=69 (0.1 deg) h=-13 mm
+[trace] 220610 0 48
+[trace] 220630 0 40
+[trace] 220650 0 48
+[trace] 220670 0 48
+[trace] 220690 0 56
+[imu] x=128 y=72 z=1000 mg pitch=-41 roll=70 (0.1 deg) h=-14 mm
+[trace] 220710 0 40
+[trace] 220730 0 48
+[trace] 220750 0 48
+[trace] 220770 0 48
+[trace] 220790 0 48
+[bar] min=4079 max=4085
+[imu] x=127 y=53 z=1000 mg pitch=-40 roll=68 (0.1 deg) h=-13 mm
+[trace] 220810 0 40
+[trace] 220830 56 48
+[trace] 220850 32 48
+[trace] 220870 8 48
+[trace] 220890 0 48
+[imu] x=221 y=-19 z=1000 mg pitch=-35 roll=71 (0.1 deg) h=-14 mm
+[trace] 220910 0 48
+[trace] 220930 0 48
+[trace] 220950 0 48
+[trace] 220970 0 48
+[trace] 220990 0 48
+[imu] x=141 y=41 z=1000 mg pitch=-31 roll=70 (0.1 deg) h=-14 mm
+[trace] 221010 0 48
+[trace] 221030 0 48
+[trace] 221050 0 48
+[trace] 221070 0 48
+[trace] 221090 0 48
+[imu] x=126 y=52 z=1000 mg pitch=-28 roll=76 (0.1 deg) h=-15 mm
+[trace] 221110 0 48
+[trace] 221130 0 48
+[trace] 221150 0 40
+[trace] 221170 0 56
+[trace] 221190 0 48
+[imu] x=121 y=64 z=1000 mg pitch=-34 roll=73 (0.1 deg) h=-14 mm
+[trace] 221210 0 48
+[trace] 221230 0 48
+[trace] 221250 0 40
+[trace] 221270 0 48
+[trace] 221290 0 48
+[bar] min=4062 max=4089
+[imu] x=134 y=52 z=1000 mg pitch=-29 roll=75 (0.1 deg) h=-15 mm
+[trace] 221310 0 48
+[trace] 221330 0 40
+[trace] 221350 0 48
+[trace] 221370 0 48
+[trace] 221390 0 48
+[imu] x=141 y=60 z=1000 mg pitch=-35 roll=73 (0.1 deg) h=-14 mm
+[trace] 221410 0 48
+[trace] 221430 0 48
+[trace] 221450 0 48
+[trace] 221470 0 48
+[trace] 221490 0 48
+[imu] x=142 y=17 z=1000 mg pitch=-15 roll=73 (0.1 deg) h=-14 mm
+[trace] 221510 0 48
+[trace] 221530 0 48
+[trace] 221550 0 40
+[trace] 221570 0 48
+[trace] 221590 0 48
+[imu] x=141 y=60 z=1000 mg pitch=-29 roll=77 (0.1 deg) h=-15 mm
+[trace] 221610 0 40
+[trace] 221630 0 48
+[trace] 221650 0 48
+[trace] 221670 0 48
+[trace] 221690 0 40
+[imu] x=120 y=68 z=1000 mg pitch=-34 roll=76 (0.1 deg) h=-15 mm
+[trace] 221710 0 48
+[trace] 221730 0 40
+[trace] 221750 0 48
+[trace] 221770 0 48
+[trace] 221790 0 48
+[bar] min=4074 max=4083
+[imu] x=136 y=63 z=1000 mg pitch=-32 roll=78 (0.1 deg) h=-15 mm
+[trace] 221810 0 48
+[trace] 221830 0 48
+[trace] 221850 0 48
+[trace] 221870 0 48
+[motion] state=3 cmd=1 faults=1 heading=56 dist_mm=349 counts=65492,1350 speed=0,48 max_tick_us=430
+[imu] x=182 y=-12 z=1000 mg pitch=-26 roll=84 (0.1 deg) h=-16 mm
+[imu] x=18 y=314 z=1000 mg pitch=-87 roll=54 (0.1 deg) h=-10 mm
+[imu] x=163 y=28 z=1000 mg pitch=-54 roll=80 (0.1 deg) h=-16 mm
+[imu] x=131 y=112 z=1000 mg pitch=-65 roll=65 (0.1 deg) h=-12 mm
+[bar] min=4081 max=4095
+[imu] x=133 y=93 z=1000 mg pitch=-57 roll=68 (0.1 deg) h=-13 mm
+[imu] x=114 y=114 z=1000 mg pitch=-59 roll=67 (0.1 deg) h=-13 mm
+[imu] x=126 y=100 z=1000 mg pitch=-55 roll=69 (0.1 deg) h=-13 mm
+[imu] x=108 y=101 z=1000 mg pitch=-55 roll=65 (0.1 deg) h=-13 mm
+[imu] x=126 y=85 z=1000 mg pitch=-54 roll=67 (0.1 deg) h=-13 mm
+[bar] min=4080 max=4084
+[imu] x=121 y=100 z=1000 mg pitch=-52 roll=67 (0.1 deg) h=-13 mm
+[imu] x=109 y=94 z=1000 mg pitch=-49 roll=67 (0.1 deg) h=-13 mm
+[imu] x=114 y=105 z=1000 mg pitch=-56 roll=63 (0.1 deg) h=-12 mm
+[imu] x=117 y=93 z=1000 mg pitch=-56 roll=64 (0.1 deg) h=-12 mm
+[imu] x=110 y=88 z=1000 mg pitch=-57 roll=63 (0.1 deg) h=-12 mm
+[bar] min=4081 max=4095
+[imu] x=123 y=100 z=1000 mg pitch=-54 roll=67 (0.1 deg) h=-13 mm
+[imu] x=116 y=93 z=1000 mg pitch=-54 roll=65 (0.1 deg) h=-13 mm
+[imu] x=111 y=91 z=1000 mg pitch=-52 roll=64 (0.1 deg) h=-12 mm
+[imu] x=118 y=104 z=1000 mg pitch=-55 roll=65 (0.1 deg) h=-13 mm
+[imu] x=113 y=96 z=1000 mg pitch=-55 roll=65 (0.1 deg) h=-13 mm
+[bar] min=165 max=191
+[imu] x=112 y=84 z=1000 mg pitch=-51 roll=65 (0.1 deg) h=-13 mm
+[imu] x=117 y=97 z=1000 mg pitch=-52 roll=65 (0.1 deg) h=-12 mm
+[imu] x=119 y=101 z=1000 mg pitch=-56 roll=66 (0.1 deg) h=-13 mm
+[imu] x=109 y=90 z=1000 mg pitch=-54 roll=64 (0.1 deg) h=-12 mm
+[imu] x=111 y=94 z=1000 mg pitch=-52 roll=64 (0.1 deg) h=-12 mm
+[bar] min=167 max=192
+[imu] x=103 y=98 z=1000 mg pitch=-55 roll=62 (0.1 deg) h=-12 mm
+[imu] x=115 y=89 z=1000 mg pitch=-57 roll=62 (0.1 deg) h=-12 mm
+[imu] x=113 y=88 z=1000 mg pitch=-53 roll=61 (0.1 deg) h=-12 mm
+[imu] x=104 y=108 z=1000 mg pitch=-55 roll=63 (0.1 deg) h=-12 mm
+[imu] x=106 y=99 z=1000 mg pitch=-56 roll=62 (0.1 deg) h=-12 mm
+[bar] min=160 max=190
+[imu] x=106 y=96 z=1000 mg pitch=-55 roll=63 (0.1 deg) h=-12 mm
+[trace] 224900 0 -8
+[imu] x=112 y=106 z=1000 mg pitch=-59 roll=61 (0.1 deg) h=-12 mm
+[trace] 224920 0 -40
+[trace] 224940 -8 -64
+[trace] 224960 -32 -72
+[trace] 224980 -72 -64
+[imu] x=97 y=70 z=1000 mg pitch=-54 roll=61 (0.1 deg) h=-12 mm
+[trace] 225000 -56 -80
+[trace] 225020 -32 -96
+[trace] 225040 -16 -96
+[trace] 225060 -16 -80
+[trace] 225080 -32 -88
+[imu] x=87 y=144 z=1000 mg pitch=-67 roll=53 (0.1 deg) h=-10 mm
+[trace] 225100 -40 -88
+[trace] 225120 -32 -96
+[trace] 225140 -24 -80
+[trace] 225160 -8 -80
+[trace] 225180 0 -80
+[imu] x=69 y=125 z=1000 mg pitch=-61 roll=57 (0.1 deg) h=-11 mm
+[trace] 225200 0 -72
+[trace] 225220 0 -72
+[trace] 225240 0 -72
+[trace] 225260 0 -64
+[trace] 225280 0 -64
+[bar] min=169 max=194
+[trace] 225300 0 -64
+[imu] x=103 y=108 z=1000 mg pitch=-64 roll=58 (0.1 deg) h=-11 mm
+[trace] 225320 0 -64
+[trace] 225340 0 -64
+[trace] 225360 0 -56
+[trace] 225380 0 -56
+[trace] 225400 0 -56
+[imu] x=109 y=106 z=1000 mg pitch=-63 roll=58 (0.1 deg) h=-11 mm
+[trace] 225420 0 -56
+[trace] 225440 0 -56
+[trace] 225460 0 -64
+[trace] 225480 0 -56
+[trace] 225500 0 -56
+[imu] x=102 y=113 z=1000 mg pitch=-64 roll=59 (0.1 deg) h=-11 mm
+[trace] 225520 0 -64
+[trace] 225540 0 -48
+[trace] 225560 0 -56
+[trace] 225580 0 -56
+[imu] x=102 y=108 z=1000 mg pitch=-65 roll=61 (0.1 deg) h=-12 mm
+[trace] 225600 0 -56
+[trace] 225620 0 -56
+[trace] 225640 0 -48
+[trace] 225660 0 -48
+[trace] 225680 0 -56
+[trace] 225700 0 -56
+[imu] x=106 y=101 z=1000 mg pitch=-60 roll=64 (0.1 deg) h=-12 mm
+[trace] 225720 0 -48
+[trace] 225740 0 -56
+[trace] 225760 0 -56
+[trace] 225780 0 -48
+[bar] min=170 max=198
+[trace] 225800 0 -48
+[imu] x=101 y=108 z=1000 mg pitch=-60 roll=61 (0.1 deg) h=-12 mm
+[trace] 225820 0 -56
+[trace] 225840 0 -56
+[trace] 225860 0 -48
+[trace] 225880 0 -48
+[trace] 225900 0 -56
+[imu] x=98 y=118 z=1000 mg pitch=-64 roll=62 (0.1 deg) h=-12 mm
+[trace] 225920 0 -56
+[trace] 225940 0 -48
+[trace] 225960 0 -56
+[trace] 225980 0 -56
+[trace] 226000 0 -56
+[imu] x=113 y=93 z=1000 mg pitch=-61 roll=65 (0.1 deg) h=-12 mm
+[trace] 226020 0 -48
+[trace] 226040 0 -48
+[trace] 226060 0 -48
+[trace] 226080 0 -56
+[imu] x=115 y=106 z=1000 mg pitch=-60 roll=65 (0.1 deg) h=-13 mm
+[trace] 226100 0 -56
+[trace] 226120 0 -56
+[trace] 226140 0 -48
+[trace] 226160 0 -56
+[trace] 226180 0 -56
+[imu] x=110 y=111 z=1000 mg pitch=-64 roll=64 (0.1 deg) h=-12 mm
+[trace] 226200 0 -48
+[trace] 226220 0 -56
+[trace] 226240 0 -56
+[trace] 226260 0 -56
+[trace] 226280 0 -56
+[bar] min=4067 max=4090
+[imu] x=115 y=99 z=1000 mg pitch=-57 roll=66 (0.1 deg) h=-13 mm
+[trace] 226300 0 -64
+[trace] 226320 0 -56
+[trace] 226340 0 -56
+[trace] 226360 0 -64
+[trace] 226380 0 -56
+[imu] x=114 y=98 z=1000 mg pitch=-58 roll=64 (0.1 deg) h=-12 mm
+[trace] 226400 0 -48
+[trace] 226420 0 -56
+[trace] 226440 0 -56
+[trace] 226460 0 -48
+[trace] 226480 0 -48
+[imu] x=91 y=14 z=1000 mg pitch=-49 roll=59 (0.1 deg) h=-11 mm
+[trace] 226500 0 -56
+[trace] 226520 0 -56
+[trace] 226540 0 -48
+[trace] 226560 0 -48
+[trace] 226580 0 -56
+[trace] 226600 0 -56
+[imu] x=130 y=99 z=1000 mg pitch=-52 roll=67 (0.1 deg) h=-13 mm
+[trace] 226620 0 -48
+[trace] 226640 8 -48
+[motion] state=3 cmd=2 faults=1 heading=13 dist_mm=404 counts=65355,160 speed=8,-48 max_tick_us=430
+[imu] x=97 y=114 z=1000 mg pitch=-68 roll=62 (0.1 deg) h=-12 mm
+[bar] min=4069 max=4095
+[imu] x=127 y=106 z=1000 mg pitch=-60 roll=69 (0.1 deg) h=-13 mm
+[imu] x=131 y=82 z=1000 mg pitch=-43 roll=73 (0.1 deg) h=-14 mm
+[imu] x=113 y=101 z=1000 mg pitch=-55 roll=69 (0.1 deg) h=-13 mm
+[imu] x=132 y=91 z=1000 mg pitch=-54 roll=70 (0.1 deg) h=-14 mm
+[imu] x=118 y=94 z=1000 mg pitch=-53 roll=69 (0.1 deg) h=-13 mm
+[bar] min=4080 max=4086
+[imu] x=120 y=93 z=1000 mg pitch=-56 roll=70 (0.1 deg) h=-13 mm
+[imu] x=114 y=86 z=1000 mg pitch=-57 roll=65 (0.1 deg) h=-13 mm
+[imu] x=130 y=88 z=1000 mg pitch=-51 roll=69 (0.1 deg) h=-13 mm
+[imu] x=128 y=134 z=1000 mg pitch=-65 roll=66 (0.1 deg) h=-13 mm
+[imu] x=116 y=65 z=1000 mg pitch=-46 roll=66 (0.1 deg) h=-13 mm
+[bar] min=165 max=190
+[imu] x=107 y=95 z=1000 mg pitch=-41 roll=65 (0.1 deg) h=-13 mm
+[imu] x=113 y=97 z=1000 mg pitch=-55 roll=62 (0.1 deg) h=-12 mm
+[imu] x=114 y=89 z=1000 mg pitch=-49 roll=62 (0.1 deg) h=-12 mm
+[imu] x=100 y=104 z=1000 mg pitch=-57 roll=61 (0.1 deg) h=-12 mm
+[imu] x=100 y=111 z=1000 mg pitch=-59 roll=60 (0.1 deg) h=-12 mm
+[bar] min=168 max=190
+[imu] x=107 y=70 z=1000 mg pitch=-51 roll=62 (0.1 deg) h=-12 mm
+[imu] x=103 y=85 z=1000 mg pitch=-47 roll=62 (0.1 deg) h=-12 mm
+[imu] x=102 y=91 z=1000 mg pitch=-53 roll=59 (0.1 deg) h=-11 mm
+[imu] x=87 y=84 z=1000 mg pitch=-48 roll=57 (0.1 deg) h=-11 mm
+[imu] x=96 y=87 z=1000 mg pitch=-48 roll=56 (0.1 deg) h=-11 mm
+[bar] min=168 max=190
+[imu] x=93 y=95 z=1000 mg pitch=-53 roll=55 (0.1 deg) h=-11 mm
+[imu] x=86 y=93 z=1000 mg pitch=-53 roll=55 (0.1 deg) h=-10 mm
+[imu] x=99 y=93 z=1000 mg pitch=-52 roll=56 (0.1 deg) h=-11 mm
+[imu] x=104 y=84 z=1000 mg pitch=-51 roll=55 (0.1 deg) h=-11 mm
+[imu] x=101 y=94 z=1000 mg pitch=-57 roll=55 (0.1 deg) h=-11 mm
+[bar] min=168 max=190
+[imu] x=108 y=92 z=1000 mg pitch=-53 roll=57 (0.1 deg) h=-11 mm
+[imu] x=100 y=88 z=1000 mg pitch=-52 roll=56 (0.1 deg) h=-11 mm
+[imu] x=96 y=100 z=1000 mg pitch=-54 roll=57 (0.1 deg) h=-11 mm
+[imu] x=111 y=101 z=1000 mg pitch=-60 roll=58 (0.1 deg) h=-11 mm
+[trace] 229670 0 0
+[trace] 229690 -8 40
+[imu] x=89 y=90 z=1000 mg pitch=-55 roll=54 (0.1 deg) h=-10 mm
+[trace] 229710 0 48
+[trace] 229730 0 56
+[trace] 229750 0 64
+[trace] 229770 0 64
+[trace] 229790 0 72
+[bar] min=168 max=192
+[imu] x=83 y=88 z=1000 mg pitch=-53 roll=52 (0.1 deg) h=-10 mm
+[trace] 229810 0 64
+[trace] 229830 0 72
+[trace] 229850 0 72
+[trace] 229870 -16 80
+[trace] 229890 -24 72
+[imu] x=109 y=44 z=1000 mg pitch=-48 roll=54 (0.1 deg) h=-10 mm
+[trace] 229910 -16 64
+[trace] 229930 0 48
+[trace] 229950 0 64
+[trace] 229970 0 56
+[trace] 229990 0 64
+[imu] x=119 y=106 z=1000 mg pitch=-67 roll=50 (0.1 deg) h=-10 mm
+[trace] 230010 0 56
+[trace] 230030 0 64
+[trace] 230050 0 56
+[trace] 230070 0 56
+[trace] 230090 0 48
+[imu] x=96 y=107 z=1000 mg pitch=-65 roll=50 (0.1 deg) h=-9 mm
+[trace] 230110 0 56
+[trace] 230130 0 48
+[trace] 230150 0 48
+[trace] 230170 0 48
+[trace] 230190 0 48
+[imu] x=93 y=104 z=1000 mg pitch=-60 roll=55 (0.1 deg) h=-10 mm
+[trace] 230210 0 48
+[trace] 230230 0 48
+[trace] 230250 0 48
+[trace] 230270 0 48
+[trace] 230290 0 48
+[bar] min=169 max=194
+[imu] x=86 y=109 z=1000 mg pitch=-62 roll=54 (0.1 deg) h=-10 mm
+[trace] 230310 0 56
+[trace] 230330 0 48
+[trace] 230350 0 48
+[trace] 230370 0 48
+[trace] 230390 0 48
+[imu] x=91 y=114 z=1000 mg pitch=-63 roll=52 (0.1 deg) h=-10 mm
+[trace] 230410 0 56
+[trace] 230430 0 40
+[trace] 230450 0 48
+[trace] 230470 0 48
+[trace] 230490 0 48
+[imu] x=90 y=111 z=1000 mg pitch=-65 roll=53 (0.1 deg) h=-10 mm
+[trace] 230510 0 48
+[trace] 230530 0 48
+[trace] 230550 0 48
+[trace] 230570 0 48
+[trace] 230590 0 48
+[imu] x=102 y=115 z=1000 mg pitch=-64 roll=55 (0.1 deg) h=-11 mm
+[trace] 230610 0 48
+[trace] 230630 0 40
+[trace] 230650 0 48
+[trace] 230670 0 48
+[trace] 230690 0 48
+[imu] x=94 y=114 z=1000 mg pitch=-64 roll=53 (0.1 deg) h=-10 mm
+[trace] 230710 0 48
+[trace] 230730 0 48
+[trace] 230750 0 48
+[trace] 230770 0 56
+[trace] 230790 0 48
+[bar] min=170 max=194
+[imu] x=92 y=108 z=1000 mg pitch=-62 roll=51 (0.1 deg) h=-10 mm
+[trace] 230810 0 48
+[trace] 230830 0 40
+[trace] 230850 0 48
+[trace] 230870 0 48
+[trace] 230890 0 48
+[imu] x=96 y=107 z=1000 mg pitch=-65 roll=53 (0.1 deg) h=-10 mm
+[trace] 230910 0 48
+[trace] 230930 0 40
+[trace] 230950 0 48
+[trace] 230970 0 48
+[trace] 230990 0 48
+[imu] x=100 y=104 z=1000 mg pitch=-60 roll=54 (0.1 deg) h=-10 mm
+[trace] 231010 0 56
+[trace] 231030 0 48
+[trace] 231050 0 48
+[trace] 231070 0 48
+[trace] 231090 0 40
+[imu] x=93 y=111 z=1000 mg pitch=-63 roll=51 (0.1 deg) h=-10 mm
+[trace] 231110 0 48
+[trace] 231130 0 48
+[trace] 231150 0 40
+[trace] 231170 0 48
+[trace] 231190 0 48
+[imu] x=100 y=111 z=1000 mg pitch=-64 roll=52 (0.1 deg) h=-10 mm
+[trace] 231210 0 48
+[trace] 231230 0 40
+[trace] 231250 0 48
+[trace] 231270 0 48
+[trace] 231290 0 40
+[bar] min=169 max=199
+[imu] x=96 y=113 z=1000 mg pitch=-63 roll=55 (0.1 deg) h=-10 mm
+[trace] 231310 0 48
+[trace] 231330 0 24
+[trace] 231350 0 0
+[trace] 231370 0 0
+[trace] 231390 0 0
+[imu] x=82 y=112 z=1000 mg pitch=-65 roll=50 (0.1 deg) h=-10 mm
+[trace] 231410 0 0
+[trace] 231430 0 0
+[trace] 231450 0 0
+[trace] 231470 0 0
+[trace] 231490 0 0
+[imu] x=100 y=115 z=1000 mg pitch=-64 roll=53 (0.1 deg) h=-10 mm
+[trace] 231510 0 0
+[trace] 231530 0 0
+[trace] 231550 0 0
+[trace] 231570 0 0
+[trace] 231590 0 0
+[imu] x=92 y=121 z=1000 mg pitch=-66 roll=51 (0.1 deg) h=-10 mm
+[trace] 231610 0 0
+[trace] 231630 0 0
+[trace] 231650 0 0
+[trace] 231670 0 0
+[trace] 231690 0 0
+[imu] x=85 y=110 z=1000 mg pitch=-62 roll=52 (0.1 deg) h=-10 mm
+[trace] 231710 0 0
+[trace] 231730 0 0
+[trace] 231750 0 0
+[trace] 231770 0 0
+[trace] 231790 0 0
+[bar] min=169 max=197
+[imu] x=93 y=116 z=1000 mg pitch=-67 roll=52 (0.1 deg) h=-10 mm
+[trace] 231810 0 0
+[trace] 231830 0 0
+[trace] 231850 8 0
+[motion] state=3 cmd=3 faults=1 heading=59 dist_mm=451 counts=65354,1278 speed=8,0 max_tick_us=430
+[imu] x=98 y=98 z=1000 mg pitch=-63 roll=52 (0.1 deg) h=-10 mm
+[imu] x=93 y=109 z=1000 mg pitch=-64 roll=51 (0.1 deg) h=-10 mm
+[imu] x=91 y=114 z=1000 mg pitch=-65 roll=53 (0.1 deg) h=-10 mm
+[imu] x=94 y=96 z=1000 mg pitch=-60 roll=52 (0.1 deg) h=-10 mm
+[bar] min=167 max=191
+[imu] x=88 y=113 z=1000 mg pitch=-61 roll=52 (0.1 deg) h=-10 mm
+[imu] x=81 y=143 z=1000 mg pitch=-74 roll=49 (0.1 deg) h=-9 mm
+[imu] x=75 y=123 z=1000 mg pitch=-71 roll=49 (0.1 deg) h=-9 mm
+[imu] x=94 y=102 z=1000 mg pitch=-62 roll=52 (0.1 deg) h=-10 mm
+[imu] x=82 y=122 z=1000 mg pitch=-65 roll=50 (0.1 deg) h=-10 mm
+[bar] min=167 max=192
+[imu] x=76 y=109 z=1000 mg pitch=-63 roll=49 (0.1 deg) h=-9 mm
+[imu] x=88 y=116 z=1000 mg pitch=-64 roll=50 (0.1 deg) h=-10 mm
+[imu] x=93 y=102 z=1000 mg pitch=-63 roll=51 (0.1 deg) h=-10 mm
+[imu] x=85 y=116 z=1000 mg pitch=-62 roll=49 (0.1 deg) h=-9 mm
+[imu] x=98 y=102 z=1000 mg pitch=-59 roll=52 (0.1 deg) h=-10 mm
+[bar] min=168 max=193
+[imu] x=82 y=123 z=1000 mg pitch=-66 roll=50 (0.1 deg) h=-10 mm
+[imu] x=85 y=111 z=1000 mg pitch=-65 roll=50 (0.1 deg) h=-10 mm
+[imu] x=86 y=117 z=1000 mg pitch=-64 roll=47 (0.1 deg) h=-9 mm
+[imu] x=90 y=104 z=1000 mg pitch=-62 roll=51 (0.1 deg) h=-10 mm
+[imu] x=92 y=109 z=1000 mg pitch=-64 roll=51 (0.1 deg) h=-10 mm
+[bar] min=168 max=192
+[imu] x=89 y=109 z=1000 mg pitch=-62 roll=51 (0.1 deg) h=-10 mm
+[imu] x=88 y=112 z=1000 mg pitch=-65 roll=50 (0.1 deg) h=-9 mm
+[imu] x=83 y=113 z=1000 mg pitch=-65 roll=51 (0.1 deg) h=-10 mm
+[imu] x=86 y=109 z=1000 mg pitch=-62 roll=51 (0.1 deg) h=-10 mm
+[imu] x=91 y=116 z=1000 mg pitch=-67 roll=50 (0.1 deg) h=-9 mm
+[bar] min=168 max=191
+[imu] x=90 y=110 z=1000 mg pitch=-63 roll=51 (0.1 deg) h=-10 mm
+[imu] x=97 y=112 z=1000 mg pitch=-67 roll=49 (0.1 deg) h=-9 mm
+[imu] x=91 y=109 z=1000 mg pitch=-61 roll=51 (0.1 deg) h=-10 mm
+[imu] x=80 y=118 z=1000 mg pitch=-66 roll=49 (0.1 deg) h=-9 mm
+[imu] x=88 y=113 z=1000 mg pitch=-65 roll=50 (0.1 deg) h=-9 mm
+[bar] min=167 max=191
+[imu] x=89 y=113 z=1000 mg pitch=-65 roll=48 (0.1 deg) h=-9 mm
+[trace] 234880 8 -8
+[imu] x=84 y=159 z=1000 mg pitch=-69 roll=47 (0.1 deg) h=-9 mm
+[trace] 234900 48 -48
+[trace] 234920 56 -64
+[trace] 234940 56 -72
+[trace] 234960 40 -80
+[trace] 234980 24 -80
+[trace] 235000 24 -88
+[imu] x=96 y=74 z=1000 mg pitch=-62 roll=49 (0.1 deg) h=-9 mm
+[trace] 235020 16 -88
+[trace] 235040 32 -88
+[trace] 235060 32 -88
+[trace] 235080 32 -80
+[imu] x=89 y=89 z=1000 mg pitch=-56 roll=49 (0.1 deg) h=-9 mm
+[trace] 235100 16 -80
+[trace] 235120 32 -88
+[trace] 235140 32 -80
+[trace] 235160 8 -80
+[trace] 235180 8 -72
+[imu] x=111 y=118 z=1000 mg pitch=-56 roll=55 (0.1 deg) h=-11 mm
+[trace] 235200 16 -72
+[trace] 235220 0 -64
+[trace] 235240 0 -64
+[trace] 235260 0 -64
+[trace] 235280 0 -72
+[bar] min=170 max=192
+[imu] x=96 y=83 z=1000 mg pitch=-49 roll=54 (0.1 deg) h=-10 mm
+[trace] 235300 0 -64
+[trace] 235320 0 -64
+[trace] 235340 0 -56
+[trace] 235360 0 -64
+[trace] 235380 0 -56
+[imu] x=113 y=78 z=1000 mg pitch=-46 roll=58 (0.1 deg) h=-11 mm
+[trace] 235400 0 -56
+[trace] 235420 0 -64
+[trace] 235440 0 -56
+[trace] 235460 0 -64
+[trace] 235480 0 -56
+[imu] x=101 y=104 z=1000 mg pitch=-53 roll=57 (0.1 deg) h=-11 mm
+[trace] 235500 0 -56
+[trace] 235520 0 -64
+[trace] 235540 0 -48
+[trace] 235560 0 -64
+[trace] 235580 0 -48
+[trace] 235600 0 -56
+[imu] x=102 y=73 z=1000 mg pitch=-48 roll=59 (0.1 deg) h=-11 mm
+[trace] 235620 0 -56
+[trace] 235640 0 -48
+[trace] 235660 0 -56
+[trace] 235680 0 -56
+[imu] x=103 y=86 z=1000 mg pitch=-49 roll=59 (0.1 deg) h=-11 mm
+[trace] 235700 0 -48
+[trace] 235720 0 -56
+[trace] 235740 0 -56
+[trace] 235760 0 -56
+[trace] 235780 0 -48
+[bar] min=169 max=195
+[trace] 235800 0 -56
+[imu] x=101 y=86 z=1000 mg pitch=-50 roll=57 (0.1 deg) h=-11 mm
+[trace] 235820 0 -56
+[trace] 235840 0 -56
+[trace] 235860 0 -56
+[trace] 235880 0 -48
+[trace] 235900 0 -48
+[imu] x=105 y=94 z=1000 mg pitch=-54 roll=57 (0.1 deg) h=-11 mm
+[trace] 235920 0 -56
+[trace] 235940 0 -56
+[trace] 235960 0 -56
+[trace] 235980 0 -48
+[imu] x=102 y=82 z=1000 mg pitch=-49 roll=60 (0.1 deg) h=-11 mm
+[trace] 236000 0 -56
+[trace] 236020 0 -48
+[trace] 236040 0 -48
+[trace] 236060 0 -56
+[trace] 236080 0 -56
+[trace] 236100 0 -48
+[imu] x=100 y=92 z=1000 mg pitch=-48 roll=61 (0.1 deg) h=-12 mm
+[trace] 236120 0 -56
+[trace] 236140 0 -56
+[trace] 236160 0 -56
+[trace] 236180 0 -48
+[trace] 236200 0 -64
+[imu] x=103 y=94 z=1000 mg pitch=-53 roll=59 (0.1 deg) h=-11 mm
+[trace] 236220 0 -56
+[trace] 236240 0 -48
+[trace] 236260 0 -56
+[trace] 236280 0 -56
+[bar] min=171 max=196
+[trace] 236300 0 -48
+[imu] x=96 y=88 z=1000 mg pitch=-49 roll=58 (0.1 deg) h=-11 mm
+[trace] 236320 0 -56
+[trace] 236340 0 -56
+[trace] 236360 0 -56
+[trace] 236380 0 -48
+[imu] x=102 y=87 z=1000 mg pitch=-51 roll=58 (0.1 deg) h=-11 mm
+[trace] 236400 0 -56
+[trace] 236420 0 -56
+[trace] 236440 0 -56
+[trace] 236460 0 -40
+[trace] 236480 0 -16
+[trace] 236500 0 0
+[imu] x=107 y=92 z=1000 mg pitch=-51 roll=58 (0.1 deg) h=-11 mm
+[trace] 236520 -8 0
+[motion] state=3 cmd=4 faults=1 heading=9 dist_mm=501 counts=65466,160 speed=-8,0 max_tick_us=430
+[imu] x=108 y=94 z=1000 mg pitch=-53 roll=57 (0.1 deg) h=-11 mm
+[imu] x=95 y=87 z=1000 mg pitch=-51 roll=57 (0.1 deg) h=-11 mm
+[bar] min=168 max=190
+[imu] x=98 y=85 z=1000 mg pitch=-49 roll=57 (0.1 deg) h=-11 mm
+[imu] x=105 y=84 z=1000 mg pitch=-50 roll=58 (0.1 deg) h=-11 mm
+[imu] x=102 y=87 z=1000 mg pitch=-52 roll=58 (0.1 deg) h=-11 mm
+[imu] x=104 y=89 z=1000 mg pitch=-50 roll=58 (0.1 deg) h=-11 mm
+[imu] x=95 y=91 z=1000 mg pitch=-48 roll=57 (0.1 deg) h=-11 mm
+[bar] min=168 max=190
+[imu] x=100 y=85 z=1000 mg pitch=-53 roll=57 (0.1 deg) h=-11 mm
+[imu] x=98 y=96 z=1000 mg pitch=-53 roll=57 (0.1 deg) h=-11 mm
+[imu] x=104 y=86 z=1000 mg pitch=-51 roll=56 (0.1 deg) h=-11 mm
+[imu] x=99 y=86 z=1000 mg pitch=-52 roll=56 (0.1 deg) h=-11 mm
+[imu] x=99 y=93 z=1000 mg pitch=-54 roll=57 (0.1 deg) h=-11 mm
+[bar] min=161 max=190
+[imu] x=97 y=86 z=1000 mg pitch=-52 roll=56 (0.1 deg) h=-11 mm
+[imu] x=98 y=87 z=1000 mg pitch=-53 roll=56 (0.1 deg) h=-11 mm
+[imu] x=96 y=104 z=1000 mg pitch=-54 roll=55 (0.1 deg) h=-10 mm
+[imu] x=87 y=88 z=1000 mg pitch=-45 roll=53 (0.1 deg) h=-10 mm
+[imu] x=86 y=104 z=1000 mg pitch=-53 roll=54 (0.1 deg) h=-10 mm
+[bar] min=168 max=190
+[imu] x=99 y=86 z=1000 mg pitch=-51 roll=54 (0.1 deg) h=-10 mm
+[imu] x=100 y=97 z=1000 mg pitch=-55 roll=55 (0.1 deg) h=-11 mm
+[imu] x=97 y=87 z=1000 mg pitch=-55 roll=55 (0.1 deg) h=-11 mm
+[imu] x=96 y=93 z=1000 mg pitch=-52 roll=55 (0.1 deg) h=-10 mm
+[imu] x=101 y=97 z=1000 mg pitch=-55 roll=54 (0.1 deg) h=-10 mm
+[bar] min=169 max=190
+[imu] x=87 y=106 z=1000 mg pitch=-56 roll=53 (0.1 deg) h=-10 mm
+[imu] x=103 y=85 z=1000 mg pitch=-52 roll=56 (0.1 deg) h=-11 mm
+[imu] x=96 y=106 z=1000 mg pitch=-57 roll=54 (0.1 deg) h=-10 mm
+[imu] x=99 y=82 z=1000 mg pitch=-53 roll=56 (0.1 deg) h=-11 mm
+[imu] x=96 y=88 z=1000 mg pitch=-50 roll=55 (0.1 deg) h=-11 mm
+[bar] min=168 max=190
+[imu] x=82 y=118 z=1000 mg pitch=-56 roll=50 (0.1 deg) h=-10 mm
+[imu] x=87 y=90 z=1000 mg pitch=-53 roll=54 (0.1 deg) h=-10 mm
+[imu] x=109 y=107 z=1000 mg pitch=-58 roll=58 (0.1 deg) h=-11 mm
+[trace] 239550 -8 8
+[trace] 239570 -40 40
+[trace] 239590 -56 64
+[imu] x=89 y=72 z=1000 mg pitch=-57 roll=63 (0.1 deg) h=-12 mm
+[trace] 239610 -48 64
+[trace] 239630 -40 72
+[trace] 239650 -16 72
+[trace] 239670 -24 80
+[trace] 239690 -8 80
+[imu] x=82 y=114 z=1000 mg pitch=-55 roll=53 (0.1 deg) h=-10 mm
+[trace] 239710 -16 80
+[trace] 239730 -8 80
+[trace] 239750 -24 80
+[trace] 239770 -24 80
+[trace] 239790 -24 72
+[bar] min=159 max=192
+[imu] x=75 y=108 z=1000 mg pitch=-62 roll=51 (0.1 deg) h=-10 mm
+[trace] 239810 -16 64
+[trace] 239830 -16 64
+[trace] 239850 0 64
+[trace] 239870 0 64
+[trace] 239890 0 64
+[imu] x=92 y=111 z=1000 mg pitch=-68 roll=50 (0.1 deg) h=-10 mm
+[trace] 239910 0 48
+[trace] 239930 0 56
+[trace] 239950 0 56
+[trace] 239970 0 56
+[trace] 239990 0 64
+[imu] x=95 y=112 z=1000 mg pitch=-63 roll=52 (0.1 deg) h=-10 mm
+[trace] 240010 0 56
+[trace] 240030 0 48
+[trace] 240050 0 56
+[trace] 240070 0 56
+[trace] 240090 0 56
+[imu] x=89 y=114 z=1000 mg pitch=-63 roll=54 (0.1 deg) h=-10 mm
+[trace] 240110 0 48
+[trace] 240130 0 48
+[trace] 240150 0 48
+[trace] 240170 0 56
+[trace] 240190 0 48
+[imu] x=95 y=109 z=1000 mg pitch=-66 roll=55 (0.1 deg) h=-11 mm
+[trace] 240210 0 56
+[trace] 240230 0 48
+[trace] 240250 0 48
+[trace] 240270 0 40
+[trace] 240290 0 48
+[bar] min=169 max=195
+[imu] x=100 y=105 z=1000 mg pitch=-63 roll=54 (0.1 deg) h=-10 mm
+[trace] 240310 0 48
+[trace] 240330 0 48
+[trace] 240350 0 48
+[trace] 240370 0 48
+[trace] 240390 0 48
+[imu] x=76 y=117 z=1000 mg pitch=-62 roll=49 (0.1 deg) h=-9 mm
+[trace] 240410 0 48
+[trace] 240430 0 40
+[trace] 240450 0 48
+[trace] 240470 0 48
+[trace] 240490 0 48
+[imu] x=88 y=114 z=1000 mg pitch=-62 roll=52 (0.1 deg) h=-10 mm
+[trace] 240510 0 56
+[trace] 240530 0 40
+[trace] 240550 0 48
+[trace] 240570 0 48
+[trace] 240590 0 48
+[imu] x=96 y=118 z=1000 mg pitch=-64 roll=52 (0.1 deg) h=-10 mm
+[trace] 240610 0 48
+[trace] 240630 0 48
+[trace] 240650 0 48
+[trace] 240670 0 48
+[trace] 240690 0 40
+[imu] x=90 y=107 z=1000 mg pitch=-62 roll=51 (0.1 deg) h=-10 mm
+[trace] 240710 0 48
+[trace] 240730 0 48
+[trace] 240750 0 48
+[trace] 240770 0 48
+[trace] 240790 0 48
+[bar] min=169 max=196
+[imu] x=94 y=111 z=1000 mg pitch=-63 roll=53 (0.1 deg) h=-10 mm
+[trace] 240810 0 48
+[trace] 240830 0 48
+[motion] state=3 cmd=3 faults=1 heading=51 dist_mm=542 counts=65364,1086 speed=0,48 max_tick_us=430
+[imu] x=94 y=120 z=1000 mg pitch=-66 roll=51 (0.1 deg) h=-10 mm
+[imu] x=78 y=145 z=1000 mg pitch=-68 roll=50 (0.1 deg) h=-9 mm
+[imu] x=97 y=79 z=1000 mg pitch=-48 roll=54 (0.1 deg) h=-10 mm
+[imu] x=87 y=119 z=1000 mg pitch=-58 roll=54 (0.1 deg) h=-10 mm
+[bar] min=168 max=192
+[imu] x=96 y=95 z=1000 mg pitch=-57 roll=54 (0.1 deg) h=-10 mm
+[imu] x=95 y=110 z=1000 mg pitch=-60 roll=53 (0.1 deg) h=-10 mm
+[imu] x=101 y=95 z=1000 mg pitch=-59 roll=54 (0.1 deg) h=-10 mm
+[imu] x=90 y=110 z=1000 mg pitch=-58 roll=55 (0.1 deg) h=-11 mm
+[imu] x=92 y=105 z=1000 mg pitch=-60 roll=52 (0.1 deg) h=-10 mm
+[bar] min=169 max=190
+[imu] x=94 y=98 z=1000 mg pitch=-57 roll=54 (0.1 deg) h=-10 mm
+[imu] x=86 y=104 z=1000 mg pitch=-59 roll=51 (0.1 deg) h=-10 mm
+[imu] x=86 y=100 z=1000 mg pitch=-56 roll=52 (0.1 deg) h=-10 mm
+[imu] x=87 y=95 z=1000 mg pitch=-56 roll=53 (0.1 deg) h=-10 mm
+[imu] x=105 y=89 z=1000 mg pitch=-57 roll=53 (0.1 deg) h=-10 mm
+[bar] min=168 max=191
+[imu] x=96 y=108 z=1000 mg pitch=-57 roll=49 (0.1 deg) h=-9 mm
+[imu] x=87 y=94 z=1000 mg pitch=-57 roll=50 (0.1 deg) h=-10 mm
+[imu] x=88 y=107 z=1000 mg pitch=-59 roll=47 (0.1 deg) h=-9 mm
+[imu] x=84 y=96 z=1000 mg pitch=-56 roll=48 (0.1 deg) h=-9 mm
+[imu] x=83 y=96 z=1000 mg pitch=-59 roll=47 (0.1 deg) h=-9 mm
+[bar] min=168 max=190
+[imu] x=74 y=105 z=1000 mg pitch=-59 roll=47 (0.1 deg) h=-9 mm
+[imu] x=91 y=106 z=1000 mg pitch=-59 roll=50 (0.1 deg) h=-9 mm
+[imu] x=86 y=116 z=1000 mg pitch=-63 roll=49 (0.1 deg) h=-9 mm
+[imu] x=98 y=93 z=1000 mg pitch=-57 roll=52 (0.1 deg) h=-10 mm
+[imu] x=85 y=121 z=1000 mg pitch=-67 roll=48 (0.1 deg) h=-9 mm
+[bar] min=168 max=190
+[imu] x=80 y=111 z=1000 mg pitch=-66 roll=49 (0.1 deg) h=-9 mm
+[imu] x=91 y=112 z=1000 mg pitch=-65 roll=51 (0.1 deg) h=-10 mm
+[imu] x=92 y=103 z=1000 mg pitch=-63 roll=51 (0.1 deg) h=-10 mm
+[imu] x=92 y=118 z=1000 mg pitch=-68 roll=49 (0.1 deg) h=-9 mm
+[imu] x=100 y=101 z=1000 mg pitch=-64 roll=51 (0.1 deg) h=-10 mm
+[bar] min=168 max=190
+[imu] x=89 y=109 z=1000 mg pitch=-61 roll=49 (0.1 deg) h=-9 mm
+[trace] 243860 0 8
+[trace] 243880 32 48
+[imu] x=77 y=121 z=1000 mg pitch=-67 roll=47 (0.1 deg) h=-9 mm
+[trace] 243900 56 64
+[trace] 243920 56 80
+[trace] 243940 40 80
+[trace] 243960 24 80
+[trace] 243980 24 88
+[trace] 244000 32 96
+[imu] x=109 y=125 z=1000 mg pitch=-68 roll=48 (0.1 deg) h=-9 mm
+[trace] 244020 32 96
+[trace] 244040 24 96
+[trace] 244060 40 96
+[trace] 244080 48 104
+[imu] x=62 y=126 z=1000 mg pitch=-59 roll=44 (0.1 deg) h=-8 mm
+[trace] 244100 40 112
+[trace] 244120 24 112
+[trace] 244140 8 112
+[trace] 244160 0 120
+[trace] 244180 0 120
+[imu] x=90 y=91 z=1000 mg pitch=-45 roll=59 (0.1 deg) h=-11 mm
+[trace] 244200 0 120
+[trace] 244220 0 128
+[trace] 244240 0 120
+[trace] 244260 0 112
+[trace] 244280 0 112
+[bar] min=169 max=194
+[imu] x=97 y=90 z=1000 mg pitch=-43 roll=56 (0.1 deg) h=-11 mm
+[trace] 244300 0 104
+[trace] 244320 0 112
+[trace] 244340 0 112
+[trace] 244360 0 96
+[trace] 244380 0 80
+[trace] 244400 0 88
+[imu] x=95 y=80 z=1000 mg pitch=-46 roll=57 (0.1 deg) h=-11 mm
+[trace] 244420 0 88
+[trace] 244440 0 96
+[trace] 244460 0 96
+[trace] 244480 0 96
+[trace] 244500 0 112
+[imu] x=108 y=105 z=1000 mg pitch=-46 roll=54 (0.1 deg) h=-10 mm
+[trace] 244520 0 112
+[trace] 244540 0 112
+[trace] 244560 0 112
+[trace] 244580 0 104
+[trace] 244600 0 112
+[imu] x=113 y=85 z=1000 mg pitch=-48 roll=59 (0.1 deg) h=-11 mm
+[trace] 244620 0 112
+[trace] 244640 0 104
+[trace] 244660 0 112
+[trace] 244680 0 112
+[imu] x=119 y=78 z=1000 mg pitch=-46 roll=65 (0.1 deg) h=-12 mm
+[trace] 244700 0 104
+[trace] 244720 0 112
+[trace] 244740 0 104
+[trace] 244760 0 104
+[trace] 244780 0 112
+[bar] min=169 max=196
+[trace] 244800 0 104
+[imu] x=116 y=99 z=1000 mg pitch=-51 roll=65 (0.1 deg) h=-13 mm
+[trace] 244820 0 112
+[trace] 244840 0 104
+[trace] 244860 0 104
+[trace] 244880 0 112
+[trace] 244900 0 112
+[imu] x=118 y=93 z=1000 mg pitch=-53 roll=65 (0.1 deg) h=-13 mm
+[trace] 244920 0 112
+[trace] 244940 0 96
+[trace] 244960 0 112
+[trace] 244980 0 104
+[trace] 245000 0 104
+[imu] x=124 y=64 z=1000 mg pitch=-48 roll=66 (0.1 deg) h=-13 mm
+[trace] 245020 0 112
+[trace] 245040 0 112
+[trace] 245060 0 112
+[trace] 245080 0 104
+[imu] x=110 y=99 z=1000 mg pitch=-48 roll=66 (0.1 deg) h=-13 mm
+[trace] 245100 0 112
+[trace] 245120 0 104
+[trace] 245140 0 112
+[motion] state=3 cmd=1 faults=1 heading=109 dist_mm=609 counts=65484,2634 speed=0,112 max_tick_us=430
+[imu] x=133 y=35 z=1000 mg pitch=-37 roll=73 (0.1 deg) h=-14 mm
+[bar] min=167 max=190
+[imu] x=93 y=154 z=1000 mg pitch=-72 roll=54 (0.1 deg) h=-10 mm
+[imu] x=84 y=110 z=1000 mg pitch=-63 roll=57 (0.1 deg) h=-11 mm
+[imu] x=93 y=114 z=1000 mg pitch=-65 roll=57 (0.1 deg) h=-11 mm
+[imu] x=103 y=95 z=1000 mg pitch=-57 roll=60 (0.1 deg) h=-11 mm
+[imu] x=100 y=120 z=1000 mg pitch=-62 roll=58 (0.1 deg) h=-11 mm
+[bar] min=169 max=192
+[imu] x=102 y=110 z=1000 mg pitch=-63 roll=58 (0.1 deg) h=-11 mm
+[imu] x=109 y=113 z=1000 mg pitch=-61 roll=58 (0.1 deg) h=-11 mm
+[imu] x=92 y=111 z=1000 mg pitch=-62 roll=56 (0.1 deg) h=-11 mm
+[imu] x=94 y=100 z=1000 mg pitch=-58 roll=57 (0.1 deg) h=-11 mm
+[imu] x=98 y=112 z=1000 mg pitch=-62 roll=56 (0.1 deg) h=-11 mm
+[bar] min=166 max=192
+[imu] x=99 y=112 z=1000 mg pitch=-61 roll=58 (0.1 deg) h=-11 mm
+[imu] x=99 y=105 z=1000 mg pitch=-61 roll=57 (0.1 deg) h=-11 mm
+[imu] x=88 y=116 z=1000 mg pitch=-61 roll=57 (0.1 deg) h=-11 mm
+[imu] x=101 y=97 z=1000 mg pitch=-62 roll=58 (0.1 deg) h=-11 mm
+[imu] x=94 y=112 z=1000 mg pitch=-61 roll=57 (0.1 deg) h=-11 mm
+[bar] min=168 max=190
+[imu] x=98 y=107 z=1000 mg pitch=-61 roll=57 (0.1 deg) h=-11 mm
+[imu] x=98 y=105 z=1000 mg pitch=-59 roll=56 (0.1 deg) h=-11 mm
+[imu] x=90 y=111 z=1000 mg pitch=-61 roll=57 (0.1 deg) h=-11 mm
+[imu] x=95 y=112 z=1000 mg pitch=-62 roll=55 (0.1 deg) h=-11 mm
+[imu] x=108 y=132 z=1000 mg pitch=-66 roll=63 (0.1 deg) h=-12 mm
+[bar] min=168 max=192
+[imu] x=95 y=106 z=1000 mg pitch=-64 roll=59 (0.1 deg) h=-11 mm
+[imu] x=108 y=114 z=1000 mg pitch=-65 roll=59 (0.1 deg) h=-11 mm
+[imu] x=105 y=101 z=1000 mg pitch=-62 roll=59 (0.1 deg) h=-11 mm
+[imu] x=102 y=119 z=1000 mg pitch=-61 roll=58 (0.1 deg) h=-11 mm
+[imu] x=95 y=119 z=1000 mg pitch=-67 roll=55 (0.1 deg) h=-11 mm
+[bar] min=166 max=190
+[imu] x=94 y=112 z=1000 mg pitch=-63 roll=58 (0.1 deg) h=-11 mm
+[imu] x=103 y=115 z=1000 mg pitch=-66 roll=57 (0.1 deg) h=-11 mm
+[imu] x=109 y=103 z=1000 mg pitch=-60 roll=60 (0.1 deg) h=-11 mm
+[imu] x=103 y=109 z=1000 mg pitch=-66 roll=57 (0.1 deg) h=-11 mm
+[trace] 248170 0 8
+[trace] 248190 -8 40
+[imu] x=109 y=86 z=1000 mg pitch=-60 roll=58 (0.1 deg) h=-11 mm
+[trace] 248210 -32 56
+[trace] 248230 -56 56
+[trace] 248250 -40 72
+[trace] 248270 -16 80
+[trace] 248290 -16 72
+[bar] min=167 max=192
+[imu] x=87 y=114 z=1000 mg pitch=-58 roll=60 (0.1 deg) h=-12 mm
+[trace] 248310 -8 80
+[trace] 248330 -16 80
+[trace] 248350 -24 80
+[trace] 248370 -24 72
+[trace] 248390 -32 72
+[imu] x=83 y=117 z=1000 mg pitch=-65 roll=56 (0.1 deg) h=-11 mm
+[trace] 248410 -32 72
+[trace] 248430 0 56
+[trace] 248450 0 64
+[trace] 248470 0 64
+[trace] 248490 0 64
+[imu] x=101 y=116 z=1000 mg pitch=-71 roll=49 (0.1 deg) h=-9 mm
+[trace] 248510 0 56
+[trace] 248530 0 48
+[trace] 248550 0 64
+[trace] 248570 0 48
+[trace] 248590 0 56
+[imu] x=104 y=116 z=1000 mg pitch=-66 roll=55 (0.1 deg) h=-11 mm
+[trace] 248610 0 56
+[trace] 248630 0 48
+[trace] 248650 0 56
+[trace] 248670 0 56
+[trace] 248690 0 56
+[imu] x=103 y=131 z=1000 mg pitch=-69 roll=54 (0.1 deg) h=-10 mm
+[trace] 248710 0 56
+[trace] 248730 0 48
+[trace] 248750 -24 48
+[trace] 248770 -40 56
+[trace] 248790 0 48
+[bar] min=171 max=196
+[imu] x=104 y=171 z=1000 mg pitch=-63 roll=60 (0.1 deg) h=-11 mm
+[trace] 248810 -24 48
+[trace] 248830 0 48
+[trace] 248850 0 48
+[trace] 248870 0 40
+[trace] 248890 0 48
+[imu] x=103 y=129 z=1000 mg pitch=-80 roll=53 (0.1 deg) h=-10 mm
+[trace] 248910 0 48
+[trace] 248930 0 48
+[trace] 248950 0 40
+[trace] 248970 0 48
+[trace] 248990 0 48
+[imu] x=106 y=137 z=1000 mg pitch=-80 roll=52 (0.1 deg) h=-10 mm
+[trace] 249010 0 56
+[trace] 249030 0 48
+[trace] 249050 0 48
+[trace] 249070 0 48
+[trace] 249090 0 48
+[imu] x=97 y=138 z=1000 mg pitch=-79 roll=51 (0.1 deg) h=-10 mm
+[trace] 249110 0 48
+[trace] 249130 0 48
+[trace] 249150 0 48
+[trace] 249170 0 48
+[trace] 249190 0 48
+[imu] x=87 y=146 z=1000 mg pitch=-78 roll=50 (0.1 deg) h=-10 mm
+[trace] 249210 0 48
+[trace] 249230 0 40
+[trace] 249250 0 48
+[trace] 249270 0 48
+[trace] 249290 0 48
+[bar] min=170 max=200
+[imu] x=84 y=142 z=1000 mg pitch=-81 roll=48 (0.1 deg) h=-9 mm
+[trace] 249310 0 40
+[trace] 249330 0 48
+[trace] 249350 0 48
+[trace] 249370 0 48
+[trace] 249390 0 40
+[imu] x=85 y=144 z=1000 mg pitch=-81 roll=48 (0.1 deg) h=-9 mm
+[trace] 249410 0 48
+[trace] 249430 0 48
+[trace] 249450 0 48
+[trace] 249470 0 48
+[trace] 249490 0 48
+[imu] x=86 y=134 z=1000 mg pitch=-80 roll=47 (0.1 deg) h=-9 mm
+[trace] 249510 0 48
+[trace] 249530 0 40
+[trace] 249550 0 48
+[trace] 249570 0 48
+[trace] 249590 0 48
+[imu] x=100 y=129 z=1000 mg pitch=-78 roll=51 (0.1 deg) h=-10 mm
+[trace] 249610 0 48
+[trace] 249630 0 40
+[trace] 249650 0 48
+[trace] 249670 0 48
+[trace] 249690 0 48
+[imu] x=93 y=148 z=1000 mg pitch=-81 roll=48 (0.1 deg) h=-9 mm
+[trace] 249710 0 48
+[trace] 249730 0 40
+[trace] 249750 0 48
+[trace] 249770 0 48
+[trace] 249790 0 48
+[bar] min=169 max=194
+[imu] x=86 y=134 z=1000 mg pitch=-78 roll=49 (0.1 deg) h=-9 mm
+[trace] 249810 0 40
+[trace] 249830 16 40
+[motion] state=3 cmd=3 faults=1 heading=162 dist_mm=662 counts=65347,3815 speed=16,40 max_tick_us=430
+[imu] x=94 y=102 z=1000 mg pitch=-85 roll=46 (0.1 deg) h=-9 mm
+[imu] x=83 y=125 z=1000 mg pitch=-65 roll=52 (0.1 deg) h=-10 mm
+[imu] x=91 y=125 z=1000 mg pitch=-71 roll=48 (0.1 deg) h=-9 mm
+[imu] x=88 y=116 z=1000 mg pitch=-67 roll=52 (0.1 deg) h=-10 mm
+[bar] min=168 max=190
+[imu] x=89 y=131 z=1000 mg pitch=-72 roll=52 (0.1 deg) h=-10 mm
+[imu] x=85 y=107 z=1000 mg pitch=-65 roll=51 (0.1 deg) h=-10 mm
+[imu] x=94 y=122 z=1000 mg pitch=-70 roll=50 (0.1 deg) h=-10 mm
+[imu] x=102 y=110 z=1000 mg pitch=-58 roll=51 (0.1 deg) h=-10 mm
+[imu] x=74 y=142 z=1000 mg pitch=-80 roll=47 (0.1 deg) h=-9 mm
+[bar] min=157 max=191
+[imu] x=105 y=99 z=1000 mg pitch=-60 roll=49 (0.1 deg) h=-9 mm
+[imu] x=67 y=158 z=1000 mg pitch=-78 roll=45 (0.1 deg) h=-9 mm
+[imu] x=97 y=74 z=1000 mg pitch=-55 roll=54 (0.1 deg) h=-10 mm
+[imu] x=78 y=136 z=1000 mg pitch=-71 roll=46 (0.1 deg) h=-9 mm
+[imu] x=100 y=40 z=1000 mg pitch=-50 roll=49 (0.1 deg) h=-9 mm
+[bar] min=167 max=189
+[imu] x=68 y=136 z=1000 mg pitch=-53 roll=50 (0.1 deg) h=-10 mm
+[imu] x=86 y=93 z=1000 mg pitch=-68 roll=35 (0.1 deg) h=-6 mm
+[imu] x=45 y=119 z=1000 mg pitch=-56 roll=36 (0.1 deg) h=-7 mm
+[imu] x=65 y=8 z=1000 mg pitch=-45 roll=33 (0.1 deg) h=-6 mm
+[imu] x=46 y=156 z=1000 mg pitch=-50 roll=38 (0.1 deg) h=-7 mm
+[bar] min=166 max=191
+[imu] x=55 y=44 z=1000 mg pitch=-62 roll=24 (0.1 deg) h=-4 mm
+[imu] x=69 y=136 z=1000 mg pitch=-47 roll=38 (0.1 deg) h=-7 mm
+[imu] x=61 y=71 z=1000 mg pitch=-56 roll=32 (0.1 deg) h=-6 mm
+[imu] x=77 y=79 z=1000 mg pitch=-31 roll=42 (0.1 deg) h=-8 mm
+[imu] x=70 y=82 z=1000 mg pitch=-57 roll=36 (0.1 deg) h=-7 mm
+[bar] min=167 max=188
+[imu] x=91 y=54 z=1000 mg pitch=-29 roll=43 (0.1 deg) h=-8 mm
+[imu] x=67 y=95 z=1000 mg pitch=-56 roll=35 (0.1 deg) h=-7 mm
+[imu] x=75 y=56 z=1000 mg pitch=-33 roll=38 (0.1 deg) h=-7 mm
+[imu] x=42 y=95 z=1000 mg pitch=-51 roll=36 (0.1 deg) h=-7 mm
+[imu] x=80 y=54 z=1000 mg pitch=-35 roll=38 (0.1 deg) h=-7 mm
+[bar] min=167 max=192
+[imu] x=49 y=107 z=1000 mg pitch=-48 roll=39 (0.1 deg) h=-7 mm
+[trace] 252860 8 8
+[trace] 252880 32 40
+[imu] x=52 y=34 z=1000 mg pitch=-40 roll=34 (0.1 deg) h=-6 mm
+[trace] 252900 56 56
+[trace] 252920 56 80
+[trace] 252940 32 80
+[trace] 252960 24 88
+[trace] 252980 0 88
+[trace] 253000 0 80
+[imu] x=112 y=62 z=1000 mg pitch=-31 roll=50 (0.1 deg) h=-10 mm
+[trace] 253020 0 88
+[trace] 253040 0 80
+[trace] 253060 0 80
+[trace] 253080 0 80
+[imu] x=47 y=49 z=1000 mg pitch=-31 roll=39 (0.1 deg) h=-7 mm
+[trace] 253100 48 64
+[trace] 253120 64 64
+[trace] 253140 56 48
+[trace] 253160 40 64
+[trace] 253180 24 64
+[trace] 253200 0 56
+[imu] x=67 y=46 z=1000 mg pitch=-41 roll=41 (0.1 deg) h=-8 mm
+[trace] 253220 0 56
+[trace] 253240 0 64
+[trace] 253260 0 72
+[trace] 253280 0 64
+[bar] min=168 max=193
+[trace] 253300 0 72
+[imu] x=85 y=26 z=1000 mg pitch=-31 roll=46 (0.1 deg) h=-9 mm
+[trace] 253320 0 64
+[trace] 253340 0 64
+[trace] 253360 0 64
+[trace] 253380 0 56
+[trace] 253400 0 64
+[imu] x=117 y=39 z=1000 mg pitch=-18 roll=57 (0.1 deg) h=-11 mm
+[imu] motion: accelerating
+[trace] 253420 0 72
+[trace] 253440 0 64
+[trace] 253460 0 56
+[trace] 253480 0 56
+[imu] motion: steady
+[imu] x=89 y=66 z=1000 mg pitch=-39 roll=49 (0.1 deg) h=-9 mm
+[trace] 253500 0 48
+[trace] 253520 0 56
+[trace] 253540 0 64
+[trace] 253560 0 56
+[trace] 253580 0 48
+[trace] 253600 0 64
+[imu] x=93 y=34 z=1000 mg pitch=-19 roll=54 (0.1 deg) h=-10 mm
+[trace] 253620 0 48
+[trace] 253640 0 64
+[trace] 253660 0 48
+[trace] 253680 0 64
+[trace] 253700 0 48
+[imu] x=67 y=87 z=1000 mg pitch=-40 roll=47 (0.1 deg) h=-9 mm
+[trace] 253720 0 56
+[trace] 253740 0 48
+[trace] 253760 0 56
+[trace] 253780 0 48
+[bar] min=161 max=195
+[trace] 253800 0 56
+[imu] x=109 y=4 z=1000 mg pitch=-17 roll=52 (0.1 deg) h=-10 mm
+[trace] 253820 0 56
+[trace] 253840 0 48
+[trace] 253860 0 64
+[trace] 253880 0 48
+[trace] 253900 0 56
+[imu] x=79 y=110 z=1000 mg pitch=-32 roll=54 (0.1 deg) h=-10 mm
+[trace] 253920 0 56
+[trace] 253940 0 48
+[trace] 253960 0 56
+[trace] 253980 0 56
+[imu] x=74 y=23 z=1000 mg pitch=-26 roll=47 (0.1 deg) h=-9 mm
+[trace] 254000 40 48
+[trace] 254020 56 64
+[trace] 254040 0 48
+[trace] 254060 0 56
+[trace] 254080 0 56
+[imu] x=142 y=11 z=1000 mg pitch=-9 roll=72 (0.1 deg) h=-14 mm
+[trace] 254100 0 48
+[trace] 254120 0 56
+[trace] 254140 0 64
+[trace] 254160 0 56
+[trace] 254180 0 56
+[trace] 254200 0 64
+[imu] x=110 y=6 z=1000 mg pitch=-18 roll=59 (0.1 deg) h=-11 mm
+[trace] 254220 0 48
+[imu] motion: accelerating
+[trace] 254240 0 48
+[trace] 254260 0 56
+[trace] 254280 0 56
+[bar] min=171 max=196
+[trace] 254300 0 48
+[imu] x=133 y=37 z=1000 mg pitch=-10 roll=65 (0.1 deg) h=-13 mm
+[trace] 254320 0 56
+[trace] 254340 0 64
+[trace] 254360 0 48
+[trace] 254380 0 48
+[imu] x=110 y=18 z=1000 mg pitch=-23 roll=59 (0.1 deg) h=-11 mm
+[trace] 254400 0 56
+[trace] 254420 0 56
+[trace] 254440 0 48
+[trace] 254460 0 56
+[trace] 254480 0 64
+[trace] 254500 0 48
+[imu] x=118 y=14 z=1000 mg pitch=-7 roll=63 (0.1 deg) h=-12 mm
+[trace] 254520 0 48
+[trace] 254540 0 56
+[trace] 254560 0 56
+[trace] 254580 0 48
+[imu] x=104 y=48 z=1000 mg pitch=-25 roll=60 (0.1 deg) h=-12 mm
+[trace] 254600 0 48
+[trace] 254620 0 64
+[trace] 254640 0 56
+[trace] 254660 0 48
+[trace] 254680 0 48
+[imu] x=112 y=7 z=1000 mg pitch=-4 roll=62 (0.1 deg) h=-12 mm
+[trace] 254700 0 64
+[trace] 254720 0 56
+[trace] 254740 0 48
+[trace] 254760 0 56
+[trace] 254780 0 56
+[bar] min=169 max=195
+[trace] 254800 0 48
+[imu] motion: steady
+[imu] x=85 y=68 z=1000 mg pitch=-24 roll=61 (0.1 deg) h=-12 mm
+[trace] 254820 0 48
+[trace] 254840 0 56
+[trace] 254860 0 56
+[trace] 254880 0 56
+[imu] x=115 y=-15 z=1000 mg pitch=-5 roll=61 (0.1 deg) h=-12 mm
+[trace] 254900 0 48
+[trace] 254920 0 56
+[trace] 254940 0 56
+[trace] 254960 0 56
+[trace] 254980 0 48
+[imu] x=105 y=83 z=1000 mg pitch=-24 roll=67 (0.1 deg) h=-13 mm
+[trace] 255000 0 48
+[trace] 255020 0 56
+[trace] 255040 -8 48
+[motion] state=3 cmd=1 faults=1 heading=217 dist_mm=728 counts=65491,5302 speed=-8,48 max_tick_us=430
+[imu] x=88 y=-54 z=1000 mg pitch=9 roll=68 (0.1 deg) h=-13 mm
+[imu] x=111 y=123 z=1000 mg pitch=-38 roll=57 (0.1 deg) h=-11 mm
+[bar] min=168 max=192
+[imu] x=90 y=33 z=1000 mg pitch=-41 roll=47 (0.1 deg) h=-9 mm
+[imu] x=104 y=63 z=1000 mg pitch=-26 roll=54 (0.1 deg) h=-10 mm
+[imu] x=83 y=65 z=1000 mg pitch=-45 roll=48 (0.1 deg) h=-9 mm
+[imu] x=108 y=24 z=1000 mg pitch=-18 roll=55 (0.1 deg) h=-11 mm
+[imu] x=67 y=111 z=1000 mg pitch=-44 roll=48 (0.1 deg) h=-9 mm
+[bar] min=166 max=194
+[imu] x=102 y=6 z=1000 mg pitch=-21 roll=53 (0.1 deg) h=-10 mm
+[imu] x=73 y=115 z=1000 mg pitch=-35 roll=54 (0.1 deg) h=-10 mm
+[imu] x=92 y=1 z=1000 mg pitch=-26 roll=50 (0.1 deg) h=-10 mm
+[imu] x=96 y=85 z=1000 mg pitch=-26 roll=58 (0.1 deg) h=-11 mm
+[imu] x=99 y=13 z=1000 mg pitch=-34 roll=50 (0.1 deg) h=-10 mm
+[bar] min=166 max=192
+[imu] x=107 y=66 z=1000 mg pitch=-22 roll=55 (0.1 deg) h=-11 mm
+[imu] x=85 y=49 z=1000 mg pitch=-41 roll=47 (0.1 deg) h=-9 mm
+[imu] x=102 y=41 z=1000 mg pitch=-20 roll=53 (0.1 deg) h=-10 mm
+[imu] x=77 y=81 z=1000 mg pitch=-41 roll=50 (0.1 deg) h=-10 mm
+[imu] x=98 y=14 z=1000 mg pitch=-18 roll=52 (0.1 deg) h=-10 mm
+[bar] min=166 max=192
+[imu] x=67 y=102 z=1000 mg pitch=-39 roll=51 (0.1 deg) h=-10 mm
+[imu] x=94 y=-2 z=1000 mg pitch=-20 roll=52 (0.1 deg) h=-10 mm
+[imu] x=94 y=108 z=1000 mg pitch=-32 roll=55 (0.1 deg) h=-11 mm
+[imu] x=88 y=1 z=1000 mg pitch=-30 roll=50 (0.1 deg) h=-10 mm
+[imu] x=104 y=73 z=1000 mg pitch=-25 roll=56 (0.1 deg) h=-11 mm
+[bar] min=165 max=190
+[imu] x=94 y=33 z=1000 mg pitch=-38 roll=48 (0.1 deg) h=-9 mm
+[imu] x=108 y=50 z=1000 mg pitch=-19 roll=55 (0.1 deg) h=-10 mm
+[imu] x=83 y=56 z=1000 mg pitch=-41 roll=49 (0.1 deg) h=-9 mm
+[imu] x=103 y=36 z=1000 mg pitch=-17 roll=54 (0.1 deg) h=-10 mm
+[imu] x=68 y=102 z=1000 mg pitch=-41 roll=52 (0.1 deg) h=-10 mm
+[bar] min=166 max=192
+[imu] x=96 y=11 z=1000 mg pitch=-18 roll=53 (0.1 deg) h=-10 mm
+[imu] x=74 y=101 z=1000 mg pitch=-35 roll=54 (0.1 deg) h=-10 mm
+[imu] x=95 y=0 z=1000 mg pitch=-24 roll=50 (0.1 deg) h=-10 mm
+[motion] bench done
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65448,5306 speed=0,0 max_tick_us=430
+[imu] x=100 y=93 z=1000 mg pitch=-27 roll=56 (0.1 deg) h=-11 mm
+[imu] x=91 y=18 z=1000 mg pitch=-32 roll=51 (0.1 deg) h=-10 mm
+[bar] min=166 max=192
+[imu] x=121 y=52 z=1000 mg pitch=-18 roll=57 (0.1 deg) h=-11 mm
+[imu] x=109 y=40 z=1000 mg pitch=-35 roll=53 (0.1 deg) h=-10 mm
+[imu] x=126 y=-73 z=1000 mg pitch=8 roll=68 (0.1 deg) h=-13 mm
+[imu] x=157 y=123 z=1000 mg pitch=-25 roll=72 (0.1 deg) h=-14 mm
+[imu] x=134 y=-68 z=1000 mg pitch=-23 roll=59 (0.1 deg) h=-11 mm
+[bar] min=166 max=192
+[imu] x=-252 y=-29 z=1000 mg pitch=10 roll=-46 (0.1 deg) h=9 mm
+[imu] motion: accelerating
+[imu] x=65 y=-24 z=1000 mg pitch=14 roll=-20 (0.1 deg) h=4 mm
+[imu] x=149 y=27 z=1000 mg pitch=2 roll=53 (0.1 deg) h=-10 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65448,5306 speed=0,0 max_tick_us=430
+[imu] x=-145 y=-208 z=1000 mg pitch=75 roll=-5 (0.1 deg) h=1 mm
+[imu] x=348 y=-397 z=1000 mg pitch=216 roll=32 (0.1 deg) h=-6 mm
+[bar] min=166 max=191
+[imu] x=48 y=-353 z=1000 mg pitch=188 roll=21 (0.1 deg) h=-4 mm
+[imu] x=51 y=-304 z=1000 mg pitch=179 roll=21 (0.1 deg) h=-4 mm
+[imu] x=-8 y=-62 z=1000 mg pitch=95 roll=15 (0.1 deg) h=-3 mm
+[imu] x=31 y=-178 z=1000 mg pitch=92 roll=16 (0.1 deg) h=-3 mm
+[imu] x=16 y=-454 z=1000 mg pitch=150 roll=17 (0.1 deg) h=-3 mm
+[imu] motion: steady
+[bar] min=168 max=190
+[imu] x=-6 y=214 z=1000 mg pitch=3 roll=7 (0.1 deg) h=-1 mm
+[imu] x=41 y=-85 z=1000 mg pitch=24 roll=10 (0.1 deg) h=-2 mm
+[imu] x=25 y=-85 z=1000 mg pitch=26 roll=14 (0.1 deg) h=-2 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=24 y=-54 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-51 z=1000 mg pitch=28 roll=17 (0.1 deg) h=-3 mm
+[bar] min=166 max=190
+[imu] x=32 y=-48 z=1000 mg pitch=28 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=28 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-54 z=1000 mg pitch=28 roll=17 (0.1 deg) h=-3 mm
+[bar] min=162 max=189
+[imu] x=31 y=-48 z=1000 mg pitch=28 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-43 z=1000 mg pitch=28 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=31 y=-41 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-42 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-51 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-48 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=34 y=-47 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[bar] min=168 max=192
+[imu] x=30 y=-45 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-41 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-47 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=27 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-47 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[bar] min=167 max=190
+[imu] x=29 y=-50 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-54 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-49 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=35 y=-51 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=21 y=-47 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=35 y=-41 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=39 y=-36 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=31 y=-37 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=33 y=-43 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=33 y=-46 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=33 y=-51 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=30 y=-46 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-42 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=31 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-48 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=32 y=-45 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=33 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=29 y=-46 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=166 max=191
+[imu] x=34 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-49 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=27 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=169 max=191
+[imu] x=30 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-48 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=162 max=191
+[imu] x=31 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-52 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=30 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-49 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-48 z=1000 mg pitch=28 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=26 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=166 max=190
+[imu] x=33 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-42 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-45 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-49 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=163 max=190
+[imu] x=30 y=-47 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=26 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-47 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-49 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=26 y=-48 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=28 y=-44 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-52 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-46 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-51 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=30 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-47 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=25 y=-46 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=28 y=-49 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=26 y=-49 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-48 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-46 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-45 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[bar] min=158 max=190
+[imu] x=30 y=-39 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-41 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=32 y=-40 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=31 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-48 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-42 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-44 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=29 y=-40 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-48 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=25 y=-51 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=27 y=-48 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=192
+[imu] x=28 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-52 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=27 y=-47 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=26 y=-50 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=27 y=-51 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[bar] min=160 max=190
+[imu] x=33 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-48 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-42 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=35 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=31 y=-42 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=30 y=-45 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-44 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-48 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=170 max=192
+[imu] x=31 y=-43 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=33 y=-42 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=25 y=-42 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-39 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-39 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=192
+[imu] x=27 y=-39 z=1000 mg pitch=24 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-38 z=1000 mg pitch=24 roll=16 (0.1 deg) h=-3 mm
+[imu] x=34 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-39 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=29 y=-38 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=31 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-41 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-48 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=32 y=-54 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=33 y=-54 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-51 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-48 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=166 max=190
+[imu] x=30 y=-50 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-49 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-43 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-44 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-44 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=167 max=191
+[imu] x=31 y=-49 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-46 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=29 y=-44 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=33 y=-45 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=29 y=-45 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=166 max=190
+[imu] x=27 y=-48 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-48 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-44 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-46 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=166 max=191
+[imu] x=28 y=-43 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-49 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=28 y=-46 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=34 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-45 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=166 max=190
+[imu] x=34 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-50 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=28 y=-49 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=167 max=190
+[imu] x=29 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=168 max=189
+[imu] x=29 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=33 y=-48 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=28 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=27 y=-46 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=26 y=-47 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=168 max=190
+[imu] x=32 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-48 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=33 y=-43 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=165 max=188
+[imu] x=29 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-49 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-48 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=167 max=191
+[imu] x=27 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-47 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-48 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=157 max=190
+[imu] x=32 y=-43 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-45 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=30 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=168 max=190
+[imu] x=30 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-46 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=166 max=191
+[imu] x=31 y=-48 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=30 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-49 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=33 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=168 max=190
+[imu] x=31 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-48 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-48 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-46 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[bar] min=166 max=190
+[imu] x=28 y=-42 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-44 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=34 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=168 max=190
+[imu] x=33 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=36 y=-47 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-46 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=156 max=189
+[imu] x=32 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-43 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-43 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-40 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-40 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[bar] min=167 max=189
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=28 y=-41 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-43 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=32 y=-46 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[bar] min=168 max=188
+[imu] x=31 y=-42 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=33 y=-42 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=29 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=29 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=189
+[imu] x=30 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=29 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-50 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=27 y=-50 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-50 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-46 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=25 y=-45 z=1000 mg pitch=26 roll=15 (0.1 deg) h=-3 mm
+[bar] min=161 max=191
+[imu] x=31 y=-43 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-38 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=169 max=191
+[imu] x=29 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-48 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-48 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=156 max=189
+[imu] x=26 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=26 y=-46 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-46 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-42 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=27 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-44 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-43 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=32 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=32 y=-41 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=192
+[imu] x=25 y=-48 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=164 max=192
+[imu] x=34 y=-44 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=29 y=-45 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=31 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=31 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-47 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-40 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=166 max=191
+[imu] x=26 y=-43 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=28 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-47 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-50 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-47 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=32 y=-47 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=29 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=30 y=-51 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-48 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-47 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=34 y=-42 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=31 y=-40 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=35 y=-43 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=34 y=-43 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=30 y=-48 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=28 y=-50 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[bar] min=162 max=190
+[imu] x=31 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=33 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=169 max=189
+[imu] x=32 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=28 y=-44 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=31 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-43 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=31 y=-43 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=29 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=31 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=31 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=25 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-48 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=29 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-48 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-44 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=167 max=190
+[imu] x=34 y=-40 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=24 y=-46 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[bar] min=169 max=192
+[imu] x=26 y=-40 z=1000 mg pitch=25 roll=15 (0.1 deg) h=-3 mm
+[imu] x=33 y=-37 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-38 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=29 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=27 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=27 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=167 max=190
+[imu] x=32 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-47 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-48 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=29 y=-47 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=32 y=-46 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=30 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=189
+[imu] x=32 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-49 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=26 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=24 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-49 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-53 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-54 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=167 max=189
+[imu] x=28 y=-48 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=26 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-42 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=32 y=-39 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=34 y=-43 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-41 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=24 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=30 y=-47 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-47 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=23 y=-48 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=24 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=25 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=22 y=-47 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-45 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=19 y=-50 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-50 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-49 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=29 y=-47 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=22 y=-52 z=1000 mg pitch=25 roll=15 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-56 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-51 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-50 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=186
+[imu] x=27 y=-53 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-50 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=27 y=-52 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-52 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-50 z=1000 mg pitch=27 roll=16 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=33 y=-38 z=1000 mg pitch=27 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-30 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=33 y=-35 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-30 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-38 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=31 y=-39 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=24 y=-44 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=26 y=-47 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-51 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=27 y=-51 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-39 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-39 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=32 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-37 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-42 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=27 y=-43 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=31 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=31 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=167 max=191
+[imu] x=32 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-44 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=169 max=192
+[imu] x=28 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=23 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-50 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-51 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=29 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=157 max=190
+[imu] x=32 y=-46 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=29 y=-48 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-52 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=35 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-42 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[imu] x=27 y=-50 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=28 y=-55 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-53 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-50 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=33 y=-43 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=29 y=-32 z=1000 mg pitch=23 roll=17 (0.1 deg) h=-3 mm
+[bar] min=170 max=190
+[imu] x=32 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-43 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[imu] x=34 y=-45 z=1000 mg pitch=23 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-50 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-50 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[bar] min=166 max=190
+[imu] x=31 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-44 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[imu] x=27 y=-48 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=23 y=-50 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-43 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=39 y=-28 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[imu] x=35 y=-19 z=1000 mg pitch=22 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-13 z=1000 mg pitch=21 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-26 z=1000 mg pitch=22 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-36 z=1000 mg pitch=21 roll=17 (0.1 deg) h=-3 mm
+[bar] min=170 max=192
+[imu] x=31 y=-47 z=1000 mg pitch=21 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=23 roll=18 (0.1 deg) h=-3 mm
+[imu] x=32 y=-49 z=1000 mg pitch=23 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-47 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=33 y=-39 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=32 y=-45 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[imu] x=26 y=-50 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-48 z=1000 mg pitch=23 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-48 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=31 y=-50 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=189
+[imu] x=24 y=-51 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-56 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-57 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-42 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[bar] min=164 max=191
+[imu] x=30 y=-45 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-37 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=30 y=-40 z=1000 mg pitch=24 roll=16 (0.1 deg) h=-3 mm
+[imu] x=26 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=25 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-48 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-47 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=32 y=-46 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=30 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=33 y=-40 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-43 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-44 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=32 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-44 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=29 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-39 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=31 y=-43 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-37 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-36 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=30 y=-43 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-38 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-43 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-42 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-45 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=192
+[imu] x=26 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=35 y=-39 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-33 z=1000 mg pitch=23 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=31 y=-36 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-47 z=1000 mg pitch=23 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=23 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-42 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[bar] min=163 max=189
+[imu] x=28 y=-45 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-57 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=29 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-39 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=34 y=-32 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[bar] min=167 max=190
+[imu] x=27 y=-33 z=1000 mg pitch=22 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-48 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-58 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=27 y=-44 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-34 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=30 y=-38 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-29 z=1000 mg pitch=23 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-30 z=1000 mg pitch=23 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-38 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=35 y=-34 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=28 y=-36 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-37 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-41 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[imu] x=31 y=-42 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=29 y=-41 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[imu] x=30 y=-40 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-41 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=31 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=192
+[imu] x=32 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=26 y=-43 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=27 y=-43 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-44 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-48 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=191
+[imu] x=28 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-40 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-41 z=1000 mg pitch=24 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=35 y=-35 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=36 y=-29 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=35 y=-30 z=1000 mg pitch=23 roll=18 (0.1 deg) h=-3 mm
+[imu] x=33 y=-40 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=36 y=-46 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[bar] min=161 max=190
+[imu] x=34 y=-40 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-33 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-35 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-48 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=26 y=-48 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=31 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-40 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=32 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-42 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=32 y=-41 z=1000 mg pitch=24 roll=18 (0.1 deg) h=-3 mm
+[imu] x=32 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-43 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-39 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=30 y=-43 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=25 y=-50 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-47 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=31 y=-48 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-52 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=30 y=-53 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=25 y=-50 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=22 y=-54 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=24 y=-57 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=27 y=-54 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=156 max=190
+[imu] x=24 y=-51 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-39 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-42 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=27 y=-42 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[bar] min=167 max=190
+[imu] x=29 y=-41 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=34 y=-41 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-41 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=33 y=-40 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=28 y=-45 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=31 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-43 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-40 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-45 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=31 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-47 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=29 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[bar] min=166 max=190
+[imu] x=30 y=-41 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=27 y=-44 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-42 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-42 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[bar] min=169 max=190
+[imu] x=30 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-44 z=1000 mg pitch=26 roll=18 (0.1 deg) h=-3 mm
+[imu] x=30 y=-44 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=34 y=-46 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[imu] x=27 y=-47 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=30 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-43 z=1000 mg pitch=25 roll=18 (0.1 deg) h=-3 mm
+[imu] x=28 y=-44 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=28 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=189
+[imu] x=29 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=32 y=-46 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-43 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-41 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-47 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=168 max=190
+[imu] x=31 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=29 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=168 max=190
+[imu] x=28 y=-45 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=27 y=-46 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=34 y=-43 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=166 max=190
+[imu] x=30 y=-44 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=28 y=-46 z=1000 mg pitch=26 roll=16 (0.1 deg) h=-3 mm
+[imu] x=29 y=-44 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-45 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[bar] min=157 max=190
+[imu] x=30 y=-48 z=1000 mg pitch=25 roll=16 (0.1 deg) h=-3 mm
+[imu] x=31 y=-49 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=30 y=-42 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[imu] x=31 y=-43 z=1000 mg pitch=24 roll=16 (0.1 deg) h=-3 mm
+[imu] x=30 y=-46 z=1000 mg pitch=25 roll=17 (0.1 deg) h=-3 mm
+[motion] state=3 cmd=1 faults=1 heading=219 dist_mm=730 counts=65449,5303 speed=0,0 max_tick_us=430
+[bar] min=165 max=190
+[imu] x=31 y=-47 z=1000 mg pitch=26 roll=17 (0.1 deg) h=-3 mm
+[imu] x=40 y=-18 z=1000 mg pitch=23 roll=18 (0.1 deg) h=-3 mm
+[imu] x=33 y=-37 z=1000 mg pitch=23 roll=17 (0.1 deg) h=-3 mm
+[imu] x=39 y=-52 z=1000 mg pitch=27 roll=18 (0.1 deg) h=-3 mm
+[imu] x=24 y=-36 z=1000 mg pitch=28 roll=18 (0.1 deg) h=-3 mm
+[bar] min=166 max=192
+[imu] x=31 y=-41 z=1000 mg pitch=24 roll=17 (0.1 deg) h=-3 mm
+[imu] x=33 y=-33 z=1000 mg pitch=20 roll=18 (0.1 deg) h=-3 mm

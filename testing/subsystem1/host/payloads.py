@@ -20,11 +20,10 @@ LAYOUTS = {
         ("pitch", 11, 1024), ("roll", 11, 1024),
         ("hump_max", 6, 0), ("humps", 4, 0), ("on_hump", 1, 0),
         ("avoid_state", 3, 0), ("avoid_side", 2, 0), ("bypasses", 4, 0),
-        ("forward_mm", 12, 0),
+        ("forward_mm", 12, 0), ("faults", 10, 0),
     ],
     "motion": [
-        ("state", 2, 0), ("command", 3, 0), ("faults", 3, 0),
-        ("heading_deg", 9, 0), ("left_speed", 11, 1024),
+        ("state", 2, 0), ("command", 3, 0), ("heading_deg", 9, 0), ("left_speed", 11, 1024),
         ("right_speed", 11, 1024), ("left_count", 16, 0),
         ("right_count", 16, 0), ("distance_mm", 24, 0),
     ],
@@ -43,8 +42,8 @@ SAMPLES = {
                       following=1, barcode=1, barcodes=3, motion_class=0,
                       pitch=-12, roll=35, hump_max=21, humps=2, on_hump=0,
                       avoid_state=1, avoid_side=0, bypasses=1,
-                      forward_mm=1830),
-    "motion": dict(state=1, command=5, faults=0, heading_deg=271,
+                      forward_mm=1830, faults=0),
+    "motion": dict(state=1, command=5, heading_deg=271,
                    left_speed=198, right_speed=203, left_count=48211,
                    right_count=48902, distance_mm=12450),
     "scan": dict(closest_mm=310, closest_deg=90, right_deg=85, left_deg=95,
@@ -55,10 +54,10 @@ SAMPLES = {
 
 # motion_control_pack() output for these values, from S2-U21's
 # testing/subsystem2/host/test_motion.c, so both sides use one layout.
-C_MOTION_VALUES = dict(state=2, command=3, faults=5, heading_deg=345,
+C_MOTION_VALUES = dict(state=2, command=3, heading_deg=345,
                        left_speed=100, right_speed=-500, left_count=0x1234,
                        right_count=0xABCD, distance_mm=0xEF0123)
-C_MOTION_BYTES = bytes.fromhex("9dacc644182469579bde0246")
+C_MOTION_BYTES = bytes.fromhex("9d663220c1234abcdef01230")
 
 # The same data as Week 6 JSON: names spelled out, enums as words.
 STATES = ["INIT", "READY", "FOLLOW", "AVOID", "TURN", "SAFE_STOP"]

@@ -20,7 +20,7 @@
 #define MOTION_CONTROL_IDLE     0u /* Stopped, or a drive target expired. */
 #define MOTION_CONTROL_RUNNING  1u
 #define MOTION_CONTROL_COMPLETE 2u
-#define MOTION_CONTROL_FAILED   3u /* See status.faults. */
+#define MOTION_CONTROL_FAILED   3u /* See APP_FAULT_MOTION (app_fault.h). */
 
 /* status.command */
 #define MOTION_CONTROL_CMD_NONE     0u
@@ -29,11 +29,6 @@
 #define MOTION_CONTROL_CMD_LEFT     3u
 #define MOTION_CONTROL_CMD_RIGHT    4u
 #define MOTION_CONTROL_CMD_DRIVE    5u
-
-/* status.faults bits, cleared by the next command. */
-#define MOTION_CONTROL_FAULT_STALL_LEFT  1u /* Driven 1 s with no edge. */
-#define MOTION_CONTROL_FAULT_STALL_RIGHT 2u
-#define MOTION_CONTROL_FAULT_ENCODER     4u /* Missed phase; still runs. */
 
 /* Command limits. */
 #define MOTION_CONTROL_MAX_DISTANCE_MM 5000u
@@ -48,7 +43,6 @@ typedef struct
     unsigned int distance_mm : 24; /* Distance rolled, wraps. */
     unsigned int state : 2;
     unsigned int command : 3;
-    unsigned int faults : 3;
     unsigned int left_count : 16; /* Encoder edges, wraps. */
     unsigned int right_count : 16;
     signed int left_speed : 11; /* mm/s. */

@@ -23,7 +23,6 @@
 typedef struct
 {
     unsigned int forward_mm : 12; /* 20..4000; 4000 is nothing in range. */
-    unsigned int b_fault : 1;     /* Last scan had a ray with no echo. */
     unsigned int count : 4;       /* Scans finished, wraps. */
     unsigned int forward_ms : 32; /* Kernel time of forward_mm, wraps. */
     scan_profile_t profile;       /* Last profile scan. */

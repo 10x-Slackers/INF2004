@@ -8,12 +8,10 @@
 
 #include "safety_monitor.h"
 #include "../subsystem2/motion_control.h"
-#include "../subsystem4/subsystem4.h"
 
 #define SAFETY_MONITOR_PERIOD_MS 10u
 
 static void safety_monitor_task(INT stacd, void * p_exinf);
-static bool safety_monitor_imu_fault(void);
 
 /*!
  * @brief Start the Safety Monitor task.
@@ -50,7 +48,7 @@ void safety_monitor_stop(uint32_t cause)
  */
 bool safety_monitor_clear(void)
 {
-    bool b_clear = !safety_monitor_imu_fault();
+    bool b_clear = (0u == (app_faults() & APP_FAULT_IMU));
 
     if (b_clear)
     {
@@ -74,7 +72,8 @@ static void safety_monitor_task(INT stacd, void * p_exinf)
     {
         (void)tk_dly_tsk(SAFETY_MONITOR_PERIOD_MS);
         motion_control_get_status(&motion);
-        cause = safety_monitor_imu_fault() ? SAFETY_MONITOR_IMU : 0u;
+        cause =
+            (0u != (app_faults() & APP_FAULT_IMU)) ? SAFETY_MONITOR_IMU : 0u;
 
         if (MOTION_CONTROL_FAILED == motion.state)
         {
@@ -85,17 +84,6 @@ static void safety_monitor_task(INT stacd, void * p_exinf)
             safety_monitor_stop(cause);
         }
     }
-}
-
-/*!
- * @brief True while the IMU reports an impact or excessive tilt.
- */
-static bool safety_monitor_imu_fault(void)
-{
-    s4_fault_t fault = {0};
-
-    s4_get_fault(&fault);
-    return (0u != fault.impact) || (0u != fault.tilt);
 }
 
 /*** end of file ***/

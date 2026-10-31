@@ -35,7 +35,6 @@
 /* Written only by the IMU task, under g_s4_mutex. */
 static s4_accel_t g_accel;
 static s4_tilt_t g_tilt;
-static s4_fault_t g_fault;
 static s4_hump_t g_hump;
 static s4_motion_t g_motion;
 
@@ -59,13 +58,6 @@ void s4_get_tilt(s4_tilt_t * p_tilt)
 {
     (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
     *p_tilt = g_tilt;
-    (void)tk_unl_mtx(g_s4_mutex);
-}
-
-void s4_get_fault(s4_fault_t * p_fault)
-{
-    (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
-    *p_fault = g_fault;
     (void)tk_unl_mtx(g_s4_mutex);
 }
 
@@ -107,6 +99,7 @@ void s4_imu_task(INT stacd, void * p_exinf)
     bool b_jolt = false;
     bool b_new_impact = false;
     bool b_new_tilt = false;
+    uint32_t faults = 0u; /* APP_FAULT_IMU bits latched; only this task. */
     bool b_hump_over = false;
     bool b_descending = false; /* Past the top of the current hump. */
     bool b_changed = false;
@@ -229,11 +222,11 @@ void s4_imu_task(INT stacd, void * p_exinf)
             g_tilt.pitch = pitch;
             g_tilt.roll = roll;
             g_tilt.cal = 1u;
-            b_new_impact = b_jolt && !g_fault.impact;
-            b_new_tilt =
-                (tilted_count >= (S4_TILT_MS / S4_IMU_MS)) && !g_fault.tilt;
-            g_fault.impact = g_fault.impact || b_new_impact; /* Latched. */
-            g_fault.tilt = g_fault.tilt || b_new_tilt;
+            b_new_impact = b_jolt && (0u == (faults & APP_FAULT_IMPACT));
+            b_new_tilt = (tilted_count >= (S4_TILT_MS / S4_IMU_MS)) &&
+                         (0u == (faults & APP_FAULT_TILT));
+            faults |= (b_new_impact ? APP_FAULT_IMPACT : 0u) |
+                      (b_new_tilt ? APP_FAULT_TILT : 0u); /* Latched. */
             g_hump.on = (peak_mm > 0) && !b_hump_over;
             if (b_hump_over)
             {
@@ -250,7 +243,7 @@ void s4_imu_task(INT stacd, void * p_exinf)
                 g_hump.on &&
                 (b_descending || (height_mm <= (peak_mm - IMU_DESCEND_MM)));
             motion_class = push_class;
-            if (g_fault.impact)
+            if (0u != (faults & APP_FAULT_IMPACT))
             {
                 motion_class = S4_IMPACT;
             }
@@ -270,6 +263,7 @@ void s4_imu_task(INT stacd, void * p_exinf)
 
             if (b_new_impact || b_new_tilt)
             {
+                app_fault_set(faults);
                 tm_printf((UB *)"[imu] FAULT: %s\n",
                           b_new_impact ? "impact" : "tilt");
                 imu_beep_on();

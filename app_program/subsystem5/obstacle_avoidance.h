@@ -23,15 +23,9 @@
 #define OBSTACLE_AVOIDANCE_BYPASS  3u /* Driving round it. */
 #define OBSTACLE_AVOIDANCE_STOPPED 4u /* Safe stop, until the next start. */
 
-/* status.faults bits, cleared by obstacle_avoidance_start(). */
-#define OBSTACLE_AVOIDANCE_FAULT_SENSOR  1u /* No echo, or no scan result. */
-#define OBSTACLE_AVOIDANCE_FAULT_BLOCKED 2u /* Neither side open. */
-#define OBSTACLE_AVOIDANCE_FAULT_MOTION  4u /* Move failed, or did not end. */
-
 typedef struct
 {
     unsigned int state : 3;
-    unsigned int faults : 3;
     unsigned int side : 2;      /* SCAN_PROFILE_LEFT/RIGHT of the bypass. */
     unsigned int step : 3;      /* Bypass step 1..7, 0 outside a bypass. */
     unsigned int bypasses : 4;  /* Bypasses finished, wraps. */

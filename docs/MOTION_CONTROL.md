@@ -45,13 +45,14 @@ motion_control_drive(base - correction, base + correction); /* every 10 ms */
 | --------------------------- | ------------------ | --------------------------------------------------------------------------------------------- |
 | `state`                     | 0–3                | `IDLE`, `RUNNING`, `COMPLETE`, `FAILED`                                                       |
 | `command`                   | 0–5                | `NONE`, `FORWARD`, `BACKWARD`, `LEFT`, `RIGHT`, `DRIVE`                                       |
-| `faults`                    | bits               | 1 left stall, 2 right stall (no encoder edge for 1 s: move fails, both brake). 4 missed encoder phase (counted, move continues). Cleared by the next command |
 | `left_speed`, `right_speed` | −1023–1023         | Wheel speed in mm/s, forward positive                                                         |
 | `left_count`, `right_count` | 0–65535, wraps     | Encoder edges, forward counts up                                                              |
 | `distance_mm`               | 0–16 777 215, wraps| Distance rolled, either direction                                                             |
 | `heading_deg`               | 0–359              | Anticlockwise from power-up, from the encoders                                                |
 
 To measure part of a route, save `distance_mm` or `heading_deg` at the start and subtract.
+
+Faults are bits in the shared fault bitmask (`app_faults()`, `app_fault.h`), cleared by the next command: `APP_FAULT_STALL_LEFT` and `_RIGHT` (no encoder edge for 1 s: the move fails and both wheels brake), `APP_FAULT_ENCODER` (a missed phase: counted, the move continues).
 
 ## How it works
 
@@ -86,14 +87,14 @@ While each step runs it prints `[trace] time_ms left_mm_s right_mm_s` every 20 m
 
 `motion_control_pack()` writes 96 bits, most significant bit first. Speeds are sent as mm/s + 1024:
 
-| Bits  | 0–1     | 2–4       | 5–7      | 8–16          | 17–27        | 28–38         | 39–54        | 55–70         | 71–94         | 95 |
-| ----- | ------- | --------- | -------- | ------------- | ------------ | ------------- | ------------ | ------------- | ------------- | -- |
-| Field | `state` | `command` | `faults` | `heading_deg` | `left_speed` | `right_speed` | `left_count` | `right_count` | `distance_mm` | 0  |
+| Bits  | 0–1     | 2–4       | 5–13          | 14–24        | 25–35         | 36–51        | 52–67         | 68–91         | 92–95 |
+| ----- | ------- | --------- | ------------- | ------------ | ------------- | ------------ | ------------- | ------------- | ----- |
+| Field | `state` | `command` | `heading_deg` | `left_speed` | `right_speed` | `left_count` | `right_count` | `distance_mm` | 0     |
 
 ```python
 v = int.from_bytes(payload, "big")
 def field(start, width): return (v >> (96 - start - width)) & ((1 << width) - 1)
-left_mm_s = field(17, 11) - 1024
+left_mm_s = field(14, 11) - 1024
 ```
 
 ## Resources

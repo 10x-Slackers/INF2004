@@ -11,6 +11,7 @@
 
 #include "../../../app_program/subsystem2/drv_motion.h"
 #include "../../../app_program/subsystem2/motion_control.h"
+#include "../../../app_program/app_fault.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,6 +36,22 @@ static test_wheel_t g_wheel[2];
 static uint8_t g_skipped;
 static uint32_t g_count_origin;
 static int g_failures;
+static uint32_t g_faults; /* Stands in for the kernel event flag. */
+
+void app_fault_set(uint32_t bits)
+{
+    g_faults |= bits;
+}
+
+void app_fault_clear(uint32_t bits)
+{
+    g_faults &= ~bits;
+}
+
+uint32_t app_faults(void)
+{
+    return g_faults;
+}
 
 /* Print one result and count failures. */
 static void test_check(bool b_pass, const char * p_text)
@@ -269,7 +286,7 @@ static void test_faults(void)
     (void)motion_control_move_forward(500u);
     ticks = test_run(&status);
     test_check((MOTION_CONTROL_FAILED == status.state) &&
-                   (MOTION_CONTROL_FAULT_STALL_RIGHT == status.faults) &&
+                   (APP_FAULT_STALL_RIGHT == app_faults()) &&
                    (ticks >= 100u) && (ticks <= 110u) &&
                    (0 == g_wheel[0].duty) && (0 == g_wheel[1].duty),
                "blocked right wheel: stall fault after 1 s, both braked");
@@ -285,7 +302,7 @@ static void test_faults(void)
     }
     motion_control_get_status(&status);
     test_check((MOTION_CONTROL_FAILED == status.state) &&
-                   (MOTION_CONTROL_FAULT_STALL_RIGHT == status.faults) &&
+                   (APP_FAULT_STALL_RIGHT == app_faults()) &&
                    (0 == g_wheel[0].duty) && (0 == g_wheel[1].duty) &&
                    !motion_control_drive(150, 150),
                "renewed drive: stall latches and further drives are refused");
@@ -299,7 +316,7 @@ static void test_faults(void)
     g_skipped++;
     (void)test_run(&status);
     test_check((MOTION_CONTROL_COMPLETE == status.state) &&
-                   (MOTION_CONTROL_FAULT_ENCODER == status.faults),
+                   (APP_FAULT_ENCODER == app_faults()),
                "missed encoder state is reported and the move still completes");
 
     test_reset(0u);
@@ -307,7 +324,7 @@ static void test_faults(void)
     (void)test_run(&status);
     (void)motion_control_move_forward(100u);
     motion_control_get_status(&status);
-    test_check(0u == status.faults, "a new command clears the faults");
+    test_check(0u == app_faults(), "a new command clears the faults");
 }
 
 static void test_limits(void)
@@ -341,13 +358,12 @@ static void test_pack(void)
     motion_control_status_t status = {0};
     uint8_t packet[MOTION_CONTROL_PACKET_BYTES];
     static const uint8_t expected[MOTION_CONTROL_PACKET_BYTES] = {
-        0x9d, 0xac, 0xc6, 0x44, 0x18, 0x24, 0x69, 0x57, 0x9b, 0xde, 0x02, 0x46};
+        0x9d, 0x66, 0x32, 0x20, 0xc1, 0x23, 0x4a, 0xbc, 0xde, 0xf0, 0x12, 0x30};
 
-    /* state 2, cmd 3, faults 5, heading 345, speeds +100 / -500,
+    /* state 2, cmd 3, heading 345, speeds +100 / -500,
      * counts 0x1234 / 0xabcd, distance 0xef0123 (see docs table). */
     status.state = 2u;
     status.command = 3u;
-    status.faults = 5u;
     status.heading_deg = 345u;
     status.left_speed = 100;
     status.right_speed = -500;

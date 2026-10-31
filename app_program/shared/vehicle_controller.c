@@ -56,7 +56,7 @@ _Static_assert(VC_RELEASED <= 7u, "released must reach VC_RELEASED");
 
 static void vehicle_controller_task(INT stacd, void * p_exinf);
 static void vc_step(bool b_press, bool b_barcode, bool b_junction,
-                    uint32_t command, uint32_t avoid_state,
+                    bool b_searching, uint32_t command, uint32_t avoid_state,
                     const motion_control_status_t * p_motion);
 static void vc_enter(vc_state_t state, const char * p_cause);
 static bool vc_pressed(void);
@@ -146,8 +146,8 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
         }
         else
         {
-            vc_step(b_press, b_barcode, b_junction, barcode.command,
-                    avoid.state, &motion);
+            vc_step(b_press, b_barcode, b_junction, (0u != line.b_searching),
+                    barcode.command, avoid.state, &motion);
         }
     }
 }
@@ -158,12 +158,13 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
  * @param[in] b_press     GP20 was pressed.
  * @param[in] b_barcode   A barcode was validated since FOLLOW last ran.
  * @param[in] b_junction  A junction began since FOLLOW last ran.
+ * @param[in] b_searching The line follower is pivoting to find the line.
  * @param[in] command     The last validated barcode command.
  * @param[in] avoid_state Obstacle avoidance state.
  * @param[in] p_motion    Motion status.
  */
 static void vc_step(bool b_press, bool b_barcode, bool b_junction,
-                    uint32_t command, uint32_t avoid_state,
+                    bool b_searching, uint32_t command, uint32_t avoid_state,
                     const motion_control_status_t * p_motion)
 {
     s4_tilt_t tilt = {0};
@@ -190,6 +191,20 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
             {
                 g_vc.pending = command;
                 tm_printf((UB *)"[vc] barcode %u pending\n", g_vc.pending);
+            }
+            /* Pause avoidance while the line follower pivots: the sweep
+             * would see the sides as obstacles ahead. */
+            if (b_searching && (OBSTACLE_AVOIDANCE_MONITOR == avoid_state))
+            {
+                obstacle_avoidance_cancel();
+            }
+            else if (!b_searching && (OBSTACLE_AVOIDANCE_IDLE == avoid_state))
+            {
+                obstacle_avoidance_start();
+            }
+            else
+            {
+                /* Avoidance already matches the line follower. */
             }
             if ((OBSTACLE_AVOIDANCE_PROFILE == avoid_state) ||
                 (OBSTACLE_AVOIDANCE_BYPASS == avoid_state))

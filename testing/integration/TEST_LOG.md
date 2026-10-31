@@ -22,6 +22,7 @@ Define a test here before running it. Test IDs never change.
 | INT-10 | Safety Monitor latches a wheel stall | I4, I11, FR11 | manual | Normal build, car following. Hold one wheel still for over 1 s | `[safety] stop, cause 0x4`, `SAFE_STOP: safety latched`; GP20 clears it, a second press follows again |
 | INT-11 | RAM before/after minimum-bit: Vehicle Controller and the whole image | Minimum-bit CR | host | Commands in `logs/2026-10-31_ram.txt` | Packed is smaller |
 | INT-12 | Controller stops on a lost line | I1, I11, FR2, NFR5 | manual | Normal build. A straight line that ends with no line within 300 mm; car on the line, GP20 to start. After it stops, GP20, then GP20 again | After the search, `[vc] FOLLOW -> SAFE_STOP: line lost` and `[safety] stop, cause 0x8`. The first press returns to INIT then READY, the second follows again |
+| INT-13 | Avoidance pauses during a line search | I1, I6, FR7 | manual | Normal build. An L: a straight line ending in a 90° left corner, with a box 200 mm outside the corner (to the right of where the straight ends). Car on the straight, GP20 | The car runs off the corner or follows it; any pivot sweeps past the box with no `[vc] FOLLOW -> AVOID`, and the car follows the new branch |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).

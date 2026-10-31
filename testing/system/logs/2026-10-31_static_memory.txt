@@ -1,0 +1,30 @@
+SYS-01 static memory and SYS-02 allocation check, commit 9071c21, normal image (make -C build_make)
+
+$ arm-none-eabi-size build_make/mtk3pico_smp1_usb_cdc_wifi.elf
+   text	   data	    bss	    dec	    hex	filename
+ 290214	     88	  24696	 314998	  4ce76	build_make/mtk3pico_smp1_usb_cdc_wifi.elf
+
+Linker memory: ROM 0x00200000 (2 MB flash), RAM 0x00040000 (256 KB)
+
+$ per subsystem: arm-none-eabi-size build_make/mtkernel_3/app_program/<subsystem>/*.o (text, data+bss)
+subsystem1 text=8 ram=0
+subsystem2 text=4462 ram=83
+subsystem3 text=8 ram=0
+subsystem4 text=2547 ram=32
+subsystem5 text=3142 ram=60
+app_main text=875 ram=0
+
+$ largest RAM symbols: arm-none-eabi-nm -S --size-sort (data/bss, top 10)
+2000106c 00000270 B knl_mplcb_table
+20000dc4 000002a0 B knl_mpfcb_table
+20000390 00000340 B knl_ReqCBtbl
+200052bc 00000400 b hw_endpoints
+200006d8 00000400 B knl_OpnCBtbl
+20001984 00000800 b knl_idle_stack
+20003508 00000800 B knl_tmp_stack
+200056d0 000008dc B cyw43_state
+2000218c 00000d80 B knl_tcb_table
+20003f00 00001000 b tx_buffer
+
+$ grep -rnE '\b(malloc|calloc|realloc|free|Kmalloc|tk_get_mpl|tk_get_mpf|tk_cre_mbf|tk_snd_mbx)\s*\(' app_program
+(exit 1, no matches)

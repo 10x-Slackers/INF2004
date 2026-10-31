@@ -26,4 +26,8 @@ Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
-| YYYY-MM-DD | S3-U01 | `abc1234` | | PASS / FAIL | `logs/YYYY-MM-DD_….txt` | |
+| 2026-10-31 | S3-U01 | `195db26` | mykacx | PASS | `logs/2026-10-31_unit.txt` | |
+| 2026-10-31 | S3-U02 | `195db26` | mykacx | PASS | `logs/2026-10-31_unit.txt` | |
+| 2026-10-31 | S3-U04 | `195db26` | mykacx | PASS | `logs/2026-10-31_unit.txt` | |
+| 2026-10-31 | S3-U05 | `195db26` | mykacx | PASS | `logs/2026-10-31_unit.txt` | |
+| 2026-10-31 | S3-U03 | `195db26` | mykacx | PASS | `logs/2026-10-31_unit.txt` | Left, right and both over the line read as expected; DO is 1 over black |

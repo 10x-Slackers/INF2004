@@ -102,6 +102,10 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
             }
             line_following_stop();
             tm_printf((UB *)"[line] bench done after %u ms\n", run_ms);
+            while (subsystem3_bench_report(&last))
+            {
+                tk_dly_tsk(S3_BENCH_POLL_MS); /* Re-arm once off the line. */
+            }
             held_ms = 0u;
         }
         tk_dly_tsk(S3_BENCH_POLL_MS);

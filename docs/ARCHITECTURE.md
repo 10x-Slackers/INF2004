@@ -29,7 +29,7 @@ These decisions were frozen at the review. Changing one means updating this docu
 
 | Pri | Task                            | Purpose                                                                              | Trigger                        | Buddy |
 | --- | ------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------ | ----- |
-| P1  | Safety Monitor                  | Stop on stale control data, a critical fault or an explicit stop. Holds the latched stop | 5 ms + events                  | All   |
+| P1  | Safety Monitor                  | Stop on a critical fault (IMU, wheel stall) or an explicit stop. Holds the latched stop  | 10 ms + calls                  | All   |
 | P2  | Wheel Motion Control            | Sole motor writer. Per-wheel PID, odometry, encoder-based turns                      | 10 ms + stop wake              | 2     |
 | P3  | Barcode Decoder                 | Decode the auxiliary IR samples and validate LEFT / RIGHT / STRAIGHT / UTURN         | 10 ms                          | 3     |
 | P4  | Line Following                  | Line error and junction detection from two digital IR sensors                        | 10 ms                          | 3     |
@@ -127,7 +127,7 @@ Not drawn: every task reports health to the Safety Monitor over I10.
 Notes:
 
 - I3 is a one-slot mailbox: a new target replaces the old one, and the Vehicle Controller must renew it before it expires, otherwise Wheel Motion Control brakes.
-- Collision risk belongs to Obstacle Avoidance, which brakes on the first forward reading within 350 mm. The Safety Monitor does not read I8: a range backstop could never act before avoidance, which brakes on the same reading, and only avoidance requests readings. An IMU fault on I9 asserts the I11 stop.
+- Collision risk belongs to Obstacle Avoidance, which brakes on the first forward reading within 350 mm. It reads the range only while the car follows the line or drives straight in a bypass: nothing checks it during turns (avoidance's look and bypass turns, the controller's junction turns). The Safety Monitor does not read I8: a range backstop could never act before avoidance, which brakes on the same reading, and only avoidance requests readings. An IMU fault on I9 asserts the I11 stop.
 - A validated `STOP` from the supervisor also raises a safety request on I11, so it latches like any other stop.
 - The stop on I11 carries a generation number. Motion requests issued before the stop are stale and must be discarded (FR11).
 - The supervisor may only start, stop and reset. It never steers or sets speed (FR1).
@@ -151,12 +151,12 @@ stateDiagram-v2
     Bypassing --> LineRecovery: obstacle cleared
     LineRecovery --> LineFollowing: line reacquired
     LineFollowing --> MissionComplete: course finished
-    LineFollowing --> SafeStop: collision risk / stale control data / critical fault
+    LineFollowing --> SafeStop: no safe path / critical fault / Stop
     SafeStop --> Ready: recovery permitted
     MissionComplete --> [*]
 ```
 
-Barcode Handling, Obstacle Handling, Bypassing and Line Recovery also drop to Safe Stop on a collision risk or critical fault.
+Barcode Handling, Obstacle Handling, Bypassing and Line Recovery also drop to Safe Stop on a critical fault or Stop. Collision risk is checked only where avoidance reads the range ([Interfaces](#interfaces), notes).
 
 | State             | What happens                                                                                                          |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -221,11 +221,11 @@ stateDiagram-v2
     LineRecovery --> LineMonitoring: line reacquired
     LineRecovery --> ScanAndProfile: retry
     PlanBypass --> SafeStop: no safe path
-    LineMonitoring --> SafeStop: collision risk / critical fault
+    LineMonitoring --> SafeStop: critical fault
     SafeStop --> [*]
 ```
 
-Obstacle Detected, Scan and Profile, and Execute Bypass also abort to Safe Stop on a collision risk or critical fault.
+Obstacle Detected, Scan and Profile, and Execute Bypass also abort to Safe Stop on a critical fault. Execute Bypass also stops on a forward reading within 350 mm during its straight steps; its turns are not checked.
 
 - **Obstacle Detected** slows or stops the car before anything else.
 - **Scan and Profile** commands a servo angle, triggers the HC-SR04, computes the range, and repeats across the sweep: coarse first, then fine around the sectors where something was seen.

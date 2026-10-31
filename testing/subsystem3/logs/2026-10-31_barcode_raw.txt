@@ -1,0 +1,1017 @@
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] subsystem2 SUMMARY 5 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC at 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] subsystem3 SUMMARY 7 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0
+
+[bar] min=166 max=189
+
+ERROR drv_gy511_init: -50
+
+[bar] min=164 max=192
+
+[bar] min=144 max=192
+
+ERROR drv_gy511_read: -50
+
+[bar] min=154 max=193
+
+[bar] min=163 max=194
+
+ERROR drv_gy511_read: -50
+
+[bar] min=163 max=193
+
+[TEST] S4-U05 FAIL  start-up calibration ends within 3 s   (../app_program/subsystem4/subsystem4_test.c:44)
+
+[bar] min=165 max=193
+
+ERROR drv_gy511_read: -50
+
+[TEST] S4-U01 FAIL  GY-511 answers on I2C0 and readings arrive   (../app_program/subsystem4/subsystem4_test.c:50)
+
+[TEST] S4-U06 FAIL  a reading every 10 ms (45..55 in 500 ms)   (../app_program/subsystem4/subsystem4_test.c:52)
+
+[TEST] S4-U02 FAIL  flat: z ~ +1000 mg, x and y ~ 0   (../app_program/subsystem4/subsystem4_test.c:57)
+
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+
+[TEST] S4-U18 PASS  motion is steady on a still board
+
+[TEST] subsystem4 SUMMARY 4 passed, 4 failed
+
+[TEST] S5-U40 PASS  avoidance boots idle
+
+[bar] min=163 max=193
+
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+
+[scan] forward_mm=277 fault=0
+
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+
+[TEST] === test run end ===
+
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+
+[bar] min=176 max=189
+
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[line] left=1 right=0 junction=0 last=1 following=0
+[bar] min=157 max=187
+ERROR drv_gy511_read: -50
+[bar] min=167 max=190
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=161 max=190
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=158 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=165 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=164 max=189
+[bar] min=166 max=189
+[bar] min=169 max=190
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=161 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=180 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=190
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=190
+[bar] min=163 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=164 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=161 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=158 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=168 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=165 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=166 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=155 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=170 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=154 max=189
+ERROR drv_gy511_read: -50
+[bar] min=155 max=188
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=184
+ERROR drv_gy511_read: -50
+[bar] min=161 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=164 max=189
+[bar] min=165 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=164 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=159 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=186
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=162 max=189
+ERROR drv_gy511_read: -50
+[bar] min=162 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=164 max=189
+[bar] min=167 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=165 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=174 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=187
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=178 max=189
+[bar] min=164 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=166 max=190
+ERROR drv_gy511_read: -50
+[bar] min=172 max=190
+[bar] min=164 max=189
+ERROR drv_gy511_read: -50
+[bar] min=169 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=161 max=189
+[bar] min=166 max=187
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=170 max=189
+[bar] min=166 max=189
+[bar] min=154 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=190
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=162 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=163 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=161 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=169 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=164 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=162 max=189
+[bar] min=155 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=186
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=156 max=189
+[bar] min=167 max=190
+ERROR drv_gy511_read: -50
+[bar] min=156 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=160 max=181
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=178 max=189
+[bar] min=156 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=164 max=186
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=155 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=155 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=188
+[bar] min=165 max=190
+ERROR drv_gy511_read: -50
+[bar] min=168 max=190
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=158 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=162 max=188
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=159 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=164 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=187
+[bar] min=166 max=190
+ERROR drv_gy511_read: -50
+[bar] min=154 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=190
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=169 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=159 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=160 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=163 max=189
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=161 max=189
+ERROR drv_gy511_read: -50
+[bar] min=154 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=164 max=190
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=161 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=160 max=189
+[bar] min=166 max=190
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=164 max=187
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=154 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=165 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=187
+[bar] min=154 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=164 max=188
+[bar] min=166 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=165 max=189
+ERROR drv_gy511_read: -50
+[bar] min=159 max=189
+[bar] min=164 max=189
+ERROR drv_gy511_read: -50
+[bar] min=163 max=187
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=158 max=189
+[bar] min=164 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=165 max=189
+ERROR drv_gy511_read: -50
+[bar] min=173 max=189
+[bar] min=158 max=189
+ERROR drv_gy511_read: -50
+[bar] min=164 max=189
+[bar] min=164 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=190
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=187
+ERROR drv_gy511_read: -50
+[bar] min=158 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=166 max=179
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=160 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=190
+ERROR drv_gy511_read: -50
+[bar] min=164 max=189
+[bar] min=163 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=173 max=189
+[bar] min=165 max=186
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=162 max=189
+[bar] min=167 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=164 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=187
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=155 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=190
+[bar] min=161 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=190
+[bar] min=167 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=154 max=189
+[bar] min=161 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=190
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=169 max=189
+[bar] min=154 max=189
+ERROR drv_gy511_read: -50
+[bar] min=164 max=186
+[bar] min=173 max=189
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=164 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=190
+[bar] min=166 max=180
+ERROR drv_gy511_read: -50
+[bar] min=159 max=189
+[bar] min=166 max=190
+ERROR drv_gy511_read: -50
+[bar] min=161 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=169 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[line] left=0 right=0 junction=0 last=1 following=0
+[line] left=0 right=1 junction=0 last=2 following=0
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=162 max=189
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=161 max=189
+[line] left=0 right=0 junction=0 last=2 following=0
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[line] left=1 right=0 junction=0 last=1 following=0
+[line] left=0 right=0 junction=0 last=1 following=0
+[line] left=1 right=0 junction=0 last=1 following=0
+[line] left=0 right=0 junction=0 last=1 following=0
+[bar] min=165 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=163 max=189
+ERROR drv_gy511_read: -50
+[bar] min=161 max=189
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=188
+ERROR drv_gy511_read: -50
+[bar] min=155 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=167 max=188
+[line] left=1 right=0 junction=0 last=1 following=0
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=157 max=188
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=163 max=189
+[bar] min=168 max=188
+[bar] min=163 max=189
+ERROR drv_gy511_read: -50
+[bar] min=161 max=188
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=162 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=158 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=167 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=156 max=188
+[scan] forward_mm=278 fault=0 closest=250@100 edges=80..100 width=87 obstacle=1
+[avoid] state=0 faults=0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0/0
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=167 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=155 max=188
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=165 max=188
+[bar] min=162 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=164 max=188
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=187
+[bar] min=165 max=188
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=167 max=188
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=167 max=188
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=163 max=189
+ERROR drv_gy511_read: -50
+[bar] min=169 max=187
+[line] left=0 right=0 junction=0 last=1 following=0
+[bar] min=4059 max=4091
+[bar] min=156 max=187
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=4058 max=4095
+ERROR drv_gy511_read: -50
+[bar] min=4068 max=4089
+[bar] min=4077 max=4095
+ERROR drv_gy511_read: -50
+[line] left=1 right=0 junction=0 last=1 following=0
+[bar] min=168 max=189
+[bar] min=163 max=190
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=165 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=165 max=189
+ERROR drv_gy511_read: -50
+[bar] min=162 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=163 max=189
+ERROR drv_gy511_read: -50
+[line] left=0 right=0 junction=0 last=1 following=0
+[bar] min=167 max=189
+[bar] min=4076 max=4095
+ERROR drv_gy511_read: -50
+[bar] min=4077 max=4095
+[bar] min=4060 max=4095
+ERROR drv_gy511_read: -50
+[bar] min=4078 max=4095
+[bar] min=4078 max=4085
+ERROR drv_gy511_read: -50
+[bar] min=4074 max=4091
+[bar] min=4079 max=4094
+ERROR drv_gy511_read: -50
+[bar] min=4059 max=4084
+[bar] min=4060 max=4086
+ERROR drv_gy511_read: -50
+[bar] min=4077 max=4094
+[bar] min=4077 max=4090
+ERROR drv_gy511_read: -50
+[bar] min=4072 max=4088
+[bar] min=4069 max=4095
+ERROR drv_gy511_read: -50
+[bar] min=4078 max=4088
+[bar] min=4073 max=4084
+ERROR drv_gy511_read: -50
+[bar] min=4063 max=4095
+[bar] min=4074 max=4084
+[line] left=1 right=0 junction=0 last=1 following=0
+ERROR drv_gy511_read: -50
+[line] left=0 right=0 junction=0 last=1 following=0
+[bar] min=167 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=159 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=188
+[bar] min=156 max=189
+ERROR drv_gy511_read: -50
+[bar] min=164 max=188
+[bar] min=170 max=187
+ERROR drv_gy511_read: -50
+[bar] min=167 max=187
+[bar] min=166 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[line] left=1 right=0 junction=0 last=1 following=0
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=153 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=155 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=155 max=188
+[bar] min=159 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=158 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=154 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=163 max=187
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=187
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=154 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=154 max=189
+[bar] min=165 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=162 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=163 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=190
+ERROR drv_gy511_read: -50
+[bar] min=169 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=155 max=189
+[bar] min=166 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=164 max=189
+ERROR drv_gy511_read: -50
+[bar] min=157 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=165 max=188
+[bar] min=166 max=188
+ERROR drv_gy511_read: -50
+[bar] min=166 max=188
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=165 max=189
+[bar] min=168 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=169 max=188
+[line] left=0 right=0 junction=0 last=1 following=0
+[bar] min=161 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=190
+[bar] min=166 max=190
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[line] left=0 right=1 junction=0 last=2 following=0
+[bar] min=153 max=189
+ERROR drv_gy511_read: -50
+[line] left=0 right=0 junction=0 last=2 following=0
+[line] left=1 right=0 junction=0 last=1 following=0
+[bar] min=159 max=189
+[line] left=0 right=0 junction=0 last=1 following=0
+[line] left=0 right=1 junction=0 last=2 following=0
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[line] left=0 right=0 junction=0 last=2 following=0
+[line] left=1 right=0 junction=0 last=1 following=0
+[bar] min=167 max=189
+[line] left=0 right=0 junction=0 last=1 following=0
+[line] left=0 right=1 junction=0 last=2 following=0
+[line] left=0 right=0 junction=0 last=2 following=0
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=188
+[bar] min=162 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=154 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=188
+[bar] min=168 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=155 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=168 max=189
+[bar] min=167 max=189
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=160 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=163 max=188
+ERROR drv_gy511_read: -50
+[bar] min=167 max=189
+[bar] min=166 max=189
+ERROR drv_gy511_read: -50
+[bar] min=161 max=188
+[bar] min=163 max=189
+ERROR drv_gy511_read: -50
+[bar] min=166 max=189
+[bar] min=168 max=188
+ERROR drv_gy511_read: -50
+[bar] min=170 max=189
+[bar] min=166 max=189

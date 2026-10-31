@@ -38,3 +38,5 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-31 | S3-U06 | `ca4b8b1` | mykacx | FAIL | `logs/2026-10-31_follow.txt` | Ran off the line: after one left=1 reading neither sensor saw the line again. Cause under investigation |
 | 2026-10-31 | S3-U03 | `2e899b0` | mykacx | PASS | `logs/2026-10-31_follow_straight.txt` | Re-run after the left and right sensor cables were swapped back to the pin map (left on Grove 5, right on Grove 7); the earlier PASS was taken with them mirrored |
 | 2026-10-31 | S3-U06 | `2e899b0` | mykacx | PASS | `logs/2026-10-31_follow_straight.txt` | Straight line only, no curve available: followed about 75 cm in 3.8 s without wobbling and stopped at the junction. The curve still needs a run |
+| 2026-10-31 | S3-U01, U02, U04, U05, U07, U08, U09 | `4bbee29` | mykacx | PASS | `logs/2026-10-31_barcode_raw.txt` | U07 confirms the 10 ms cyclic wake-up; U08 the ADC and DMA rate |
+| 2026-10-31 | S3-U10 | `4bbee29` | mykacx | PASS | `logs/2026-10-31_barcode_raw.txt` | White 144 to 195, black 4058 to 4095 (near full scale): AO rises over black, and any threshold around 2000 separates them |

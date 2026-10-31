@@ -40,11 +40,14 @@ typedef enum
 static const char * const g_names[] = {"INIT",  "READY", "FOLLOW",
                                        "AVOID", "TURN",  "SAFE_STOP"};
 
-static vc_state_t g_state = VC_INIT;
-static uint32_t g_cycles;   /* Cycles since the state or move began. */
-static uint32_t g_released; /* Cycles GP20 has been released. */
-static uint32_t g_pending;  /* BARCODE_DECODER_... for the next junction. */
-static bool g_b_turning;    /* TURN: past the roll forward, turning. */
+static struct
+{
+    unsigned int state : 3;     /* vc_state_t, VC_INIT (0) at start. */
+    unsigned int cycles : 10;   /* Since the state or move began, wraps. */
+    unsigned int released : 3;  /* Cycles GP20 released, up to VC_RELEASED. */
+    unsigned int pending : 3;   /* BARCODE_DECODER_... for the junction. */
+    unsigned int b_turning : 1; /* TURN: past the roll forward, turning. */
+} g_vc;
 
 static void vehicle_controller_task(INT stacd, void * p_exinf);
 static void vc_step(bool b_press, bool b_barcode, bool b_junction,
@@ -95,7 +98,7 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
     for (;;)
     {
         (void)tk_dly_tsk(VC_PERIOD_MS);
-        g_cycles++;
+        g_vc.cycles++;
         b_press = vc_pressed();
         b_latched = motion_control_latched();
         barcode_decoder_get(&barcode);
@@ -107,14 +110,14 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
          * so one seen during a turn or a bypass waits for FOLLOW. */
         b_barcode = (barcode.count != barcodes);
         b_junction = (0u != line.b_junction) && !b_was_junction;
-        if ((VC_READY == g_state) || (VC_FOLLOW == g_state))
+        if ((VC_READY == g_vc.state) || (VC_FOLLOW == g_vc.state))
         {
             barcodes = barcode.count;
             b_was_junction = (0u != line.b_junction);
         }
-        b_moving = (g_state >= VC_FOLLOW) && (g_state <= VC_TURN);
+        b_moving = (g_vc.state >= VC_FOLLOW) && (g_vc.state <= VC_TURN);
 
-        if (b_latched && (VC_SAFE_STOP != g_state))
+        if (b_latched && (VC_SAFE_STOP != g_vc.state))
         {
             vc_enter(VC_SAFE_STOP, "safety latched");
         }
@@ -150,7 +153,7 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
 {
     s4_tilt_t tilt = {0};
 
-    switch (g_state)
+    switch (g_vc.state)
     {
         case VC_INIT:
             s4_get_tilt(&tilt);
@@ -170,15 +173,15 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
         case VC_FOLLOW:
             if (b_barcode)
             {
-                g_pending = command;
-                tm_printf((UB *)"[vc] barcode %u pending\n", g_pending);
+                g_vc.pending = command;
+                tm_printf((UB *)"[vc] barcode %u pending\n", g_vc.pending);
             }
             if ((OBSTACLE_AVOIDANCE_PROFILE == avoid_state) ||
                 (OBSTACLE_AVOIDANCE_BYPASS == avoid_state))
             {
                 vc_enter(VC_AVOID, "obstacle");
             }
-            else if (b_junction && (BARCODE_DECODER_NONE != g_pending))
+            else if (b_junction && (BARCODE_DECODER_NONE != g_vc.pending))
             {
                 vc_enter(VC_TURN, "junction");
             }
@@ -221,14 +224,14 @@ static void vc_enter(vc_state_t state, const char * p_cause)
 {
     s4_hump_t hump = {0};
 
-    tm_printf((UB *)"[vc] %s -> %s: %s\n", g_names[g_state], g_names[state],
+    tm_printf((UB *)"[vc] %s -> %s: %s\n", g_names[g_vc.state], g_names[state],
               p_cause);
-    g_state = state;
-    g_cycles = 0u;
+    g_vc.state = state;
+    g_vc.cycles = 0u;
     switch (state)
     {
         case VC_READY:
-            g_pending = BARCODE_DECODER_NONE;
+            g_vc.pending = BARCODE_DECODER_NONE;
             break;
 
         case VC_FOLLOW:
@@ -239,7 +242,7 @@ static void vc_enter(vc_state_t state, const char * p_cause)
         case VC_TURN:
             line_following_stop();
             obstacle_avoidance_cancel();
-            g_b_turning = false;
+            g_vc.b_turning = 0u;
             (void)motion_control_move_forward(VC_AXLE_MM);
             break;
 
@@ -265,12 +268,15 @@ static bool vc_pressed(void)
 
     if (0u != gpio_get_val(VC_BUTTON))
     {
-        g_released++;
+        if (g_vc.released < VC_RELEASED)
+        {
+            g_vc.released++;
+        }
     }
     else
     {
-        b_press = (g_released >= VC_RELEASED);
-        g_released = 0u;
+        b_press = (g_vc.released >= VC_RELEASED);
+        g_vc.released = 0u;
     }
     return b_press;
 }
@@ -285,7 +291,7 @@ static void vc_turn_step(const motion_control_status_t * p_motion)
 {
     if (MOTION_CONTROL_RUNNING == p_motion->state)
     {
-        if (g_cycles > VC_MOVE_CYCLES)
+        if (g_vc.cycles > VC_MOVE_CYCLES)
         {
             vc_enter(VC_SAFE_STOP, "move timeout");
         }
@@ -294,19 +300,19 @@ static void vc_turn_step(const motion_control_status_t * p_motion)
     {
         vc_enter(VC_SAFE_STOP, "move failed");
     }
-    else if (!g_b_turning)
+    else if (0u == g_vc.b_turning)
     {
-        g_b_turning = true;
-        g_cycles = 0u;
-        if (BARCODE_DECODER_LEFT == g_pending)
+        g_vc.b_turning = 1u;
+        g_vc.cycles = 0u;
+        if (BARCODE_DECODER_LEFT == g_vc.pending)
         {
             (void)motion_control_turn_left(VC_TURN_DEG);
         }
-        else if (BARCODE_DECODER_RIGHT == g_pending)
+        else if (BARCODE_DECODER_RIGHT == g_vc.pending)
         {
             (void)motion_control_turn_right(VC_TURN_DEG);
         }
-        else if (BARCODE_DECODER_UTURN == g_pending)
+        else if (BARCODE_DECODER_UTURN == g_vc.pending)
         {
             (void)motion_control_turn_left(VC_UTURN_DEG);
         }
@@ -317,7 +323,7 @@ static void vc_turn_step(const motion_control_status_t * p_motion)
     }
     else
     {
-        g_pending = BARCODE_DECODER_NONE;
+        g_vc.pending = BARCODE_DECODER_NONE;
         vc_enter(VC_FOLLOW, "turn done");
     }
 }

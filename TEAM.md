@@ -65,7 +65,7 @@ fixed.
 | GP17 | Motion (Buddy 2) | left encoder phase B (Grove 4) |
 | GP18 | | |
 | GP19 | | |
-| GP20 | Ultrasonic (Buddy 5) | Robo Pico button: steps the avoidance bench sequence (`TEST=1` only) |
+| GP20 | Ultrasonic (Buddy 5) | Robo Pico button: steps the avoidance bench sequence (`TEST=1` only). Line following (Buddy 3) also reads it: a short press starts its bench run |
 | GP21 | Motion (Buddy 2) | Robo Pico button: starts the motion bench sequence (`TEST=1` only) |
 | GP22 | IMU (Buddy 4) | Robo Pico buzzer: beeps when calibration is done and on a fault (PWM slice 3 A) |
 | GP26 | Line following (Buddy 3) | barcode IR module AO, ADC0 (Grove 6) |

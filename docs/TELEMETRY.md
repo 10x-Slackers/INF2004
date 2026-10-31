@@ -8,7 +8,7 @@ All topics start with `csc13/`. Every message is QoS 0, not retained.
 
 | Topic       | Direction        | Sent                                                   | Payload                                          |
 | ----------- | ---------------- | ------------------------------------------------------ | ------------------------------------------------ |
-| `telemetry` | car → supervisor | Every 200 ms                                           | 10 bytes, below                                  |
+| `telemetry` | car → supervisor | Every 200 ms                                           | 9 bytes, below                                   |
 | `motion`    | car → supervisor | With every `telemetry`                                 | 12 bytes, `motion_control_pack()` ([MOTION_CONTROL.md](MOTION_CONTROL.md#telemetry-payload)) |
 | `scan`      | car → supervisor | Once per obstacle profile, when avoidance leaves `PROFILE` | 8 bytes, below                               |
 | `heartbeat` | car → supervisor | Every 1 s                                              | 2 bytes: a count, wraps                          |
@@ -20,7 +20,7 @@ Events (barcode read, hump measured, bypass done, state change) need no topic of
 
 Each payload is one bit stream, most significant bit first, padded with zero bits to whole bytes, as in `motion_control_pack()`. A signed field is sent as value + offset so it is never negative. `testing/subsystem1/host/payloads.py` packs and unpacks every payload and is the reference decoder.
 
-### `telemetry`: 80 bits
+### `telemetry`: 72 bits
 
 Each field's range is in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#fields).
 
@@ -28,39 +28,21 @@ Each field's range is in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#fields)
 | ----- | -------------- | ------ |
 | 0–2 | `state` | `vehicle_controller_state()`: 0 INIT, 1 READY, 2 FOLLOW, 3 AVOID, 4 TURN, 5 SAFE_STOP |
 | 3 | `latched` | `motion_control_latched()` |
-| 4–11 | `faults` | Fault byte, below |
-| 12–13 | `line` | `line_following_t.bits`: left and right sensor over black |
-| 14 | `junction` | `line_following_t.b_junction` |
-| 15 | `following` | `line_following_t.b_following` |
-| 16–18 | `barcode` | `barcode_decoder_t.command`: 0 none, 1 left, 2 right, 3 straight, 4 U-turn |
-| 19–22 | `barcodes` | `barcode_decoder_t.count` |
-| 23–25 | `motion_class` | `s4_motion_t.cls` |
-| 26–36 | `pitch` | `s4_tilt_t.pitch` + 1024 |
-| 37–47 | `roll` | `s4_tilt_t.roll` + 1024 |
-| 48–53 | `hump_max` | `s4_hump_t.max` |
-| 54–57 | `humps` | `s4_hump_t.count` |
-| 58 | `on_hump` | `s4_hump_t.on` |
-| 59–61 | `avoid_state` | `obstacle_avoidance_status_t.state` |
-| 62–63 | `avoid_side` | `obstacle_avoidance_status_t.side`: 0 none, 1 left, 2 right |
-| 64–67 | `bypasses` | `obstacle_avoidance_status_t.bypasses` |
-| 68–79 | `forward_mm` | `ultrasonic_scan_t.forward_mm` |
-
-### Fault byte
-
-The one shared fault bitmask on the network. Bits 0–2 are motion's `faults` as they are, and bits 5–6 are avoidance's sensor and blocked bits: `(faults & 3u) << 5`.
-
-| Bit | Fault                                           | Source                                      |
-| --- | ----------------------------------------------- | ------------------------------------------- |
-| 0   | Left wheel stall                                | `MOTION_CONTROL_FAULT_STALL_LEFT`           |
-| 1   | Right wheel stall                               | `MOTION_CONTROL_FAULT_STALL_RIGHT`          |
-| 2   | Encoder missed a phase                          | `MOTION_CONTROL_FAULT_ENCODER`              |
-| 3   | Impact                                          | `s4_fault_t.impact`                         |
-| 4   | Excessive tilt                                  | `s4_fault_t.tilt`                           |
-| 5   | No echo                                         | `OBSTACLE_AVOIDANCE_FAULT_SENSOR`           |
-| 6   | No safe path                                    | `OBSTACLE_AVOIDANCE_FAULT_BLOCKED`          |
-| 7   | Wi-Fi lost since the last `telemetry`           | The Telemetry task's latch, below           |
-
-Avoidance's motion fault is left out: a failed bypass move is a stall, which bits 0–1 already carry.
+| 4–5 | `line` | `line_following_t.bits`: left and right sensor over black |
+| 6 | `junction` | `line_following_t.b_junction` |
+| 7 | `following` | `line_following_t.b_following` |
+| 8–10 | `barcode` | `barcode_decoder_t.command`: 0 none, 1 left, 2 right, 3 straight, 4 U-turn |
+| 11–14 | `barcodes` | `barcode_decoder_t.count` |
+| 15–17 | `motion_class` | `s4_motion_t.cls` |
+| 18–28 | `pitch` | `s4_tilt_t.pitch` + 1024 |
+| 29–39 | `roll` | `s4_tilt_t.roll` + 1024 |
+| 40–45 | `hump_max` | `s4_hump_t.max` |
+| 46–49 | `humps` | `s4_hump_t.count` |
+| 50 | `on_hump` | `s4_hump_t.on` |
+| 51–53 | `avoid_state` | `obstacle_avoidance_status_t.state` |
+| 54–55 | `avoid_side` | `obstacle_avoidance_status_t.side`: 0 none, 1 left, 2 right |
+| 56–59 | `bypasses` | `obstacle_avoidance_status_t.bypasses` |
+| 60–71 | `forward_mm` | `ultrasonic_scan_t.forward_mm` |
 
 ### `scan`: 64 bits
 
@@ -91,7 +73,6 @@ Only the kernel's Wi-Fi service task may call MQTT (`TEAM.md` section 3), so the
 
 The Telemetry task (Subsystem 1, priority band 20–21 in `TEAM.md` section 4) sends with `TMO_POL` and drops a message when the buffer is full, so a slow network never blocks it. The service reads the buffer with `TMO_POL` too. Event flag set and clear calls are atomic, so the command bits need no lock.
 
-Every 10 ms the Telemetry task reads `cyw43_utk_get_status()` and sets its Wi-Fi lost latch, a `bool` only it touches, whenever the link is down. The latch goes out as fault bit 7 in each `telemetry` after the link returns, and is cleared only once one of them is queued: a send dropped by a full buffer keeps it set.
 
 ## Size
 

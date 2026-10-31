@@ -14,7 +14,7 @@ import json
 # (name, bits, offset added before packing)
 LAYOUTS = {
     "telemetry": [
-        ("state", 3, 0), ("latched", 1, 0), ("faults", 8, 0),
+        ("state", 3, 0), ("latched", 1, 0),
         ("line", 2, 0), ("junction", 1, 0), ("following", 1, 0),
         ("barcode", 3, 0), ("barcodes", 4, 0), ("motion_class", 3, 0),
         ("pitch", 11, 1024), ("roll", 11, 1024),
@@ -39,7 +39,7 @@ LAYOUTS = {
 
 # Typical values, as the car would send them.
 SAMPLES = {
-    "telemetry": dict(state=2, latched=0, faults=0, line=1, junction=0,
+    "telemetry": dict(state=2, latched=0, line=1, junction=0,
                       following=1, barcode=1, barcodes=3, motion_class=0,
                       pitch=-12, roll=35, hump_max=21, humps=2, on_hump=0,
                       avoid_state=1, avoid_side=0, bypasses=1,

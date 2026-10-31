@@ -7,7 +7,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 - **Size each field to its range.** A value from 1 to 5 needs 3 bits, a state machine with up to 8 states needs 3 bits, a signed value from −2048 to 2047 needs 12 bits.
 - **Stored and shared structs use C bit-fields.** Standard C only guarantees bit-fields of `signed int`, `unsigned int` and `_Bool`, so use those, and always write `signed` or `unsigned`: whether a plain `int` bit-field is signed is up to the compiler.
 - **Anything sent over the network uses explicit masks and shifts**, never bit-fields. The C standard leaves bit-field layout to the compiler, so the receiver cannot rely on it. MQTT payloads are compact binary, not text.
-- **Faults are single bits in one shared fault bitmask**, not separate variables. On the network it is the fault byte in [TELEMETRY.md](TELEMETRY.md#fault-byte).
+- **Faults are single bits in one shared fault bitmask**, not separate variables.
 - **Packed data shared between tasks, or between an ISR and a task, is accessed safely.** Writing one bit-field rewrites the whole word it shares with its neighbours, so guard packed shared data with a mutex, pass copies through a message buffer, or use an event flag (its set and clear calls are atomic). A value with a single writer may also be read without a lock when the read is one load, which is atomic on the Cortex-M0+.
 - **Out of scope:** device bus buffers in the sensor's own format, temporary variables inside a calculation, and kernel types such as `ID` and `ER`.
 
@@ -19,14 +19,14 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 4 | `s4_accel_t.count`: readings taken | 0 to 255, wraps | 8 | `unsigned int` bit-field | As above |
 | 4 | `s4_tilt_t.pitch`, `.roll`: tilt from the start surface | −900 to 900 (0.1 degree) | 11 each | `signed int` bit-field | Readers copy it with `s4_get_tilt()`, under mutex `g_s4_mutex` |
 | 4 | `s4_tilt_t.cal`: start-up calibration done | 0 or 1 | 1 | `unsigned int` bit-field | As above |
-| 4 | `s4_fault_t.impact`, `.tilt`: impact and excessive-tilt faults, latched until reset | 0 or 1 | 1 each | `unsigned int` bit-field; sent in the fault byte | Readers copy it with `s4_get_fault()`, under mutex `g_s4_mutex` |
+| 4 | `s4_fault_t.impact`, `.tilt`: impact and excessive-tilt faults, latched until reset | 0 or 1 | 1 each | `unsigned int` bit-field (moves into the shared fault bitmask once agreed) | Readers copy it with `s4_get_fault()`, under mutex `g_s4_mutex` |
 | 4 | `s4_hump_t.peak`, `.max`: last hump peak and highest of the run | 0 to 63 mm | 6 each | `unsigned int` bit-field | Readers copy it with `s4_get_hump()`, under mutex `g_s4_mutex` |
 | 4 | `s4_hump_t.count`: humps seen | 0 to 15, wraps | 4 | `unsigned int` bit-field | As above |
 | 4 | `s4_hump_t.on`: right wheel on a hump now | 0 or 1 | 1 | `unsigned int` bit-field | As above |
 | 4 | `s4_motion_t.cls`: current motion class (steady, accelerating, braking, climbing, descending, impact) | 0 to 5 | 3 | `unsigned int` bit-field | Readers copy it with `s4_get_motion()`, under mutex `g_s4_mutex` |
 | 2 | `motion_control_status_t.state`: idle, running, complete, failed | 0 to 3 | 2 | `unsigned int` bit-field | Readers copy it with `motion_control_get_status()`, under the motion mutex; packed with shifts for telemetry |
 | 2 | `.command`: none, forward, backward, left, right, drive | 0 to 5 | 3 | As above | As above |
-| 2 | `.faults`: stall left, stall right, missed encoder phase | One bit each | 3 | As above; sent in the fault byte | As above |
+| 2 | `.faults`: stall left, stall right, missed encoder phase | One bit each | 3 | As above (moves into the shared fault bitmask once agreed) | As above |
 | 2 | `.heading_deg`: anticlockwise from power-up | 0 to 359° | 9 | As above | As above |
 | 2 | `.left_speed`, `.right_speed` | −1023 to 1023 mm/s | 11 each | `signed int` bit-field | As above |
 | 2 | `.left_count`, `.right_count`: encoder edges | 0 to 65535, wraps | 16 each | `unsigned int` bit-field | As above |
@@ -56,7 +56,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 5 | `.b_obstacle`: closest point within 350 mm | 0 or 1 | 1 | As above | As above |
 | 5 | `.width_mm`: rough obstacle width, the arc between the edges at the closest distance | 0 to 122 mm (350 mm × 20°) | 7 | As above | As above |
 | 5 | `obstacle_avoidance_status_t.state`: idle, monitor, profile, bypass, stopped | 0 to 4 | 3 | `unsigned int` bit-field | Readers copy it with `obstacle_avoidance_get_status()`, under the avoidance mutex |
-| 5 | `.faults`: sensor, blocked, motion | One bit each | 3 | As above; sensor and blocked are sent in the fault byte | As above |
+| 5 | `.faults`: sensor, blocked, motion | One bit each | 3 | As above (moves into the shared fault bitmask once agreed) | As above |
 | 5 | `.side`: none, left, right | 0 to 2 | 2 | As above | As above |
 | 5 | `.step`: bypass step | 0 to 7 | 3 | As above | As above |
 | 5 | `.bypasses`: bypasses finished | 0 to 15, wraps | 4 | As above | As above |
@@ -84,8 +84,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
 | Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | Controller task only |
 | Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | As above | Controller task only |
-| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 80, 96, 64, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
-| 1 | Wi-Fi lost latch: link down since the last `telemetry` | 0 or 1 | 1 | `bool`, the smallest type | Telemetry task only |
+| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 72, 96, 64, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
 | 1 | Message buffer entry (topic number + payload) and command event flag: [TELEMETRY.md](TELEMETRY.md#inside-the-car) | Topic 0 to 3; commands one bit each | 8 + payload; 3 | `uint8_t` topic, the smallest unit of a message; event flag bits, set and clear atomic | Telemetry task → Wi-Fi service, both `TMO_POL`; Wi-Fi service → Vehicle Controller |
 
 ## Evidence

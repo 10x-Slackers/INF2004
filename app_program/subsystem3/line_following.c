@@ -73,17 +73,13 @@ void line_following_get(line_following_t * p_line)
 bool line_following_start(uint32_t speed_mm_s)
 {
     bool b_valid = (speed_mm_s > 0u) && (speed_mm_s <= LINE_FOLLOWING_MAX_MM_S);
-    motion_control_status_t motion = {0};
 
     if (b_valid)
     {
-        motion_control_get_status(&motion);
         (void)tk_loc_mtx(g_mutex, TMO_FEVR);
         g_speed_mm_s = (uint16_t)speed_mm_s;
         g_line.b_following = true;
         g_line.b_lost = false;
-        g_search.phase = 0u;
-        g_search.from_mm = motion.distance_mm;
         (void)tk_unl_mtx(g_mutex);
     }
     return b_valid;
@@ -131,9 +127,9 @@ void line_following_task(INT stacd, void * p_exinf)
         g_line.b_junction = (both >= LINE_FOLLOWING_JUNCTION);
         g_line.count++;
         g_line.sample_ms = now.lo;
-        if (0u != bits)
+        if (!g_line.b_following || (0u != bits))
         {
-            g_search.phase = 0u; /* Found, or never lost. */
+            g_search.phase = 0u; /* Not following, found, or never lost. */
             g_search.from_mm = motion.distance_mm;
         }
         else if ((0u == g_search.phase) &&
@@ -159,6 +155,7 @@ void line_following_task(INT stacd, void * p_exinf)
         {
             line_following_search(&motion);
         }
+        g_line.b_searching = g_line.b_following && (0u != g_search.phase);
         (void)tk_unl_mtx(g_mutex);
     }
 }

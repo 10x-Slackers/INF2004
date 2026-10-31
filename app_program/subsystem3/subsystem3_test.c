@@ -128,15 +128,17 @@ static bool subsystem3_bench_report(line_following_t * p_last)
     line_following_get(&line);
     if ((line.bits != p_last->bits) ||
         (line.b_junction != p_last->b_junction) ||
+        (line.b_searching != p_last->b_searching) ||
         (line.b_lost != p_last->b_lost))
     {
         motion_control_get_status(&motion);
         /* (UB *): tm_printf() takes unsigned chars. */
         tm_printf((UB *)"[line] left=%u right=%u junction=%u last=%u "
-                        "following=%u lost=%u mm=%u deg=%u\n",
+                        "following=%u searching=%u lost=%u mm=%u deg=%u\n",
                   line.bits & DRV_LINE_LEFT, (line.bits & DRV_LINE_RIGHT) >> 1,
                   line.b_junction, line.last_side, line.b_following,
-                  line.b_lost, motion.distance_mm, motion.heading_deg);
+                  line.b_searching, line.b_lost, motion.distance_mm,
+                  motion.heading_deg);
         *p_last = line;
     }
     return line.b_junction || line.b_lost;

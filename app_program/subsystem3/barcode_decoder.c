@@ -174,6 +174,22 @@ static void barcode_decoder_end(uint32_t odometer_mm)
 {
     uint32_t letter =
         (CODE39_ELEMENTS == g_elements) ? code39_decode(g_widths) : 0u;
+#if APP_TEST
+    uint32_t i = 0u;
+
+    /* Bench evidence for S3-U14: what the sensor measured, in 0.1 mm. */
+    if (g_elements >= CODE39_CHAR)
+    {
+        /* (UB *): tm_printf() takes unsigned chars. */
+        tm_printf((UB *)"[barcode] elements=%u letter=%c widths_0.1mm=",
+                  g_elements, (0u != letter) ? (int)letter : '-');
+        for (i = 0u; (i < g_elements) && (i < CODE39_ELEMENTS); i++)
+        {
+            tm_printf((UB *)" %u", (g_widths[i] * 10u) / BARCODE_SUB);
+        }
+        tm_printf((UB *)"\n");
+    }
+#endif
 
     (void)tk_loc_mtx(g_mutex, TMO_FEVR);
     if (0u != letter)

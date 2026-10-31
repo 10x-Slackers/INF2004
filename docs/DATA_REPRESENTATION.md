@@ -17,6 +17,9 @@ Application data uses only the bits its valid range needs (change requirement "M
 | --- | --- | --- | --- | --- | --- |
 | 4 | `S4_ACCEL.x`, `.y`, `.z`: latest acceleration per axis | −2048 to 2047 mg (sensor's 12-bit output at ±2 g) | 12 each | `signed int` bit-field | Readers copy it with `s4_get_accel()`, under mutex `s4_mtx_accel` |
 | 4 | `S4_ACCEL.count`: readings taken | 0 to 255, wraps | 8 | `unsigned int` bit-field | As above |
+| 4 | `S4_TILT.pitch`, `.roll`: tilt from the start surface | −900 to 900 (0.1 degree) | 11 each | `signed int` bit-field | Readers copy it with `s4_get_tilt()`, under mutex `s4_mtx_accel` |
+| 4 | `S4_TILT.cal`: start-up calibration done | 0 or 1 | 1 | `unsigned int` bit-field | As above |
+| 4 | `S4_FAULT.impact`, `.tilt`: impact and excessive-tilt faults, latched until reset | 0 or 1 | 1 each | `unsigned int` bit-field (moves into the shared fault bitmask once agreed) | Readers copy it with `s4_get_fault()`, under mutex `s4_mtx_accel` |
 
 ## Buddy 5
 

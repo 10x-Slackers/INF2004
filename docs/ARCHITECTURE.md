@@ -1,6 +1,6 @@
 # System Architecture
 
-The design agreed at the Week 6 design review: tasks, ownership, interfaces and statecharts. Requirement IDs (FR/NFR/A) refer to [PROJECT_BRIEF.md](PROJECT_BRIEF.md#team-requirements).
+The design agreed at the Week 6 design review, with later changes noted where they apply: tasks, ownership, interfaces and statecharts. Requirement IDs (FR/NFR/A) refer to [PROJECT_BRIEF.md](PROJECT_BRIEF.md#team-requirements).
 
 ## Design rules
 
@@ -31,19 +31,25 @@ These decisions were frozen at the review. Changing one means updating this docu
 | --- | ------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------ | ----- |
 | P1  | Safety Monitor                  | Stop on collision risk, stale control data or critical fault. Holds the latched stop | 5 ms + events                  | All   |
 | P2  | Wheel Motion Control            | Sole motor writer. Per-wheel PID, odometry, encoder-based turns                      | 10 ms + stop wake              | 2     |
-| P3  | Barcode Decoder                 | Sample the auxiliary IR sensor and validate LEFT / RIGHT / STRAIGHT / UTURN          | 1 ms acquisition while reading | 3     |
+| P3  | Barcode Decoder                 | Decode the auxiliary IR samples and validate LEFT / RIGHT / STRAIGHT / UTURN         | 10 ms, one DMA block           | 3     |
 | P4  | Line Following                  | Line error and junction detection from two digital IR sensors                        | 10 ms                          | 3     |
 | P5  | Vehicle Controller              | Mission state machine and arbiter of normal motion                                   | Events + 10 ms                 | All   |
-| P6  | Obstacle Avoidance and Recovery | Plan the bypass and the return to the line                                           | Event-driven                   | 5     |
-| P7  | Ultrasonic Scan                 | Drive the servo and HC-SR04 through forward, coarse and fine scans                   | Timed state machine            | 5     |
+| P6  | Obstacle Avoidance and Recovery | Plan the bypass and the return to the line                                           | Events, ≥ 20 ms between steps  | 5     |
+| P7  | Ultrasonic Scan                 | Drive the servo and HC-SR04 through forward, coarse and fine scans                   | 5 ms service                   | 5     |
 | P8  | IMU and Terrain Monitor         | Pitch, motion class, hump height estimate, turn-rate estimate                        | 10 ms                          | 4     |
 | P10 | Wi-Fi and MQTT Telemetry        | Telemetry, heartbeat, supervisor commands                                            | 10 ms service                  | 1     |
 | ISR | Encoder ISR                     | Count encoder edges for Wheel Motion Control                                         | GPIO edge                      | 2     |
 
-The periods are design targets, not measurements.
+The periods are design targets, not measurements. P9 is left free.
 
 > [!NOTE]
-> `tk_dly_tsk` cannot wait for less than one kernel tick (`CNF_TIMER_PERIOD` in `config/config.h`). A period shorter than the tick needs either a shorter tick or a hardware-timer-driven sampler.
+> `tk_dly_tsk` cannot wait for less than one kernel tick (`CNF_TIMER_PERIOD` in `config/config.h`, 10 ms as shipped). The 5 ms periods above need the tick lowered to 1 ms, as the review assumes.
+
+### Barcode acquisition
+
+The ADC samples the barcode sensor (ADC0) at 2 ksample/s, paced by the ADC clock divider and moved by DMA into two ping-pong buffers of 20 samples. The task decodes one block every 10 ms and keeps a 200-sample (100 ms) history. Bar widths are measured against encoder distance (I5), never against task wake-ups, so speed changes do not distort them. A DMA overrun or missing block invalidates the capture.
+
+At 0.20 m/s and a 3 mm narrow bar this gives about 30 samples per narrow bar.
 
 ### Hardware ownership
 
@@ -80,7 +86,7 @@ flowchart LR
     LF -- I1 --> VC
     LF -- I1 --> OA
     BD -- I2 --> VC
-    VC -- motion targets --> WM
+    VC -- I3 --> WM
     WM -- I4 --> VC
     WM -- I5 --> BD
     WM -- I5 --> IMU
@@ -91,7 +97,9 @@ flowchart LR
     VC -- I7 --> US
     US -- I8 --> VC
     US -- I8 --> OA
+    US -- I8 --> SM
     IMU -- I9 --> VC
+    IMU -- I9 --> SM
     SM -- I11 --> VC
     SM -- I11 --> WM
     NET -- I12 --> VC
@@ -105,20 +113,22 @@ Not drawn: every task reports health to the Safety Monitor over I10.
 | ID  | From → To                                                                       | Carries                                                                               |
 | --- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | I1  | Line Following → Vehicle Controller, Obstacle Avoidance                         | Line bits, junction flag, validity                                                    |
-| I2  | Barcode Decoder → Vehicle Controller                                            | Validated command, barcode ID, confidence                                             |
+| I2  | Barcode Decoder → Vehicle Controller                                            | Validated command, encounter ID, capture pose                                         |
+| I3  | Vehicle Controller → Wheel Motion Control                                       | Motion target: ID, mode, wheel speed / distance / angle, limits, expiry               |
 | I4  | Wheel Motion Control → Vehicle Controller                                       | Motion status: `RUNNING`, `COMPLETE`, `FAILED`, `CANCELLED`                           |
 | I5  | Wheel Motion Control → Barcode Decoder, IMU, Obstacle Avoidance, Safety Monitor | Odometry snapshot: counts, speed, distance, yaw estimate                              |
 | I6  | Vehicle Controller ↔ Obstacle Avoidance                                         | Activate / cancel one way; proposed bypass, progress and faults the other             |
 | I7  | Vehicle Controller → Ultrasonic Scan                                            | Scan request: `FORWARD`, `COARSE` or `FINE`                                           |
-| I8  | Ultrasonic Scan → Vehicle Controller, Obstacle Avoidance                        | Range or profile, angle, validity                                                     |
-| I9  | IMU and Terrain Monitor → Vehicle Controller                                    | Pitch, turn rate, hump height, impact / tilt fault                                    |
+| I8  | Ultrasonic Scan → Vehicle Controller, Obstacle Avoidance, Safety Monitor        | Range or profile, angle, validity                                                     |
+| I9  | IMU and Terrain Monitor → Vehicle Controller, Safety Monitor                    | Pitch, turn rate, hump height, impact / tilt fault                                    |
 | I10 | Every task → Safety Monitor                                                     | Health, data freshness, faults                                                        |
 | I11 | Safety Monitor → Vehicle Controller, Wheel Motion Control                       | Latched stop, cause, generation                                                       |
 | I12 | Wi-Fi and MQTT ↔ Vehicle Controller                                             | `START` / `STOP` / `RESET` from the supervisor; telemetry, heartbeat and events to it |
 
 Notes:
 
-- The design review diagram does not show an I3 label. The Vehicle Controller → Wheel Motion Control path (speed, turn or distance targets) is the unlabelled one and is presumably I3.
+- I3 is a one-slot mailbox: a new target replaces the old one, and the Vehicle Controller must renew it before it expires, otherwise Wheel Motion Control brakes.
+- Safety Monitor reads forward range from I8 directly; sideways readings do not refresh forward clearance. An IMU fault on I9 also asserts the I11 stop.
 - A validated `STOP` from the supervisor also raises a safety request on I11, so it latches like any other stop.
 - The stop on I11 carries a generation number. Motion requests issued before the stop are stale and must be discarded (FR11).
 - The supervisor may only start, stop and reset. It never steers or sets speed (FR1).
@@ -221,7 +231,8 @@ Obstacle Detected, Scan and Profile, and Execute Bypass also abort to Safe Stop 
 - The resulting profile is location, width, closest point, left clearance and right clearance.
 - **Plan Bypass** picks the direction with the least route deviation and produces speed and distance targets.
 - **Execute Bypass** runs those targets through Wheel Motion Control while clearance is monitored.
-- Reverse-and-retry is allowed only a bounded number of times and only with verified clearance. Otherwise the result is Safe Stop (FR7).
+- Scans happen only with the car stopped; while moving, the sensor faces forward.
+- Reverse is disabled: nothing verifies clearance behind the car. Replanning is bounded, and no safe forward route means Safe Stop (FR7).
 
 ### IMU terrain monitoring
 
@@ -248,6 +259,7 @@ Impact or excessive tilt is checked in every monitoring state, not only the two 
 - **Crest Sampling** records the estimate at the apex.
 - **Log and Report** updates the run maximum and queues the hump event for telemetry.
 - Requiring the full ascent, crest, descent sequence is what rejects acceleration noise as a false hump.
+- Impact is a jump of more than 800 mg in X or Y away from its smoothed value; excessive tilt is pitch or roll beyond 25° for 500 ms. Both latch. These replace the review's 2.5 g and 30° for 100 ms; at ±2 g full scale the sensor cannot report 2.5 g.
 
 The review's diagram mentions gyro data. The GY-511 has no gyroscope, so everything here comes from the accelerometer, and turn rate comes from odometry.
 
@@ -264,7 +276,7 @@ Topics and message structures are a Buddy 1 deliverable. The brief expects telem
 - distance travelled
 - heartbeat and connection status
 
-Publish only useful state and events. Telemetry bandwidth is measured under NFR7.
+Publish only useful state and events. Payloads are compact binary, per [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md); this replaces the review's JSON message design. Telemetry bandwidth is measured under NFR7.
 
 The kernel port ships an MQTT client (`lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c`, built with `NET=lwip MQTT=1`) that runs inside the kernel's Wi-Fi service task. The Telemetry task does not call it directly: it hands messages to the service through a kernel object, as described in `TEAM.md` section 3.
 

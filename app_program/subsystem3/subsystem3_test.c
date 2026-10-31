@@ -3,9 +3,10 @@
  * @brief On-target tests for subsystem 3 (make TEST=1). The checks do not
  * move a motor. Afterwards the bench task prints the line state on every
  * change and follows the line after GP21 is held for 1 s, for the manual
- * tests in testing/subsystem3/TEST_LOG.md. A tap under 0.5 s is subsystem
- * 2's bench; a press in between starts neither, so the two never both
- * start, even with their 20 ms polls out of step.
+ * tests in testing/subsystem3/TEST_LOG.md. It also prints the barcode
+ * sensor's level every 0.5 s. A tap under 0.5 s is subsystem 2's bench; a
+ * press in between starts neither, so the two never both start, even with
+ * their 20 ms polls out of step.
  */
 
 #include "subsystem3.h"
@@ -20,19 +21,25 @@
 #define S3_BENCH_GO_MS      5000  /* Time to put the car on the line. */
 #define S3_BENCH_RUN_MS     15000u
 #define S3_BENCH_SPEED_MM_S 200u
+#define S3_BENCH_RAW_POLLS  25u /* Print the barcode level every 0.5 s. */
 
 static void subsystem3_bench_task(INT stacd, void * p_exinf);
 
 void subsystem3_test(void)
 {
     line_following_t line = {0};
+    barcode_decoder_raw_t raw = {0};
     uint32_t count = 0u;
+    uint32_t samples = 0u;
 
     TEST_INIT();
     line_following_get(&line);
+    barcode_decoder_get_raw(&raw);
     count = line.count;
+    samples = raw.samples;
     tk_dly_tsk(S3_TEST_WAIT_MS);
     line_following_get(&line);
+    barcode_decoder_get_raw(&raw);
     TEST_CHECK("S3-U01", count != line.count,
                "the line sensors are sampled within 100 ms");
     /* tk_dly_tsk(100) waits 100 to 110 ms. */
@@ -47,6 +54,12 @@ void subsystem3_test(void)
                "line following rejects speeds out of range");
     line_following_get(&line);
     TEST_CHECK("S3-U05", !line.b_following, "line following boots stopped");
+    /* 2 ksample/s over 100 to 110 ms, give or take one 10 ms read. */
+    TEST_CHECK("S3-U08",
+               ((uint16_t)(raw.samples - samples) >= 180u) &&
+                   ((uint16_t)(raw.samples - samples) <= 240u),
+               "barcode ADC at 2 ksample/s (180..240 in 100 ms)");
+    TEST_CHECK("S3-U09", 8u == sizeof(raw), "packed raw barcode level 8 bytes");
     TEST_SUMMARY("subsystem3");
 
     /* FP is the kernel's generic task pointer type. */
@@ -86,6 +99,8 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
     line_following_t last = {0};
     uint32_t run_ms = 0u;
     uint32_t held_ms = 0u;
+    uint32_t polls = 0u;
+    barcode_decoder_raw_t raw = {0};
 
     (void)stacd;
     (void)p_exinf;
@@ -100,6 +115,13 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
     for (;;)
     {
         (void)subsystem3_bench_report(&last);
+        if (++polls >= S3_BENCH_RAW_POLLS)
+        {
+            barcode_decoder_get_raw(&raw);
+            /* (UB *): tm_printf() takes unsigned chars. */
+            tm_printf((UB *)"[bar] min=%u max=%u\n", raw.min, raw.max);
+            polls = 0u;
+        }
         if (0u == gpio_get_val(S3_BENCH_BUTTON))
         {
             held_ms += S3_BENCH_STEP_MS;

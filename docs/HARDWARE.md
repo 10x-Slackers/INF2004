@@ -75,7 +75,7 @@ By default the kernel leaves every application pin in its reset state. A few bui
 | --- | --- | --- |
 | UART0 console copy and crash report | `make CRASH_REPORT=1` or `CONSOLE=uart` | Off. When on, it takes GP0 and GP1 |
 | Kernel I2C driver pins | `DEVCNF_USE_IIC` in `config/config_device.h`, pins in `device/i2c/sysdepend/rp2040/i2c_cnf_sysdep.h` | On. It registers I2C0 only (`iica`, in `kernel/sysdepend/pico_rp2040/devinit.c`) and muxes GP4, GP5 for the GY-511 |
-| Kernel ADC driver pins | `DEVCONF_ADC_PIN_INIT_n` in `device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` | None claimed |
+| Kernel ADC driver pins | `DEVCONF_ADC_PIN_INIT_n` in `device/adc/sysdepend/rp2040/adc_cnf_sysdep.h` | GP26 (channel 0), for the barcode sensor |
 | PWM block reset release | `kernel/sysdepend/pico_rp2040/hw_setting.c`, gated by `USE_PTMR` in `config/config.h` | Off in the kernel. `usermain()` in `app_program/app_main.c` releases it before any subsystem starts |
 | 1 MHz TIMER tick (watchdog `TICK`) | `startup_clock()` in `kernel/sysdepend/pico_rp2040/cpu_clock.c` | On, from the 12 MHz crystal, before any driver or the WiFi task runs. Without it the TIMER runs about 20 times too slow after a power-on; a reboot from BOOTSEL keeps the boot ROM's setting, which hides the fault on the bench |
 

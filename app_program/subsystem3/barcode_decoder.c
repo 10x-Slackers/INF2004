@@ -123,13 +123,13 @@ void barcode_decoder_task(INT stacd, void * p_exinf)
 static void barcode_decoder_sample(uint32_t level, uint32_t pos,
                                    uint32_t odometer_mm)
 {
-    bool b_black =
+    bool const b_black =
         g_b_black ? (level > BARCODE_WHITE) : (level > BARCODE_BLACK);
-    uint32_t width = pos - g_run_start;
+    uint32_t const width = pos - g_run_start;
 
     if (b_black != g_b_black)
     {
-        if (g_b_black && !g_b_in_code)
+        if (g_b_black && (!g_b_in_code))
         {
             g_b_in_code = true; /* The first bar has ended. */
             g_elements = 0u;
@@ -138,18 +138,16 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
         {
             g_b_in_code = false; /* A bar this long is not a barcode. */
         }
-        if (g_b_in_code)
+        if (g_b_in_code && (g_elements < CODE39_ELEMENTS))
         {
-            if (g_elements < CODE39_ELEMENTS)
-            {
-                g_widths[g_elements] = (uint16_t)width;
-            }
-            g_elements++;
+            /* In a barcode, width is at most BARCODE_END: it fits. */
+            g_widths[g_elements] = (uint16_t)width;
         }
+        g_elements++; /* Over 29 in a barcode; reset when one starts. */
         g_run_start = pos;
         g_b_black = b_black;
     }
-    else if (g_b_in_code && !g_b_black && (width > BARCODE_END))
+    else if (g_b_in_code && (!g_b_black) && (width > BARCODE_END))
     {
         barcode_decoder_end(odometer_mm);
         g_b_in_code = false;
@@ -165,7 +163,7 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
  */
 static void barcode_decoder_end(uint32_t odometer_mm)
 {
-    uint32_t letter =
+    uint32_t const letter =
         (CODE39_ELEMENTS == g_elements) ? code39_decode(g_widths) : 0u;
 #if APP_TEST
     uint32_t i = 0u;
@@ -173,7 +171,8 @@ static void barcode_decoder_end(uint32_t odometer_mm)
     /* Bench evidence for S3-U14: what the sensor measured, in 0.1 mm. */
     if (g_elements >= CODE39_PER_CHR)
     {
-        /* (UB *): tm_printf() takes unsigned chars. */
+        /* (UB *): tm_printf() takes unsigned chars. (int): letter is 0
+         * or 'A'..'D'. */
         tm_printf((UB *)"[barcode] elements=%u letter=%c widths_0.1mm=",
                   g_elements, (0u != letter) ? (int)letter : '-');
         for (i = 0u; (i < g_elements) && (i < CODE39_ELEMENTS); i++)

@@ -15,9 +15,16 @@
  *
  * The application code follows BARR-C:2018. Deviations shared by every
  * subsystem:
- * - 3.1.j, 3.2: layout is the repository's .clang-format.
- * - 4.2.a: the subsystemN_test.c files have no header; this file declares
- *   their functions.
+ * - 3.1.j, 3.2, 3.3.b: layout is the repository's .clang-format, which
+ *   does not add a blank line around every block.
+ * - 4.1.b: the subsystemN file names come from the course template.
+ * - 4.2.a, 4.3.c: app_main.c implements this file and app_fault.h.
+ * - 4.2.a, 6.2.d: the subsystemN_test.c files have no header; this file
+ *   declares every subsystemN_init/_start/_test(). A subsystemN.h declares
+ *   its task entries, keeping kernel types out of the module headers that
+ *   host tests include.
+ * - 5.3.a: signed bit-fields hold signed values in the fewest bits
+ *   (docs/DATA_REPRESENTATION.md).
  * - 5.2: kernel calls, task entries and handlers use kernel types (ER, ID,
  *   INT, UB, ...), as the kernel's prototypes do.
  * - 6.3.a: the TEST_* helpers in test_report.h are macros, because they

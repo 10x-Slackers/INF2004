@@ -46,6 +46,9 @@ static bool imu_beyond(int32_t value, int32_t limit);
 static bool imu_moved(int32_t value, int32_t sum, int32_t count);
 static void imu_beep_on(void);
 
+/*!
+ * @brief Copy the latest reading, under g_s4_mutex.
+ */
 void s4_get_accel(s4_accel_t * p_accel)
 {
     (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
@@ -53,6 +56,9 @@ void s4_get_accel(s4_accel_t * p_accel)
     (void)tk_unl_mtx(g_s4_mutex);
 }
 
+/*!
+ * @brief Copy the latest tilt, under g_s4_mutex.
+ */
 void s4_get_tilt(s4_tilt_t * p_tilt)
 {
     (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
@@ -60,6 +66,9 @@ void s4_get_tilt(s4_tilt_t * p_tilt)
     (void)tk_unl_mtx(g_s4_mutex);
 }
 
+/*!
+ * @brief Copy the latest hump record, under g_s4_mutex.
+ */
 void s4_get_hump(s4_hump_t * p_hump)
 {
     (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
@@ -67,6 +76,9 @@ void s4_get_hump(s4_hump_t * p_hump)
     (void)tk_unl_mtx(g_s4_mutex);
 }
 
+/*!
+ * @brief Copy the latest motion class, under g_s4_mutex.
+ */
 void s4_get_motion(s4_motion_t * p_motion)
 {
     (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
@@ -79,11 +91,20 @@ void s4_get_motion(s4_motion_t * p_motion)
  */
 void s4_imu_task(INT stacd, void * p_exinf)
 {
-    int32_t x_mg = 0, y_mg = 0, z_mg = 0;
-    int32_t cal_count = 0, sum_x = 0, sum_y = 0, sum_z = 0;
-    int32_t offset_x = 0, offset_y = 0, offset_z = 0;
-    int32_t smooth_x = 0, smooth_y = 0; /* Low-pass x and y, 8 x mg. */
-    int32_t pitch = 0, roll = 0;        /* 0.1 degree. */
+    int32_t x_mg = 0;
+    int32_t y_mg = 0;
+    int32_t z_mg = 0;
+    int32_t cal_count = 0;
+    int32_t sum_x = 0;
+    int32_t sum_y = 0;
+    int32_t sum_z = 0;
+    int32_t offset_x = 0;
+    int32_t offset_y = 0;
+    int32_t offset_z = 0;
+    int32_t smooth_x = 0; /* Low-pass x and y, 8 x mg. */
+    int32_t smooth_y = 0;
+    int32_t pitch = 0; /* 0.1 degree. */
+    int32_t roll = 0;
     int32_t tilted_count = 0; /* Samples in a row beyond S4_TILT_MAX. */
     int32_t height_mm = 0;    /* Right wheel height. */
     int32_t peak_mm = 0;      /* Highest point of the current hump. */
@@ -101,8 +122,8 @@ void s4_imu_task(INT stacd, void * p_exinf)
     bool b_hump_over = false;
     bool b_descending = false; /* Past the top of the current hump. */
     bool b_changed = false;
-    uint8_t print_count = 0u;
-    uint8_t beep_left = 0u; /* Samples until the buzzer stops. */
+    int32_t print_count = 0;
+    int32_t beep_left = 0; /* Samples until the buzzer stops. */
     ER result = E_OK;
 
     (void)stacd;
@@ -124,9 +145,9 @@ void s4_imu_task(INT stacd, void * p_exinf)
 
         if (b_ready && (cal_count < S4_CAL_N))
         {
-            if (imu_moved(x_mg, sum_x, cal_count) ||
-                imu_moved(y_mg, sum_y, cal_count) ||
-                imu_moved(z_mg, sum_z, cal_count))
+            if ((imu_moved(x_mg, sum_x, cal_count)) ||
+                (imu_moved(y_mg, sum_y, cal_count)) ||
+                (imu_moved(z_mg, sum_z, cal_count)))
             {
                 /* Car moved: start again. */
                 cal_count = 0;
@@ -143,6 +164,7 @@ void s4_imu_task(INT stacd, void * p_exinf)
                 offset_x = sum_x / cal_count;
                 offset_y = sum_y / cal_count;
                 offset_z = (sum_z / cal_count) - IMU_MG_PER_G;
+                /* (UB *): tm_printf() takes unsigned chars. */
                 tm_printf((UB *)"[imu] calibrated: offsets x=%d y=%d z=%d mg\n",
                           offset_x, offset_y, offset_z);
                 imu_beep_on();
@@ -151,20 +173,21 @@ void s4_imu_task(INT stacd, void * p_exinf)
         }
         else if (b_ready)
         {
-            if (beep_left > 0u)
+            if (1 == beep_left)
+            {
+                (void)pwm_set_enabled(S4_BUZZER_PIN, FALSE);
+            }
+            if (beep_left > 0)
             {
                 beep_left--;
-                if (0u == beep_left)
-                {
-                    (void)pwm_set_enabled(S4_BUZZER_PIN, FALSE);
-                }
             }
 
             x_mg -= offset_x;
             y_mg -= offset_y;
             z_mg -= offset_z;
-            b_jolt = imu_beyond(x_mg - (smooth_x / IMU_SMOOTH), S4_IMPACT_MG) ||
-                     imu_beyond(y_mg - (smooth_y / IMU_SMOOTH), S4_IMPACT_MG);
+            b_jolt =
+                (imu_beyond(x_mg - (smooth_x / IMU_SMOOTH), S4_IMPACT_MG)) ||
+                (imu_beyond(y_mg - (smooth_y / IMU_SMOOTH), S4_IMPACT_MG));
             smooth_x += x_mg - (smooth_x / IMU_SMOOTH);
             smooth_y += y_mg - (smooth_y / IMU_SMOOTH);
 
@@ -187,21 +210,25 @@ void s4_imu_task(INT stacd, void * p_exinf)
                     push_class = (push_mg < 0) ? S4_ACCELERATING : S4_BRAKING;
                 }
             }
+            else
+            {
+                /* Between half and all of S4_ACCEL_MG: keep the class. */
+            }
 
-            pitch = imu_clamp(-smooth_y * IMU_DECIDEG_PER_G /
+            pitch = imu_clamp((-smooth_y * IMU_DECIDEG_PER_G) /
                                   (IMU_SMOOTH * IMU_MG_PER_G),
                               S4_ANGLE_MAX);
-            roll = imu_clamp(smooth_x * IMU_DECIDEG_PER_G /
+            roll = imu_clamp((smooth_x * IMU_DECIDEG_PER_G) /
                                  (IMU_SMOOTH * IMU_MG_PER_G),
                              S4_ANGLE_MAX);
-            tilted_count = (imu_beyond(pitch, S4_TILT_MAX) ||
-                            imu_beyond(roll, S4_TILT_MAX))
+            tilted_count = ((imu_beyond(pitch, S4_TILT_MAX)) ||
+                            (imu_beyond(roll, S4_TILT_MAX)))
                                ? (tilted_count + 1)
                                : 0;
 
             /* Only the right wheel crosses humps, so the car tips sideways
              * about the line from the left wheel to the caster. */
-            height_mm = -S4_TRACK_MM * smooth_x / (IMU_SMOOTH * IMU_MG_PER_G);
+            height_mm = (-S4_TRACK_MM * smooth_x) / (IMU_SMOOTH * IMU_MG_PER_G);
             high_count = (height_mm >= S4_HUMP_ON_MM) ? (high_count + 1) : 0;
             if (((high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||
                  (peak_mm > 0)) &&
@@ -224,7 +251,7 @@ void s4_imu_task(INT stacd, void * p_exinf)
                          (0u == (faults & APP_FAULT_TILT));
             faults |= (b_new_impact ? APP_FAULT_IMPACT : 0u) |
                       (b_new_tilt ? APP_FAULT_TILT : 0u); /* Latched. */
-            g_hump.on = (peak_mm > 0) && !b_hump_over;
+            g_hump.on = (peak_mm > 0) && (!b_hump_over);
             if (b_hump_over)
             {
                 g_hump.peak = imu_clamp(peak_mm, S4_HUMP_MAX_MM);
@@ -237,7 +264,7 @@ void s4_imu_task(INT stacd, void * p_exinf)
              * precedence. A hump goes up once and down once: once
              * descending, stay so. */
             b_descending =
-                g_hump.on &&
+                (g_hump.on) &&
                 (b_descending || (height_mm <= (peak_mm - IMU_DESCEND_MM)));
             motion_class = push_class;
             if (0u != (faults & APP_FAULT_IMPACT))
@@ -248,12 +275,17 @@ void s4_imu_task(INT stacd, void * p_exinf)
             {
                 motion_class = b_descending ? S4_DESCENDING : S4_CLIMBING;
             }
+            else
+            {
+                /* No impact or hump: the push class stands. */
+            }
             b_changed = (motion_class != g_motion.cls);
             g_motion.cls = motion_class;
             (void)tk_unl_mtx(g_s4_mutex);
 
             if (b_changed)
             {
+                /* (UB *): tm_printf() takes unsigned chars. */
                 tm_printf((UB *)"[imu] motion: %s\n",
                           g_motion_name[motion_class]);
             }
@@ -261,6 +293,7 @@ void s4_imu_task(INT stacd, void * p_exinf)
             if (b_new_impact || b_new_tilt)
             {
                 app_fault_set(faults);
+                /* (UB *): tm_printf() takes unsigned chars. */
                 tm_printf((UB *)"[imu] FAULT: %s\n",
                           b_new_impact ? "impact" : "tilt");
                 imu_beep_on();
@@ -269,18 +302,24 @@ void s4_imu_task(INT stacd, void * p_exinf)
 
             if (b_hump_over)
             {
+                /* (UB *): tm_printf() takes unsigned chars. */
                 tm_printf((UB *)"[imu] hump: peak %d mm\n", peak_mm);
                 peak_mm = 0;
             }
 
             /* TEST=1 only: it would bury the [vc] and [safety] lines. */
-            if (APP_TEST && ((IMU_PRINT_MS / S4_IMU_MS) == ++print_count))
+            print_count = (print_count + 1) % (IMU_PRINT_MS / S4_IMU_MS);
+            if (APP_TEST && (0 == print_count))
             {
-                print_count = 0u;
+                /* (UB *): tm_printf() takes unsigned chars. */
                 tm_printf((UB *)"[imu] x=%d y=%d z=%d mg pitch=%d roll=%d "
                                 "(0.1 deg) h=%d mm\n",
                           x_mg, y_mg, z_mg, pitch, roll, height_mm);
             }
+        }
+        else
+        {
+            /* The read failed: skip this sample. */
         }
     }
 }
@@ -300,6 +339,10 @@ static int32_t imu_clamp(int32_t value, int32_t limit)
     {
         clamped = -limit;
     }
+    else
+    {
+        /* Already in range. */
+    }
     return clamped;
 }
 
@@ -316,7 +359,7 @@ static bool imu_beyond(int32_t value, int32_t limit)
  */
 static bool imu_moved(int32_t value, int32_t sum, int32_t count)
 {
-    return (count > 0) && imu_beyond(value - (sum / count), S4_CAL_MG);
+    return (count > 0) && (imu_beyond(value - (sum / count), S4_CAL_MG));
 }
 
 /*!
@@ -326,7 +369,7 @@ static void imu_beep_on(void)
 {
     (void)pwm_set_pin(S4_BUZZER_PIN);
     (void)pwm_set_wrap(S4_BUZZER_PIN, (IMU_PWM_CLOCK_HZ / S4_BEEP_HZ) - 1u);
-    (void)pwm_set_cc(S4_BUZZER_PIN, IMU_PWM_CLOCK_HZ / S4_BEEP_HZ / 2u);
+    (void)pwm_set_cc(S4_BUZZER_PIN, (IMU_PWM_CLOCK_HZ / S4_BEEP_HZ) / 2u);
     (void)pwm_set_enabled(S4_BUZZER_PIN, TRUE);
 }
 

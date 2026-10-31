@@ -10,8 +10,8 @@
  */
 ER subsystem3_init(void)
 {
-    bool b_line = line_following_init();
-    bool b_barcode = barcode_decoder_init();
+    bool const b_line = line_following_init();
+    bool const b_barcode = barcode_decoder_init();
 
     return (b_line && b_barcode) ? E_OK : E_SYS;
 }
@@ -23,11 +23,11 @@ ER subsystem3_init(void)
 ER subsystem3_start(void)
 {
     /* FP is the kernel's generic task pointer type. */
-    ER barcode =
+    ER const barcode =
         app_start_cyclic(app_start_task((FP)barcode_decoder_task,
                                         S3_PRI_BARCODE, 0, "s3_barcode"),
                          LINE_FOLLOWING_PERIOD_MS);
-    ER line = app_start_cyclic(
+    ER const line = app_start_cyclic(
         app_start_task((FP)line_following_task, S3_PRI_LINE, 0, "s3_line"),
         LINE_FOLLOWING_PERIOD_MS);
 

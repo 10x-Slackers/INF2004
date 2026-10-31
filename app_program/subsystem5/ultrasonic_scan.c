@@ -11,6 +11,7 @@
 
 #define ULTRASONIC_SCAN_AHEAD     90u
 #define ULTRASONIC_SCAN_SETTLE_MS 200 /* Servo travel before a reading. */
+#define ULTRASONIC_SCAN_READS     3u  /* Readings per ray, for a median. */
 
 static ID g_mutex;
 static ID g_request; /* Semaphore: a scan was requested. */
@@ -28,7 +29,7 @@ static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * p_b_fault);
 
 /*!
  * @brief Create the lock and the request semaphore, set up the sensor and
- * point the servo ahead. Call after subsystem2_init().
+ * point the servo ahead.
  *
  * @return True if everything was created.
  */
@@ -43,7 +44,7 @@ bool ultrasonic_scan_init(void)
     semaphore.maxsem = 1;
     g_request = tk_cre_sem(&semaphore);
     drv_sg90_init();
-    return drv_hcsr04_init() && (g_mutex > 0) && (g_request > 0);
+    return (drv_hcsr04_init()) && (g_mutex > 0) && (g_request > 0);
 }
 
 /*!
@@ -120,12 +121,13 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
     {
         for (ray = 0u; ray < SCAN_PROFILE_RAYS; ray++)
         {
+            /* At most SCAN_PROFILE_FAR_MM (4000), so it fits. */
             rays[ray] = (uint16_t)ultrasonic_scan_ray(ray, &b_fault);
         }
         scan_profile_build(rays, &profile);
     }
     ultrasonic_scan_aim(ULTRASONIC_SCAN_AHEAD);
-    b_fault = !drv_hcsr04_measure(&mm) || b_fault;
+    b_fault = (!drv_hcsr04_measure(&mm)) || b_fault;
     (void)tk_get_otm(&now);
 
     (void)tk_loc_mtx(g_mutex, TMO_FEVR);
@@ -157,7 +159,7 @@ static void ultrasonic_scan_aim(uint32_t angle_deg)
     {
         drv_sg90_set(angle_deg);
         tk_dly_tsk(ULTRASONIC_SCAN_SETTLE_MS);
-        g_angle = (uint8_t)angle_deg;
+        g_angle = (uint8_t)angle_deg; /* 80..100 degrees: fits. */
     }
 }
 
@@ -168,16 +170,16 @@ static void ultrasonic_scan_aim(uint32_t angle_deg)
  */
 static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * p_b_fault)
 {
-    uint32_t mm[3] = {0};
+    uint32_t mm[ULTRASONIC_SCAN_READS] = {0};
     bool b_echo = true;
     uint32_t i = 0u;
 
     ultrasonic_scan_aim(SCAN_PROFILE_MIN_DEG + (ray * SCAN_PROFILE_STEP_DEG));
-    for (i = 0u; i < 3u; i++)
+    for (i = 0u; i < ULTRASONIC_SCAN_READS; i++)
     {
-        b_echo = drv_hcsr04_measure(&mm[i]) && b_echo;
+        b_echo = (drv_hcsr04_measure(&mm[i])) && b_echo;
     }
-    *p_b_fault = *p_b_fault || !b_echo;
+    *p_b_fault = (*p_b_fault) || (!b_echo);
     return b_echo ? scan_profile_median(mm[0], mm[1], mm[2]) : 0u;
 }
 

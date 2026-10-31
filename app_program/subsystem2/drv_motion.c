@@ -59,15 +59,15 @@ static volatile uint16_t g_left_count;
 static volatile uint16_t g_right_count;
 static volatile uint8_t g_skipped;
 
-static drv_motion_wheel_t g_left_wheel;
-static drv_motion_wheel_t g_right_wheel;
+static volatile drv_motion_wheel_t g_left_wheel;
+static volatile drv_motion_wheel_t g_right_wheel;
 static ID g_mutex;
 
 static uint32_t drv_motion_phase(uint32_t levels, uint32_t pin_a,
                                  uint32_t pin_b);
 static void drv_motion_count(volatile uint16_t * p_count,
-                             drv_motion_wheel_t * p_wheel, uint32_t phase,
-                             int32_t sign);
+                             volatile drv_motion_wheel_t * p_wheel,
+                             uint32_t phase, int32_t sign);
 static void drv_motion_output(uint32_t slice, int32_t duty);
 static void drv_motion_edge(uint32_t pins);
 
@@ -111,7 +111,7 @@ bool drv_motion_init(void)
 
     mutex.mtxatr = TA_INHERIT;
     g_mutex = tk_cre_mtx(&mutex);
-    return app_gpio_register(DRV_MOTION_ENCODER_PINS, drv_motion_edge) &&
+    return (app_gpio_register(DRV_MOTION_ENCODER_PINS, drv_motion_edge)) &&
            (g_mutex > 0);
 }
 
@@ -175,8 +175,8 @@ static uint32_t drv_motion_phase(uint32_t levels, uint32_t pin_a,
  * @brief Update one wheel's count for a newly read phase.
  */
 static void drv_motion_count(volatile uint16_t * p_count,
-                             drv_motion_wheel_t * p_wheel, uint32_t phase,
-                             int32_t sign)
+                             volatile drv_motion_wheel_t * p_wheel,
+                             uint32_t phase, int32_t sign)
 {
     int32_t step = g_decode[(p_wheel->phase * 4u) + phase];
 
@@ -195,8 +195,9 @@ static void drv_motion_count(volatile uint16_t * p_count,
         /* No change: the edge was on another pin. */
     }
 
-    /* The counter is meant to wrap modulo 65536. */
-    *p_count = (uint16_t)(*p_count + (step * sign));
+    /* The counter is meant to wrap modulo 65536: step * sign is -2..2,
+     * and both casts keep the low bits. */
+    *p_count = (uint16_t)(*p_count + (uint32_t)(step * sign));
     p_wheel->phase = phase;
 }
 

@@ -39,8 +39,8 @@
 
 static ID g_fault_flag; /* The shared fault bitmask (app_fault.h). */
 
-/* GPIO edge callbacks. pins is 0 in a free slot. */
-static struct
+/* GPIO edge callbacks, read by the interrupt. pins is 0 in a free slot. */
+static volatile struct
 {
     uint32_t pins;
     app_gpio_callback_t p_callback;
@@ -92,6 +92,7 @@ void app_check(ER result, const char * p_what)
 {
     if (result < E_OK)
     {
+        /* (UB *): tm_printf() takes unsigned chars. */
         tm_printf((UB *)"ERROR %s: %d\n", p_what, result);
     }
 }
@@ -115,7 +116,9 @@ ER app_start_cyclic(ID task_id, RELTIM period_ms)
 {
     T_CCYC cyclic = {0};
 
-    cyclic.exinf = (void *)task_id; /* Handed to app_wake(). */
+    /* An ID is a 32-bit int: it fits the pointer and app_wake() gets it
+     * back unchanged. */
+    cyclic.exinf = (void *)task_id;
     cyclic.cycatr = TA_HLNG | TA_STA;
     cyclic.cychdr = (FP)app_wake; /* FP is the kernel's handler type. */
     cyclic.cyctim = period_ms;
@@ -142,7 +145,7 @@ bool app_gpio_register(uint32_t pins, app_gpio_callback_t p_callback)
     {
         taken |= g_gpio[i].pins;
     }
-    for (i = 0u; (i < APP_GPIO_CALLBACKS) && !b_accepted; i++)
+    for (i = 0u; (i < APP_GPIO_CALLBACKS) && (!b_accepted); i++)
     {
         b_accepted = (0u == g_gpio[i].pins) && (0u == (pins & taken));
         if (b_accepted)
@@ -208,6 +211,7 @@ INT usermain(void)
     T_DINT handler = {0};
 
     (void)tk_ref_ver(&version);
+    /* (UB *) in this function: tm_printf() takes unsigned chars. */
     tm_printf((UB *)"\n=== micro T-Kernel on Raspberry Pi Pico W"
                     " (spec 0x%04x, product 0x%04x) ===\n",
               version.spver, version.prver);
@@ -283,7 +287,7 @@ INT usermain(void)
  */
 static void app_wake(void * p_exinf)
 {
-    (void)tk_wup_tsk((ID)p_exinf);
+    (void)tk_wup_tsk((ID)p_exinf); /* The ID app_start_cyclic() stored. */
 }
 
 /*!

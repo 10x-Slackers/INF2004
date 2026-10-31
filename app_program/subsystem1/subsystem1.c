@@ -6,7 +6,7 @@
  * mailboxes, ...) and starts no tasks. subsystem1_start() creates and
  * starts its tasks, e.g.
  *
- *     ID task_id = app_start_task((FP)subsystem1_task, S1_PRI_MAIN, 0,
+ *     ID task_id = app_start_task((FP)subsystem1_task, S1_PRI_MAIN, 0u,
  *                                 "s1_main");
  *     return (task_id < E_OK) ? task_id : E_OK;
  *

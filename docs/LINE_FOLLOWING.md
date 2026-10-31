@@ -94,4 +94,4 @@ The `make -C build_make TEST=1` image starts task `s3_bench` after the checks. I
 
 ## Coding standard
 
-The code follows BARR-C:2018 with the same deviations as subsystem 2 ([MOTION_CONTROL.md](MOTION_CONTROL.md#coding-standard)), for `subsystem3_test.c` and the task entry points.
+The code follows BARR-C:2018 with the same deviations as subsystem 2 ([MOTION_CONTROL.md](MOTION_CONTROL.md#coding-standard)), for `subsystem3_test.c` and the task entry points. Abbreviations as listed there.

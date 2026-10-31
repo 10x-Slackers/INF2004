@@ -8,11 +8,14 @@
 #include "../test_report.h"
 
 #if APP_TEST
+/*!
+ * @brief Run subsystem 1's on-target tests.
+ */
 void subsystem1_test(void)
 {
     TEST_INIT();
 
-    /* Add TEST_CHECK("S1-U01", condition, "description") calls here. */
+    /* TODO: add TEST_CHECK("S1-U01", condition, "description") calls here. */
 
     TEST_SUMMARY("subsystem1");
 }

@@ -8,7 +8,6 @@
  */
 
 #include "subsystem2.h"
-#include "drv_motion.h"
 #include "../test_report.h"
 
 #if APP_TEST
@@ -16,11 +15,10 @@
 #define S2_TEST_TICK_US 1000u
 #define S2_BENCH_BUTTON 21u  /* Robo Pico button, low when pressed. */
 #define S2_BENCH_GO_MS  5000 /* Time to put the car down after a press. */
-#define S2_BENCH_TAP_POLLS                                                     \
-    25u                         /* Under 0.5 s; from 1 s it is subsystem 3's.  \
-                                 */
+/* A tap is under 0.5 s; a hold from 1 s is subsystem 3's. */
+#define S2_BENCH_TAP_POLLS 25u
 #define S2_BENCH_PAUSE_MS  3000 /* Still after each step, to measure it. */
-#define S2_BENCH_DRIVE_MS  2000
+#define S2_BENCH_DRIVE_MS  2000u
 #define S2_BENCH_POLL_MS   10 /* Waits 2 kernel ticks: a line every 20 ms. */
 #define S2_BENCH_STATUS_MS 1000
 #define S2_BENCH_MM_S      100
@@ -31,6 +29,9 @@
 
 static void subsystem2_bench_task(INT stacd, void * p_exinf);
 
+/*!
+ * @brief Run subsystem 2's on-target checks, then start the bench task.
+ */
 void subsystem2_test(void)
 {
     motion_control_status_t status = {0};
@@ -45,10 +46,11 @@ void subsystem2_test(void)
                "boots idle with the motors braked");
     TEST_CHECK(
         "S2-U17",
-        !motion_control_move_forward(0u) &&
-            !motion_control_move_forward(MOTION_CONTROL_MAX_DISTANCE_MM + 1u) &&
-            !motion_control_turn_left(MOTION_CONTROL_MAX_ANGLE_DEG + 1u) &&
-            !motion_control_drive(MOTION_CONTROL_MAX_SPEED_MM_S + 1, 0),
+        (!motion_control_move_forward(0u)) &&
+            (!motion_control_move_forward(MOTION_CONTROL_MAX_DISTANCE_MM +
+                                          1u)) &&
+            (!motion_control_turn_left(MOTION_CONTROL_MAX_ANGLE_DEG + 1u)) &&
+            (!motion_control_drive(MOTION_CONTROL_MAX_SPEED_MM_S + 1, 0)),
         "out-of-range commands are rejected");
     motion_control_get_status(&status);
     TEST_CHECK("S2-U18", MOTION_CONTROL_IDLE == status.state,
@@ -64,9 +66,10 @@ void subsystem2_test(void)
                "control step runs and takes under 1 ms");
     (void)motion_control_latch(true);
     TEST_CHECK("S2-U28",
-               motion_control_latched() && !motion_control_move_forward(100u) &&
-                   !motion_control_turn_left(90u) &&
-                   !motion_control_drive(100, 100),
+               (motion_control_latched()) &&
+                   (!motion_control_move_forward(100u)) &&
+                   (!motion_control_turn_left(90u)) &&
+                   (!motion_control_drive(100, 100)),
                "a latched safety stop refuses every command");
     (void)motion_control_latch(false);
     TEST_CHECK("S2-U29", motion_control_drive(0, 0),
@@ -122,7 +125,7 @@ static void subsystem2_bench_run(bool b_drive, int32_t left, int32_t right)
         tm_printf((UB *)"[trace] %u %d %d\n", now.lo, status.left_speed,
                   status.right_speed);
     } while ((MOTION_CONTROL_RUNNING == status.state) &&
-             (!b_drive || ((now.lo - start_ms) < S2_BENCH_DRIVE_MS)));
+             ((!b_drive) || ((now.lo - start_ms) < S2_BENCH_DRIVE_MS)));
     subsystem2_bench_report();
     if (b_drive)
     {
@@ -143,6 +146,7 @@ static void subsystem2_bench_task(INT stacd, void * p_exinf)
     (void)p_exinf;
 
     app_pull_up(S2_BENCH_BUTTON);
+    /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[motion] bench: tap GP21 to start\n");
     while (polls >= S2_BENCH_TAP_POLLS)
     {
@@ -159,6 +163,7 @@ static void subsystem2_bench_task(INT stacd, void * p_exinf)
         }
     }
     tk_dly_tsk(S2_BENCH_GO_MS);
+    /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[motion] bench: drive +-100, forward/backward 300, "
                     "left 90, right 90, left 180, forward 300 at 200, "
                     "left 180, forward 300\n");
@@ -177,12 +182,13 @@ static void subsystem2_bench_task(INT stacd, void * p_exinf)
     (void)motion_control_set_speed(S2_BENCH_FAST_MM_S);
     (void)motion_control_move_forward(S2_BENCH_MOVE_MM);
     subsystem2_bench_run(false, 0, 0);
+    /* S2_BENCH_MM_S is a positive constant. */
     (void)motion_control_set_speed((uint32_t)S2_BENCH_MM_S);
     (void)motion_control_turn_left(S2_BENCH_UTURN_DEG); /* Back to start. */
     subsystem2_bench_run(false, 0, 0);
     (void)motion_control_move_forward(S2_BENCH_MOVE_MM);
     subsystem2_bench_run(false, 0, 0);
-    tm_printf((UB *)"[motion] bench done\n");
+    tm_printf((UB *)"[motion] bench done\n"); /* (UB *): as above. */
     for (;;)
     {
         subsystem2_bench_report();

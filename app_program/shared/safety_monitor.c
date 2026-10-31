@@ -19,8 +19,8 @@ static void safety_monitor_task(INT stacd, void * p_exinf);
 ER safety_monitor_start(void)
 {
     /* FP is the kernel's generic task pointer type. */
-    ID task = app_start_task((FP)safety_monitor_task, SAFETY_MONITOR_PRI, 0,
-                             "safety");
+    ID const task = app_start_task((FP)safety_monitor_task, SAFETY_MONITOR_PRI,
+                                   0u, "safety");
 
     return (task < E_OK) ? task : E_OK;
 }
@@ -36,6 +36,7 @@ void safety_monitor_stop(uint32_t cause)
     /* One locked step, so two tasks cannot both see it unlatched. */
     if (!motion_control_latch(true))
     {
+        /* (UB *): tm_printf() takes unsigned chars. */
         tm_printf((UB *)"[safety] stop, cause 0x%x\n", cause);
     }
 }
@@ -48,11 +49,12 @@ void safety_monitor_stop(uint32_t cause)
  */
 bool safety_monitor_clear(void)
 {
-    bool b_clear = (0u == (app_faults() & APP_FAULT_IMU));
+    bool const b_clear = (0u == (app_faults() & APP_FAULT_IMU));
 
     if (b_clear)
     {
         (void)motion_control_latch(false);
+        /* (UB *): tm_printf() takes unsigned chars. */
         tm_printf((UB *)"[safety] cleared\n");
     }
     return b_clear;

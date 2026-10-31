@@ -12,7 +12,7 @@
  */
 uint32_t scan_profile_mm(uint32_t echo_us)
 {
-    uint32_t mm = ((echo_us * 10u) + 29u) / 58u;
+    uint32_t const mm = ((echo_us * 10u) + 29u) / 58u;
 
     return (mm > SCAN_PROFILE_FAR_MM) ? SCAN_PROFILE_FAR_MM : mm;
 }
@@ -22,8 +22,8 @@ uint32_t scan_profile_mm(uint32_t echo_us)
  */
 uint32_t scan_profile_median(uint32_t a, uint32_t b, uint32_t c)
 {
-    uint32_t low = (a < b) ? a : b;
-    uint32_t high = (a < b) ? b : a;
+    uint32_t const low = (a < b) ? a : b;
+    uint32_t const high = (a < b) ? b : a;
 
     return (c < low) ? low : ((c > high) ? high : c);
 }

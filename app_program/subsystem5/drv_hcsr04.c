@@ -16,8 +16,8 @@
 #define DRV_HCSR04_TRIG_US  10u    /* Datasheet: at least 10 us. */
 #define DRV_HCSR04_CYCLE_US 60000u /* Datasheet: 60 ms between triggers. */
 #define DRV_HCSR04_ECHO_MS  50     /* With no target ECHO is high ~38 ms, */
-#define DRV_HCSR04_BUSY_MS  250    /* ...on some modules much longer. */
-#define DRV_HCSR04_POLL_MS  10     /* One kernel tick. */
+#define DRV_HCSR04_BUSY_MS  250u   /* ...on some modules much longer. */
+#define DRV_HCSR04_POLL_MS  10u    /* One kernel tick. */
 
 /* Written by the edge callback, read after it wakes the task. */
 static volatile uint32_t g_rise_us;
@@ -31,8 +31,8 @@ static uint32_t g_trigger_us; /* Scan task only. */
 static void drv_hcsr04_edge(uint32_t pins);
 
 /*!
- * @brief Set up TRIG low and ECHO as an input, and ask subsystem 2's GPIO
- * interrupt for the ECHO edges. Call on core 0, after subsystem2_init().
+ * @brief Set up TRIG low and ECHO as an input, and register for the ECHO
+ * edges on the shared GPIO interrupt (app_gpio_register()).
  *
  * @return True if the edge callback was registered.
  */
@@ -74,6 +74,7 @@ bool drv_hcsr04_measure(uint32_t * p_mm)
     start_us = in_w(TIMER_TIMERAWL);
     while ((in_w(TIMER_TIMERAWL) - start_us) < DRV_HCSR04_TRIG_US)
     {
+        /* Busy-wait: the trigger pulse is far shorter than a tick. */
     }
     (void)gpio_set_val(DRV_HCSR04_TRIG, 0u);
     g_trigger_us = in_w(TIMER_TIMERAWL);
@@ -89,7 +90,7 @@ bool drv_hcsr04_measure(uint32_t * p_mm)
  */
 static void drv_hcsr04_edge(uint32_t pins)
 {
-    uint32_t now_us = in_w(TIMER_TIMERAWL);
+    uint32_t const now_us = in_w(TIMER_TIMERAWL);
 
     (void)pins;
     if (0u != gpio_get_val(DRV_HCSR04_ECHO))
@@ -97,7 +98,7 @@ static void drv_hcsr04_edge(uint32_t pins)
         g_rise_us = now_us;
         g_b_rose = true;
     }
-    else if (g_b_rose && !g_b_fell)
+    else if (g_b_rose && (!g_b_fell))
     {
         g_width_us = now_us - g_rise_us;
         g_b_fell = true;

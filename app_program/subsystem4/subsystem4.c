@@ -28,7 +28,7 @@ ER subsystem4_init(void)
 ER subsystem4_start(void)
 {
     /* FP is the kernel's generic task pointer type. */
-    ID task = app_start_task((FP)s4_imu_task, S4_PRI_IMU, 0, "s4_imu");
+    ID const task = app_start_task((FP)s4_imu_task, S4_PRI_IMU, 0u, "s4_imu");
 
     return (task < E_OK) ? task : E_OK;
 }

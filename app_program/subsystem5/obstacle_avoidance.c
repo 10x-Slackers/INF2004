@@ -11,7 +11,7 @@
 #include "../subsystem2/motion_control.h"
 #include "../subsystem3/line_following.h"
 
-#define OBSTACLE_AVOIDANCE_POLL_MS  20    /* Two kernel ticks. */
+#define OBSTACLE_AVOIDANCE_POLL_MS  20u   /* Two kernel ticks. */
 #define OBSTACLE_AVOIDANCE_STILL_MS 1000u /* Braking to standstill. */
 #define OBSTACLE_AVOIDANCE_SCAN_MS  8000u /* Longest profile scan. */
 #define OBSTACLE_AVOIDANCE_MOVE_MS  10000u
@@ -19,10 +19,8 @@
 #define OBSTACLE_AVOIDANCE_TURN_DEG 90
 #define OBSTACLE_AVOIDANCE_LOOK_DEG 45   /* Car turn for the clearance. */
 #define OBSTACLE_AVOIDANCE_SIDE_MM  200u /* Out to the side and back. */
-#define OBSTACLE_AVOIDANCE_WIDE_MM                                             \
-    300u                                /* For an obstacle filling the sweep.  \
-                                         */
-#define OBSTACLE_AVOIDANCE_PASS_MM 700u /* Gap, obstacle and car length. */
+#define OBSTACLE_AVOIDANCE_WIDE_MM  300u /* Obstacle fills the sweep. */
+#define OBSTACLE_AVOIDANCE_PASS_MM  700u /* Gap, obstacle and car length. */
 /* One bypass step: a turn towards the bypass side (+1) or back (-1), or a
  * move forward (0): the pass alongside the obstacle, or a side-step. */
 typedef struct
@@ -213,19 +211,19 @@ static bool obstacle_avoidance_active(void)
  */
 static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan)
 {
-    uint32_t request = ultrasonic_scan_request(mode);
+    uint32_t const request = ultrasonic_scan_request(mode);
     uint32_t waited = 0u;
 
     ultrasonic_scan_get(p_scan);
     /* An older scan may finish first; only the one for this request counts. */
-    while (obstacle_avoidance_active() && (request != p_scan->request) &&
+    while ((obstacle_avoidance_active()) && (request != p_scan->request) &&
            (waited < OBSTACLE_AVOIDANCE_SCAN_MS))
     {
         tk_dly_tsk(OBSTACLE_AVOIDANCE_POLL_MS);
         waited += OBSTACLE_AVOIDANCE_POLL_MS;
         ultrasonic_scan_get(p_scan);
     }
-    if (obstacle_avoidance_active() &&
+    if ((obstacle_avoidance_active()) &&
         ((request != p_scan->request) ||
          (0u != (app_faults() & APP_FAULT_NO_ECHO))))
     {
@@ -280,10 +278,11 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
     }
     else if (turn_deg > 0)
     {
-        (void)motion_control_turn_left((uint32_t)turn_deg);
+        (void)motion_control_turn_left((uint32_t)turn_deg); /* Positive. */
     }
     else
     {
+        /* Negative here, so -turn_deg is positive and fits. */
         (void)motion_control_turn_right((uint32_t)-turn_deg);
     }
     (void)tk_unl_mtx(g_mutex);
@@ -295,7 +294,7 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
         {
             tk_dly_tsk(OBSTACLE_AVOIDANCE_POLL_MS);
         }
-        else if (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan) &&
+        else if ((obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan)) &&
                  (scan.forward_mm <= SCAN_PROFILE_BLOCK_MM))
         {
             obstacle_avoidance_stop(APP_FAULT_AVOID_BLOCKED);
@@ -306,10 +305,10 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t mm)
         }
         motion_control_get_status(&status);
         (void)tk_get_otm(&now);
-    } while (obstacle_avoidance_active() &&
+    } while ((obstacle_avoidance_active()) &&
              (MOTION_CONTROL_RUNNING == status.state) &&
              ((now.lo - start.lo) < OBSTACLE_AVOIDANCE_MOVE_MS));
-    if (obstacle_avoidance_active() &&
+    if ((obstacle_avoidance_active()) &&
         (MOTION_CONTROL_COMPLETE != status.state))
     {
         obstacle_avoidance_stop(APP_FAULT_AVOID_MOTION);
@@ -327,13 +326,13 @@ static bool obstacle_avoidance_look(uint32_t * p_left_mm, uint32_t * p_right_mm)
 {
     ultrasonic_scan_t scan = {0};
 
-    if (obstacle_avoidance_move(OBSTACLE_AVOIDANCE_LOOK_DEG, 0u) &&
-        obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan))
+    if ((obstacle_avoidance_move(OBSTACLE_AVOIDANCE_LOOK_DEG, 0u)) &&
+        (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan)))
     {
         *p_left_mm = scan.forward_mm;
     }
-    if (obstacle_avoidance_move(-2 * OBSTACLE_AVOIDANCE_LOOK_DEG, 0u) &&
-        obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan))
+    if ((obstacle_avoidance_move(-2 * OBSTACLE_AVOIDANCE_LOOK_DEG, 0u)) &&
+        (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan)))
     {
         *p_right_mm = scan.forward_mm;
     }
@@ -350,7 +349,7 @@ static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
 {
     const obstacle_avoidance_step_t * p_step = &g_steps[step];
     /* Towards the bypass side or back; left is positive. */
-    int32_t turn_deg = p_step->turn * OBSTACLE_AVOIDANCE_TURN_DEG;
+    int32_t const turn_deg = p_step->turn * OBSTACLE_AVOIDANCE_TURN_DEG;
 
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, step + 1u);
     return obstacle_avoidance_move(
@@ -389,8 +388,8 @@ static void obstacle_avoidance_avoid(void)
     {
         obstacle_avoidance_stop(APP_FAULT_AVOID_MOTION);
     }
-    else if (obstacle_avoidance_look(&left_mm, &right_mm) &&
-             obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan) &&
+    else if ((obstacle_avoidance_look(&left_mm, &right_mm)) &&
+             (obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan)) &&
              (0u != scan.profile.b_obstacle))
     {
         side = scan_profile_side(left_mm, right_mm);
@@ -411,9 +410,10 @@ static void obstacle_avoidance_avoid(void)
         }
         for (step = 0u;
              (SCAN_PROFILE_NONE != side) && (step < OBSTACLE_AVOIDANCE_STEPS) &&
-             obstacle_avoidance_step(side, step, side_mm);
+             (obstacle_avoidance_step(side, step, side_mm));
              step++)
         {
+            /* Each step runs in the loop test. */
         }
         if (OBSTACLE_AVOIDANCE_STEPS == step)
         {

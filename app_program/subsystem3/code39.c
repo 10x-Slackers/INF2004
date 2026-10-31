@@ -14,7 +14,7 @@
 
 /* Patterns, first element in the most significant of 9 bits, 1 = wide. */
 static const uint16_t g_patterns[] = {0x094u, 0x109u, 0x049u, 0x148u, 0x019u};
-static const char g_letters[] = {'*', 'A', 'B', 'C', 'D'};
+static const uint8_t g_letters[] = {'*', 'A', 'B', 'C', 'D'};
 
 static uint32_t code39_one_way(const uint16_t * p_widths, uint32_t threshold);
 static uint32_t code39_char(const uint16_t * p_widths, uint32_t threshold);
@@ -55,11 +55,11 @@ uint32_t code39_decode(const uint16_t * p_widths)
  */
 static uint32_t code39_one_way(const uint16_t * p_widths, uint32_t threshold)
 {
-    uint32_t start = code39_char(&p_widths[0], threshold);
-    uint32_t letter = code39_char(&p_widths[CODE39_STRIDE], threshold);
-    uint32_t stop = code39_char(&p_widths[2u * CODE39_STRIDE], threshold);
-    bool b_gaps = (p_widths[CODE39_PER_CHR] <= threshold) &&
-                  (p_widths[CODE39_STRIDE + CODE39_PER_CHR] <= threshold);
+    uint32_t const start = code39_char(&p_widths[0], threshold);
+    uint32_t const letter = code39_char(&p_widths[CODE39_STRIDE], threshold);
+    uint32_t const stop = code39_char(&p_widths[2u * CODE39_STRIDE], threshold);
+    bool const b_gaps = (p_widths[CODE39_PER_CHR] <= threshold) &&
+                        (p_widths[CODE39_STRIDE + CODE39_PER_CHR] <= threshold);
 
     return (b_gaps && ('*' == start) && ('*' == stop) && ('*' != letter))
                ? letter
@@ -89,7 +89,7 @@ static uint32_t code39_char(const uint16_t * p_widths, uint32_t threshold)
     }
     for (i = 0u; (CODE39_WIDE == wide) && (i < sizeof(g_letters)); i++)
     {
-        letter = (g_patterns[i] == pattern) ? (uint32_t)g_letters[i] : letter;
+        letter = (g_patterns[i] == pattern) ? g_letters[i] : letter;
     }
     return letter;
 }

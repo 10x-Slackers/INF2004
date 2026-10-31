@@ -22,6 +22,9 @@
 #define S4_TEST_ACCEL_SIZE 8u
 #define S4_TEST_WORD_SIZE  4u
 
+/*!
+ * @brief Run subsystem 4's on-target tests.
+ */
 void subsystem4_test(void)
 {
     s4_accel_t before = {0};
@@ -35,7 +38,7 @@ void subsystem4_test(void)
     TEST_INIT();
 
     /* Readings start once start-up calibration (2 s, board still) ends. */
-    for (int32_t poll = 0; (poll < S4_TEST_POLLS) && !tilt.cal; poll++)
+    for (int32_t poll = 0; (poll < S4_TEST_POLLS) && (!tilt.cal); poll++)
     {
         (void)tk_dly_tsk(S4_TEST_POLL_MS);
         s4_get_tilt(&tilt);
@@ -45,6 +48,7 @@ void subsystem4_test(void)
     s4_get_accel(&before);
     (void)tk_dly_tsk(S4_TEST_WINDOW_MS);
     s4_get_accel(&after);
+    /* The 8-bit count wraps: the cast keeps the difference modulo 256. */
     reads = (uint8_t)(after.count - before.count);
     TEST_CHECK("S4-U01", reads >= S4_TEST_MIN_READS,
                "GY-511 answers on I2C0 and readings arrive");
@@ -68,7 +72,7 @@ void subsystem4_test(void)
     packed.count++;
     TEST_CHECK("S4-U04",
                (S4_TEST_ACCEL_SIZE == sizeof(s4_accel_t)) &&
-                   (-S4_AXIS_MAX_MG - 1 == packed.x) &&
+                   ((-S4_AXIS_MAX_MG - 1) == packed.x) &&
                    (S4_AXIS_MAX_MG == packed.y) && (-1 == packed.z) &&
                    (0u == packed.count),
                "packed reading keeps -2048..2047 per axis in 8 bytes");

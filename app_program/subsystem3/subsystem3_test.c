@@ -23,7 +23,7 @@
 #define S3_TEST_START       0x094u /* '*' */
 #define S3_TEST_FIRST_GAP   9u
 #define S3_BENCH_POLL_MS    10 /* Waits 2 kernel ticks: a poll every 20 ms. */
-#define S3_BENCH_STEP_MS    20
+#define S3_BENCH_STEP_MS    20u
 #define S3_BENCH_BUTTON     21u   /* Robo Pico button, low when pressed. */
 #define S3_BENCH_HOLD_MS    1000u /* Subsystem 2 takes taps under 0.5 s. */
 #define S3_BENCH_GO_MS      5000  /* Time to put the car on the line. */
@@ -35,6 +35,9 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf);
 static void subsystem3_symbol(uint16_t * p_widths, uint32_t pattern,
                               bool b_reversed);
 
+/*!
+ * @brief Run subsystem 3's on-target checks, then start the bench task.
+ */
 void subsystem3_test(void)
 {
     line_following_t line = {0};
@@ -55,19 +58,21 @@ void subsystem3_test(void)
     barcode_decoder_get_raw(&raw);
     TEST_CHECK("S3-U01", count != line.count,
                "the line sensors are sampled within 100 ms");
-    /* tk_dly_tsk(100) waits 100 to 110 ms. */
+    /* tk_dly_tsk(100) waits 100 to 110 ms. The counters wrap; each cast
+     * keeps the difference modulo the counter's width. */
     TEST_CHECK("S3-U07",
                ((uint8_t)(line.count - count) >= 10u) &&
                    ((uint8_t)(line.count - count) <= 12u),
                "a sample every 10 ms (10..12 in 100 ms)");
     TEST_CHECK("S3-U02", 8u == sizeof(line), "packed line state 8 bytes");
     TEST_CHECK("S3-U04",
-               !line_following_start(0u) &&
-                   !line_following_start(LINE_FOLLOWING_MAX_MM_S + 1u),
+               (!line_following_start(0u)) &&
+                   (!line_following_start(LINE_FOLLOWING_MAX_MM_S + 1u)),
                "line following rejects speeds out of range");
     line_following_get(&line);
     TEST_CHECK("S3-U05", !line.b_following, "line following boots stopped");
-    /* 2 ksample/s over 100 to 110 ms, give or take one 10 ms read. */
+    /* 2 ksample/s over 100 to 110 ms, give or take one 10 ms read. The
+     * casts keep the wrapped difference, as above. */
     TEST_CHECK("S3-U08",
                ((uint16_t)(raw.samples - samples) >= 180u) &&
                    ((uint16_t)(raw.samples - samples) <= 240u),
@@ -98,7 +103,7 @@ void subsystem3_test(void)
 static void subsystem3_symbol(uint16_t * p_widths, uint32_t pattern,
                               bool b_reversed)
 {
-    uint32_t chars[3] = {S3_TEST_START, pattern, S3_TEST_START};
+    uint32_t const chars[3] = {S3_TEST_START, pattern, S3_TEST_START};
     uint32_t i = 0u;
     uint32_t at = 0u;
 
@@ -141,7 +146,7 @@ static bool subsystem3_bench_report(line_following_t * p_last)
                   motion.heading_deg);
         *p_last = line;
     }
-    return line.b_junction || line.b_lost;
+    return (line.b_junction) || (line.b_lost);
 }
 
 /*!
@@ -165,6 +170,7 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
     app_pull_up(S3_BENCH_BUTTON);
     last.bits = DRV_LINE_LEFT | DRV_LINE_RIGHT;
     last.b_junction = true; /* Unlikely at power-up: print the first state. */
+    /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[line] bench: hold GP21 for %u s to follow the line\n",
               S3_BENCH_HOLD_MS / 1000u);
     for (;;)
@@ -181,7 +187,8 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
                       barcode.distance_mm);
             last_barcode = barcode;
         }
-        if (++polls >= S3_BENCH_RAW_POLLS)
+        polls++;
+        if (polls >= S3_BENCH_RAW_POLLS)
         {
             barcode_decoder_get_raw(&raw);
             /* (UB *): tm_printf() takes unsigned chars. */
@@ -195,18 +202,20 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
         else if (held_ms >= S3_BENCH_HOLD_MS)
         {
             held_ms = 0u;
+            /* (UB *): tm_printf() takes unsigned chars. */
             tm_printf((UB *)"[line] put the car on the line, starting in "
                             "%d s\n",
                       S3_BENCH_GO_MS / 1000);
             tk_dly_tsk(S3_BENCH_GO_MS);
             (void)line_following_start(S3_BENCH_SPEED_MM_S);
-            for (run_ms = 0u;
-                 (run_ms < S3_BENCH_RUN_MS) && !subsystem3_bench_report(&last);
+            for (run_ms = 0u; (run_ms < S3_BENCH_RUN_MS) &&
+                              (!subsystem3_bench_report(&last));
                  run_ms += S3_BENCH_STEP_MS)
             {
                 tk_dly_tsk(S3_BENCH_POLL_MS);
             }
             line_following_stop();
+            /* (UB *): tm_printf() takes unsigned chars. */
             tm_printf((UB *)"[line] bench done after %u ms\n", run_ms);
         }
         else

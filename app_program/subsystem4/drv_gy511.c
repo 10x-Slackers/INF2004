@@ -15,7 +15,8 @@
 #define DRV_GY511_RANGE_2G   0x08u /* REG4: +-2 g, high resolution. */
 #define DRV_GY511_OUT_BYTES  6u    /* X, Y, Z, low byte first. */
 #define DRV_GY511_BYTE_BITS  8u
-#define DRV_GY511_JUSTIFY    16 /* 12 bits left-justified in 16. */
+#define DRV_GY511_JUSTIFY    16     /* 12 bits left-justified in 16. */
+#define DRV_GY511_SIGN       32768u /* Bit 15, the sign of a 16-bit value. */
 
 static ID g_i2c;
 
@@ -28,7 +29,7 @@ ER drv_gy511_init(void)
 {
     ER result = E_OK;
 
-    g_i2c = tk_opn_dev((UB *)"iica", TD_UPDATE);
+    g_i2c = tk_opn_dev((UB *)"iica", TD_UPDATE); /* Kernel takes UB names. */
     result = g_i2c;
     if (result >= E_OK)
     {
@@ -72,10 +73,14 @@ ER drv_gy511_read(int32_t * p_x_mg, int32_t * p_y_mg, int32_t * p_z_mg)
  */
 static int32_t drv_gy511_axis(const uint8_t * p_raw)
 {
-    uint32_t bits =
+    /* Widening casts keep each byte's value: bits is 0..65535. */
+    uint32_t const bits =
         (uint32_t)p_raw[0] | ((uint32_t)p_raw[1] << DRV_GY511_BYTE_BITS);
 
-    return (int16_t)bits / DRV_GY511_JUSTIFY;
+    /* Two's complement without an implementation-defined cast: flipping
+     * bit 15 gives 0..65535, which fits int32_t, then -32768..32767. */
+    return ((int32_t)(bits ^ DRV_GY511_SIGN) - (int32_t)DRV_GY511_SIGN) /
+           DRV_GY511_JUSTIFY;
 }
 
 /*** end of file ***/

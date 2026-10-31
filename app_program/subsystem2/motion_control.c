@@ -167,25 +167,22 @@ bool motion_control_drive(int32_t left_mm_s, int32_t right_mm_s)
                     (right_mm_s >= -MOTION_CONTROL_MAX_SPEED_MM_S) &&
                     (right_mm_s <= MOTION_CONTROL_MAX_SPEED_MM_S));
 
+    drv_motion_lock();
+    b_valid = b_valid && (!g_b_latched) &&
+              ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
+               (MOTION_CONTROL_FAILED != g_status.state));
     if (b_valid)
     {
-        drv_motion_lock();
-        b_valid =
-            !g_b_latched && ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
-                             (MOTION_CONTROL_FAILED != g_status.state));
-        if (b_valid)
+        if ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
+            (MOTION_CONTROL_RUNNING != g_status.state))
         {
-            if ((MOTION_CONTROL_CMD_DRIVE != g_status.command) ||
-                (MOTION_CONTROL_RUNNING != g_status.state))
-            {
-                motion_control_begin(MOTION_CONTROL_CMD_DRIVE);
-            }
-            g_run.left_target = left_mm_s;
-            g_run.right_target = right_mm_s;
-            g_run.drive_age = 0u;
+            motion_control_begin(MOTION_CONTROL_CMD_DRIVE);
         }
-        drv_motion_unlock();
+        g_run.left_target = left_mm_s;
+        g_run.right_target = right_mm_s;
+        g_run.drive_age = 0u;
     }
+    drv_motion_unlock();
     return b_valid;
 }
 
@@ -210,19 +207,19 @@ void motion_control_stop(void)
  */
 bool motion_control_latch(bool b_latched)
 {
-    bool b_was = false;
+    bool b_was_latched = false;
 
     drv_motion_lock();
-    b_was = g_b_latched;
+    b_was_latched = g_b_latched;
     g_b_latched = b_latched;
-    if (b_latched && !b_was)
+    if (b_latched && (!b_was_latched))
     {
         g_status.state = MOTION_CONTROL_IDLE;
         g_status.command = MOTION_CONTROL_CMD_NONE;
         drv_motion_write(0, 0);
     }
     drv_motion_unlock();
-    return b_was;
+    return b_was_latched;
 }
 
 /*!
@@ -246,8 +243,9 @@ bool motion_control_latched(void)
  */
 bool motion_control_set_speed(uint32_t speed_mm_s)
 {
+    /* The maximum is a positive constant, so the cast keeps its value. */
     bool b_valid = ((speed_mm_s >= MOTION_MIN_SPEED_MM_S) &&
-                    (speed_mm_s <= MOTION_CONTROL_MAX_SPEED_MM_S));
+                    (speed_mm_s <= (uint32_t)MOTION_CONTROL_MAX_SPEED_MM_S));
 
     if (b_valid)
     {
@@ -335,14 +333,17 @@ uint32_t motion_control_distance_um(void)
 
     drv_motion_lock();
     drv_motion_read(&counts);
+    /* As in motion_control_tick(): uint16_t to uint32_t keeps the value,
+     * and a delta's magnitude is at most 32768, so it fits uint32_t. */
     left = motion_control_wrap((uint32_t)counts.left - g_run.left_raw);
     right = motion_control_wrap((uint32_t)counts.right - g_run.right_raw);
     edges = g_run.odometer + (uint32_t)((left < 0) ? -left : left) +
             (uint32_t)((right < 0) ? -right : right);
     drv_motion_unlock();
-    /* The odometer adds both wheels' edges. */
-    return (uint32_t)(((uint64_t)edges * MOTION_CIRCUMFERENCE_UM) /
-                      (2u * MOTION_COUNTS_PER_REV));
+    /* The odometer adds both wheels' edges. int64_t holds the product; the
+     * result keeps its low 32 bits, so it wraps. */
+    return (uint32_t)(((int64_t)edges * MOTION_CIRCUMFERENCE_UM) /
+                      (2 * MOTION_COUNTS_PER_REV));
 }
 
 /*!
@@ -443,8 +444,8 @@ static int32_t motion_control_wrap(uint32_t difference)
  */
 static bool motion_control_start(uint32_t command, uint32_t amount)
 {
-    bool b_turn = ((MOTION_CONTROL_CMD_LEFT == command) ||
-                   (MOTION_CONTROL_CMD_RIGHT == command));
+    bool const b_turn = ((MOTION_CONTROL_CMD_LEFT == command) ||
+                         (MOTION_CONTROL_CMD_RIGHT == command));
     bool b_valid = ((amount > 0u) &&
                     (amount <= (b_turn ? MOTION_CONTROL_MAX_ANGLE_DEG
                                        : MOTION_CONTROL_MAX_DISTANCE_MM)));
@@ -503,7 +504,8 @@ static void motion_control_odometry(int32_t left_delta, int32_t right_delta,
                                     uint32_t elapsed_ms)
 {
     /* int64_t keeps every product below in range. */
-    int64_t full_turn = 2 * (int64_t)MOTION_TRACK_UM * MOTION_COUNTS_PER_REV;
+    int64_t const full_turn =
+        2 * (int64_t)MOTION_TRACK_UM * MOTION_COUNTS_PER_REV;
     int64_t heading =
         ((int64_t)g_run.heading +
          ((int64_t)(right_delta - left_delta) * MOTION_WHEEL_DIAMETER_UM)) %
@@ -539,7 +541,8 @@ static void motion_control_odometry(int32_t left_delta, int32_t right_delta,
  */
 static int32_t motion_control_speed(int32_t delta, uint32_t elapsed_ms)
 {
-    /* um per edge * edges / ms = mm/s. */
+    /* um per edge * edges / ms = mm/s. int64_t holds the product, and
+     * elapsed_ms is a few ms, so it fits. */
     return motion_control_clamp(
         ((int64_t)delta * MOTION_CIRCUMFERENCE_UM) /
             (MOTION_COUNTS_PER_REV * (int64_t)elapsed_ms),
@@ -593,6 +596,7 @@ static void motion_control_profile(int32_t left_delta, int32_t right_delta,
     {
         remaining = goal - ((left + right) / 2);
         remaining = (remaining < 0) ? 0 : remaining;
+        /* int64_t holds the product of remaining (17 bits) and the gains. */
         speed =
             MOTION_APPROACH_MM_S +
             motion_control_clamp(((int64_t)remaining * MOTION_CIRCUMFERENCE_UM *
@@ -626,9 +630,9 @@ static void motion_control_profile(int32_t left_delta, int32_t right_delta,
 static int32_t motion_control_pid(uint32_t wheel, int32_t target,
                                   int32_t measured)
 {
-    int32_t error = motion_control_clamp(target - measured, -MOTION_ERROR_LIMIT,
-                                         MOTION_ERROR_LIMIT);
-    int32_t old_integral = g_pid[wheel].integral;
+    int32_t const error = motion_control_clamp(
+        target - measured, -MOTION_ERROR_LIMIT, MOTION_ERROR_LIMIT);
+    int32_t const old_integral = g_pid[wheel].integral;
     int32_t integral = motion_control_clamp(
         old_integral + error, -MOTION_INTEGRAL_LIMIT, MOTION_INTEGRAL_LIMIT);
     int32_t duty = 0;

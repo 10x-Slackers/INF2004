@@ -15,12 +15,15 @@
 #include "../subsystem2/motion_control.h"
 
 #define LINE_FOLLOWING_BOTH     (DRV_LINE_LEFT | DRV_LINE_RIGHT)
-#define LINE_FOLLOWING_JUNCTION 3u     /* Samples: 30 ms, 6 mm at 0.2 m/s. */
-#define LINE_FOLLOWING_TURN_PCT 50     /* Wheel speed change while one sensor */
-                                       /* sees black, % of the speed: tune. */
-#define LINE_FOLLOWING_LOST_MM    150u /* All white this far: lost. Tune. */
-#define LINE_FOLLOWING_SEARCH_DEG 135  /* Pivot each side of the heading. */
-#define LINE_FOLLOWING_PIVOT_MM_S 100  /* Wheel speed while pivoting. */
+#define LINE_FOLLOWING_JUNCTION 3u /* Samples: 30 ms, 6 mm at 0.2 m/s. */
+/* Wheel speed change while one sensor sees black, % of the speed.
+ * TODO: tune. */
+#define LINE_FOLLOWING_TURN_PCT 50
+#define LINE_FOLLOWING_LOST_MM                                                 \
+    150u                              /* All white this far: lost. TODO: tune. \
+                                       */
+#define LINE_FOLLOWING_SEARCH_DEG 135 /* Pivot each side of the heading. */
+#define LINE_FOLLOWING_PIVOT_MM_S 100 /* Wheel speed while pivoting. */
 
 /* Line search, under g_mutex. */
 typedef struct
@@ -71,12 +74,13 @@ void line_following_get(line_following_t * p_line)
  */
 bool line_following_start(uint32_t speed_mm_s)
 {
-    bool b_valid = (speed_mm_s > 0u) && (speed_mm_s <= LINE_FOLLOWING_MAX_MM_S);
+    bool const b_valid =
+        (speed_mm_s > 0u) && (speed_mm_s <= LINE_FOLLOWING_MAX_MM_S);
 
     if (b_valid)
     {
         (void)tk_loc_mtx(g_mutex, TMO_FEVR);
-        g_speed_mm_s = (uint16_t)speed_mm_s;
+        g_speed_mm_s = (uint16_t)speed_mm_s; /* <= MAX_MM_S: fits. */
         g_line.b_following = true;
         g_line.b_lost = false;
         (void)tk_unl_mtx(g_mutex);
@@ -126,7 +130,7 @@ void line_following_task(INT stacd, void * p_exinf)
         g_line.b_junction = (both >= LINE_FOLLOWING_JUNCTION);
         g_line.count++;
         g_line.sample_ms = now.lo;
-        if (!g_line.b_following || (0u != bits))
+        if ((!g_line.b_following) || (0u != bits))
         {
             g_search.phase = 0u; /* Not following, found, or never lost. */
             g_search.from_mm = motion.distance_mm;
@@ -154,7 +158,7 @@ void line_following_task(INT stacd, void * p_exinf)
         {
             line_following_search(&motion);
         }
-        g_line.b_searching = g_line.b_following && (0u != g_search.phase);
+        g_line.b_searching = (g_line.b_following) && (0u != g_search.phase);
         (void)tk_unl_mtx(g_mutex);
     }
 }
@@ -167,7 +171,8 @@ void line_following_task(INT stacd, void * p_exinf)
  */
 static void line_following_steer(uint32_t bits)
 {
-    int32_t turn = (g_speed_mm_s * LINE_FOLLOWING_TURN_PCT) / 100; /* +left. */
+    int32_t const speed = g_speed_mm_s;                     /* 16 bits: fits. */
+    int32_t turn = (speed * LINE_FOLLOWING_TURN_PCT) / 100; /* +left. */
 
     if (DRV_LINE_RIGHT == bits)
     {
@@ -181,7 +186,7 @@ static void line_following_steer(uint32_t bits)
     {
         /* The line is under the left sensor: turn left. */
     }
-    (void)motion_control_drive(g_speed_mm_s - turn, g_speed_mm_s + turn);
+    (void)motion_control_drive(speed - turn, speed + turn);
 }
 
 /*!
@@ -194,7 +199,8 @@ static void line_following_steer(uint32_t bits)
 static void line_following_search(const motion_control_status_t * p_motion)
 {
     int32_t side = (DRV_LINE_RIGHT == g_line.last_side) ? -1 : 1; /* +left. */
-    /* Degrees turned anticlockwise since the search began, -180..179. */
+    /* Degrees turned anticlockwise since the search began, -180..179. Both
+     * headings are 0..359, so the casts keep them. */
     int32_t turned =
         (((int32_t)p_motion->heading_deg - (int32_t)g_search.start_deg + 540) %
          360) -

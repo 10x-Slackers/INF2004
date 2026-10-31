@@ -35,7 +35,7 @@
      (11u << 11) | (36u << 15))
 
 /* The ring must be aligned to its size for the DMA to wrap it. */
-static uint16_t g_ring[DRV_BARCODE_RING] __attribute__((aligned(512)));
+static volatile uint16_t g_ring[DRV_BARCODE_RING] __attribute__((aligned(512)));
 static uint32_t g_read; /* Next ring index to hand out. */
 
 /*!
@@ -46,7 +46,7 @@ void drv_barcode_init(void)
     out_w(DRV_BARCODE_ADC_DIV, DRV_BARCODE_DIV_2KHZ);
     out_w(DRV_BARCODE_ADC_FCS, DRV_BARCODE_FCS_DMA);
     out_w(DRV_BARCODE_DMA_READ, DRV_BARCODE_ADC_FIFO);
-    out_w(DRV_BARCODE_DMA_WRITE, (uint32_t)g_ring);
+    out_w(DRV_BARCODE_DMA_WRITE, (uint32_t)g_ring); /* 32-bit addresses. */
     out_w(DRV_BARCODE_DMA_COUNT, DRV_BARCODE_DMA_FOREVER);
     out_w(DRV_BARCODE_DMA_CTRL, DRV_BARCODE_DMA_RUN);
     out_w(DRV_BARCODE_ADC_CS, DRV_BARCODE_CS_RUN);
@@ -61,8 +61,10 @@ void drv_barcode_init(void)
  */
 uint32_t drv_barcode_read(uint16_t * p_samples)
 {
-    uint32_t write = ((in_w(DRV_BARCODE_DMA_WRITE) - (uint32_t)g_ring) / 2u) %
-                     DRV_BARCODE_RING;
+    /* (uint32_t): RP2040 addresses are 32 bits. */
+    uint32_t const write =
+        ((in_w(DRV_BARCODE_DMA_WRITE) - (uint32_t)g_ring) / 2u) %
+        DRV_BARCODE_RING;
     uint32_t count = 0u;
 
     while (g_read != write)

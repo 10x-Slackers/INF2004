@@ -3,7 +3,7 @@
  * @brief Minimal on-target test helpers.
  *
  * Every check prints ONE line in a fixed format, so a saved console log
- * can be searched for results ("grep '\[TEST\]' log.txt"):
+ * can be searched for results ("grep -F '[TEST]' log.txt"):
  *
  *     [TEST] S1-U01 PASS  ADC reads in range
  *     [TEST] S1-U02 FAIL  queue rejects overflow   (task_x.c:57)
@@ -30,6 +30,7 @@
     int32_t test_passed = 0;                                                   \
     int32_t test_failed = 0
 
+/* (UB *) below: tm_printf() takes unsigned chars. */
 #define TEST_CHECK(id, cond, desc)                                             \
     do                                                                         \
     {                                                                          \
@@ -47,8 +48,8 @@
     } while (0)
 
 #define TEST_SUMMARY(name)                                                     \
-    tm_printf((UB *)"[TEST] %s SUMMARY %d passed, %d failed\n", (name),        \
-              test_passed, test_failed)
+    (tm_printf((UB *)"[TEST] %s SUMMARY %d passed, %d failed\n", (name),       \
+               test_passed, test_failed))
 
 #endif /* TEST_REPORT_H */
 

@@ -42,13 +42,13 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 2 | `g_run.odometer`: edges rolled by both wheels | 0 to 2^30 − 1, wraps | 30 | `unsigned int` bit-field | Motion task only |
 | 2 | `g_pid[n].integral`, `.last_error`: PID state per wheel | −32767 to 32767; −2047 to 2047 mm/s | 16; 12 | `signed int` bit-field | Motion task only |
 | 2 | `g_left_count`, `g_right_count`, `g_skipped` (driver): encoder edges, missed phases | 0 to 65535; 0 to 255, wrap | 16 each; 8 | `volatile uint16_t`, `uint8_t`: the ISR writes them, and these loads are atomic on Cortex-M0+ | Encoder ISR writes, motion task reads, no lock |
-| 2 | `drv_motion_wheel_t.phase`, `.b_backward` (driver) | 0 to 3; 0 or 1 | 2; 1 | `unsigned int` bit-field | Encoder ISR only |
+| 2 | `drv_motion_wheel_t.phase`, `.b_backward` (driver) | 0 to 3; 0 or 1 | 2; 1 | `volatile unsigned int` bit-field | Encoder ISR only |
 | 2 | `g_max_tick_us`: longest control step | 0 to 65535 µs, saturates | 16 | `volatile uint16_t`, for an atomic load | Motion task writes; tests read it with `subsystem2_max_tick_us()` |
 | 2 | `g_b_latched`: safety stop latched | 0 or 1 | 1 | `bool`, the smallest type | Safety Monitor and Controller write it with `motion_control_latch()`, any task reads it with `motion_control_latched()`, under the motion mutex |
-| 2 | `g_callback_pins` (driver): GPIO pins of the registered edge callback | Bank 0 pin mask | 32 | `uint32_t` in the hardware register's format (out of scope) | Set once at init, read by the encoder ISR |
+| Shared | `g_gpio[].pins` (`app_main.c`): GPIO pins of each registered edge callback, 0 in a free slot | Bank 0 pin mask | 32 each | `volatile uint32_t` in the hardware register's format (out of scope) | Set once at init, read by the GPIO ISR |
 | 5 | `ultrasonic_scan_t.forward_mm`: latest range straight ahead | 20 to 4000 mm (4000: nothing in range) | 12 | `unsigned int` bit-field | Readers copy it with `ultrasonic_scan_get()`, under the scan mutex |
 | 5 | `.request`: request number the latest scan served | 0 to 15, wraps | 4 | As above | As above |
-| 5 | `.forward_ms`: kernel time of `forward_mm` | 0 to 2³²−1 ms, wraps | 32 | As above | As above |
+| 5 | `.forward_ms`: kernel time of `forward_mm` | 0 to 2³²−1 ms, wraps | 32 | `uint32_t`, the kernel time's width | As above |
 | 5 | `scan_profile_t.closest_mm`: closest point of the servo sweep | 20 to 4000 mm | 12 | `unsigned int` bit-field | Inside `ultrasonic_scan_t`, as above |
 | 5 | `.closest_deg`, `.right_deg`, `.left_deg`: servo angles of the closest point and the obstacle edges | 80 to 100° | 7 each | As above | As above |
 | 5 | `.b_obstacle`: closest point within 350 mm | 0 or 1 | 1 | As above | As above |
@@ -77,16 +77,16 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `g_speed_mm_s` (line following): forward speed while following | 1 to 500 mm/s | 16 | `uint16_t`, the smallest standard type that fits | `line_following_start()` and the Line Following task, under the line mutex |
 | 3 | `barcode_decoder_raw_t.min`, `.max`: barcode sensor level over the last 10 ms | 0 to 4095 ADC counts | 12 each | `unsigned int` bit-field | Readers copy it with `barcode_decoder_get_raw()`, under the barcode mutex |
 | 3 | `.samples`: samples taken | 0 to 65535, wraps | 16 | As above | As above |
-| 3 | `g_ring` (driver): barcode samples | 0 to 4095 | 16 each | `uint16_t`, the ADC FIFO's format written by DMA (out of scope) | DMA writes, the Barcode Decoder task reads |
+| 3 | `g_ring` (driver): barcode samples | 0 to 4095 | 16 each | `volatile uint16_t`, the ADC FIFO's format written by DMA (out of scope) | DMA writes, the Barcode Decoder task reads |
 | 3 | `barcode_decoder_t.command`: last validated command (none, left, right, straight, U-turn) | 0 to 4 | 3 | `unsigned int` bit-field | Readers copy it with `barcode_decoder_get()`, under the barcode mutex |
 | 3 | `.count`, `.rejects`: barcodes validated and rejected | 0 to 15 each, wrap | 4 each | As above | As above |
 | 3 | `.distance_mm`: odometer at the end of the barcode | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
 | 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in µm (0 to 30000) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
-| Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `unsigned int` bit-field | Controller task writes; telemetry reads it with `vehicle_controller_state()`, one load, no lock |
+| Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `volatile unsigned int` bit-field | Controller task writes; telemetry reads it with `vehicle_controller_state()`, one load, no lock |
 | Shared | `g_vc.cycles`: 10 ms cycles since the state or junction move began | 0 to 1023, wraps (only TURN reads it, below 502) | 10 | As above | Controller task only |
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
 | Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | Controller task only |
-| Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | As above | Controller task only |
+| Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | `bool` bit-field | Controller task only |
 | 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 82, 92, 64, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
 | 1 | Message buffer entry (topic number + payload) and command event flag: [TELEMETRY.md](TELEMETRY.md#inside-the-car) | Topic 0 to 3; commands one bit each | 8 + payload; 3 | `uint8_t` topic, the smallest unit of a message; event flag bits, set and clear atomic | Telemetry task → Wi-Fi service, both `TMO_POL`; Wi-Fi service → Vehicle Controller |
 

@@ -111,13 +111,7 @@ left_mm_s = field(14, 11) - 1024
 
 ## Coding standard
 
-The code follows BARR-C:2018. Deviations:
-
-| Rule      | Deviation and reason                                                                                 |
-| --------- | ---------------------------------------------------------------------------------------------------- |
-| 3.1.j, 3.2 | No space before `(` in definitions, and no column alignment of declarations: the repository's `.clang-format` enforces this layout |
-| 4.2.a     | `subsystem2_test.c` has no header: `subsystem2_test()` is declared in `app.h` by the course template  |
-| 5.2       | Task and ISR entry points take kernel types (`INT`, `UINT`) to match the µT-Kernel prototypes         |
+The code follows BARR-C:2018, with the team's deviations listed at the top of `app_program/app.h`.
 
 Abbreviations (rule 1.5):
 
@@ -127,5 +121,10 @@ Abbreviations (rule 1.5):
 | `ms`         | milliseconds                 | `mm_s`        | millimetres per second                   |
 | `deg`        | degrees                      | `cmd`         | command                                  |
 | `pwm`        | pulse width modulation       | `pid`, `kp`, `ki`, `kd` | PID controller and its gains   |
-| `isr`        | interrupt service routine    |               |                                          |
+| `isr`        | interrupt service routine    | `mm`          | millimetres                              |
+| `drv`        | driver                       | `pri`, `prc`  | task priority, processor (core)          |
+| `s2`..`s5`   | subsystem 2 to 5             | `accel`, `decel` | acceleration, deceleration            |
+| `rev`        | revolution                   | `div`         | clock divider                            |
+| `uturn`      | U-turn                       | `trig`        | trigger                                  |
+| `chr`        | character                    | `pct`         | percent                                  |
 | `q8`         | fixed point, 8 fraction bits (value × 256) | `permille` / `‰` | parts per thousand (duty)  |

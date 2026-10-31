@@ -104,6 +104,10 @@ EXPORT void startup_clock(ATR clkatr)
 
 	out_w(CLK_REF+CLK_x_DIV, div);
 
+	/* Watchdog tick: clk_ref / XOSC_MHz = 1 MHz for the TIMER block.
+	   Without it the TIMER runs slow after power-on (BOOTSEL hides this). */
+	out_w(0x4005802c, (1<<9) | XOSC_MHz);	// WATCHDOG TICK: ENABLE | CYCLES
+
 	/* CLK SYS settings */
 	div = (TMCLK_MHz << 8) / TMCLK_MHz;
 	if (div > in_w(CLK_SYS+CLK_x_DIV)) out_w(CLK_SYS+CLK_x_DIV, div);

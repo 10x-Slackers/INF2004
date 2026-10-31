@@ -1,54 +1,81 @@
-/*
- *      drv_gy511.c
- *      GY-511 (LSM303DLHC) accelerometer driver.  Register details are in
- *      docs/HARDWARE.md.
+/** @file drv_gy511.c
+ *
+ * @brief GY-511 (LSM303DLHC) accelerometer driver. Register details are in
+ * docs/HARDWARE.md.
  */
 
 #include "drv_gy511.h"
 #include "../../device/include/dev_i2c.h"
 
-#define ACC_ADDR    0x19 /* 7-bit accelerometer address */
-#define CTRL_REG1_A 0x20
-#define CTRL_REG4_A 0x23
-#define OUT_XYZ_A   0xA8 /* OUT_X_L_A with the auto-increment bit set */
+#define DRV_GY511_ADDR       0x19u /* 7-bit accelerometer address. */
+#define DRV_GY511_CTRL_REG1  0x20u
+#define DRV_GY511_CTRL_REG4  0x23u
+#define DRV_GY511_OUT_XYZ    0xA8u /* OUT_X_L_A with auto-increment set. */
+#define DRV_GY511_RATE_100HZ 0x57u /* REG1: 100 Hz, X, Y and Z on. */
+#define DRV_GY511_RANGE_2G   0x08u /* REG4: +-2 g, high resolution. */
+#define DRV_GY511_OUT_BYTES  6u    /* X, Y, Z, low byte first. */
+#define DRV_GY511_BYTE_BITS  8u
+#define DRV_GY511_JUSTIFY    16 /* 12 bits left-justified in 16. */
 
-LOCAL ID dd_i2c;
+static ID g_i2c;
 
-EXPORT ER gy511_init(void)
+static int32_t drv_gy511_axis(const uint8_t * p_raw);
+
+/*!
+ * @brief Open I2C0 and start the accelerometer.
+ */
+ER drv_gy511_init(void)
 {
-    ER er;
+    ER result = E_OK;
 
-    dd_i2c = tk_opn_dev((UB *)"iica", TD_UPDATE);
-    if (dd_i2c < E_OK)
+    g_i2c = tk_opn_dev((UB *)"iica", TD_UPDATE);
+    result = g_i2c;
+    if (result >= E_OK)
     {
-        return dd_i2c;
+        result = i2c_write_reg(g_i2c, DRV_GY511_ADDR, DRV_GY511_CTRL_REG1,
+                               DRV_GY511_RATE_100HZ);
     }
-    er = i2c_write_reg(dd_i2c, ACC_ADDR, CTRL_REG1_A, 0x57); /* 100 Hz, XYZ */
-    if (er < E_OK)
+    if (result >= E_OK)
     {
-        return er;
+        result = i2c_write_reg(g_i2c, DRV_GY511_ADDR, DRV_GY511_CTRL_REG4,
+                               DRV_GY511_RANGE_2G);
     }
-    return i2c_write_reg(dd_i2c, ACC_ADDR, CTRL_REG4_A, 0x08); /* +-2 g, HR */
+    return result;
 }
 
-EXPORT ER gy511_read(W * x, W * y, W * z)
+/*!
+ * @brief Read the acceleration of each axis, 1 mg per unit at +-2 g.
+ */
+ER drv_gy511_read(int32_t * p_x_mg, int32_t * p_y_mg, int32_t * p_z_mg)
 {
-    UB reg = OUT_XYZ_A;
-    UB raw[6];
-    SZ asz;
-    T_I2C_EXEC exec = {ACC_ADDR, 1, &reg, sizeof(raw), raw};
-    ER er;
+    uint8_t reg = DRV_GY511_OUT_XYZ;
+    uint8_t raw[DRV_GY511_OUT_BYTES] = {0};
+    SZ size = 0;
+    T_I2C_EXEC exec = {DRV_GY511_ADDR, 1, &reg, sizeof(raw), raw};
+    ER result = E_OK;
 
-    /* Write the register address, then read X, Y, Z (low byte first) */
-    er = tk_swri_dev(dd_i2c, TDN_I2C_EXEC, &exec, sizeof(exec), &asz);
-    if (er < E_OK)
+    /* Write the register address, then read X, Y and Z. */
+    result = tk_swri_dev(g_i2c, TDN_I2C_EXEC, &exec, sizeof(exec), &size);
+    if (result >= E_OK)
     {
-        return er;
+        *p_x_mg = drv_gy511_axis(&raw[0]);
+        *p_y_mg = drv_gy511_axis(&raw[2]);
+        *p_z_mg = drv_gy511_axis(&raw[4]);
+        result = E_OK;
     }
-
-    /* 12-bit values, left-justified: 1 mg per LSB at +-2 g */
-    *x = (H)(raw[0] | (raw[1] << 8)) >> 4;
-    *y = (H)(raw[2] | (raw[3] << 8)) >> 4;
-    *z = (H)(raw[4] | (raw[5] << 8)) >> 4;
-    return E_OK;
+    return result;
 }
+
+/*!
+ * @brief One axis from its two bytes, low byte first. The low 4 bits are
+ * zero, so the division is exact.
+ */
+static int32_t drv_gy511_axis(const uint8_t * p_raw)
+{
+    uint32_t bits =
+        (uint32_t)p_raw[0] | ((uint32_t)p_raw[1] << DRV_GY511_BYTE_BITS);
+
+    return (int16_t)bits / DRV_GY511_JUSTIFY;
+}
+
+/*** end of file ***/

@@ -1,267 +1,350 @@
-/*
- *      task_imu.c
- *      Subsystem 4 -- the IMU task.  Owns I2C0 and the GY-511 on it.
+/** @file task_imu.c
  *
- *      Every S4_IMU_MS a cyclic handler wakes the task.  The first S4_CAL_N
- *      readings, taken with the car still, set the offsets that make the
- *      start surface read x = y = 0, z = +1000 mg.  After that, pitch and
- *      roll come from the low-pass filtered reading, in integer maths, with
- *      the small-angle rule angle [rad] ~ acceleration [g]: within 0.2
- *      degree up to 15 degrees, reading low beyond about 25 degrees.
- *      Sensor axes on the car: -Y forward, +X left, +Z up.
+ * @brief Subsystem 4's IMU task. Owns I2C0 and the GY-511 on it.
  *
- *      Faults, latched until reset: impact when X or Y jumps more than
- *      S4_IMPACT_MG from its smoothed value (slow changes such as tilt do
- *      not count), tilt when pitch or roll stays beyond S4_TILT_MAX for
- *      S4_TILT_MS.  Each prints a line and sounds the buzzer.
+ * Every S4_IMU_MS a cyclic handler wakes the task. The first S4_CAL_N
+ * readings, taken with the car still, set the offsets that make the start
+ * surface read x = y = 0, z = +1000 mg. After that, pitch and roll come
+ * from the low-pass filtered reading, in integer maths, with the
+ * small-angle rule angle [rad] ~ acceleration [g]: within 0.2 degree up to
+ * 15 degrees, reading low beyond about 25 degrees. Sensor axes on the car:
+ * -Y forward, +X left, +Z up.
  *
- *      Humps pass under the right wheel only, so its height is
- *      track width x sin(roll).  A hump starts when that height stays at
- *      S4_HUMP_ON_MM or more for S4_HUMP_MIN_MS, which ignores jolts, and
- *      ends, with its peak logged, when it falls below S4_HUMP_OFF_MM.
+ * Faults, latched until reset: impact when X or Y jumps more than
+ * S4_IMPACT_MG from its smoothed value (slow changes such as tilt do not
+ * count), tilt when pitch or roll stays beyond S4_TILT_MAX for S4_TILT_MS.
+ * Each prints a line and sounds the buzzer.
+ *
+ * Humps pass under the right wheel only, so its height is
+ * track width x sin(roll). A hump starts when that height stays at
+ * S4_HUMP_ON_MM or more for S4_HUMP_MIN_MS, which ignores jolts, and ends,
+ * with its peak logged, when it falls below S4_HUMP_OFF_MM.
  */
 
 #include "subsystem4.h"
 #include "drv_gy511.h"
 
-LOCAL S4_ACCEL accel;   /* written only by imu_task, under s4_mtx_accel */
-LOCAL S4_TILT tilt;     /* likewise */
-LOCAL S4_FAULT fault;   /* likewise */
-LOCAL S4_HUMP hump;     /* likewise */
-LOCAL S4_MOTION motion; /* likewise */
+#define IMU_MG_PER_G      1000
+#define IMU_SMOOTH        8   /* Low-pass weight: ~8 samples (80 ms). */
+#define IMU_AVERAGE       256 /* Slow average weight: ~2.5 s. */
+#define IMU_DECIDEG_PER_G 573 /* Small angles: 1 g ~ 1 rad = 57.3 deg. */
+#define IMU_DESCEND_MM    2   /* This far below the peak: descending. */
+#define IMU_PRINT_MS      100
+#define IMU_PWM_CLOCK_HZ  125000000u /* System clock, divider 1. */
 
-LOCAL const char * const motion_name[] = {"steady",   "accelerating", "braking",
-                                          "climbing", "descending",   "impact"};
+/* Written only by the IMU task, under g_s4_mutex. */
+static s4_accel_t g_accel;
+static s4_tilt_t g_tilt;
+static s4_fault_t g_fault;
+static s4_hump_t g_hump;
+static s4_motion_t g_motion;
 
-EXPORT void s4_get_accel(S4_ACCEL * out)
+static const char * const g_motion_name[] = {
+    "steady", "accelerating", "braking", "climbing", "descending", "impact"};
+
+static int32_t imu_clamp(int32_t value, int32_t limit);
+static bool imu_beyond(int32_t value, int32_t limit);
+static bool imu_moved(int32_t value, int32_t sum, int32_t count);
+static void imu_beep_on(void);
+static void imu_wake(void * p_exinf);
+
+void s4_get_accel(s4_accel_t * p_accel)
 {
-    tk_loc_mtx(s4_mtx_accel, TMO_FEVR);
-    *out = accel;
-    tk_unl_mtx(s4_mtx_accel);
+    (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
+    *p_accel = g_accel;
+    (void)tk_unl_mtx(g_s4_mutex);
 }
 
-EXPORT void s4_get_motion(S4_MOTION * out)
+void s4_get_tilt(s4_tilt_t * p_tilt)
 {
-    tk_loc_mtx(s4_mtx_accel, TMO_FEVR);
-    *out = motion;
-    tk_unl_mtx(s4_mtx_accel);
+    (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
+    *p_tilt = g_tilt;
+    (void)tk_unl_mtx(g_s4_mutex);
 }
 
-EXPORT void s4_get_fault(S4_FAULT * out)
+void s4_get_fault(s4_fault_t * p_fault)
 {
-    tk_loc_mtx(s4_mtx_accel, TMO_FEVR);
-    *out = fault;
-    tk_unl_mtx(s4_mtx_accel);
+    (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
+    *p_fault = g_fault;
+    (void)tk_unl_mtx(g_s4_mutex);
 }
 
-EXPORT void s4_get_hump(S4_HUMP * out)
+void s4_get_hump(s4_hump_t * p_hump)
 {
-    tk_loc_mtx(s4_mtx_accel, TMO_FEVR);
-    *out = hump;
-    tk_unl_mtx(s4_mtx_accel);
+    (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
+    *p_hump = g_hump;
+    (void)tk_unl_mtx(g_s4_mutex);
 }
 
-EXPORT void s4_get_tilt(S4_TILT * out)
+void s4_get_motion(s4_motion_t * p_motion)
 {
-    tk_loc_mtx(s4_mtx_accel, TMO_FEVR);
-    *out = tilt;
-    tk_unl_mtx(s4_mtx_accel);
+    (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
+    *p_motion = g_motion;
+    (void)tk_unl_mtx(g_s4_mutex);
 }
 
-LOCAL W clamp(W v, W lim)
+/*!
+ * @brief IMU task: calibrate, then one sample per wake-up.
+ */
+void s4_imu_task(INT stacd, void * p_exinf)
 {
-    return (v > lim) ? lim : (v < -lim) ? -lim : v;
-}
-
-LOCAL BOOL beyond(W v, W lim)
-{
-    return (v > lim) || (v < -lim);
-}
-
-/* TRUE if v is more than S4_CAL_MG from the mean so far, sum / n */
-LOCAL BOOL moved(W v, W sum, W n)
-{
-    return (n > 0) && beyond(v - sum / n, S4_CAL_MG);
-}
-
-/* Start a square wave on the buzzer (PWM clock 125 MHz, divider 1) */
-LOCAL void beep_on(void)
-{
-    pwm_set_pin(S4_BUZZER_PIN);
-    pwm_set_wrap(S4_BUZZER_PIN, 125000000 / S4_BEEP_HZ - 1);
-    pwm_set_cc(S4_BUZZER_PIN, 125000000 / S4_BEEP_HZ / 2);
-    pwm_set_enabled(S4_BUZZER_PIN, TRUE);
-}
-
-LOCAL void imu_tick(void * exinf)
-{
-    tk_wup_tsk((ID)exinf);
-}
-
-EXPORT void imu_task(INT stacd, void * exinf)
-{
-    T_CCYC ccyc = {0};
-    W x, y, z;
-    W n = 0, sx = 0, sy = 0, sz = 0; /* calibration count and sums */
-    W ox = 0, oy = 0, oz = 0;        /* offsets, in mg */
-    W fx = 0, fy = 0;                /* filtered x and y, 8 x mg */
-    W pitch, roll;                   /* 0.1 degree */
-    W tilted = 0;                    /* samples in a row beyond S4_TILT_MAX */
-    BOOL jolt, new_impact, new_tilt;
-    W h, peak = 0;        /* right wheel height, hump peak, mm */
-    W high = 0;           /* samples in a row at S4_HUMP_ON_MM */
-    BOOL done;            /* a hump just ended */
-    W ay = 0, push;       /* slow average of y (256 x mg), forward push (mg) */
-    W pushed = 0;         /* samples in a row beyond S4_ACCEL_MG */
-    UINT acc = S4_STEADY; /* accelerating, braking or steady */
-    BOOL descending = FALSE; /* past the top of the current hump */
-    UINT cls;                /* motion class, S4_STEADY... */
-    BOOL changed;
-    UB print = 0;
-    UB beep = 0; /* samples left until the buzzer stops */
-    ER er;
+    T_CCYC cyclic = {0};
+    int32_t x_mg = 0, y_mg = 0, z_mg = 0;
+    int32_t cal_count = 0, sum_x = 0, sum_y = 0, sum_z = 0;
+    int32_t offset_x = 0, offset_y = 0, offset_z = 0;
+    int32_t smooth_x = 0, smooth_y = 0; /* Low-pass x and y, 8 x mg. */
+    int32_t pitch = 0, roll = 0;        /* 0.1 degree. */
+    int32_t tilted_count = 0; /* Samples in a row beyond S4_TILT_MAX. */
+    int32_t height_mm = 0;    /* Right wheel height. */
+    int32_t peak_mm = 0;      /* Highest point of the current hump. */
+    int32_t high_count = 0;   /* Samples in a row at S4_HUMP_ON_MM. */
+    int32_t avg_y = 0;        /* Slow average of y, 256 x mg. */
+    int32_t push_mg = 0;      /* Forward push against that average. */
+    int32_t pushed_count = 0; /* Samples in a row beyond S4_ACCEL_MG. */
+    s4_motion_class_t push_class = S4_STEADY;
+    s4_motion_class_t motion_class = S4_STEADY;
+    bool b_ready = false;
+    bool b_jolt = false;
+    bool b_new_impact = false;
+    bool b_new_tilt = false;
+    bool b_hump_over = false;
+    bool b_descending = false; /* Past the top of the current hump. */
+    bool b_changed = false;
+    uint8_t print_count = 0u;
+    uint8_t beep_left = 0u; /* Samples until the buzzer stops. */
+    ER result = E_OK;
 
     (void)stacd;
-    (void)exinf;
+    (void)p_exinf;
 
-    CHECK(gy511_init(), "gy511_init");
+    CHECK(drv_gy511_init(), "drv_gy511_init");
 
-    ccyc.exinf = (void *)tk_get_tid();
-    ccyc.cycatr = TA_HLNG | TA_STA;
-    ccyc.cychdr = (FP)imu_tick;
-    ccyc.cyctim = S4_IMU_MS;
-    CHECK(tk_cre_cyc(&ccyc), "tk_cre_cyc");
+    cyclic.exinf = (void *)tk_get_tid();
+    cyclic.cycatr = TA_HLNG | TA_STA;
+    cyclic.cychdr = (FP)imu_wake; /* Kernel handler type. */
+    cyclic.cyctim = S4_IMU_MS;
+    CHECK(tk_cre_cyc(&cyclic), "tk_cre_cyc");
 
-    while (1)
+    for (;;)
     {
-        tk_slp_tsk(TMO_FEVR);
-        er = gy511_read(&x, &y, &z);
-        CHECK(er, "gy511_read");
-        if (er < E_OK)
-        {
-            continue;
-        }
+        (void)tk_slp_tsk(TMO_FEVR);
+        result = drv_gy511_read(&x_mg, &y_mg, &z_mg);
+        CHECK(result, "drv_gy511_read");
+        b_ready = (result >= E_OK);
 
-        if (n < S4_CAL_N)
+        if (b_ready && (cal_count < S4_CAL_N))
         {
-            if (moved(x, sx, n) || moved(y, sy, n) || moved(z, sz, n))
+            if (imu_moved(x_mg, sum_x, cal_count) ||
+                imu_moved(y_mg, sum_y, cal_count) ||
+                imu_moved(z_mg, sum_z, cal_count))
             {
-                n = sx = sy = sz = 0; /* car moved: start again */
+                /* Car moved: start again. */
+                cal_count = 0;
+                sum_x = 0;
+                sum_y = 0;
+                sum_z = 0;
             }
-            sx += x;
-            sy += y;
-            sz += z;
-            if (++n == S4_CAL_N)
+            sum_x += x_mg;
+            sum_y += y_mg;
+            sum_z += z_mg;
+            cal_count++;
+            if (S4_CAL_N == cal_count)
             {
-                ox = sx / n;
-                oy = sy / n;
-                oz = sz / n - 1000;
+                offset_x = sum_x / cal_count;
+                offset_y = sum_y / cal_count;
+                offset_z = (sum_z / cal_count) - IMU_MG_PER_G;
                 tm_printf((UB *)"[imu] calibrated: offsets x=%d y=%d z=%d mg\n",
-                          ox, oy, oz);
-                beep_on();
-                beep = S4_BEEP_MS / S4_IMU_MS;
+                          offset_x, offset_y, offset_z);
+                imu_beep_on();
+                beep_left = S4_BEEP_MS / S4_IMU_MS;
             }
-            continue;
         }
-
-        if (beep > 0 && --beep == 0)
+        else if (b_ready)
         {
-            pwm_set_enabled(S4_BUZZER_PIN, FALSE);
-        }
+            if (beep_left > 0u)
+            {
+                beep_left--;
+                if (0u == beep_left)
+                {
+                    (void)pwm_set_enabled(S4_BUZZER_PIN, FALSE);
+                }
+            }
 
-        x -= ox;
-        y -= oy;
-        z -= oz;
-        jolt = beyond(x - fx / 8, S4_IMPACT_MG) ||
-               beyond(y - fy / 8, S4_IMPACT_MG); /* far from the smoothed */
-        fx += x - fx / 8; /* low-pass, time constant ~8 samples (80 ms) */
-        fy += y - fy / 8;
+            x_mg -= offset_x;
+            y_mg -= offset_y;
+            z_mg -= offset_z;
+            b_jolt = imu_beyond(x_mg - (smooth_x / IMU_SMOOTH), S4_IMPACT_MG) ||
+                     imu_beyond(y_mg - (smooth_y / IMU_SMOOTH), S4_IMPACT_MG);
+            smooth_x += x_mg - (smooth_x / IMU_SMOOTH);
+            smooth_y += y_mg - (smooth_y / IMU_SMOOTH);
 
-        /* Forward push against the slow average, so a lasting tilt does not
-           count.  Forward is -Y: speeding up pushes y negative.  Switch
-           after S4_ACCEL_MS beyond S4_ACCEL_MG, back below half of it. */
-        push = fy / 8 - ay / 256;
-        ay += y - ay / 256; /* slow average, time constant ~2.5 s */
-        if (!beyond(push, S4_ACCEL_MG / 2))
-        {
-            pushed = 0;
-            acc = S4_STEADY;
-        }
-        else if (beyond(push, S4_ACCEL_MG) &&
-                 ++pushed >= S4_ACCEL_MS / S4_IMU_MS)
-        {
-            acc = (push < 0) ? S4_ACCELERATING : S4_BRAKING;
-        }
+            /* Forward push against the slow average, so a lasting tilt does
+             * not count. Forward is -Y: speeding up pushes y negative.
+             * Switch after S4_ACCEL_MS beyond S4_ACCEL_MG, back below half
+             * of it. */
+            push_mg = (smooth_y / IMU_SMOOTH) - (avg_y / IMU_AVERAGE);
+            avg_y += y_mg - (avg_y / IMU_AVERAGE);
+            if (!imu_beyond(push_mg, S4_ACCEL_MG / 2))
+            {
+                pushed_count = 0;
+                push_class = S4_STEADY;
+            }
+            else if (imu_beyond(push_mg, S4_ACCEL_MG))
+            {
+                pushed_count++;
+                if (pushed_count >= (S4_ACCEL_MS / S4_IMU_MS))
+                {
+                    push_class = (push_mg < 0) ? S4_ACCELERATING : S4_BRAKING;
+                }
+            }
 
-        pitch = clamp(-fy * 573 / 8000, 900); /* 0.1 deg per mg */
-        roll = clamp(fx * 573 / 8000, 900);
-        tilted = (beyond(pitch, S4_TILT_MAX) || beyond(roll, S4_TILT_MAX))
-                     ? tilted + 1
-                     : 0;
+            pitch = imu_clamp(-smooth_y * IMU_DECIDEG_PER_G /
+                                  (IMU_SMOOTH * IMU_MG_PER_G),
+                              S4_ANGLE_MAX);
+            roll = imu_clamp(smooth_x * IMU_DECIDEG_PER_G /
+                                 (IMU_SMOOTH * IMU_MG_PER_G),
+                             S4_ANGLE_MAX);
+            tilted_count = (imu_beyond(pitch, S4_TILT_MAX) ||
+                            imu_beyond(roll, S4_TILT_MAX))
+                               ? (tilted_count + 1)
+                               : 0;
 
-        /* Only the right wheel crosses humps, so the car tips sideways
-           about the line from the left wheel to the caster */
-        h = -S4_TRACK_MM * fx / 8000; /* right wheel height, mm */
-        high = (h >= S4_HUMP_ON_MM) ? high + 1 : 0;
-        if ((high >= S4_HUMP_MIN_MS / S4_IMU_MS || peak > 0) && h > peak)
-        {
-            peak = h; /* on a hump: track its highest point */
-        }
-        done = (peak > 0) && (h < S4_HUMP_OFF_MM); /* back on flat ground */
+            /* Only the right wheel crosses humps, so the car tips sideways
+             * about the line from the left wheel to the caster. */
+            height_mm = -S4_TRACK_MM * smooth_x / (IMU_SMOOTH * IMU_MG_PER_G);
+            high_count = (height_mm >= S4_HUMP_ON_MM) ? (high_count + 1) : 0;
+            if (((high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||
+                 (peak_mm > 0)) &&
+                (height_mm > peak_mm))
+            {
+                peak_mm = height_mm; /* On a hump: track its highest point. */
+            }
+            b_hump_over = (peak_mm > 0) && (height_mm < S4_HUMP_OFF_MM);
 
-        tk_loc_mtx(s4_mtx_accel, TMO_FEVR);
-        accel.x = clamp(x, 2047);
-        accel.y = clamp(y, 2047);
-        accel.z = clamp(z, 2047);
-        accel.count++;
-        tilt.pitch = pitch;
-        tilt.roll = roll;
-        tilt.cal = 1;
-        new_impact = jolt && !fault.impact;
-        new_tilt = (tilted >= S4_TILT_MS / S4_IMU_MS) && !fault.tilt;
-        fault.impact |= new_impact; /* latched until reset */
-        fault.tilt |= new_tilt;
-        hump.on = (peak > 0) && !done;
-        if (done)
-        {
-            hump.peak = clamp(peak, 63);
-            hump.max = (hump.peak > hump.max) ? hump.peak : hump.max;
-            hump.count++;
-        }
-        /* On a hump the car also tips nose down, so humps take precedence.
-           A hump goes up once and down once: once descending, stay so */
-        descending = hump.on && (descending || h <= peak - 2);
-        cls = fault.impact ? S4_IMPACT
-              : hump.on    ? (descending ? S4_DESCENDING : S4_CLIMBING)
-                           : acc;
-        changed = (cls != motion.cls);
-        motion.cls = cls;
-        tk_unl_mtx(s4_mtx_accel);
+            (void)tk_loc_mtx(g_s4_mutex, TMO_FEVR);
+            g_accel.x = imu_clamp(x_mg, S4_AXIS_MAX_MG);
+            g_accel.y = imu_clamp(y_mg, S4_AXIS_MAX_MG);
+            g_accel.z = imu_clamp(z_mg, S4_AXIS_MAX_MG);
+            g_accel.count++;
+            g_tilt.pitch = pitch;
+            g_tilt.roll = roll;
+            g_tilt.cal = 1u;
+            b_new_impact = b_jolt && !g_fault.impact;
+            b_new_tilt =
+                (tilted_count >= (S4_TILT_MS / S4_IMU_MS)) && !g_fault.tilt;
+            g_fault.impact = g_fault.impact || b_new_impact; /* Latched. */
+            g_fault.tilt = g_fault.tilt || b_new_tilt;
+            g_hump.on = (peak_mm > 0) && !b_hump_over;
+            if (b_hump_over)
+            {
+                g_hump.peak = imu_clamp(peak_mm, S4_HUMP_MAX_MM);
+                g_hump.max =
+                    (g_hump.peak > g_hump.max) ? g_hump.peak : g_hump.max;
+                g_hump.count++;
+            }
 
-        if (changed)
-        {
-            tm_printf((UB *)"[imu] motion: %s\n", motion_name[cls]);
-        }
+            /* On a hump the car also tips nose down, so humps take
+             * precedence. A hump goes up once and down once: once
+             * descending, stay so. */
+            b_descending =
+                g_hump.on &&
+                (b_descending || (height_mm <= (peak_mm - IMU_DESCEND_MM)));
+            motion_class = push_class;
+            if (g_fault.impact)
+            {
+                motion_class = S4_IMPACT;
+            }
+            else if (g_hump.on)
+            {
+                motion_class = b_descending ? S4_DESCENDING : S4_CLIMBING;
+            }
+            b_changed = (motion_class != g_motion.cls);
+            g_motion.cls = motion_class;
+            (void)tk_unl_mtx(g_s4_mutex);
 
-        if (new_impact || new_tilt)
-        {
-            tm_printf((UB *)"[imu] FAULT: %s\n",
-                      new_impact ? "impact" : "tilt");
-            beep_on();
-            beep = S4_ALARM_MS / S4_IMU_MS;
-        }
+            if (b_changed)
+            {
+                tm_printf((UB *)"[imu] motion: %s\n",
+                          g_motion_name[motion_class]);
+            }
 
-        if (done)
-        {
-            tm_printf((UB *)"[imu] hump: peak %d mm\n", peak);
-            peak = 0;
-        }
-        if (++print == 100 / S4_IMU_MS)
-        {
-            print = 0;
-            tm_printf((UB *)"[imu] x=%d y=%d z=%d mg pitch=%d roll=%d (0.1 "
-                            "deg) h=%d mm\n",
-                      x, y, z, (W)tilt.pitch, (W)tilt.roll, h);
+            if (b_new_impact || b_new_tilt)
+            {
+                tm_printf((UB *)"[imu] FAULT: %s\n",
+                          b_new_impact ? "impact" : "tilt");
+                imu_beep_on();
+                beep_left = S4_ALARM_MS / S4_IMU_MS;
+            }
+
+            if (b_hump_over)
+            {
+                tm_printf((UB *)"[imu] hump: peak %d mm\n", peak_mm);
+                peak_mm = 0;
+            }
+
+            print_count++;
+            if ((IMU_PRINT_MS / S4_IMU_MS) == print_count)
+            {
+                print_count = 0u;
+                tm_printf((UB *)"[imu] x=%d y=%d z=%d mg pitch=%d roll=%d "
+                                "(0.1 deg) h=%d mm\n",
+                          x_mg, y_mg, z_mg, pitch, roll, height_mm);
+            }
         }
     }
 }
+
+/*!
+ * @brief Limit value to -limit..limit.
+ */
+static int32_t imu_clamp(int32_t value, int32_t limit)
+{
+    int32_t clamped = value;
+
+    if (value > limit)
+    {
+        clamped = limit;
+    }
+    else if (value < -limit)
+    {
+        clamped = -limit;
+    }
+    return clamped;
+}
+
+/*!
+ * @brief True if value lies outside -limit..limit.
+ */
+static bool imu_beyond(int32_t value, int32_t limit)
+{
+    return (value > limit) || (value < -limit);
+}
+
+/*!
+ * @brief True if value is more than S4_CAL_MG from the mean so far.
+ */
+static bool imu_moved(int32_t value, int32_t sum, int32_t count)
+{
+    return (count > 0) && imu_beyond(value - (sum / count), S4_CAL_MG);
+}
+
+/*!
+ * @brief Start a square wave on the buzzer.
+ */
+static void imu_beep_on(void)
+{
+    (void)pwm_set_pin(S4_BUZZER_PIN);
+    (void)pwm_set_wrap(S4_BUZZER_PIN, (IMU_PWM_CLOCK_HZ / S4_BEEP_HZ) - 1u);
+    (void)pwm_set_cc(S4_BUZZER_PIN, IMU_PWM_CLOCK_HZ / S4_BEEP_HZ / 2u);
+    (void)pwm_set_enabled(S4_BUZZER_PIN, TRUE);
+}
+
+/*!
+ * @brief Cyclic handler: wake the IMU task, whose ID is p_exinf.
+ */
+static void imu_wake(void * p_exinf)
+{
+    (void)tk_wup_tsk((ID)p_exinf);
+}
+
+/*** end of file ***/

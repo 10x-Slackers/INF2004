@@ -22,7 +22,7 @@
 #define VC_PERIOD_MS   10u
 #define VC_BUTTON      20u  /* Robo Pico button, low when pressed. */
 #define VC_RELEASED    5u   /* Cycles released before a press counts. */
-#define VC_SPEED_MM_S  200u /* Line following speed. */
+#define VC_SPEED_MM_S  150u /* Line following speed. */
 #define VC_AXLE_MM     110u /* Line sensors ahead of the axle. */
 #define VC_MOVE_CYCLES 500u /* 5 s limit on each junction move. */
 #define VC_TURN_DEG    90u  /* Barcode A and B. */

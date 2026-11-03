@@ -15,13 +15,10 @@
 #include "../subsystem2/motion_control.h"
 
 #define LINE_FOLLOWING_BOTH     (DRV_LINE_LEFT | DRV_LINE_RIGHT)
-#define LINE_FOLLOWING_JUNCTION 3u /* Samples: 30 ms, 6 mm at 0.2 m/s. */
-/* Wheel speed change while one sensor sees black, % of the speed.
- * TODO: tune. */
-#define LINE_FOLLOWING_TURN_PCT 50
-#define LINE_FOLLOWING_LOST_MM                                                 \
-    150u                              /* All white this far: lost. TODO: tune. \
-                                       */
+#define LINE_FOLLOWING_JUNCTION 6u /* Samples: 60 ms, 9 mm at 0.15 m/s. */
+/* Wheel speed change while one sensor sees black, % of the speed. */
+#define LINE_FOLLOWING_TURN_PCT   50
+#define LINE_FOLLOWING_LOST_MM    80u /* All white this far: lost. */
 #define LINE_FOLLOWING_SEARCH_DEG 135 /* Pivot each side of the heading. */
 #define LINE_FOLLOWING_PIVOT_MM_S 100 /* Wheel speed while pivoting. */
 

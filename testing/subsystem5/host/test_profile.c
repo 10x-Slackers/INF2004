@@ -47,24 +47,24 @@ int main(void)
                    (5u == scan_profile_median(1u, 9u, 5u)),
                "median of three");
 
-    p = test_profile(800u, 300u, 200u, 250u, 800u);
-    test_check((200u == p.closest_mm) && (90u == p.closest_deg) &&
+    p = test_profile(800u, 140u, 100u, 120u, 800u);
+    test_check((100u == p.closest_mm) && (90u == p.closest_deg) &&
                    (1u == p.b_obstacle) && (85u == p.right_deg) &&
                    (95u == p.left_deg),
                "centred obstacle: closest point and edges at 85..95");
-    test_check(34u == p.width_mm,
-               "width: 200 mm x 10 degrees = 34 mm (arc length)");
+    test_check(17u == p.width_mm,
+               "width: 100 mm x 10 degrees = 17 mm (arc length)");
 
-    p = test_profile(200u, 800u, 800u, 300u, 300u);
-    test_check((200u == p.closest_mm) && (80u == p.closest_deg) &&
+    p = test_profile(100u, 800u, 800u, 140u, 140u);
+    test_check((100u == p.closest_mm) && (80u == p.closest_deg) &&
                    (80u == p.right_deg) && (80u == p.left_deg),
                "obstacle at the right end; a further blocked run is not it");
 
-    p = test_profile(300u, 300u, 300u, 300u, 250u);
+    p = test_profile(140u, 140u, 140u, 140u, 120u);
     test_check((100u == p.closest_deg) && (80u == p.right_deg) &&
-                   (100u == p.left_deg) && (87u == p.width_mm),
-               "obstacle filling the sweep: edges at both ends, width 87 mm");
-    p = test_profile(4000u, 4000u, 350u, 4000u, 4000u);
+                   (100u == p.left_deg) && (41u == p.width_mm),
+               "obstacle filling the sweep: edges at both ends, width 41 mm");
+    p = test_profile(4000u, 4000u, 150u, 4000u, 4000u);
     test_check((0u == p.width_mm) && (1u == p.b_obstacle),
                "single blocked ray: width 0");
 
@@ -77,11 +77,11 @@ int main(void)
                    (SCAN_PROFILE_LEFT == scan_profile_side(900u, 600u)) &&
                    (SCAN_PROFILE_RIGHT == scan_profile_side(600u, 900u)),
                "the more open side, left on a tie");
-    test_check((SCAN_PROFILE_RIGHT == scan_profile_side(300u, 400u)) &&
-                   (SCAN_PROFILE_LEFT == scan_profile_side(400u, 300u)),
-               "one side under 400 mm: the other side");
-    test_check(SCAN_PROFILE_NONE == scan_profile_side(399u, 300u),
-               "both sides under 400 mm: no side (safe stop)");
+    test_check((SCAN_PROFILE_RIGHT == scan_profile_side(200u, 250u)) &&
+                   (SCAN_PROFILE_LEFT == scan_profile_side(250u, 200u)),
+               "one side under 250 mm: the other side");
+    test_check(SCAN_PROFILE_NONE == scan_profile_side(249u, 200u),
+               "both sides under 250 mm: no side (safe stop)");
 
     test_check((8u == sizeof(scan_profile_t)) &&
                    (16u == sizeof(ultrasonic_scan_t)) &&

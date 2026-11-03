@@ -1,0 +1,12 @@
+S5-U46 on the car, 21463ff. Observed by the tester; no video.
+Normal image: sensor straight ahead at start-up.
+TEST=1 image, short GP20 press: sweep did not reach the mount's stops, no buzzing, settled back straight ahead.
+
+== Normal image boot
+[vc] INIT -> READY: IMU calibrated
+
+== TEST=1 image, S5 checks and the scan from the press
+[TEST] S5-U40 PASS  avoidance boots idle
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+[scan] forward_mm=678 fault=0 closest=187@100 edges=100..100 width=0 obstacle=1

@@ -51,8 +51,8 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 5 | `.forward_ms`: kernel time of `forward_mm` | 0 to 2³²−1 ms, wraps | 32 | `uint32_t`, the kernel time's width | As above |
 | 5 | `scan_profile_t.closest_mm`: closest point of the servo sweep | 20 to 4000 mm | 12 | `unsigned int` bit-field | Inside `ultrasonic_scan_t`, as above |
 | 5 | `.closest_deg`, `.right_deg`, `.left_deg`: servo angles of the closest point and the obstacle edges | 80 to 100° | 7 each | As above | As above |
-| 5 | `.b_obstacle`: closest point within 350 mm | 0 or 1 | 1 | As above | As above |
-| 5 | `.width_mm`: rough obstacle width, the arc between the edges at the closest distance | 0 to 122 mm (350 mm × 20°) | 7 | As above | As above |
+| 5 | `.b_obstacle`: closest point within 150 mm | 0 or 1 | 1 | As above | As above |
+| 5 | `.width_mm`: rough obstacle width, the arc between the edges at the closest distance | 0 to 52 mm (150 mm × 20°) | 7 | As above | As above |
 | 5 | `obstacle_avoidance_status_t.state`: idle, monitor, profile, bypass, stopped | 0 to 4 | 3 | `unsigned int` bit-field | Readers copy it with `obstacle_avoidance_get_status()`, under the avoidance mutex |
 | 5 | `.side`: none, left, right | 0 to 2 | 2 | As above | As above |
 | 5 | `.step`: bypass step | 0 to 7 | 3 | As above | As above |

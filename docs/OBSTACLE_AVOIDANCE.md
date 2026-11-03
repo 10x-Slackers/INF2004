@@ -52,22 +52,22 @@ Faults are bits in the shared fault bitmask (`app_faults()`, `app_fault.h`), cle
 | `forward_ms`           | wraps         | Kernel time of `forward_mm`, to check its age                                  |
 | `request`              | 0–15, wraps   | Number of the request the latest scan served                                   |
 | `profile.closest_mm`   | 20–4000       | Closest point of the last profile scan, at `profile.closest_deg`               |
-| `profile.right_deg`, `.left_deg` | 80–100 | Obstacle edges: outermost rays within 350 mm next to the closest point |
-| `profile.b_obstacle`   | 0–1           | Closest point within 350 mm                                                    |
-| `profile.width_mm`     | 0–122         | Rough obstacle width: the arc between the edges at `closest_mm`; 0 with no obstacle |
+| `profile.right_deg`, `.left_deg` | 80–100 | Obstacle edges: outermost rays within 150 mm next to the closest point |
+| `profile.b_obstacle`   | 0–1           | Closest point within 150 mm                                                    |
+| `profile.width_mm`     | 0–52          | Rough obstacle width: the arc between the edges at `closest_mm`; 0 with no obstacle |
 
 Each scan also sets `APP_FAULT_NO_ECHO` in the shared fault bitmask when one of its rays got no echo pulse (sensor missing or faulty), and clears it otherwise, before `request` moves on.
 
-Servo angles: 80° points right, 90° ahead, 100° left. The sensor's mount stops the servo about 15° either side, so the servo only does the fine scan; the car turns for the coarse one. The width (FR6) is rough: the beam is about as wide as the sweep, and an obstacle that fills the sweep reads at most about 120 mm at 350 mm, whatever its real width.
+Servo angles: 80° points right, 90° ahead, 100° left. The sensor's mount stops the servo about 15° either side, so the servo only does the fine scan; the car turns for the coarse one. The width (FR6) is rough: the beam is about as wide as the sweep, and an obstacle that fills the sweep reads at most about 50 mm at 150 mm, whatever its real width.
 
 ## How it works
 
 - **Ranging:** a 10 µs trigger, then the scan task sleeps while the echo is out. ECHO's edges arrive through the shared GPIO interrupt (`app_gpio_register()`), which times them on the 1 MHz TIMER and wakes the task. Distance is `echo_us × 10 / 58` mm. An echo longer than 4 m, or none ending within 50 ms, reads 4000 mm: open space is clear. Only an echo pulse that never starts is a fault. Triggers are at least 60 ms apart, and wait for ECHO to be low.
 - **Coarse scan (car):** with the car still, avoidance turns it 45° left and takes a forward reading, turns 90° right and takes another, then turns 45° back to the original heading. These are `left_mm` and `right_mm`.
-- **Fine scan (servo):** rays every 5° from 80 to 100°, each the median of three readings after a 200 ms servo settle. The obstacle is the run of rays within 350 mm around the closest one. The servo returns ahead and takes a forward reading at the end of every scan.
-- **Side:** the more open side, if it has at least 400 mm; left on a tie. With neither, a safe stop (no reverse: nothing checks behind the car).
-- **Bypass:** seven steps through the motion API, each waited on until `COMPLETE`: turn 90° towards the side, forward 200 mm (300 mm if the obstacle fills the whole fine sweep, so it may be wider than the sweep can see), turn back, forward 700 mm (the 350 mm gap, the obstacle, the car and the beam's spread), turn back, forward the same side-step, turn 90° to the original heading. During each forward step the range ahead is read continuously, and anything within 350 mm is a safe stop, so a side that looked open but is not ends in a stop instead of a collision. The obstacle being passed stays further than that while it is inside the beam. The car ends stopped on the original line, past the obstacle, and avoidance watches again. Finding the line with the IR sensors is up to the controller.
-- **Monitoring:** while started, forward readings follow each other (about one every 60 ms). The first within 350 mm makes avoidance stop line following and brake, wait for both wheels to read 0 mm/s, look each side and profile. If the fine scan finds nothing within 350 mm, it goes back to watching with the car stopped.
+- **Fine scan (servo):** rays every 5° from 80 to 100°, each the median of three readings after a 200 ms servo settle. The obstacle is the run of rays within 150 mm around the closest one. The servo returns ahead and takes a forward reading at the end of every scan.
+- **Side:** the more open side, if it has at least 250 mm; left on a tie. With neither, a safe stop (no reverse: nothing checks behind the car).
+- **Bypass:** seven steps through the motion API, each waited on until `COMPLETE`: turn 90° towards the side, forward 200 mm (300 mm if the obstacle fills the whole fine sweep, so it may be wider than the sweep can see), turn back, forward 700 mm (the 150 mm gap, the obstacle, the car and the beam's spread), turn back, forward the same side-step, turn 90° to the original heading. During each forward step the range ahead is read continuously, and anything within 150 mm is a safe stop, so a side that looked open but is not ends in a stop instead of a collision. The obstacle being passed stays further than that while it is inside the beam. The car ends stopped on the original line, past the obstacle, and avoidance watches again. Finding the line with the IR sensors is up to the controller.
+- **Monitoring:** while started, forward readings follow each other (about one every 60 ms). The second in a row within 150 mm (one stray echo is ignored) makes avoidance stop line following and brake, wait for both wheels to read 0 mm/s, look each side and profile. If the fine scan finds nothing within 150 mm, it goes back to watching with the car stopped.
 
 ## Calibration
 
@@ -75,9 +75,9 @@ Constants are in the `.c` files; change one, rebuild and rerun the bench sequenc
 
 1. **Range:** flat target at 100, 300 and 1000 mm. If readings are off by more than 1%, change the 58 µs/cm in `scan_profile_mm()`.
 2. **Servo:** watch a short bench press. Set `DRV_SG90_MID_US` so the sensor points straight ahead, and `DRV_SG90_MIN_US`, `_MAX_US` so it points 10° right and 10° left without reaching the mount's stops (a higher pulse turns it left; on the car's servo 10 µs moves it well under 1°, and steps under 10 µs may not move it at all).
-3. **Look angle:** `OBSTACLE_AVOIDANCE_LOOK_DEG` (45°) must point the sensor past the widest obstacle at 350 mm.
+3. **Look angle:** `OBSTACLE_AVOIDANCE_LOOK_DEG` (45°) must point the sensor past the widest obstacle at 150 mm.
 4. **Bypass size:** `OBSTACLE_AVOIDANCE_SIDE_MM` (200) must clear half the car's width plus half a narrow obstacle's, and `_WIDE_MM` (300) half a wide one's; `_PASS_MM` the obstacle's length plus the car's. Measure on the track.
-5. **Thresholds:** `SCAN_PROFILE_BLOCK_MM` (350) must leave room to brake; `SCAN_PROFILE_CLEAR_MM` (400) must fit the car beside the obstacle; the range watch during each forward bypass step catches a side that is narrower than it looked.
+5. **Thresholds:** `SCAN_PROFILE_BLOCK_MM` (150) must leave room to brake; `SCAN_PROFILE_CLEAR_MM` (250) must fit the car beside the obstacle; the range watch during each forward bypass step catches a side that is narrower than it looked.
 
 ## Bench sequence
 

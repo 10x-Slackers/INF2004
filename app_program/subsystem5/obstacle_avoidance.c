@@ -21,6 +21,7 @@
 #define OBSTACLE_AVOIDANCE_SIDE_MM  200u /* Out to the side and back. */
 #define OBSTACLE_AVOIDANCE_WIDE_MM  300u /* Obstacle fills the sweep. */
 #define OBSTACLE_AVOIDANCE_PASS_MM  700u /* Gap, obstacle and car length. */
+#define OBSTACLE_AVOIDANCE_BLOCKED  2u   /* In a row: skips a stray echo. */
 /* One bypass step: a turn towards the bypass side (+1) or back (-1), or a
  * move forward (0): the pass alongside the obstacle, or a side-step. */
 typedef struct
@@ -121,11 +122,12 @@ void obstacle_avoidance_get_status(obstacle_avoidance_status_t * p_status)
 
 /*!
  * @brief Avoidance task: a forward reading after another while started;
- * avoid when one is blocked.
+ * avoid when OBSTACLE_AVOIDANCE_BLOCKED in a row are blocked.
  */
 static void obstacle_avoidance_task(INT stacd, void * p_exinf)
 {
     ultrasonic_scan_t scan = {0};
+    uint32_t blocked = 0u;
 
     (void)stacd;
     (void)p_exinf;
@@ -133,19 +135,25 @@ static void obstacle_avoidance_task(INT stacd, void * p_exinf)
     {
         if (!obstacle_avoidance_active())
         {
+            blocked = 0u;
             (void)tk_slp_tsk(TMO_FEVR);
         }
         else if (!obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan))
         {
             /* Cancelled, or stopped on a sensor fault. */
         }
-        else if (scan.forward_mm <= SCAN_PROFILE_BLOCK_MM)
-        {
-            obstacle_avoidance_avoid();
-        }
         else
         {
-            /* Clear ahead: the next reading follows straight away. */
+            /* Clear ahead restarts the count; the next reading follows
+             * straight away. */
+            blocked = (scan.forward_mm <= SCAN_PROFILE_BLOCK_MM)
+                          ? (blocked + 1u)
+                          : 0u;
+            if (OBSTACLE_AVOIDANCE_BLOCKED == blocked)
+            {
+                blocked = 0u;
+                obstacle_avoidance_avoid();
+            }
         }
     }
 }

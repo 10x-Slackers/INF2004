@@ -28,7 +28,7 @@
 #define S3_BENCH_HOLD_MS    1000u /* Subsystem 2 takes taps under 0.5 s. */
 #define S3_BENCH_GO_MS      5000  /* Time to put the car on the line. */
 #define S3_BENCH_RUN_MS     15000u
-#define S3_BENCH_SPEED_MM_S 200u
+#define S3_BENCH_SPEED_MM_S 150u
 #define S3_BENCH_RAW_POLLS  25u /* Print the barcode level every 0.5 s. */
 
 static void subsystem3_bench_task(INT stacd, void * p_exinf);
@@ -152,7 +152,7 @@ static bool subsystem3_bench_report(line_following_t * p_last)
 /*!
  * @brief Bench task. Prints the line state on every change. Releasing GP21
  * after holding it for 1 s starts a run: after 5 s the car follows the
- * line at 200 mm/s until a junction, a lost line or 15 s, then stops.
+ * line at 150 mm/s until a junction, a lost line or 15 s, then stops.
  */
 static void subsystem3_bench_task(INT stacd, void * p_exinf)
 {

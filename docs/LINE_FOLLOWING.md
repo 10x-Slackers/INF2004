@@ -72,7 +72,7 @@ Constants are at the top of each `.c` file; change one, rebuild and rerun the be
 
 1. **Line sensors:** at the final mounting height over the real track, turn each module's potentiometer until its LED lights over the line only (S3-U03). DO reads 1 over black (`DRV_LINE_BLACK`).
 2. **Steering:** `LINE_FOLLOWING_TURN_PCT` (50). Raise it if the car runs off curves, lower it if it weaves on straights.
-3. **Lost-line threshold:** `LINE_FOLLOWING_LOST_MM` (150). Run the bench on the longest straight: `[line]` lines print the odometer (`mm=`) on every change, so the longest all-white stretch is the gap between a `left=0 right=0` line and the next line. Set the threshold about 1.5 times that, but under about 185 mm, the reach of the 135° sweep (`LINE_FOLLOWING_SEARCH_DEG`) on a sharp corner (above). If 1.5 times is more than that, make the car weave more (step 2) instead. A narrower sweep is quicker if the course has no sharp corners.
+3. **Lost-line threshold:** `LINE_FOLLOWING_LOST_MM` (80). Run the bench on the longest straight: `[line]` lines print the odometer (`mm=`) on every change, so the longest all-white stretch is the gap between a `left=0 right=0` line and the next line. Set the threshold about 1.5 times that, but under about 185 mm, the reach of the 135° sweep (`LINE_FOLLOWING_SEARCH_DEG`) on a sharp corner (above). If 1.5 times is more than that, make the car weave more (step 2) instead. A narrower sweep is quicker if the course has no sharp corners.
 4. **Barcode levels:** hold the sensor still over white and over a black bar (S3-U10) and keep `BARCODE_BLACK` and `BARCODE_WHITE` well inside the two levels. White reads about 170 counts and black about 4070.
 
 ## Bench sequence

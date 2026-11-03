@@ -31,7 +31,7 @@ typedef struct
 {
     unsigned int bits : 2;        /* DRV_LINE_LEFT | DRV_LINE_RIGHT now. */
     unsigned int last_side : 2;   /* Last single sensor to see black. */
-    unsigned int b_junction : 1;  /* Both black for 3 samples in a row. */
+    unsigned int b_junction : 1;  /* Both black long enough: a junction. */
     unsigned int b_following : 1; /* Steering the car. */
     unsigned int b_searching : 1; /* Pivoting to find a lost line. */
     unsigned int b_lost : 1;      /* Search failed; braked. */

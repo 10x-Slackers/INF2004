@@ -20,8 +20,8 @@
 #define SCAN_PROFILE_RAYS     5u    /* 80..100 degrees in 5 degree steps. */
 #define SCAN_PROFILE_MIN_MM   20u   /* Sensor's shortest range. */
 #define SCAN_PROFILE_FAR_MM   4000u /* Nothing within the sensor's range. */
-#define SCAN_PROFILE_BLOCK_MM 350u  /* A ray this close hits an obstacle. */
-#define SCAN_PROFILE_CLEAR_MM 400u  /* A side this open can be passed. */
+#define SCAN_PROFILE_BLOCK_MM 150u  /* A ray this close hits an obstacle. */
+#define SCAN_PROFILE_CLEAR_MM 250u  /* A side this open can be passed. */
 
 /* scan_profile_side() */
 #define SCAN_PROFILE_NONE  0u

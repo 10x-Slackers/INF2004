@@ -17,11 +17,15 @@
 #define LINE_FOLLOWING_BOTH     (DRV_LINE_LEFT | DRV_LINE_RIGHT)
 #define LINE_FOLLOWING_JUNCTION 6u /* Samples: 60 ms, 9 mm at 0.15 m/s. */
 /* Wheel speed change, permille of the speed: 1000 stops the inner wheel.
- * It rises towards the max over RISE_MM with one sensor black and falls
- * back to 0 over FALL_MM once neither (or both) is. */
+ * A sensor turning black starts it at once at TURN_MIN towards that side;
+ * it rises to TURN_MAX over RISE_MM while the sensor stays black and falls
+ * back to 0 over FALL_MM once neither (or both) is. All white past DRIFT_MM,
+ * it turns gently towards last_side, reaching TURN_MIN at LOST_MM. */
+#define LINE_FOLLOWING_TURN_MIN   300
 #define LINE_FOLLOWING_TURN_MAX   1000
-#define LINE_FOLLOWING_RISE_MM    40
-#define LINE_FOLLOWING_FALL_MM    20
+#define LINE_FOLLOWING_RISE_MM    30
+#define LINE_FOLLOWING_FALL_MM    10
+#define LINE_FOLLOWING_DRIFT_MM   40
 #define LINE_FOLLOWING_LOST_MM    80u /* All white this far: lost. */
 #define LINE_FOLLOWING_SEARCH_DEG 135 /* Pivot each side of the heading. */
 #define LINE_FOLLOWING_PIVOT_MM_S 100 /* Wheel speed while pivoting. */
@@ -168,8 +172,9 @@ void line_following_task(INT stacd, void * p_exinf)
 }
 
 /*!
- * @brief Steer towards the side whose sensor sees black, the turn rising
- * the further the car rolls with it black and falling once it is not.
+ * @brief Steer towards the side whose sensor sees black, the turn starting
+ * small, rising the further the car rolls with it black and falling once
+ * it is not; all white for long, drift back towards the line.
  * Call under gh_mutex while following.
  *
  * @param[in] bits        Sensors over black.
@@ -181,6 +186,11 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm)
     /* A few mm since the last sample, so the cast keeps it. */
     int32_t const mm =
         (int32_t)((distance_mm - g_steer_mm) & MOTION_CONTROL_DISTANCE_MASK);
+    /* All white beyond DRIFT_MM; the search starts before it gets large. */
+    int32_t const white = (int32_t)((distance_mm - g_search.from_mm) &
+                                    MOTION_CONTROL_DISTANCE_MASK) -
+                          LINE_FOLLOWING_DRIFT_MM;
+    bool const b_one = (DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits);
     int32_t target = 0; /* Centred, or a junction: straight on. */
     int32_t step = (mm * LINE_FOLLOWING_TURN_MAX) / LINE_FOLLOWING_FALL_MM;
 
@@ -192,13 +202,28 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm)
     {
         target = -LINE_FOLLOWING_TURN_MAX;
     }
+    else if ((0u == bits) && (white > 0) && (0u != g_line.last_side))
+    {
+        /* Centred for long, or the line curved away: drift towards it. */
+        target = (white * LINE_FOLLOWING_TURN_MIN) /
+                 ((int32_t)LINE_FOLLOWING_LOST_MM - LINE_FOLLOWING_DRIFT_MM);
+        target = (DRV_LINE_RIGHT == g_line.last_side) ? -target : target;
+    }
     else
     {
         /* Straight on. */
     }
-    if ((0 != target) && ((target * g_turn) >= 0))
+    if (b_one)
     {
-        step = (mm * LINE_FOLLOWING_TURN_MAX) / LINE_FOLLOWING_RISE_MM;
+        step = (mm * (LINE_FOLLOWING_TURN_MAX - LINE_FOLLOWING_TURN_MIN)) /
+               LINE_FOLLOWING_RISE_MM;
+        /* Below the min, or the other way: start at the min towards it. */
+        if (((target * g_turn) / LINE_FOLLOWING_TURN_MAX) <
+            LINE_FOLLOWING_TURN_MIN)
+        {
+            g_turn =
+                (target * LINE_FOLLOWING_TURN_MIN) / LINE_FOLLOWING_TURN_MAX;
+        }
     }
     if (g_turn < target)
     {

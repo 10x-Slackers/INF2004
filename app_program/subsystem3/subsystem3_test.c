@@ -123,7 +123,7 @@ static void subsystem3_symbol(uint16_t * p_widths, uint32_t pattern,
  * *p_last. The odometer shows how far the car runs with both sensors
  * white, to set LINE_FOLLOWING_LOST_MM.
  *
- * @return True if both sensors see a junction, or the line was lost.
+ * @return True if the line was lost. A junction is only printed.
  */
 static bool subsystem3_bench_report(line_following_t * p_last)
 {
@@ -146,13 +146,14 @@ static bool subsystem3_bench_report(line_following_t * p_last)
                   motion.heading_deg);
         *p_last = line;
     }
-    return (line.b_junction) || (line.b_lost);
+    return line.b_lost;
 }
 
 /*!
  * @brief Bench task. Prints the line state on every change. Releasing GP21
  * after holding it for 1 s starts a run: after 5 s the car follows the
- * line at 150 mm/s until a junction, a lost line or 15 s, then stops.
+ * line at 150 mm/s, straight over junctions, until a lost line or 15 s,
+ * then stops.
  */
 static void subsystem3_bench_task(INT stacd, void * p_exinf)
 {

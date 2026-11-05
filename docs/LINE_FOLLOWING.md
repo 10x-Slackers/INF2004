@@ -79,7 +79,7 @@ Constants are at the top of each `.c` file; change one, rebuild and rerun the be
 
 The `make -C build_make TEST=1` image starts task `s3_bench` after the checks. It prints the line state (`[line] left= right= junction= last= following= searching= lost= mm= deg=`) on every change, the barcode level (`[bar] min= max=`) every 0.5 s, and every barcode read (`[barcode] command= count= rejects= at_mm=`, with the measured widths).
 
-- **GP21 held for 1 s or more:** after 5 s the car follows the line at 150 mm/s until a junction, a lost line or 15 s, then stops and prints `[line] bench done after … ms`. Taps under 0.5 s start subsystem 2's bench instead; a press in between starts neither.
+- **GP21 held for 1 s or more:** after 5 s the car follows the line at 150 mm/s, straight over junctions (printed as `junction=1`), until a lost line or 15 s, then stops and prints `[line] bench done after … ms`. Taps under 0.5 s start subsystem 2's bench instead; a press in between starts neither.
 
 ## Resources
 

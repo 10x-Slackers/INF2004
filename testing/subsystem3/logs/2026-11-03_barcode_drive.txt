@@ -1,0 +1,98 @@
+S3-U14 on the car, TEST=1 image from 21463ff, after the sensor mount repair. Printed *A* beside a straight line; GP21 held for the line run.
+Several runs; the barcode sensor first sat over the line (reads black ~4080 throughout), then was moved over the floor (white ~160-200, black ~4080).
+The tester confirmed the car rolled over the *A* on the last run. Every [barcode] line, every line run start and every reboot:
+
+1244:[line] put the car on the line, starting in 5 s
+1301:[barcode] elements=71 letter=- widths_0.1mm= 60 33 5 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1335:[barcode] elements=25 letter=- widths_0.1mm= 39 264 1 26 3 9 11 4 9 8 4 42 3 236 1 0 1 0 0 1 1 232 174 263 40
+1409:[line] bench done after 10220 ms
+1410:[barcode] command=0 count=0 rejects=2 at_mm=0
+1454:[TEST] === test run start ===
+2147:== 10:45:21 port opened
+2431:[line] put the car on the line, starting in 5 s
+2493:[barcode] elements=47 letter=- widths_0.1mm= 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+2588:[line] bench done after 7580 ms
+2589:[barcode] command=0 count=0 rejects=1 at_mm=0
+2642:== 10:46:01 port opened
+2661:[TEST] === test run start ===
+6470:[line] put the car on the line, starting in 5 s
+6553:[line] bench done after 2000 ms
+8686:[line] put the car on the line, starting in 5 s
+8755:[barcode] elements=107 letter=- widths_0.1mm= 48 0 34 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+8831:[line] bench done after 8440 ms
+8832:[barcode] command=0 count=0 rejects=1 at_mm=0
+12036:[barcode] elements=227 letter=- widths_0.1mm= 0 0 0 0 25 0 0 0 8 8 14 0 0 0 0 68 0 118 0 0 0 0 0 0 0 25 109 0 0
+12037:[barcode] command=0 count=0 rejects=2 at_mm=0
+12491:[line] put the car on the line, starting in 5 s
+12547:[barcode] elements=23 letter=- widths_0.1mm= 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+12601:[line] bench done after 2680 ms
+12602:[barcode] command=0 count=0 rejects=3 at_mm=0
+13920:== 11:04:06 port opened
+13921:== 11:04:07 port opened
+13940:[TEST] === test run start ===
+14412:== 11:04:57 port opened
+14431:[TEST] === test run start ===
+14790:== 11:07:27 port opened
+14816:== 11:07:40 port opened
+15005:[line] put the car on the line, starting in 5 s
+15141:[line] bench done after 0 ms
+15187:[line] put the car on the line, starting in 5 s
+15244:== 11:08:54 port opened
+15263:[TEST] === test run start ===
+15340:[line] put the car on the line, starting in 5 s
+15413:== 11:09:24 port opened
+15565:[line] bench done after 0 ms
+15768:[line] put the car on the line, starting in 5 s
+16345:[line] bench done after 13880 ms
+16420:== 11:11:21 port opened
+18075:== 11:15:45 port opened
+18094:[TEST] === test run start ===
+18319:[line] put the car on the line, starting in 5 s
+18436:== 11:16:25 port opened
+18953:== 11:17:59 port opened
+18972:[TEST] === test run start ===
+19099:[line] put the car on the line, starting in 5 s
+19424:== 11:19:09 port opened
+19631:== 11:19:52 port opened
+19650:[TEST] === test run start ===
+19853:[line] bench done after 3960 ms
+19932:[line] bench done after 0 ms
+20477:[line] bench done after 15000 ms
+
+== Last run in full (minus [imu])
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1684 deg=183
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1691 deg=183
+[barcode] elements=23 letter=- widths_0.1mm= 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1719 deg=181
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1722 deg=181
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1736 deg=182
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1747 deg=181
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1750 deg=181
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1765 deg=182
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1768 deg=183
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1783 deg=181
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1791 deg=180
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1806 deg=182
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1810 deg=183
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1818 deg=182
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1849 deg=182
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1856 deg=181
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1861 deg=180
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1884 deg=183
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1888 deg=183
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1911 deg=181
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1915 deg=180
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1939 deg=183
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1943 deg=183
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1958 deg=182
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1966 deg=181
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1970 deg=181
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2029 deg=179
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2036 deg=180
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2137 deg=172
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2166 deg=169
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=2170 deg=168
+[line] bench done after 2680 ms
+[barcode] command=0 count=0 rejects=3 at_mm=0
+[bar] min=4079 max=4095

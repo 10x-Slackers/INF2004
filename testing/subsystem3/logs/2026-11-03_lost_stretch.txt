@@ -1,0 +1,50 @@
+S3-U18 on the car. TEST=1 image built from the #32 work tree (before 2c7101f was committed) with LINE_FOLLOWING_LOST_MM set to 185 for this measurement only.
+Longest straight on the course; GP21 held. Only one program was reading the serial port for this run.
+Straight: heading 0-6 deg from mm=185 to mm=485. Longest all-white stretch there: 348 -> 412 = 64 mm. 1.5x = 96 mm.
+After mm=550 the line curves: all-white stretches of 170 mm (552 -> 722) and 188 mm (1606 -> 1794, search at 185).
+
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=0 junction=0 last=0 following=1 searching=1 lost=0 mm=185 deg=3
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=192 deg=7
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=214 deg=3
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=238 deg=0
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=339 deg=3
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=342 deg=4
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=345 deg=4
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=348 deg=4
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=412 deg=6
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=421 deg=5
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=433 deg=4
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=444 deg=5
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=485 deg=5
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=552 deg=23
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=722 deg=41
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=726 deg=41
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=732 deg=41
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=806 deg=21
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=819 deg=18
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=885 deg=351
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=888 deg=350
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=891 deg=349
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=897 deg=348
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=958 deg=322
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=964 deg=320
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=998 deg=306
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1085 deg=294
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1125 deg=283
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1134 deg=281
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1137 deg=280
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1140 deg=280
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1149 deg=277
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1152 deg=276
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1158 deg=274
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1219 deg=266
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1465 deg=158
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1547 deg=145
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1572 deg=139
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1594 deg=137
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1606 deg=135
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=1794 deg=127
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1906 deg=15
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=1911 deg=11
+[line] bench done after 13560 ms

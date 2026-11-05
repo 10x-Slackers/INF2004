@@ -3,14 +3,18 @@
  * @brief Code 39 decoding of one three-character symbol, *X*. Each
  * character is 9 elements, bar first, of which exactly 3 are wide (about
  * 3 x narrow). All 43 characters and '*' are known; the patterns were
- * checked against the Code 39 table on Wikipedia.
+ * checked against the Code 39 table on Wikipedia. *X* with a letter, digit,
+ * '-', '.' or space has exactly 6 wide bars and 3 wide spaces, which sets
+ * the narrow/wide split; $ / + % (no wide bars) are not decoded.
  */
 
 #include "code39.h"
 #include <stdbool.h>
 
-#define CODE39_STRIDE 10u /* 9 elements and the gap after them. */
-#define CODE39_WIDE   3u
+#define CODE39_STRIDE      10u /* 9 elements and the gap after them. */
+#define CODE39_WIDE        3u
+#define CODE39_BARS_WIDE   6u /* Wide bars and spaces in *X*. */
+#define CODE39_SPACES_WIDE 3u
 
 /* Patterns, first element in the most significant of 9 bits, 1 = wide,
  * in the order of g_letters. */
@@ -26,11 +30,14 @@ static uint32_t code39_one_way(const uint16_t * p_widths,
                                const uint32_t * p_threshold);
 static uint32_t code39_char(const uint16_t * p_widths,
                             const uint32_t * p_threshold);
+static uint32_t code39_split(const uint16_t * p_widths, uint32_t first,
+                             uint32_t wide);
 
 /*!
  * @brief Decode *X*, read in either direction. Bars and spaces are split
- * into narrow and wide separately, halfway between the narrowest and widest
- * of each: the sensor's spot makes bars read narrower and spaces wider.
+ * into narrow and wide separately, as the sensor's spot makes bars read
+ * narrower and spaces wider: below the 6th widest bar and the 3rd widest
+ * space, so one bar stretched by a turn cannot move the split.
  *
  * @param[in] p_widths CODE39_ELEMENTS widths in any one unit, in the order
  *                     the sensor saw them, first bar first.
@@ -39,26 +46,18 @@ static uint32_t code39_char(const uint16_t * p_widths,
 uint32_t code39_decode(const uint16_t * p_widths)
 {
     uint16_t reversed[CODE39_ELEMENTS] = {0};
-    uint32_t min[2] = {UINT16_MAX, UINT16_MAX}; /* Bars [0], spaces [1]. */
-    uint32_t max[2] = {0u, 0u};
-    uint32_t threshold[2] = {0u, 0u};
+    uint32_t threshold[2] = {0u, 0u}; /* Bars [0], spaces [1]. */
     uint32_t letter = 0u;
     uint32_t element = 0u;
-    uint32_t kind = 0u;
 
     /* Elements alternate from a bar, and 29 is odd, so reversing keeps
-     * every element's kind. */
+     * every element's kind and the splits. */
     for (element = 0u; element < CODE39_ELEMENTS; element++)
     {
-        kind = element % 2u;
-        min[kind] =
-            (p_widths[element] < min[kind]) ? p_widths[element] : min[kind];
-        max[kind] =
-            (p_widths[element] > max[kind]) ? p_widths[element] : max[kind];
         reversed[CODE39_ELEMENTS - 1u - element] = p_widths[element];
     }
-    threshold[0] = (min[0] + max[0]) / 2u;
-    threshold[1] = (min[1] + max[1]) / 2u;
+    threshold[0] = code39_split(p_widths, 0u, CODE39_BARS_WIDE);
+    threshold[1] = code39_split(p_widths, 1u, CODE39_SPACES_WIDE);
     letter = code39_one_way(p_widths, threshold);
     if (0u == letter)
     {
@@ -119,6 +118,34 @@ static uint32_t code39_char(const uint16_t * p_widths,
             (g_patterns[known] == pattern) ? (uint8_t)g_letters[known] : letter;
     }
     return letter;
+}
+
+/*!
+ * @brief The width that splits narrow from wide for one kind of element.
+ *
+ * @param[in] first 0 for bars, 1 for spaces.
+ * @param[in] wide  How many of that kind are wide.
+ * @return Halfway between the narrowest wide and the widest narrow one.
+ */
+static uint32_t code39_split(const uint16_t * p_widths, uint32_t first,
+                             uint32_t wide)
+{
+    uint16_t sorted[(CODE39_ELEMENTS + 1u) / 2u] = {0}; /* Widest first. */
+    uint32_t count = 0u;
+    uint32_t element = 0u;
+    uint32_t at = 0u;
+
+    for (element = first; element < CODE39_ELEMENTS; element += 2u)
+    {
+        for (at = count; (at > 0u) && (sorted[at - 1u] < p_widths[element]);
+             at--)
+        {
+            sorted[at] = sorted[at - 1u];
+        }
+        sorted[at] = p_widths[element];
+        count++;
+    }
+    return ((uint32_t)sorted[wide - 1u] + sorted[wide]) / 2u;
 }
 
 /*** end of file ***/

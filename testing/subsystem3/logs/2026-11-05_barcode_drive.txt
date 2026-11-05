@@ -3253,3 +3253,359 @@ wifi: cyw43_init() returned, bringing interface up ...
 [bar] min=4075 max=4089
 [bar] min=4076 max=4084
 [edge] black ended, 0.0 mm, at 1126 mm, level 226
+[edge] white ended, 0.0 mm, at 1126 mm, level 4082
+[edge] black ended, 0.0 mm, at 1126 mm, level 186
+[edge] white ended, 0.0 mm, at 1126 mm, level 4082
+[edge] black ended, 0.0 mm, at 1126 mm, level 179
+[edge] white ended, 0.0 mm, at 1126 mm, level 4081
+[edge] black ended, 0.0 mm, at 1126 mm, level 186
+[edge] white ended, 0.0 mm, at 1126 mm, level 4074
+[edge] black ended, 0.0 mm, at 1126 mm, level 187
+[edge] white ended, 0.0 mm, at 1126 mm, level 4082
+[bar] min=4080 max=4088
+[edge] black ended, 0.0 mm, at 1126 mm, level 177
+[edge] white ended, 0.0 mm, at 1126 mm, level 1347
+[bar] min=4078 max=4084
+[edge] black ended, 0.0 mm, at 1126 mm, level 184
+[edge] white ended, 0.0 mm, at 1126 mm, level 4081
+[bar] min=4068 max=4088
+[edge] black ended, 0.0 mm, at 1126 mm, level 164
+[edge] white ended, 0.0 mm, at 1126 mm, level 4018
+[bar] min=4077 max=4092
+[bar] min=4076 max=4095
+[bar] min=4075 max=4085
+[edge] black ended, 0.0 mm, at 1126 mm, level 186
+[edge] white ended, 0.0 mm, at 1126 mm, level 4082
+[edge] black ended, 0.0 mm, at 1126 mm, level 174
+[edge] white ended, 0.0 mm, at 1126 mm, level 4082
+[bar] min=4078 max=4084
+[edge] black ended, 0.0 mm, at 1126 mm, level 165
+[edge] white ended, 0.0 mm, at 1126 mm, level 4081
+[edge] black ended, 0.0 mm, at 1126 mm, level 233
+[edge] white ended, 0.0 mm, at 1126 mm, level 4082
+[edge] black ended, 0.0 mm, at 1126 mm, level 182
+[line] put the car on the line, starting in 5 s
+[barcode] elements=29 letter=- widths_0.1mm= 0 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[edge] white ended, 38.4 mm, at 1164 mm, level 4081
+[edge] black ended, 2.9 mm, at 1167 mm, level 187
+[edge] white ended, 9.5 mm, at 1176 mm, level 4080
+[edge] black ended, 14.8 mm, at 1191 mm, level 173
+[edge] white ended, 9.3 mm, at 1201 mm, level 4076
+[edge] black ended, 15.0 mm, at 1216 mm, level 187
+[edge] white ended, 9.4 mm, at 1225 mm, level 4082
+[edge] black ended, 2.6 mm, at 1228 mm, level 178
+[edge] white ended, 21.6 mm, at 1249 mm, level 4077
+[edge] black ended, 2.9 mm, at 1252 mm, level 168
+[edge] white ended, 8.7 mm, at 1261 mm, level 4075
+[edge] black ended, 3.0 mm, at 1264 mm, level 173
+[edge] white ended, 9.0 mm, at 1273 mm, level 4077
+[edge] black ended, 2.9 mm, at 1276 mm, level 179
+[edge] white ended, 20.8 mm, at 1297 mm, level 4078
+[edge] black ended, 14.7 mm, at 1312 mm, level 186
+[edge] white ended, 9.0 mm, at 1321 mm, level 4080
+[edge] black ended, 14.7 mm, at 1336 mm, level 186
+[edge] white ended, 9.1 mm, at 1345 mm, level 4080
+[edge] black ended, 2.4 mm, at 1347 mm, level 187
+[edge] white ended, 9.1 mm, at 1356 mm, level 4079
+[edge] black ended, 2.7 mm, at 1359 mm, level 177
+[edge] white ended, 8.7 mm, at 1368 mm, level 4074
+[edge] black ended, 14.7 mm, at 1383 mm, level 173
+[edge] white ended, 8.5 mm, at 1391 mm, level 4077
+[line] bench done after 2000 ms
+[barcode] command=1 count=3 rejects=2 at_mm=1118
+[edge] black ended, 13.6 mm, at 1405 mm, level 173
+[edge] white ended, 1.1 mm, at 1406 mm, level 4082
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1406 deg=22
+[edge] black ended, 0.0 mm, at 1406 mm, level 166
+[edge] white ended, 0.0 mm, at 1406 mm, level 4081
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1406 deg=22
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1406 deg=22
+[bar] min=4074 max=4084
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1406 deg=22
+[bar] min=4073 max=4095
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1406 deg=22
+[edge] black ended, 0.0 mm, at 1406 mm, level 192
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 17.7 mm, at 1424 mm, level 4080
+[edge] black ended, 3.2 mm, at 1427 mm, level 167
+[edge] white ended, 10.1 mm, at 1437 mm, level 4080
+[edge] black ended, 15.5 mm, at 1453 mm, level 166
+[edge] white ended, 9.5 mm, at 1462 mm, level 4077
+[edge] black ended, 14.9 mm, at 1477 mm, level 172
+[edge] white ended, 9.3 mm, at 1486 mm, level 4083
+[edge] black ended, 2.8 mm, at 1489 mm, level 181
+[edge] white ended, 21.5 mm, at 1511 mm, level 4078
+[edge] black ended, 2.9 mm, at 1514 mm, level 168
+[edge] white ended, 9.2 mm, at 1523 mm, level 4080
+[edge] black ended, 2.8 mm, at 1526 mm, level 186
+[edge] white ended, 9.2 mm, at 1535 mm, level 4078
+[edge] black ended, 2.8 mm, at 1538 mm, level 171
+[edge] white ended, 21.1 mm, at 1559 mm, level 4080
+[edge] black ended, 14.2 mm, at 1573 mm, level 169
+[edge] white ended, 8.7 mm, at 1582 mm, level 4078
+[edge] black ended, 14.5 mm, at 1597 mm, level 172
+[edge] white ended, 9.3 mm, at 1606 mm, level 4079
+[edge] black ended, 2.5 mm, at 1608 mm, level 187
+[edge] white ended, 9.2 mm, at 1618 mm, level 4078
+[edge] black ended, 2.7 mm, at 1620 mm, level 165
+[edge] white ended, 8.6 mm, at 1629 mm, level 4077
+[edge] black ended, 14.5 mm, at 1644 mm, level 166
+[edge] white ended, 8.6 mm, at 1652 mm, level 4070
+[edge] black ended, 15.0 mm, at 1667 mm, level 165
+[edge] white ended, 8.5 mm, at 1676 mm, level 4077
+[edge] black ended, 2.8 mm, at 1679 mm, level 182
+[line] bench done after 2000 ms
+[edge] white ended, 9.1 mm, at 1688 mm, level 4082
+[edge] black ended, 0.0 mm, at 1688 mm, level 173
+[edge] white ended, 0.0 mm, at 1688 mm, level 4081
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1688 deg=27
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1688 deg=27
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1688 deg=27
+[bar] min=4080 max=4095
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1688 deg=27
+[bar] min=4079 max=4085
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1688 deg=27
+[edge] black ended, 0.0 mm, at 1688 mm, level 163
+=== FLASH barcode_long 2.7 s ===
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 40.1 mm, at 40 mm, level 4079
+[edge] black ended, 2.9 mm, at 43 mm, level 164
+[edge] white ended, 9.0 mm, at 52 mm, level 4081
+[edge] black ended, 14.9 mm, at 67 mm, level 187
+[edge] white ended, 9.5 mm, at 76 mm, level 4081
+[edge] black ended, 14.6 mm, at 91 mm, level 170
+[edge] white ended, 9.0 mm, at 100 mm, level 4080
+[edge] black ended, 2.5 mm, at 102 mm, level 165
+[edge] white ended, 21.3 mm, at 124 mm, level 4079
+[edge] black ended, 2.8 mm, at 127 mm, level 181
+[edge] white ended, 9.1 mm, at 136 mm, level 4081
+[edge] black ended, 2.7 mm, at 139 mm, level 188
+[edge] white ended, 8.9 mm, at 148 mm, level 4082
+[edge] black ended, 2.7 mm, at 150 mm, level 163
+[edge] white ended, 20.5 mm, at 171 mm, level 4077
+[edge] black ended, 14.5 mm, at 186 mm, level 180
+[edge] white ended, 9.1 mm, at 195 mm, level 4081
+[edge] black ended, 14.4 mm, at 209 mm, level 166
+[edge] white ended, 9.2 mm, at 218 mm, level 4075
+[edge] black ended, 2.4 mm, at 221 mm, level 183
+[edge] white ended, 9.3 mm, at 230 mm, level 4081
+[edge] black ended, 2.9 mm, at 233 mm, level 172
+[edge] white ended, 8.9 mm, at 242 mm, level 4080
+[edge] black ended, 14.6 mm, at 257 mm, level 174
+[edge] white ended, 8.6 mm, at 265 mm, level 4074
+[edge] black ended, 14.5 mm, at 280 mm, level 175
+[edge] white ended, 9.0 mm, at 289 mm, level 4078
+[edge] black ended, 2.6 mm, at 292 mm, level 171
+[edge] white ended, 20.7 mm, at 312 mm, level 4075
+[edge] black ended, 3.0 mm, at 315 mm, level 186
+[barcode] elements=29 letter=F widths_0.1mm= 29 90 149 95 146 90 25 213 28 91 27 89 27 205 145 91 144 92 24 93 29 89 146 86 145 90 26 207 30
+[line] bench done after 2700 ms
+[barcode] command=0 count=0 rejects=1 at_mm=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=386 deg=3
+[edge] white ended, 71.0 mm, at 386 mm, level 4082
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=386 deg=3
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=386 deg=3
+[bar] min=4078 max=4085
+[bar] min=4075 max=4091
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=386 deg=3
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=386 deg=3
+[edge] black ended, 0.0 mm, at 386 mm, level 407
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 48.3 mm, at 435 mm, level 4081
+[edge] black ended, 2.8 mm, at 438 mm, level 176
+[edge] white ended, 9.3 mm, at 447 mm, level 4080
+[edge] black ended, 15.0 mm, at 462 mm, level 197
+[edge] white ended, 9.1 mm, at 471 mm, level 4082
+[edge] black ended, 15.0 mm, at 486 mm, level 185
+[edge] white ended, 9.5 mm, at 496 mm, level 4077
+[edge] black ended, 2.3 mm, at 498 mm, level 189
+[edge] white ended, 21.5 mm, at 520 mm, level 4081
+[edge] black ended, 2.7 mm, at 523 mm, level 184
+[edge] white ended, 9.2 mm, at 532 mm, level 4085
+[edge] black ended, 2.7 mm, at 534 mm, level 172
+[edge] white ended, 9.0 mm, at 544 mm, level 4082
+[edge] black ended, 2.5 mm, at 546 mm, level 173
+[edge] white ended, 20.7 mm, at 567 mm, level 4081
+[edge] black ended, 14.5 mm, at 581 mm, level 184
+[edge] white ended, 9.3 mm, at 591 mm, level 4083
+[edge] black ended, 14.1 mm, at 605 mm, level 187
+[edge] white ended, 8.8 mm, at 614 mm, level 4042
+[edge] black ended, 2.6 mm, at 616 mm, level 187
+[edge] white ended, 9.1 mm, at 626 mm, level 4080
+[edge] black ended, 2.9 mm, at 628 mm, level 188
+[edge] white ended, 8.8 mm, at 637 mm, level 4080
+[edge] black ended, 14.8 mm, at 652 mm, level 167
+[edge] white ended, 8.5 mm, at 661 mm, level 4081
+[edge] black ended, 14.5 mm, at 675 mm, level 172
+[edge] white ended, 9.0 mm, at 684 mm, level 4078
+[edge] black ended, 2.9 mm, at 687 mm, level 188
+[edge] white ended, 20.4 mm, at 708 mm, level 4083
+[edge] black ended, 3.2 mm, at 711 mm, level 175
+[barcode] elements=29 letter=F widths_0.1mm= 28 93 150 91 150 95 23 215 27 92 27 90 25 207 145 93 141 88 26 91 29 88 148 85 145 90 29 204 32
+[line] bench done after 2700 ms
+[barcode] command=0 count=0 rejects=2 at_mm=0
+[edge] white ended, 60.8 mm, at 772 mm, level 2012
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=772 deg=7
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=772 deg=7
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=772 deg=7
+[bar] min=4076 max=4084
+[bar] min=4077 max=4086
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=772 deg=7
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=772 deg=7
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=772 deg=7
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=772 deg=7
+[edge] black ended, 0.0 mm, at 772 mm, level 203
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 36.6 mm, at 809 mm, level 4081
+[edge] black ended, 2.5 mm, at 811 mm, level 183
+[edge] white ended, 21.9 mm, at 833 mm, level 4079
+[edge] black ended, 2.9 mm, at 836 mm, level 186
+[edge] white ended, 9.3 mm, at 845 mm, level 4084
+[edge] black ended, 15.3 mm, at 861 mm, level 187
+[edge] white ended, 8.9 mm, at 870 mm, level 4078
+[edge] black ended, 14.9 mm, at 885 mm, level 168
+[edge] white ended, 9.2 mm, at 894 mm, level 4080
+[edge] black ended, 2.9 mm, at 897 mm, level 172
+[edge] white ended, 9.5 mm, at 907 mm, level 4086
+[edge] black ended, 2.5 mm, at 909 mm, level 188
+[edge] white ended, 9.3 mm, at 918 mm, level 4081
+[edge] black ended, 14.3 mm, at 933 mm, level 188
+[edge] white ended, 9.1 mm, at 942 mm, level 4081
+[edge] black ended, 14.3 mm, at 956 mm, level 188
+[edge] white ended, 20.8 mm, at 977 mm, level 4080
+[edge] black ended, 2.5 mm, at 980 mm, level 188
+[edge] white ended, 9.1 mm, at 989 mm, level 4078
+[edge] black ended, 2.5 mm, at 991 mm, level 185
+[edge] white ended, 9.2 mm, at 1000 mm, level 4078
+[edge] black ended, 2.5 mm, at 1003 mm, level 188
+[edge] white ended, 21.1 mm, at 1024 mm, level 4081
+[edge] black ended, 2.5 mm, at 1027 mm, level 171
+[edge] white ended, 9.0 mm, at 1036 mm, level 4080
+[edge] black ended, 14.3 mm, at 1050 mm, level 176
+[edge] white ended, 9.2 mm, at 1059 mm, level 4080
+[edge] black ended, 14.5 mm, at 1074 mm, level 187
+[edge] white ended, 8.7 mm, at 1083 mm, level 4084
+[edge] black ended, 3.6 mm, at 1086 mm, level 187
+[barcode] elements=29 letter=F widths_0.1mm= 25 219 29 93 153 89 149 92 29 95 25 93 143 91 143 208 25 91 25 92 25 211 25 90 143 92 145 87 36
+[line] bench done after 2700 ms
+[barcode] command=0 count=0 rejects=3 at_mm=0
+[edge] white ended, 72.2 mm, at 1159 mm, level 1104
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1159 deg=12
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1159 deg=12
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1159 deg=12
+[bar] min=4075 max=4095
+[bar] min=4066 max=4091
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1159 deg=12
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1159 deg=12
+[edge] black ended, 0.0 mm, at 1159 mm, level 166
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 29.8 mm, at 1188 mm, level 4078
+[edge] black ended, 2.9 mm, at 1191 mm, level 168
+[edge] white ended, 22.7 mm, at 1214 mm, level 4081
+[edge] black ended, 2.7 mm, at 1217 mm, level 184
+[edge] white ended, 9.2 mm, at 1226 mm, level 4081
+[edge] black ended, 15.8 mm, at 1242 mm, level 168
+[edge] white ended, 9.0 mm, at 1251 mm, level 4081
+[edge] black ended, 15.4 mm, at 1267 mm, level 168
+[edge] white ended, 8.9 mm, at 1276 mm, level 4081
+[edge] black ended, 3.2 mm, at 1279 mm, level 180
+[edge] white ended, 9.2 mm, at 1288 mm, level 4080
+[edge] black ended, 2.7 mm, at 1291 mm, level 187
+[edge] white ended, 9.3 mm, at 1300 mm, level 4083
+[edge] black ended, 14.5 mm, at 1315 mm, level 188
+[edge] white ended, 9.1 mm, at 1324 mm, level 4081
+[edge] black ended, 14.1 mm, at 1338 mm, level 176
+[edge] white ended, 21.2 mm, at 1359 mm, level 4064
+[edge] black ended, 2.5 mm, at 1362 mm, level 186
+[edge] white ended, 9.0 mm, at 1371 mm, level 4081
+[edge] black ended, 2.7 mm, at 1374 mm, level 187
+[edge] white ended, 9.0 mm, at 1383 mm, level 3926
+[edge] black ended, 2.7 mm, at 1385 mm, level 171
+[edge] white ended, 20.9 mm, at 1406 mm, level 4080
+[edge] black ended, 2.4 mm, at 1409 mm, level 188
+[edge] white ended, 9.1 mm, at 1418 mm, level 4081
+[edge] black ended, 14.0 mm, at 1432 mm, level 170
+[edge] white ended, 9.2 mm, at 1441 mm, level 4082
+[edge] black ended, 14.9 mm, at 1456 mm, level 173
+[edge] white ended, 8.6 mm, at 1465 mm, level 4080
+[edge] black ended, 3.9 mm, at 1469 mm, level 179
+[edge] white ended, 8.1 mm, at 1477 mm, level 4078
+[edge] black ended, 0.7 mm, at 1478 mm, level 171
+[barcode] elements=33 letter=- widths_0.1mm= 0 298 29 227 27 92 158 90 154 89 32 92 27 93 145 91 141 212 25 90 27 90 27 209 24 91 140 92 149
+[line] bench done after 2700 ms
+[barcode] command=0 count=0 rejects=4 at_mm=0
+[edge] white ended, 66.1 mm, at 1544 mm, level 4081
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1544 deg=16
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1544 deg=16
+[bar] min=4078 max=4091
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1544 deg=16
+[bar] min=4074 max=4084
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1544 deg=16
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1544 deg=16
+[bar] min=4065 max=4085
+[edge] black ended, 0.0 mm, at 1544 mm, level 250

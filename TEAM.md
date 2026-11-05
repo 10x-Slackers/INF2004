@@ -51,8 +51,8 @@ fixed.
 | GP3 | Motion (Buddy 2) | right encoder phase B (Grove 2) |
 | GP4 | IMU (Buddy 4) | GY-511 SDA, I2C0 (Grove 3) |
 | GP5 | IMU (Buddy 4) | GY-511 SCL, I2C0 (Grove 3) |
-| GP6 | Line following (Buddy 3) | left IR module DO (Grove 5) |
-| GP7 | Line following (Buddy 3) | right IR module DO (Grove 7) |
+| GP6 | Line following (Buddy 3) | right IR module DO (Grove 5) |
+| GP7 | Line following (Buddy 3) | left IR module DO (Grove 7) |
 | GP8 | Motion (Buddy 2) | left motor A, PWM4A |
 | GP9 | Motion (Buddy 2) | left motor B, PWM4B |
 | GP10 | Motion (Buddy 2) | right motor A, PWM5A |

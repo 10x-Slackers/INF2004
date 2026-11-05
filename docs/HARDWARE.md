@@ -17,7 +17,7 @@ Pin assignments, wiring and the datasheet facts needed to write drivers. Sources
 
 ## Pin map
 
-The design review's assignment, with two changes: the GY-511 moved to Grove 3 (GP4, GP5) for I2C0, and the encoders are the other way round, right on Grove 2 (GP2, GP3) and left on Grove 4 (GP16, GP17). The owner column is the only task allowed to touch the pin (see [ARCHITECTURE.md](ARCHITECTURE.md#hardware-ownership)).
+The design review's assignment, with three changes: the GY-511 moved to Grove 3 (GP4, GP5) for I2C0, the encoders are the other way round, right on Grove 2 (GP2, GP3) and left on Grove 4 (GP16, GP17), and so are the line sensors, right on Grove 5 (GP6) and left on Grove 7 (GP7). The owner column is the only task allowed to touch the pin (see [ARCHITECTURE.md](ARCHITECTURE.md#hardware-ownership)).
 
 | GPIO | Signal          | Connects to                 | Interface               | Owner task              |
 | ---- | --------------- | --------------------------- | ----------------------- | ----------------------- |
@@ -27,8 +27,8 @@ The design review's assignment, with two changes: the GY-511 moved to Grove 3 (G
 | GP3  | `ENC_R_B`       | Right motor pin 03           | GPIO in, edge interrupt | Wheel Motion Control    |
 | GP4  | `IMU_SDA`       | GY-511 SDA                  | I2C0 SDA                | IMU and Terrain Monitor |
 | GP5  | `IMU_SCL`       | GY-511 SCL                  | I2C0 SCL                | IMU and Terrain Monitor |
-| GP6  | `LINE_LEFT`     | Left IR module DO           | GPIO in                 | Line Following          |
-| GP7  | `LINE_RIGHT`    | Right IR module DO          | GPIO in                 | Line Following          |
+| GP6  | `LINE_RIGHT`    | Right IR module DO          | GPIO in                 | Line Following          |
+| GP7  | `LINE_LEFT`     | Left IR module DO           | GPIO in                 | Line Following          |
 | GP8  | `MOTOR_L_A`     | M1A (on board)              | PWM / GPIO out          | Wheel Motion Control    |
 | GP9  | `MOTOR_L_B`     | M1B (on board)              | PWM / GPIO out          | Wheel Motion Control    |
 | GP10 | `MOTOR_R_A`     | M2A (on board)              | PWM / GPIO out          | Wheel Motion Control    |
@@ -46,9 +46,9 @@ Where each signal lands on the Robo Pico:
 | 2          | GP2, GP3   | Right encoder (also on Maker port)   |
 | 3          | GP4, GP5   | GY-511                              |
 | 4          | GP16, GP17 | Left encoder                       |
-| 5          | GP6, GP26  | Left line sensor (GP6 only)         |
+| 5          | GP6, GP26  | Right line sensor (GP6 only)        |
 | 6          | GP26, GP27 | Barcode sensor (GP26 only)          |
-| 7          | GP7, GP28  | Right line sensor (GP7 only)        |
+| 7          | GP7, GP28  | Left line sensor (GP7 only)         |
 
 GP26 appears on both Grove 5 and Grove 6. Connect the barcode sensor once, through Grove 6, and leave the GP26 conductor of the Grove 5 cable unconnected. Likewise leave GP27 (Grove 6) and GP28 (Grove 7) unconnected in those cables unless the pin is assigned.
 

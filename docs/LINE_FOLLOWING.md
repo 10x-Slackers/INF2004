@@ -85,7 +85,7 @@ The `make -C build_make TEST=1` image starts task `s3_bench` after the checks. I
 
 | Resource              | Use                                                                                 |
 | --------------------- | ----------------------------------------------------------------------------------- |
-| GP6, GP7              | Left and right IR module DO (Grove 5, Grove 7)                                       |
+| GP6, GP7              | Right and left IR module DO (Grove 5, Grove 7)                                       |
 | GP26, ADC0            | Barcode IR module AO (Grove 6). The kernel's `adca` device is not opened             |
 | DMA channel 11        | ADC FIFO to the sample ring                                                          |
 | GP21                  | Bench button (pull-up), `TEST=1` only                                                |

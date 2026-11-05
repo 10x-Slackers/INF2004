@@ -1,6 +1,6 @@
 /** @file drv_line.h
  *
- * @brief Left and right line IR modules: digital outputs on GP6 and GP7.
+ * @brief Left and right line IR modules: digital outputs on GP7 and GP6.
  * Call only from the Line Following task, which owns the sensors.
  */
 

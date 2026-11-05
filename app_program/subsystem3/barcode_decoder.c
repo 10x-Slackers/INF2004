@@ -14,9 +14,11 @@
 #include "subsystem3.h"
 #include "../subsystem2/motion_control.h"
 
-#define BARCODE_BLACK 2500u  /* ADC counts: white reads ~170, black */
-#define BARCODE_WHITE 1500u  /* ~4070 (S3-U10). Hysteresis between. */
-#define BARCODE_END   30000u /* um: 30 mm, over 3 wide bars. */
+#define BARCODE_BLACK 1000u /* ADC counts: white reads ~170, black */
+#define BARCODE_WHITE                                                          \
+    600u                   /* ~4080 (S3-U10). Low, so narrow bars count        \
+                            * (S3-U14). Hysteresis between. */
+#define BARCODE_END 30000u /* um: 30 mm, over 3 wide bars. */
 
 /* The course's barcodes: change these lines when the letters are announced
  * (any number of letters per command). Other valid letters are rejected. */

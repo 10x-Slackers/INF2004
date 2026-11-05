@@ -1,0 +1,3255 @@
+# 2026-11-05 S3-U14 session, one console log across several images. The first two boots are the S2+S3 image without and with Wi-Fi; '=== FLASH ... ===' lines mark the later flashes. [bar] lines that read plain white (min and max under 300 counts) are removed.
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 FAIL  barcode ADC position 2 ksample/s (180..240 in 100 ms)   (../app_program/subsystem3/subsystem3_test.c:77)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 1 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[bar] min=4095 max=0
+
+[bar] min=4095 max=0
+
+[bar] min=4095 max=0
+
+[bar] min=4095 max=0
+
+[bar] min=4095 max=0
+
+[bar] min=4095 max=0
+
+[bar] min=4095 max=0
+
+[bar] min=4095 max=0
+
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+[bar] min=4095 max=0
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 FAIL  12-byte packed status and telemetry   (../app_program/subsystem2/subsystem2_test.c:59)
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 6 passed, 1 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=359
+
+[bar] min=4073 max=4093
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=359
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=359
+[bar] min=4060 max=4095
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=359
+[bar] min=4065 max=4086
+[bar] min=4077 max=4085
+[bar] min=4060 max=4083
+[bar] min=4080 max=4095
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=359
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=359
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=359
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=359
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=359
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=359
+[bar] min=4059 max=4088
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+[TEST] S3-U02 PASS  packed line state 8 bytes
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+[TEST] S3-U05 PASS  line following boots stopped
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+[TEST] S3-U11 PASS  decodes *A* read either way
+[TEST] S3-U20 PASS  decodes *Z*
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+[TEST] === test run end ===
+[line] bench: hold GP21 for 1 s to follow the line
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=168 max=4081
+[bar] min=4076 max=4084
+[bar] min=4070 max=4084
+[bar] min=4076 max=4095
+[bar] min=4073 max=4083
+[bar] min=4077 max=4095
+[bar] min=4076 max=4094
+[bar] min=4068 max=4088
+[bar] min=4070 max=4083
+[bar] min=4074 max=4094
+[bar] min=4061 max=4083
+[bar] min=4077 max=4084
+[bar] min=4065 max=4084
+[bar] min=4070 max=4083
+[bar] min=4077 max=4095
+[bar] min=4078 max=4089
+[bar] min=4079 max=4089
+[bar] min=4079 max=4090
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=0 junction=0 last=0 following=1 searching=1 lost=0 mm=82 deg=3
+[barcode] elements=41 letter=- widths_0.1mm= 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=112 deg=32
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=124 deg=44
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=133 deg=51
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=135 deg=52
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=139 deg=53
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=145 deg=55
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=146 deg=55
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=193 deg=64
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=210 deg=69
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=276 deg=79
+[line] left=1 right=1 junction=1 last=1 following=1 searching=0 lost=0 mm=284 deg=80
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4061 max=4082
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4059 max=4083
+[bar] min=4078 max=4094
+[bar] min=4077 max=4082
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4076 max=4095
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4065 max=4085
+[bar] min=4078 max=4083
+[bar] min=4062 max=4095
+[bar] min=4070 max=4086
+[bar] min=4070 max=4084
+[bar] min=4076 max=4095
+[bar] min=4064 max=4091
+[bar] min=4072 max=4095
+[bar] min=4076 max=4085
+[bar] min=4078 max=4095
+[bar] min=4064 max=4090
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4073 max=4089
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=25 deg=2
+[barcode] elements=17 letter=- widths_0.1mm= 0 0 0 3 0 1 0 0 0 0 0 0 0 0 0 1 0
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=36 deg=1
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=93 deg=358
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=100 deg=358
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=161 deg=2
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=170 deg=1
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=225 deg=358
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=238 deg=359
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=315 deg=4
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=323 deg=3
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=338 deg=2
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=375 deg=15
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=377 deg=17
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=403 deg=20
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=406 deg=19
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=421 deg=19
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=438 deg=21
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=439 deg=21
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=449 deg=20
+[line] bench done after 15000 ms
+[barcode] command=0 count=0 rejects=1 at_mm=0
+[bar] min=4075 max=4089
+[bar] min=4061 max=4085
+[bar] min=4080 max=4095
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=2238 deg=32
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=2238 deg=32
+[bar] min=4080 max=4082
+[bar] min=4077 max=4088
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=2238 deg=31
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=2238 deg=31
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[bar] min=166 max=1968
+[bar] min=4078 max=4084
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+=== FLASH barcode_straight 2 s ===
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[line] put the car on the line, starting in 5 s
+[line] bench done after 2000 ms
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[line] put the car on the line, starting in 5 s
+[line] bench done after 2000 ms
+=== FLASH barcode_straight keepalive ===
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[line] put the car on the line, starting in 5 s
+[line] bench done after 2000 ms
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=281 deg=4
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=281 deg=4
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=281 deg=4
+[bar] min=4076 max=4086
+[bar] min=4067 max=4090
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=281 deg=4
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=281 deg=4
+[bar] min=4078 max=4095
+[bar] min=4078 max=4084
+[bar] min=4067 max=4095
+[bar] min=4078 max=4095
+[bar] min=4067 max=4084
+[bar] min=4078 max=4090
+=== FLASH barcode_straight edges ===
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 31.9 mm, at 31 mm, level 4079
+[edge] black ended, 12.6 mm, at 44 mm, level 1494
+[edge] white ended, 3.9 mm, at 48 mm, level 4077
+[edge] black ended, 14.0 mm, at 62 mm, level 184
+[edge] white ended, 30.2 mm, at 92 mm, level 4078
+[edge] black ended, 14.2 mm, at 107 mm, level 180
+[edge] white ended, 38.7 mm, at 145 mm, level 4081
+[edge] black ended, 13.0 mm, at 159 mm, level 179
+[edge] white ended, 13.7 mm, at 172 mm, level 4081
+[edge] black ended, 12.5 mm, at 185 mm, level 181
+[edge] white ended, 4.7 mm, at 190 mm, level 4078
+[edge] black ended, 12.2 mm, at 202 mm, level 177
+[line] bench done after 2000 ms
+[edge] white ended, 77.9 mm, at 280 mm, level 4081
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=280 deg=2
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=280 deg=2
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=280 deg=2
+[bar] min=4076 max=4083
+[bar] min=4066 max=4082
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=280 deg=2
+[edge] black ended, 0.0 mm, at 280 mm, level 1185
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=280 deg=2
+[edge] white ended, 0.0 mm, at 280 mm, level 4081
+[bar] min=4059 max=4085
+[bar] min=4079 max=4084
+[bar] min=4075 max=4083
+[edge] black ended, 0.0 mm, at 280 mm, level 1281
+[edge] white ended, 2.8 mm, at 283 mm, level 4081
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[bar] min=4063 max=4086
+[bar] min=4074 max=4084
+[bar] min=4067 max=4082
+[bar] min=4080 max=4095
+[bar] min=4074 max=4086
+[bar] min=4077 max=4087
+[bar] min=4068 max=4093
+[bar] min=4072 max=4084
+[bar] min=4076 max=4083
+[bar] min=4078 max=4083
+[bar] min=4075 max=4088
+[bar] min=4064 max=4093
+[bar] min=4078 max=4084
+[bar] min=4068 max=4084
+[bar] min=4065 max=4095
+[bar] min=4075 max=4085
+[bar] min=4077 max=4088
+[bar] min=4061 max=4095
+[bar] min=4075 max=4083
+[bar] min=4075 max=4092
+[bar] min=4075 max=4084
+[bar] min=4066 max=4086
+[bar] min=4063 max=4086
+[bar] min=4071 max=4088
+[bar] min=4065 max=4095
+[bar] min=4064 max=4095
+[bar] min=4064 max=4093
+[bar] min=4072 max=4082
+[bar] min=4068 max=4086
+[bar] min=4060 max=4084
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[edge] black ended, 0.0 mm, at 283 mm, level 174
+[edge] white ended, 0.0 mm, at 283 mm, level 4081
+[bar] min=4077 max=4086
+[bar] min=4076 max=4084
+[edge] black ended, 0.0 mm, at 283 mm, level 179
+[edge] white ended, 0.0 mm, at 283 mm, level 4081
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[bar] min=4067 max=4095
+[bar] min=4078 max=4095
+[bar] min=4075 max=4088
+[bar] min=4064 max=4088
+[bar] min=4065 max=4084
+[bar] min=4060 max=4095
+[bar] min=4078 max=4089
+[bar] min=4078 max=4084
+[bar] min=4075 max=4086
+[bar] min=4074 max=4082
+[bar] min=4064 max=4095
+[bar] min=4073 max=4085
+[bar] min=4075 max=4085
+[bar] min=4077 max=4082
+[bar] min=4061 max=4095
+[bar] min=4068 max=4088
+[bar] min=4072 max=4094
+[bar] min=4059 max=4095
+[bar] min=4076 max=4089
+[bar] min=4074 max=4095
+[bar] min=4073 max=4082
+[bar] min=4065 max=4082
+[bar] min=4078 max=4089
+[bar] min=4067 max=4086
+[bar] min=4074 max=4091
+[bar] min=4074 max=4087
+[bar] min=4073 max=4085
+[bar] min=4073 max=4084
+[bar] min=4069 max=4084
+[bar] min=4069 max=4095
+[bar] min=4064 max=4082
+[bar] min=4076 max=4093
+[bar] min=4078 max=4095
+[bar] min=4063 max=4082
+[bar] min=4060 max=4091
+[bar] min=4061 max=4085
+[bar] min=4070 max=4086
+[bar] min=4073 max=4088
+[bar] min=4078 max=4090
+[bar] min=4077 max=4082
+[bar] min=4074 max=4087
+[bar] min=4077 max=4084
+[bar] min=4074 max=4085
+[bar] min=4065 max=4086
+[bar] min=4076 max=4086
+[bar] min=4060 max=4084
+[bar] min=4075 max=4095
+[bar] min=4077 max=4086
+[bar] min=4069 max=4089
+[bar] min=4073 max=4084
+[bar] min=4073 max=4094
+[bar] min=4074 max=4092
+[bar] min=4071 max=4088
+[bar] min=4060 max=4085
+[bar] min=4078 max=4084
+[bar] min=4068 max=4094
+[bar] min=4074 max=4085
+[bar] min=4073 max=4084
+[bar] min=4075 max=4089
+[bar] min=4072 max=4084
+[bar] min=4065 max=4084
+[bar] min=4068 max=4081
+[bar] min=4072 max=4094
+[bar] min=4066 max=4091
+[bar] min=4070 max=4084
+[bar] min=4076 max=4095
+[bar] min=4062 max=4089
+[bar] min=4074 max=4095
+[bar] min=4075 max=4083
+[bar] min=4070 max=4083
+[bar] min=4072 max=4095
+[bar] min=4060 max=4086
+[bar] min=4073 max=4082
+[bar] min=4077 max=4095
+[bar] min=4062 max=4085
+[bar] min=4077 max=4086
+[bar] min=4071 max=4086
+[bar] min=4077 max=4085
+[bar] min=4074 max=4095
+[bar] min=4074 max=4087
+[bar] min=4075 max=4086
+[bar] min=4078 max=4095
+[bar] min=4062 max=4082
+[bar] min=4073 max=4088
+[bar] min=4064 max=4095
+[bar] min=4073 max=4085
+[bar] min=4075 max=4085
+[bar] min=4074 max=4085
+[bar] min=4074 max=4085
+[bar] min=4070 max=4088
+[bar] min=4076 max=4092
+[bar] min=4077 max=4090
+[bar] min=4064 max=4085
+[bar] min=4061 max=4082
+[bar] min=4077 max=4090
+[bar] min=4061 max=4084
+[bar] min=4062 max=4095
+[bar] min=4073 max=4095
+[bar] min=4078 max=4088
+[bar] min=4073 max=4092
+[bar] min=4071 max=4092
+[bar] min=4068 max=4084
+[bar] min=4078 max=4086
+[bar] min=4075 max=4086
+[bar] min=4076 max=4095
+[bar] min=4072 max=4095
+[bar] min=4066 max=4088
+[bar] min=4073 max=4090
+[bar] min=4075 max=4088
+[bar] min=4065 max=4095
+[bar] min=4074 max=4084
+[bar] min=4071 max=4092
+[bar] min=4073 max=4095
+[bar] min=4058 max=4086
+[bar] min=4061 max=4084
+[bar] min=4078 max=4087
+[bar] min=4076 max=4087
+[bar] min=4072 max=4084
+[bar] min=4072 max=4086
+[bar] min=4061 max=4086
+[bar] min=4077 max=4087
+[bar] min=4070 max=4086
+[edge] black ended, 0.3 mm, at 283 mm, level 169
+[edge] white ended, 0.0 mm, at 283 mm, level 4081
+[edge] black ended, 0.0 mm, at 283 mm, level 749
+[edge] white ended, 0.0 mm, at 283 mm, level 4083
+[edge] black ended, 0.0 mm, at 283 mm, level 182
+[edge] white ended, 0.0 mm, at 283 mm, level 4093
+[bar] min=4078 max=4093
+[edge] black ended, 0.0 mm, at 283 mm, level 172
+[edge] white ended, 0.0 mm, at 283 mm, level 4072
+[bar] min=4081 max=4095
+[bar] min=4069 max=4094
+[bar] min=4064 max=4086
+[bar] min=4078 max=4094
+[bar] min=4081 max=4095
+[bar] min=4077 max=4088
+[bar] min=4076 max=4085
+[bar] min=4073 max=4095
+[bar] min=4075 max=4086
+[bar] min=4072 max=4092
+[bar] min=4076 max=4088
+[bar] min=4075 max=4086
+[bar] min=4071 max=4086
+[bar] min=4075 max=4090
+[bar] min=4078 max=4089
+[bar] min=4072 max=4088
+[bar] min=4076 max=4095
+[edge] black ended, 0.0 mm, at 283 mm, level 171
+[edge] white ended, 0.0 mm, at 283 mm, level 4081
+[bar] min=4075 max=4085
+[edge] black ended, 0.0 mm, at 283 mm, level 170
+[bar] min=4064 max=4083
+[edge] white ended, 0.0 mm, at 283 mm, level 4080
+[edge] black ended, 0.0 mm, at 283 mm, level 184
+[edge] white ended, 0.0 mm, at 283 mm, level 4080
+[bar] min=4069 max=4084
+[bar] min=4073 max=4094
+[bar] min=4068 max=4085
+[bar] min=4069 max=4095
+[edge] black ended, 0.0 mm, at 283 mm, level 1118
+[bar] min=19 max=59
+[bar] min=0 max=120
+[bar] min=25 max=60
+[bar] min=0 max=66
+[bar] min=0 max=227
+[bar] min=0 max=144
+[bar] min=34 max=73
+[bar] min=29 max=95
+[bar] min=20 max=81
+[bar] min=27 max=93
+[bar] min=0 max=134
+[bar] min=10 max=103
+[bar] min=26 max=82
+[bar] min=27 max=82
+[bar] min=23 max=85
+[bar] min=9 max=82
+[bar] min=19 max=84
+[bar] min=21 max=81
+[bar] min=15 max=83
+[bar] min=10 max=85
+[bar] min=12 max=83
+[bar] min=0 max=112
+[bar] min=11 max=78
+[bar] min=14 max=75
+[bar] min=14 max=72
+[bar] min=18 max=67
+[bar] min=11 max=67
+[bar] min=20 max=64
+[bar] min=24 max=58
+[bar] min=17 max=54
+[bar] min=27 max=60
+[bar] min=18 max=49
+[bar] min=28 max=49
+[bar] min=14 max=47
+[bar] min=29 max=47
+[bar] min=27 max=49
+[bar] min=28 max=46
+[bar] min=28 max=54
+[bar] min=29 max=49
+[bar] min=27 max=50
+[bar] min=21 max=49
+[bar] min=19 max=50
+[bar] min=0 max=67
+[bar] min=0 max=60
+[bar] min=23 max=56
+[bar] min=16 max=58
+[bar] min=18 max=61
+[bar] min=16 max=60
+[bar] min=14 max=68
+[bar] min=21 max=68
+[bar] min=25 max=55
+[bar] min=25 max=54
+[bar] min=27 max=60
+[bar] min=24 max=56
+[bar] min=20 max=65
+[bar] min=24 max=65
+[bar] min=17 max=62
+[bar] min=22 max=64
+[bar] min=24 max=62
+[bar] min=25 max=69
+[bar] min=21 max=69
+[bar] min=18 max=84
+[bar] min=27 max=69
+[bar] min=26 max=70
+[bar] min=26 max=74
+[bar] min=28 max=73
+[bar] min=28 max=77
+[bar] min=26 max=84
+[bar] min=36 max=72
+[bar] min=38 max=69
+[bar] min=38 max=67
+[bar] min=40 max=72
+[bar] min=39 max=73
+[bar] min=41 max=72
+[bar] min=42 max=69
+[bar] min=44 max=66
+[bar] min=45 max=73
+[bar] min=41 max=64
+[bar] min=40 max=66
+[bar] min=46 max=64
+[bar] min=45 max=62
+[bar] min=45 max=68
+[bar] min=43 max=68
+[bar] min=43 max=61
+[bar] min=33 max=62
+[bar] min=43 max=59
+[bar] min=38 max=56
+[bar] min=45 max=60
+[bar] min=42 max=68
+[bar] min=32 max=62
+[bar] min=33 max=61
+[bar] min=41 max=60
+[bar] min=42 max=61
+[bar] min=40 max=65
+[bar] min=40 max=59
+[bar] min=45 max=62
+[bar] min=33 max=61
+[bar] min=32 max=63
+[bar] min=28 max=60
+[bar] min=42 max=59
+[bar] min=44 max=61
+[bar] min=42 max=60
+[bar] min=43 max=61
+[bar] min=32 max=61
+[bar] min=41 max=68
+[bar] min=41 max=62
+[bar] min=42 max=66
+[bar] min=43 max=62
+[bar] min=37 max=67
+[bar] min=40 max=80
+[bar] min=44 max=61
+[bar] min=43 max=65
+[bar] min=33 max=68
+[bar] min=44 max=61
+[bar] min=36 max=62
+[bar] min=42 max=60
+[bar] min=43 max=66
+[bar] min=35 max=59
+[bar] min=35 max=59
+[bar] min=42 max=66
+[bar] min=42 max=66
+[bar] min=43 max=61
+[bar] min=43 max=61
+[bar] min=29 max=59
+[bar] min=41 max=67
+[bar] min=30 max=66
+[bar] min=32 max=64
+[bar] min=33 max=61
+[bar] min=32 max=64
+[bar] min=30 max=59
+[bar] min=32 max=54
+[bar] min=33 max=56
+[bar] min=31 max=51
+[bar] min=33 max=51
+[bar] min=32 max=49
+[bar] min=30 max=47
+[bar] min=32 max=48
+[bar] min=33 max=48
+[bar] min=27 max=49
+[bar] min=32 max=57
+[bar] min=31 max=51
+[bar] min=19 max=50
+[bar] min=32 max=49
+[bar] min=20 max=48
+[bar] min=31 max=54
+[bar] min=31 max=59
+[bar] min=33 max=48
+[bar] min=34 max=57
+[bar] min=32 max=67
+[bar] min=32 max=56
+[bar] min=32 max=50
+[bar] min=32 max=59
+[bar] min=33 max=69
+[bar] min=33 max=50
+[bar] min=32 max=51
+[bar] min=26 max=50
+[bar] min=26 max=54
+[bar] min=14 max=64
+[bar] min=0 max=124
+[bar] min=27 max=57
+[bar] min=28 max=53
+[bar] min=27 max=58
+[bar] min=24 max=57
+[bar] min=14 max=61
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[bar] min=3 max=66
+[bar] min=0 max=102
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[bar] min=0 max=106
+[bar] min=0 max=102
+[bar] min=7 max=66
+[bar] min=2 max=69
+[bar] min=0 max=74
+[bar] min=0 max=78
+[bar] min=0 max=102
+[bar] min=0 max=85
+[bar] min=0 max=81
+[bar] min=0 max=88
+[bar] min=0 max=75
+[bar] min=0 max=75
+[bar] min=0 max=101
+[bar] min=0 max=100
+[bar] min=0 max=90
+[bar] min=0 max=105
+[bar] min=0 max=88
+[bar] min=0 max=77
+[bar] min=0 max=98
+[bar] min=0 max=74
+[bar] min=0 max=78
+[bar] min=0 max=92
+[bar] min=0 max=82
+[bar] min=0 max=97
+[bar] min=0 max=68
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[bar] min=0 max=101
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[bar] min=0 max=107
+[bar] min=0 max=99
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[bar] min=0 max=90
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=283 deg=0
+[bar] min=0 max=66
+[bar] min=11 max=57
+[bar] min=0 max=67
+[bar] min=30 max=67
+[bar] min=32 max=75
+[bar] min=34 max=76
+[bar] min=24 max=89
+[bar] min=19 max=84
+[bar] min=26 max=56
+[bar] min=21 max=54
+[bar] min=24 max=56
+[bar] min=21 max=57
+[bar] min=24 max=56
+[bar] min=28 max=52
+[bar] min=4 max=69
+[bar] min=25 max=66
+[bar] min=25 max=66
+[bar] min=28 max=56
+[bar] min=14 max=67
+[bar] min=20 max=67
+[bar] min=0 max=109
+[bar] min=31 max=67
+[bar] min=35 max=68
+[bar] min=34 max=69
+[bar] min=42 max=81
+[bar] min=17 max=100
+[bar] min=37 max=69
+[bar] min=42 max=74
+[bar] min=41 max=68
+[bar] min=45 max=72
+[bar] min=9 max=56
+[bar] min=44 max=66
+[bar] min=41 max=70
+[bar] min=44 max=78
+[bar] min=37 max=68
+[bar] min=46 max=66
+[bar] min=43 max=66
+[bar] min=5 max=53
+[bar] min=45 max=68
+[bar] min=45 max=70
+[bar] min=44 max=68
+[bar] min=46 max=70
+[bar] min=33 max=65
+[bar] min=39 max=99
+[bar] min=37 max=98
+[bar] min=48 max=70
+[bar] min=45 max=68
+[bar] min=44 max=70
+[bar] min=46 max=69
+[bar] min=47 max=72
+[bar] min=43 max=115
+[bar] min=44 max=103
+[bar] min=47 max=96
+[bar] min=50 max=116
+[bar] min=46 max=158
+[bar] min=48 max=133
+[bar] min=45 max=132
+[bar] min=48 max=130
+[bar] min=44 max=131
+[bar] min=43 max=131
+[bar] min=40 max=125
+[bar] min=9 max=51
+[bar] min=4 max=82
+[bar] min=0 max=64
+[bar] min=25 max=61
+[bar] min=9 max=77
+[bar] min=0 max=74
+[bar] min=10 max=57
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=285 deg=358
+[bar] min=37 max=67
+[bar] min=29 max=97
+[bar] min=10 max=115
+[bar] min=26 max=86
+[bar] min=10 max=108
+[bar] min=2 max=124
+[bar] min=0 max=123
+[bar] min=8 max=105
+[bar] min=0 max=116
+[bar] min=0 max=125
+[bar] min=0 max=96
+[bar] min=0 max=105
+[bar] min=0 max=113
+[bar] min=0 max=111
+[bar] min=0 max=83
+[bar] min=0 max=71
+[bar] min=0 max=82
+[bar] min=0 max=72
+[bar] min=0 max=73
+[bar] min=0 max=64
+[bar] min=0 max=65
+[bar] min=0 max=57
+[bar] min=0 max=65
+[bar] min=21 max=56
+[bar] min=25 max=46
+[bar] min=21 max=47
+[bar] min=20 max=47
+[bar] min=20 max=46
+[bar] min=21 max=51
+[bar] min=28 max=48
+[bar] min=25 max=52
+[bar] min=43 max=67
+[bar] min=43 max=80
+[bar] min=48 max=74
+[bar] min=47 max=70
+[bar] min=44 max=68
+[bar] min=46 max=67
+[bar] min=46 max=69
+[bar] min=48 max=69
+[bar] min=45 max=67
+[bar] min=45 max=81
+[bar] min=44 max=69
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[bar] min=0 max=59
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[bar] min=10 max=53
+[bar] min=0 max=64
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[bar] min=26 max=52
+[bar] min=25 max=52
+[bar] min=0 max=75
+[bar] min=0 max=74
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[bar] min=0 max=82
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[bar] min=0 max=81
+[bar] min=0 max=84
+[bar] min=20 max=56
+[bar] min=12 max=65
+[bar] min=27 max=57
+[bar] min=0 max=106
+[bar] min=0 max=117
+[bar] min=0 max=145
+[bar] min=0 max=74
+[bar] min=0 max=89
+[bar] min=0 max=108
+[bar] min=10 max=95
+[bar] min=0 max=73
+[bar] min=0 max=258
+[bar] min=0 max=214
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[bar] min=0 max=304
+[bar] min=0 max=317
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[bar] min=0 max=352
+[bar] min=0 max=440
+[bar] min=0 max=258
+[bar] min=0 max=269
+[bar] min=0 max=352
+[bar] min=0 max=332
+[bar] min=16 max=50
+[bar] min=11 max=60
+[bar] min=20 max=36
+[bar] min=26 max=33
+[bar] min=26 max=35
+[bar] min=22 max=34
+[bar] min=29 max=51
+[bar] min=28 max=34
+[bar] min=25 max=36
+[bar] min=28 max=51
+[bar] min=28 max=35
+[bar] min=28 max=37
+[bar] min=30 max=36
+[bar] min=27 max=35
+[bar] min=17 max=53
+[bar] min=16 max=37
+[bar] min=28 max=39
+[bar] min=30 max=54
+[bar] min=28 max=33
+[bar] min=28 max=33
+[bar] min=26 max=36
+[bar] min=28 max=35
+[bar] min=25 max=41
+[edge] white ended, 2.3 mm, at 285 mm, level 4077
+[bar] min=4074 max=4095
+[bar] min=4057 max=4084
+[bar] min=4072 max=4092
+[bar] min=4074 max=4083
+[edge] black ended, 0.0 mm, at 285 mm, level 170
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[edge] white ended, 0.0 mm, at 285 mm, level 4081
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[bar] min=4079 max=4095
+[edge] black ended, 0.0 mm, at 285 mm, level 169
+[edge] white ended, 0.0 mm, at 285 mm, level 4081
+[bar] min=4074 max=4089
+[edge] black ended, 0.0 mm, at 285 mm, level 173
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=285 deg=358
+[edge] white ended, 0.0 mm, at 285 mm, level 4084
+[bar] min=4072 max=4092
+[edge] black ended, 0.0 mm, at 285 mm, level 171
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 47.9 mm, at 47 mm, level 4080
+[edge] black ended, 7.2 mm, at 55 mm, level 178
+[edge] white ended, 10.5 mm, at 65 mm, level 4078
+[edge] black ended, 6.8 mm, at 72 mm, level 184
+[edge] white ended, 37.1 mm, at 109 mm, level 4082
+[edge] black ended, 7.3 mm, at 117 mm, level 182
+[edge] white ended, 45.0 mm, at 162 mm, level 4081
+[edge] black ended, 7.0 mm, at 169 mm, level 169
+[edge] white ended, 19.4 mm, at 188 mm, level 4078
+[edge] black ended, 7.5 mm, at 196 mm, level 181
+[edge] white ended, 10.1 mm, at 206 mm, level 4073
+[edge] black ended, 7.6 mm, at 213 mm, level 185
+[line] bench done after 2000 ms
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=290 deg=352
+[edge] white ended, 76.7 mm, at 290 mm, level 4078
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=290 deg=352
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=290 deg=352
+[bar] min=4075 max=4085
+[bar] min=4066 max=4093
+[edge] black ended, 0.0 mm, at 290 mm, level 613
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=290 deg=352
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=290 deg=352
+[edge] white ended, 0.0 mm, at 290 mm, level 4080
+[bar] min=4070 max=4084
+[edge] black ended, 0.0 mm, at 290 mm, level 268
+[edge] white ended, 0.0 mm, at 290 mm, level 4077
+[edge] black ended, 0.0 mm, at 290 mm, level 176
+[edge] white ended, 0.0 mm, at 290 mm, level 4080
+[bar] min=4077 max=4089
+[edge] black ended, 0.0 mm, at 290 mm, level 237
+[edge] white ended, 0.0 mm, at 290 mm, level 4082
+[bar] min=4076 max=4084
+[edge] black ended, 0.0 mm, at 290 mm, level 165
+[edge] white ended, 0.0 mm, at 290 mm, level 4078
+[edge] black ended, 0.0 mm, at 290 mm, level 175
+[edge] white ended, 0.0 mm, at 290 mm, level 4083
+[edge] black ended, 0.0 mm, at 290 mm, level 174
+[edge] white ended, 0.0 mm, at 290 mm, level 4082
+[edge] black ended, 0.0 mm, at 290 mm, level 171
+[edge] white ended, 0.0 mm, at 290 mm, level 4077
+[edge] black ended, 0.0 mm, at 290 mm, level 170
+[edge] white ended, 0.0 mm, at 290 mm, level 4078
+[bar] min=4078 max=4086
+[bar] min=4073 max=4086
+[edge] black ended, 0.0 mm, at 290 mm, level 182
+[edge] white ended, 0.0 mm, at 290 mm, level 4077
+[bar] min=4076 max=4085
+[edge] black ended, 0.0 mm, at 290 mm, level 181
+[edge] white ended, 0.0 mm, at 290 mm, level 4081
+[bar] min=4074 max=4085
+[bar] min=4075 max=4094
+[bar] min=4070 max=4095
+[bar] min=4077 max=4085
+[bar] min=4077 max=4086
+[bar] min=4078 max=4084
+[bar] min=4079 max=4086
+[bar] min=4065 max=4095
+[bar] min=4076 max=4083
+[bar] min=4077 max=4086
+[bar] min=4070 max=4085
+[bar] min=4078 max=4095
+[bar] min=4079 max=4092
+[bar] min=4076 max=4083
+[bar] min=4061 max=4082
+[bar] min=4077 max=4086
+[bar] min=4077 max=4086
+[bar] min=4074 max=4084
+[bar] min=4073 max=4088
+[bar] min=4075 max=4090
+[bar] min=4078 max=4091
+[bar] min=4078 max=4086
+[bar] min=4077 max=4095
+[bar] min=4078 max=4083
+[edge] black ended, 17.5 mm, at 308 mm, level 206
+[edge] white ended, 0.0 mm, at 308 mm, level 4078
+[edge] black ended, 0.0 mm, at 308 mm, level 181
+[edge] white ended, 0.0 mm, at 308 mm, level 4077
+[edge] black ended, 0.0 mm, at 308 mm, level 178
+[edge] white ended, 0.0 mm, at 308 mm, level 4094
+[edge] black ended, 0.0 mm, at 308 mm, level 182
+[edge] white ended, 0.0 mm, at 308 mm, level 4078
+[edge] black ended, 0.0 mm, at 308 mm, level 592
+[edge] white ended, 0.0 mm, at 308 mm, level 4081
+[edge] black ended, 0.0 mm, at 308 mm, level 189
+[edge] white ended, 0.0 mm, at 308 mm, level 4082
+[edge] black ended, 0.0 mm, at 308 mm, level 1462
+[edge] white ended, 0.0 mm, at 308 mm, level 4080
+[edge] black ended, 0.0 mm, at 308 mm, level 176
+[edge] white ended, 0.0 mm, at 308 mm, level 4082
+[bar] min=4078 max=4087
+[bar] min=4078 max=4083
+[bar] min=4077 max=4088
+[edge] black ended, 0.0 mm, at 308 mm, level 712
+[edge] white ended, 0.0 mm, at 308 mm, level 4069
+[bar] min=4064 max=4086
+[edge] black ended, 0.0 mm, at 308 mm, level 177
+[edge] white ended, 0.0 mm, at 308 mm, level 4082
+[edge] black ended, 0.0 mm, at 308 mm, level 177
+[edge] white ended, 0.0 mm, at 308 mm, level 4082
+[edge] black ended, 0.0 mm, at 308 mm, level 169
+[bar] min=4064 max=4089
+[edge] white ended, 0.0 mm, at 308 mm, level 4082
+[bar] min=4078 max=4086
+[bar] min=4074 max=4082
+[edge] black ended, 0.0 mm, at 308 mm, level 173
+[edge] white ended, 0.0 mm, at 308 mm, level 4081
+[edge] black ended, 0.0 mm, at 308 mm, level 181
+[edge] white ended, 0.0 mm, at 308 mm, level 4082
+[bar] min=4070 max=4089
+[edge] black ended, 0.0 mm, at 308 mm, level 173
+[edge] white ended, 0.0 mm, at 308 mm, level 4081
+[bar] min=4078 max=4090
+[edge] black ended, 0.0 mm, at 308 mm, level 181
+[edge] white ended, 0.0 mm, at 308 mm, level 4095
+[bar] min=4066 max=4085
+[bar] min=4077 max=4084
+[bar] min=4065 max=4088
+[bar] min=4076 max=4083
+[edge] black ended, 0.0 mm, at 308 mm, level 184
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=308 deg=9
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=308 deg=9
+[edge] white ended, 0.2 mm, at 308 mm, level 4081
+[edge] black ended, 0.0 mm, at 308 mm, level 942
+[edge] white ended, 0.0 mm, at 308 mm, level 4081
+[bar] min=4076 max=4084
+[bar] min=4079 max=4086
+[bar] min=4074 max=4095
+[edge] black ended, 0.0 mm, at 308 mm, level 176
+[line] put the car on the line, starting in 5 s
+[barcode] elements=59 letter=- widths_0.1mm= 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 175 0 0 0 0 0 0
+[edge] white ended, 64.1 mm, at 372 mm, level 4081
+[edge] black ended, 0.9 mm, at 373 mm, level 184
+[edge] white ended, 7.3 mm, at 381 mm, level 4081
+[edge] black ended, 10.6 mm, at 391 mm, level 184
+[edge] white ended, 7.2 mm, at 399 mm, level 4077
+[edge] black ended, 10.4 mm, at 409 mm, level 184
+[edge] white ended, 7.6 mm, at 417 mm, level 4083
+[edge] black ended, 1.2 mm, at 418 mm, level 176
+[edge] white ended, 16.7 mm, at 435 mm, level 4081
+[edge] black ended, 1.5 mm, at 436 mm, level 171
+[edge] white ended, 7.4 mm, at 444 mm, level 4080
+[edge] black ended, 10.8 mm, at 454 mm, level 171
+[edge] white ended, 7.0 mm, at 462 mm, level 4081
+[edge] black ended, 1.3 mm, at 463 mm, level 182
+[edge] white ended, 16.0 mm, at 479 mm, level 4081
+[edge] black ended, 1.4 mm, at 480 mm, level 178
+[edge] white ended, 7.6 mm, at 488 mm, level 4078
+[edge] black ended, 0.7 mm, at 489 mm, level 178
+[edge] white ended, 7.5 mm, at 496 mm, level 4073
+[edge] black ended, 10.3 mm, at 507 mm, level 170
+[edge] white ended, 16.2 mm, at 523 mm, level 4077
+[edge] black ended, 9.8 mm, at 533 mm, level 184
+[edge] white ended, 7.1 mm, at 540 mm, level 4078
+[edge] black ended, 10.1 mm, at 550 mm, level 180
+[edge] white ended, 7.5 mm, at 558 mm, level 4078
+[edge] black ended, 0.7 mm, at 558 mm, level 185
+[edge] white ended, 15.8 mm, at 574 mm, level 4079
+[edge] black ended, 0.9 mm, at 575 mm, level 165
+[barcode] elements=27 letter=- widths_0.1mm= 9 73 106 72 104 76 12 167 15 74 108 70 13 160 14 76 7 75 103 162 98 71 101 75 7 158 9
+[line] bench done after 2000 ms
+[barcode] command=0 count=0 rejects=2 at_mm=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[edge] white ended, 35.4 mm, at 611 mm, level 3977
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[bar] min=4076 max=4088
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[bar] min=4076 max=4095
+[edge] black ended, 0.0 mm, at 611 mm, level 179
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[edge] white ended, 0.0 mm, at 611 mm, level 4082
+[edge] black ended, 0.0 mm, at 611 mm, level 183
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=611 deg=348
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=615 deg=344
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=617 deg=342
+[edge] white ended, 6.6 mm, at 617 mm, level 4094
+[bar] min=4077 max=4086
+[edge] black ended, 0.0 mm, at 617 mm, level 180
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+=== FLASH barcode_thresh 1000/600 ===
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 46.3 mm, at 46 mm, level 3238
+[edge] black ended, 0.3 mm, at 46 mm, level 185
+[edge] white ended, 8.2 mm, at 54 mm, level 4081
+[edge] black ended, 10.0 mm, at 65 mm, level 173
+[edge] white ended, 7.4 mm, at 72 mm, level 4081
+[edge] black ended, 10.2 mm, at 82 mm, level 182
+[edge] white ended, 7.5 mm, at 90 mm, level 4077
+[edge] black ended, 1.0 mm, at 91 mm, level 182
+[edge] white ended, 16.8 mm, at 108 mm, level 4080
+[edge] black ended, 1.8 mm, at 110 mm, level 181
+[edge] white ended, 7.2 mm, at 117 mm, level 4080
+[edge] black ended, 10.2 mm, at 127 mm, level 170
+[edge] white ended, 6.6 mm, at 134 mm, level 4085
+[edge] black ended, 1.7 mm, at 136 mm, level 173
+[edge] white ended, 15.6 mm, at 151 mm, level 4078
+[edge] black ended, 1.8 mm, at 153 mm, level 184
+[edge] white ended, 7.0 mm, at 160 mm, level 4074
+[edge] black ended, 1.4 mm, at 162 mm, level 180
+[edge] white ended, 7.0 mm, at 169 mm, level 4078
+[edge] black ended, 9.7 mm, at 178 mm, level 171
+[edge] white ended, 7.1 mm, at 185 mm, level 4078
+[edge] black ended, 0.9 mm, at 186 mm, level 281
+[edge] white ended, 7.3 mm, at 194 mm, level 4078
+[edge] black ended, 10.5 mm, at 204 mm, level 181
+[edge] white ended, 7.2 mm, at 212 mm, level 4078
+[edge] black ended, 10.1 mm, at 222 mm, level 182
+[edge] white ended, 7.4 mm, at 229 mm, level 4079
+[edge] black ended, 0.5 mm, at 230 mm, level 225
+[edge] white ended, 16.6 mm, at 246 mm, level 4075
+[edge] black ended, 0.5 mm, at 247 mm, level 173
+[line] bench done after 2000 ms
+[barcode] elements=29 letter=A widths_0.1mm= 3 82 100 74 102 75 10 168 18 72 102 66 17 156 18 70 14 70 97 71 9 73 105 72 101 74 5 166 5
+[barcode] command=1 count=1 rejects=0 at_mm=276
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=279 deg=2
+[edge] white ended, 32.3 mm, at 279 mm, level 4082
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=279 deg=2
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=279 deg=2
+[bar] min=4076 max=4093
+[edge] black ended, 0.0 mm, at 279 mm, level 183
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=279 deg=2
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=279 deg=2
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 45.3 mm, at 325 mm, level 4080
+[edge] black ended, 10.4 mm, at 335 mm, level 180
+[edge] white ended, 7.5 mm, at 343 mm, level 4078
+[edge] black ended, 10.3 mm, at 353 mm, level 180
+[edge] white ended, 7.4 mm, at 360 mm, level 4080
+[edge] black ended, 1.5 mm, at 362 mm, level 182
+[edge] white ended, 16.3 mm, at 378 mm, level 4080
+[edge] black ended, 1.6 mm, at 380 mm, level 173
+[edge] white ended, 6.8 mm, at 387 mm, level 4078
+[edge] black ended, 11.0 mm, at 398 mm, level 174
+[edge] white ended, 6.8 mm, at 405 mm, level 4080
+[edge] black ended, 1.7 mm, at 407 mm, level 171
+[edge] white ended, 16.0 mm, at 423 mm, level 4083
+[edge] black ended, 1.4 mm, at 424 mm, level 279
+[edge] white ended, 7.7 mm, at 432 mm, level 4080
+[edge] black ended, 1.0 mm, at 433 mm, level 171
+[edge] white ended, 7.5 mm, at 440 mm, level 4078
+[edge] black ended, 9.9 mm, at 450 mm, level 172
+[edge] white ended, 15.9 mm, at 466 mm, level 4078
+[edge] black ended, 10.0 mm, at 476 mm, level 182
+[edge] white ended, 7.4 mm, at 484 mm, level 4077
+[edge] black ended, 10.2 mm, at 494 mm, level 184
+[edge] white ended, 7.1 mm, at 501 mm, level 4078
+[edge] black ended, 1.4 mm, at 503 mm, level 172
+[edge] white ended, 15.3 mm, at 518 mm, level 4077
+[edge] black ended, 1.8 mm, at 520 mm, level 171
+[barcode] elements=25 letter=- widths_0.1mm= 104 75 103 74 15 163 16 68 110 68 17 160 14 77 10 75 99 159 100 74 102 71 14 153 18
+[line] bench done after 2000 ms
+[barcode] command=1 count=1 rejects=1 at_mm=276
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=559 deg=5
+[edge] white ended, 39.1 mm, at 559 mm, level 4080
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=559 deg=5
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=559 deg=5
+[bar] min=4076 max=4085
+[edge] black ended, 0.0 mm, at 559 mm, level 181
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=559 deg=5
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=559 deg=5
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 54.0 mm, at 613 mm, level 4082
+[edge] black ended, 1.0 mm, at 614 mm, level 171
+[edge] white ended, 7.5 mm, at 622 mm, level 4082
+[edge] black ended, 10.8 mm, at 632 mm, level 170
+[edge] white ended, 7.3 mm, at 640 mm, level 4078
+[edge] black ended, 10.3 mm, at 650 mm, level 182
+[edge] white ended, 7.7 mm, at 658 mm, level 4078
+[edge] black ended, 1.0 mm, at 659 mm, level 178
+[edge] white ended, 16.8 mm, at 676 mm, level 4079
+[edge] black ended, 1.4 mm, at 677 mm, level 353
+[edge] white ended, 7.3 mm, at 685 mm, level 4080
+[edge] black ended, 11.0 mm, at 696 mm, level 178
+[edge] white ended, 6.9 mm, at 703 mm, level 4082
+[edge] black ended, 1.9 mm, at 705 mm, level 170
+[edge] white ended, 15.7 mm, at 720 mm, level 4072
+[edge] black ended, 1.9 mm, at 722 mm, level 181
+[edge] white ended, 7.1 mm, at 729 mm, level 4078
+[edge] black ended, 1.3 mm, at 731 mm, level 171
+[edge] white ended, 7.0 mm, at 738 mm, level 4077
+[edge] black ended, 9.8 mm, at 748 mm, level 207
+[edge] white ended, 7.2 mm, at 755 mm, level 4076
+[edge] black ended, 1.1 mm, at 756 mm, level 247
+[edge] white ended, 7.4 mm, at 763 mm, level 4078
+[edge] black ended, 10.3 mm, at 774 mm, level 171
+[edge] white ended, 6.8 mm, at 781 mm, level 4080
+[edge] black ended, 9.9 mm, at 791 mm, level 180
+[edge] white ended, 6.8 mm, at 797 mm, level 4025
+[edge] black ended, 1.1 mm, at 799 mm, level 183
+[edge] white ended, 15.6 mm, at 814 mm, level 4077
+[edge] black ended, 1.2 mm, at 816 mm, level 180
+[line] bench done after 2000 ms
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=839 deg=7
+[edge] white ended, 23.5 mm, at 839 mm, level 1736
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=839 deg=7
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=839 deg=7
+[bar] min=4076 max=4084
+[bar] min=4078 max=4090
+[edge] black ended, 0.0 mm, at 839 mm, level 170
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=839 deg=7
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=839 deg=7
+[edge] white ended, 0.0 mm, at 839 mm, level 4081
+[bar] min=4077 max=4095
+[edge] black ended, 0.0 mm, at 839 mm, level 180
+[edge] white ended, 3.6 mm, at 843 mm, level 4082
+[bar] min=4075 max=4082
+[edge] black ended, 0.7 mm, at 844 mm, level 171
+[line] put the car on the line, starting in 5 s
+[barcode] elements=35 letter=- widths_0.1mm= 10 75 108 73 103 77 10 168 14 73 110 69 19 157 19 71 13 70 98 72 11 74 103 68 99 68 11 156 12
+[edge] white ended, 38.6 mm, at 882 mm, level 4078
+[edge] black ended, 1.7 mm, at 884 mm, level 170
+[edge] white ended, 17.4 mm, at 901 mm, level 4078
+[edge] black ended, 1.8 mm, at 903 mm, level 181
+[edge] white ended, 7.2 mm, at 910 mm, level 4077
+[edge] black ended, 10.5 mm, at 921 mm, level 177
+[edge] white ended, 7.1 mm, at 928 mm, level 4080
+[edge] black ended, 10.7 mm, at 939 mm, level 173
+[edge] white ended, 7.6 mm, at 946 mm, level 4077
+[edge] black ended, 0.9 mm, at 947 mm, level 172
+[edge] white ended, 7.6 mm, at 955 mm, level 4078
+[edge] black ended, 10.3 mm, at 965 mm, level 172
+[edge] white ended, 16.2 mm, at 982 mm, level 4080
+[edge] black ended, 0.8 mm, at 982 mm, level 170
+[edge] white ended, 17.0 mm, at 999 mm, level 4077
+[edge] black ended, 1.1 mm, at 1001 mm, level 172
+[edge] white ended, 7.2 mm, at 1008 mm, level 4080
+[edge] black ended, 10.5 mm, at 1018 mm, level 183
+[edge] white ended, 6.4 mm, at 1025 mm, level 4077
+[edge] black ended, 2.0 mm, at 1027 mm, level 171
+[edge] white ended, 15.2 mm, at 1042 mm, level 4078
+[edge] black ended, 1.6 mm, at 1044 mm, level 182
+[edge] white ended, 6.9 mm, at 1051 mm, level 4081
+[edge] black ended, 10.7 mm, at 1062 mm, level 171
+[edge] white ended, 6.6 mm, at 1068 mm, level 4080
+[edge] black ended, 10.5 mm, at 1079 mm, level 180
+[edge] white ended, 6.6 mm, at 1085 mm, level 4079
+[edge] black ended, 2.2 mm, at 1088 mm, level 181
+[barcode] elements=27 letter=- widths_0.1mm= 17 174 18 72 105 71 107 76 9 76 103 162 8 170 11 72 105 64 20 152 16 69 107 66 105 66 22
+[line] bench done after 2000 ms
+[barcode] command=1 count=1 rejects=3 at_mm=276
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1136 deg=354
+[edge] white ended, 48.2 mm, at 1136 mm, level 4080
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1136 deg=354
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1136 deg=354
+[bar] min=4076 max=4095
+[edge] black ended, 0.0 mm, at 1136 mm, level 183
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1136 deg=354
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1136 deg=354
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 23.5 mm, at 1159 mm, level 4077
+[edge] black ended, 1.2 mm, at 1161 mm, level 182
+[edge] white ended, 17.9 mm, at 1179 mm, level 4081
+[edge] black ended, 1.2 mm, at 1180 mm, level 184
+[edge] white ended, 7.7 mm, at 1188 mm, level 4082
+[edge] black ended, 10.3 mm, at 1198 mm, level 170
+[edge] white ended, 7.3 mm, at 1205 mm, level 4074
+[edge] black ended, 10.6 mm, at 1216 mm, level 179
+[edge] white ended, 7.3 mm, at 1223 mm, level 4081
+[edge] black ended, 0.9 mm, at 1224 mm, level 178
+[edge] white ended, 7.5 mm, at 1232 mm, level 4077
+[edge] black ended, 10.1 mm, at 1242 mm, level 170
+[edge] white ended, 7.4 mm, at 1249 mm, level 1812
+[edge] black ended, 1.2 mm, at 1251 mm, level 183
+[edge] white ended, 7.1 mm, at 1258 mm, level 4079
+[edge] black ended, 1.8 mm, at 1260 mm, level 176
+[edge] white ended, 16.0 mm, at 1276 mm, level 4077
+[edge] black ended, 1.6 mm, at 1277 mm, level 175
+[edge] white ended, 7.1 mm, at 1285 mm, level 4079
+[edge] black ended, 11.0 mm, at 1296 mm, level 170
+[edge] white ended, 7.0 mm, at 1303 mm, level 4081
+[edge] black ended, 1.5 mm, at 1304 mm, level 180
+[edge] white ended, 16.0 mm, at 1320 mm, level 4077
+[edge] black ended, 0.9 mm, at 1321 mm, level 182
+[edge] white ended, 7.7 mm, at 1329 mm, level 4080
+[edge] black ended, 9.9 mm, at 1339 mm, level 176
+[edge] white ended, 6.8 mm, at 1346 mm, level 4075
+[edge] black ended, 10.6 mm, at 1357 mm, level 171
+[edge] white ended, 6.6 mm, at 1363 mm, level 4080
+[edge] black ended, 1.8 mm, at 1365 mm, level 181
+[barcode] elements=31 letter=- widths_0.1mm= 0 235 12 179 12 77 103 73 106 73 9 75 101 74 12 71 18 160 16 71 110 70 15 160 9 77 99 68 106
+[line] bench done after 2000 ms
+[barcode] command=1 count=1 rejects=4 at_mm=276
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1416 deg=358
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1416 deg=358
+[edge] white ended, 51.4 mm, at 1416 mm, level 4080
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1416 deg=358
+[bar] min=4078 max=4090
+[bar] min=4078 max=4095
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1416 deg=358
+[edge] black ended, 0.0 mm, at 1416 mm, level 186
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1416 deg=358
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 41.0 mm, at 1457 mm, level 4081
+[edge] black ended, 2.9 mm, at 1460 mm, level 173
+[edge] white ended, 13.5 mm, at 1474 mm, level 4085
+[edge] black ended, 3.3 mm, at 1477 mm, level 179
+[edge] white ended, 5.1 mm, at 1482 mm, level 4077
+[edge] black ended, 11.9 mm, at 1494 mm, level 183
+[edge] white ended, 4.7 mm, at 1499 mm, level 4079
+[edge] black ended, 12.2 mm, at 1511 mm, level 170
+[edge] white ended, 5.0 mm, at 1517 mm, level 4080
+[edge] black ended, 3.1 mm, at 1520 mm, level 169
+[edge] white ended, 5.5 mm, at 1525 mm, level 4078
+[edge] black ended, 11.2 mm, at 1536 mm, level 179
+[edge] white ended, 5.8 mm, at 1542 mm, level 4077
+[edge] black ended, 2.5 mm, at 1545 mm, level 170
+[edge] white ended, 5.9 mm, at 1551 mm, level 4078
+[edge] black ended, 2.6 mm, at 1553 mm, level 171
+[edge] white ended, 14.6 mm, at 1568 mm, level 4080
+[edge] black ended, 3.0 mm, at 1571 mm, level 180
+[edge] white ended, 5.6 mm, at 1577 mm, level 4080
+[edge] black ended, 12.5 mm, at 1589 mm, level 180
+[edge] white ended, 3.8 mm, at 1593 mm, level 4080
+[edge] black ended, 4.5 mm, at 1598 mm, level 176
+[edge] white ended, 12.5 mm, at 1610 mm, level 4078
+[edge] black ended, 4.7 mm, at 1615 mm, level 174
+[edge] white ended, 3.4 mm, at 1618 mm, level 4080
+[edge] black ended, 13.3 mm, at 1632 mm, level 184
+[edge] white ended, 4.3 mm, at 1636 mm, level 4078
+[edge] black ended, 12.5 mm, at 1649 mm, level 180
+[edge] white ended, 3.2 mm, at 1652 mm, level 4088
+[edge] black ended, 6.4 mm, at 1658 mm, level 177
+[edge] white ended, 7.5 mm, at 1666 mm, level 4078
+[edge] black ended, 1.2 mm, at 1667 mm, level 173
+[line] bench done after 2000 ms
+[barcode] elements=31 letter=- widths_0.1mm= 29 135 33 51 119 47 122 50 31 55 112 58 25 59 26 146 30 56 125 38 45 125 47 34 133 43 125 32 64
+[barcode] command=1 count=1 rejects=5 at_mm=276
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1701 deg=359
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1701 deg=359
+[edge] white ended, 33.8 mm, at 1701 mm, level 4076
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1701 deg=359
+[bar] min=4066 max=4085
+[bar] min=4069 max=4084
+[edge] black ended, 0.0 mm, at 1701 mm, level 169
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1701 deg=359
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1701 deg=359
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 20.8 mm, at 1722 mm, level 4080
+[edge] black ended, 12.0 mm, at 1734 mm, level 183
+[edge] white ended, 11.2 mm, at 1745 mm, level 4080
+[edge] black ended, 4.4 mm, at 1750 mm, level 172
+[edge] white ended, 5.3 mm, at 1755 mm, level 4082
+[edge] black ended, 12.5 mm, at 1767 mm, level 170
+[edge] white ended, 5.9 mm, at 1773 mm, level 4078
+[edge] black ended, 12.6 mm, at 1786 mm, level 170
+[edge] white ended, 5.7 mm, at 1792 mm, level 4077
+[edge] black ended, 2.9 mm, at 1795 mm, level 170
+[edge] white ended, 5.7 mm, at 1800 mm, level 4076
+[edge] black ended, 11.6 mm, at 1812 mm, level 171
+[edge] white ended, 5.4 mm, at 1817 mm, level 4077
+[edge] black ended, 3.4 mm, at 1821 mm, level 187
+[edge] white ended, 5.1 mm, at 1826 mm, level 4078
+[edge] black ended, 4.1 mm, at 1830 mm, level 170
+[edge] white ended, 13.4 mm, at 1844 mm, level 4077
+[edge] black ended, 3.4 mm, at 1847 mm, level 175
+[edge] white ended, 5.4 mm, at 1852 mm, level 4070
+[edge] black ended, 11.9 mm, at 1864 mm, level 169
+[edge] white ended, 5.4 mm, at 1870 mm, level 4077
+[edge] black ended, 3.1 mm, at 1873 mm, level 179
+[edge] white ended, 14.4 mm, at 1887 mm, level 4080
+[edge] black ended, 2.9 mm, at 1890 mm, level 184
+[edge] white ended, 5.9 mm, at 1896 mm, level 4078
+[edge] black ended, 11.8 mm, at 1908 mm, level 170
+[edge] white ended, 5.2 mm, at 1914 mm, level 4080
+[edge] black ended, 12.2 mm, at 1926 mm, level 174
+[edge] white ended, 5.1 mm, at 1931 mm, level 4076
+[edge] black ended, 3.4 mm, at 1934 mm, level 169
+[barcode] elements=31 letter=- widths_0.1mm= 0 208 120 112 44 53 125 59 126 57 29 57 116 54 34 51 41 134 34 54 119 54 31 144 29 59 118 52 122
+[line] bench done after 2000 ms
+[barcode] command=1 count=1 rejects=6 at_mm=276
+[edge] white ended, 46.3 mm, at 1981 mm, level 4084
+[bar] min=4070 max=4084
+[edge] black ended, 1.1 mm, at 1982 mm, level 173
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1982 deg=1
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1982 deg=1
+[edge] white ended, 0.4 mm, at 1982 mm, level 2654
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1982 deg=1
+[bar] min=4063 max=4084
+[edge] black ended, 0.0 mm, at 1982 mm, level 172
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1982 deg=1
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1982 deg=1
+[edge] white ended, 0.0 mm, at 1982 mm, level 2415
+[bar] min=4058 max=4095
+[bar] min=4061 max=4085
+[bar] min=4074 max=4084
+[bar] min=4068 max=4084
+[bar] min=4079 max=4084
+[edge] black ended, 0.0 mm, at 1982 mm, level 181
+[edge] white ended, 0.0 mm, at 1982 mm, level 4078
+[edge] black ended, 0.0 mm, at 1982 mm, level 224
+[edge] white ended, 0.0 mm, at 1982 mm, level 2108
+[edge] black ended, 0.0 mm, at 1982 mm, level 181
+[edge] white ended, 0.0 mm, at 1982 mm, level 4081
+[bar] min=4076 max=4083
+[bar] min=4076 max=4082
+[bar] min=4060 max=4083
+[bar] min=4074 max=4083
+[bar] min=4066 max=4090
+[bar] min=4077 max=4084
+[bar] min=4077 max=4084
+[bar] min=4058 max=4095
+[bar] min=4069 max=4082
+[bar] min=4059 max=4083
+[bar] min=4076 max=4084
+[bar] min=4078 max=4089
+[bar] min=4072 max=4095
+[bar] min=4077 max=4089
+[bar] min=4074 max=4084
+[bar] min=4073 max=4092
+[bar] min=4069 max=4083
+[bar] min=4070 max=4084
+[bar] min=4079 max=4086
+[bar] min=4073 max=4095
+[bar] min=4075 max=4084
+[bar] min=4074 max=4083
+[bar] min=4069 max=4095
+[bar] min=4058 max=4083
+[bar] min=4078 max=4084
+[bar] min=4077 max=4083
+[bar] min=4075 max=4092
+[bar] min=4061 max=4084
+[bar] min=4065 max=4090
+[bar] min=4077 max=4092
+[bar] min=4080 max=4095
+[bar] min=4072 max=4083
+[edge] black ended, 0.0 mm, at 1982 mm, level 172
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1982 deg=1
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1982 deg=2
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1982 deg=2
+[edge] white ended, 0.0 mm, at 1982 mm, level 4081
+[bar] min=4077 max=4095
+[bar] min=4079 max=4086
+[bar] min=4069 max=4088
+[bar] min=4069 max=4086
+[bar] min=4066 max=4083
+[bar] min=4078 max=4086
+[bar] min=4069 max=4092
+[bar] min=4070 max=4086
+[bar] min=4067 max=4091
+[bar] min=4077 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4077 max=4084
+[bar] min=4062 max=4084
+[bar] min=4078 max=4089
+[bar] min=4060 max=4090
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4061 max=4086
+[bar] min=4077 max=4091
+[bar] min=4069 max=4092
+[bar] min=4070 max=4092
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4067 max=4084
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4078 max=4094
+[bar] min=4076 max=4089
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4065 max=4086
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4075 max=4091
+[bar] min=4060 max=4085
+[bar] min=4060 max=4095
+[bar] min=4074 max=4093
+[bar] min=4064 max=4089
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4068 max=4086
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4077 max=4083
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4075 max=4095
+[bar] min=4077 max=4088
+[bar] min=4073 max=4088
+[bar] min=4060 max=4086
+[bar] min=4068 max=4082
+[bar] min=4070 max=4082
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4072 max=4095
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4058 max=4095
+[bar] min=4075 max=4084
+[bar] min=4065 max=4083
+[bar] min=4072 max=4095
+[bar] min=4071 max=4082
+[bar] min=4073 max=4085
+[bar] min=4072 max=4083
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4076 max=4082
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=1
+[bar] min=4077 max=4095
+[bar] min=4061 max=4084
+[bar] min=4076 max=4084
+[bar] min=4074 max=4090
+[bar] min=4070 max=4085
+[bar] min=4076 max=4087
+[bar] min=4076 max=4089
+[bar] min=4075 max=4084
+[bar] min=4072 max=4090
+[bar] min=4072 max=4084
+[bar] min=4059 max=4087
+[bar] min=4078 max=4094
+[bar] min=4074 max=4093
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4078 max=4095
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4058 max=4084
+[bar] min=4076 max=4089
+[bar] min=4073 max=4083
+[bar] min=4077 max=4091
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4067 max=4083
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4078 max=4083
+[bar] min=4079 max=4088
+[bar] min=4076 max=4082
+[bar] min=4075 max=4084
+[bar] min=4077 max=4095
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1983 deg=2
+[bar] min=4068 max=4083
+[bar] min=4074 max=4093
+[bar] min=4065 max=4095
+[bar] min=4071 max=4095
+[bar] min=4075 max=4095
+[bar] min=4075 max=4088
+[bar] min=4068 max=4095
+[bar] min=4077 max=4087
+[bar] min=4060 max=4085
+[bar] min=4073 max=4095
+[bar] min=4066 max=4095
+[bar] min=4068 max=4093
+[bar] min=4070 max=4094
+[bar] min=4065 max=4095
+[bar] min=4064 max=4086
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[edge] white ended, 0.0 mm, at 0 mm, level 4080
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[bar] min=4075 max=4093
+[bar] min=4077 max=4087
+[bar] min=4051 max=4095
+[bar] min=4078 max=4095
+[bar] min=4072 max=4095
+[bar] min=4077 max=4093
+[bar] min=4081 max=4090
+[bar] min=4060 max=4090
+[bar] min=4077 max=4094
+[bar] min=4066 max=4085
+[bar] min=4077 max=4084
+[bar] min=4064 max=4094
+[bar] min=4060 max=4095
+[bar] min=4076 max=4089
+[bar] min=4065 max=4095
+[bar] min=4067 max=4084
+[bar] min=4074 max=4090
+[bar] min=4074 max=4091
+[bar] min=4077 max=4084
+[bar] min=4078 max=4095
+[bar] min=4072 max=4086
+[bar] min=4060 max=4085
+[bar] min=4076 max=4093
+[bar] min=4064 max=4084
+[bar] min=4064 max=4091
+[bar] min=4078 max=4095
+[bar] min=4077 max=4095
+[bar] min=4077 max=4095
+[bar] min=4076 max=4088
+[bar] min=4064 max=4082
+[bar] min=4073 max=4095
+[bar] min=4078 max=4095
+[bar] min=4075 max=4083
+[bar] min=4078 max=4092
+[bar] min=4073 max=4091
+[bar] min=4077 max=4087
+[bar] min=4066 max=4083
+[bar] min=4072 max=4090
+[bar] min=4070 max=4085
+[bar] min=4072 max=4088
+[bar] min=4078 max=4095
+[bar] min=4078 max=4095
+[bar] min=4078 max=4091
+[bar] min=4075 max=4086
+[bar] min=4069 max=4088
+[bar] min=4066 max=4083
+[bar] min=4073 max=4085
+[bar] min=4075 max=4095
+[bar] min=4075 max=4094
+[bar] min=4075 max=4095
+[bar] min=4074 max=4095
+[bar] min=4058 max=4093
+[bar] min=4072 max=4085
+[bar] min=4075 max=4085
+[bar] min=4069 max=4093
+[bar] min=4072 max=4082
+[bar] min=4076 max=4089
+[bar] min=4077 max=4086
+[bar] min=4072 max=4084
+[bar] min=4069 max=4084
+[bar] min=4078 max=4084
+[bar] min=4078 max=4083
+[bar] min=4078 max=4086
+[bar] min=4070 max=4092
+[bar] min=4074 max=4089
+[bar] min=4074 max=4095
+[bar] min=4070 max=4093
+[bar] min=4078 max=4083
+[bar] min=4075 max=4086
+[bar] min=4067 max=4084
+[bar] min=4070 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4078 max=4095
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4065 max=4093
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4069 max=4089
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4078 max=4092
+[bar] min=4077 max=4084
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4079 max=4084
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4068 max=4092
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4075 max=4085
+[bar] min=4068 max=4088
+[bar] min=4074 max=4086
+[bar] min=4079 max=4092
+[bar] min=4076 max=4091
+[bar] min=4076 max=4084
+[bar] min=4067 max=4084
+[bar] min=4075 max=4094
+[bar] min=4067 max=4095
+[bar] min=4080 max=4086
+[bar] min=4064 max=4088
+[bar] min=4069 max=4092
+[bar] min=4078 max=4095
+[bar] min=4080 max=4088
+[bar] min=4077 max=4083
+[bar] min=4073 max=4088
+[bar] min=4074 max=4085
+[bar] min=4066 max=4083
+[bar] min=4074 max=4088
+[bar] min=4076 max=4095
+[bar] min=4076 max=4089
+[bar] min=4072 max=4090
+[bar] min=4066 max=4086
+[bar] min=4074 max=4085
+[bar] min=4077 max=4088
+[bar] min=4067 max=4088
+[bar] min=4058 max=4088
+[bar] min=4077 max=4084
+[bar] min=4060 max=4085
+[bar] min=4074 max=4095
+[bar] min=4057 max=4085
+[bar] min=4075 max=4092
+[bar] min=4072 max=4095
+[bar] min=4068 max=4095
+[bar] min=4069 max=4084
+[bar] min=4066 max=4086
+[edge] black ended, 0.1 mm, at 0 mm, level 174
+[edge] white ended, 0.0 mm, at 0 mm, level 4074
+[bar] min=4072 max=4083
+[bar] min=4075 max=4095
+[bar] min=4069 max=4081
+[bar] min=4072 max=4083
+[bar] min=4064 max=4081
+[bar] min=4070 max=4088
+[bar] min=4073 max=4088
+[bar] min=4068 max=4092
+[bar] min=4061 max=4085
+[bar] min=4073 max=4091
+[bar] min=4074 max=4090
+[bar] min=4072 max=4092
+[bar] min=4076 max=4091
+[bar] min=4070 max=4091
+[bar] min=4063 max=4083
+[bar] min=4075 max=4095
+[bar] min=4075 max=4095
+[bar] min=4072 max=4091
+[bar] min=4068 max=4082
+[bar] min=4074 max=4094
+[bar] min=4076 max=4085
+[bar] min=4073 max=4082
+[bar] min=4058 max=4095
+[edge] black ended, 0.0 mm, at 0 mm, level 179
+[edge] white ended, 0.0 mm, at 0 mm, level 4081
+[bar] min=4075 max=4094
+[bar] min=4072 max=4086
+[bar] min=4077 max=4095
+[bar] min=4064 max=4095
+[edge] black ended, 0.0 mm, at 0 mm, level 171
+[edge] white ended, 0.0 mm, at 0 mm, level 4082
+[bar] min=4066 max=4092
+[bar] min=4078 max=4095
+[bar] min=4076 max=4083
+[bar] min=4077 max=4088
+[bar] min=4075 max=4084
+[bar] min=4073 max=4095
+[bar] min=4058 max=4086
+[bar] min=4076 max=4083
+[bar] min=4078 max=4092
+[bar] min=4070 max=4084
+[edge] black ended, 0.0 mm, at 0 mm, level 182
+[edge] white ended, 0.0 mm, at 0 mm, level 1832
+[edge] black ended, 0.0 mm, at 0 mm, level 427
+[bar] min=27 max=38
+[bar] min=27 max=38
+[bar] min=21 max=48
+[bar] min=26 max=36
+[bar] min=29 max=54
+[bar] min=27 max=38
+[edge] white ended, 0.0 mm, at 0 mm, level 4081
+[bar] min=4070 max=4086
+[bar] min=4075 max=4086
+[bar] min=4078 max=4091
+[bar] min=4072 max=4095
+[bar] min=4072 max=4084
+[bar] min=4074 max=4085
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4072 max=4083
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4068 max=4086
+[bar] min=4075 max=4086
+[bar] min=4067 max=4095
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4062 max=4095
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4077 max=4082
+[bar] min=4061 max=4090
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4064 max=4084
+[edge] black ended, 0.0 mm, at 0 mm, level 173
+[edge] white ended, 0.0 mm, at 0 mm, level 4078
+[bar] min=4076 max=4094
+[edge] black ended, 0.0 mm, at 0 mm, level 174
+[edge] white ended, 0.0 mm, at 0 mm, level 4084
+[bar] min=4078 max=4086
+[bar] min=4078 max=4093
+[bar] min=4064 max=4084
+[edge] black ended, 0.0 mm, at 0 mm, level 172
+[edge] white ended, 0.0 mm, at 0 mm, level 1502
+[bar] min=4058 max=4081
+[bar] min=4069 max=4088
+[edge] black ended, 0.0 mm, at 0 mm, level 183
+[edge] white ended, 0.0 mm, at 0 mm, level 4075
+[bar] min=4070 max=4084
+[edge] black ended, 0.0 mm, at 0 mm, level 185
+[edge] white ended, 0.0 mm, at 0 mm, level 4078
+[bar] min=4064 max=4085
+[edge] black ended, 0.0 mm, at 0 mm, level 239
+[edge] white ended, 0.0 mm, at 0 mm, level 1528
+[bar] min=4076 max=4089
+[edge] black ended, 0.0 mm, at 0 mm, level 184
+[edge] white ended, 0.0 mm, at 0 mm, level 2024
+[edge] black ended, 0.0 mm, at 0 mm, level 181
+[edge] white ended, 0.0 mm, at 0 mm, level 4079
+[bar] min=4077 max=4084
+[edge] black ended, 0.0 mm, at 0 mm, level 172
+[edge] white ended, 0.0 mm, at 0 mm, level 4080
+[bar] min=4078 max=4093
+[bar] min=4073 max=4091
+[bar] min=4071 max=4083
+[bar] min=4080 max=4095
+[bar] min=4073 max=4089
+[bar] min=4078 max=4083
+[edge] black ended, 0.0 mm, at 0 mm, level 171
+[edge] white ended, 0.0 mm, at 0 mm, level 3977
+[bar] min=4072 max=4092
+[bar] min=4078 max=4093
+[bar] min=4076 max=4091
+[bar] min=4060 max=4090
+[edge] black ended, 0.0 mm, at 0 mm, level 172
+[edge] white ended, 0.0 mm, at 0 mm, level 4076
+[edge] black ended, 0.0 mm, at 0 mm, level 172
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[edge] white ended, 0.0 mm, at 0 mm, level 1188
+[edge] black ended, 0.0 mm, at 0 mm, level 187
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[edge] white ended, 0.0 mm, at 0 mm, level 4081
+[bar] min=4076 max=4082
+[edge] black ended, 0.0 mm, at 0 mm, level 179
+[edge] white ended, 0.0 mm, at 0 mm, level 4081
+[edge] black ended, 0.0 mm, at 0 mm, level 188
+[edge] white ended, 0.0 mm, at 0 mm, level 4082
+[edge] black ended, 0.0 mm, at 0 mm, level 195
+[edge] white ended, 0.0 mm, at 0 mm, level 4079
+[bar] min=4067 max=4095
+[edge] black ended, 0.0 mm, at 0 mm, level 174
+[edge] white ended, 0.0 mm, at 0 mm, level 1852
+[edge] black ended, 0.0 mm, at 0 mm, level 185
+[edge] white ended, 0.0 mm, at 0 mm, level 4081
+[bar] min=4080 max=4084
+[edge] black ended, 0.0 mm, at 0 mm, level 187
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[edge] white ended, 0.0 mm, at 0 mm, level 4083
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4057 max=4092
+[edge] black ended, 0.0 mm, at 0 mm, level 173
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[edge] white ended, 0.0 mm, at 0 mm, level 4073
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4076 max=4095
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4075 max=4094
+[bar] min=4066 max=4085
+[bar] min=4077 max=4091
+[bar] min=4073 max=4092
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4077 max=4095
+[edge] black ended, 0.0 mm, at 0 mm, level 185
+[edge] white ended, 0.0 mm, at 0 mm, level 4073
+[bar] min=4076 max=4084
+[bar] min=4058 max=4086
+[bar] min=4076 max=4086
+[bar] min=4080 max=4087
+[bar] min=4077 max=4088
+[bar] min=4057 max=4089
+[bar] min=4079 max=4085
+[bar] min=4078 max=4093
+[bar] min=4070 max=4092
+[bar] min=4064 max=4087
+[bar] min=4075 max=4088
+[bar] min=4077 max=4095
+[bar] min=4076 max=4095
+[bar] min=4077 max=4088
+[bar] min=4079 max=4085
+[bar] min=4067 max=4083
+[edge] black ended, 0.0 mm, at 0 mm, level 179
+[edge] white ended, 0.0 mm, at 0 mm, level 4081
+[bar] min=4068 max=4089
+[bar] min=4077 max=4084
+[bar] min=4062 max=4095
+[bar] min=4072 max=4086
+[bar] min=4058 max=4087
+[bar] min=4075 max=4095
+[bar] min=4076 max=4083
+[bar] min=4058 max=4086
+[bar] min=4065 max=4084
+[bar] min=4076 max=4089
+[bar] min=4065 max=4088
+[bar] min=4078 max=4083
+[bar] min=4077 max=4088
+[bar] min=4065 max=4094
+[bar] min=4065 max=4093
+[bar] min=4060 max=4084
+[bar] min=4073 max=4088
+[bar] min=4060 max=4088
+[bar] min=4076 max=4084
+[bar] min=4074 max=4090
+[bar] min=4074 max=4085
+[bar] min=4076 max=4090
+[bar] min=4073 max=4092
+[bar] min=4068 max=4084
+[bar] min=4064 max=4083
+[bar] min=4076 max=4083
+[bar] min=4074 max=4092
+[bar] min=4066 max=4084
+[bar] min=4076 max=4089
+[bar] min=4068 max=4090
+[bar] min=4078 max=4095
+[bar] min=4077 max=4084
+[bar] min=4059 max=4091
+[bar] min=4075 max=4095
+[bar] min=4065 max=4084
+[bar] min=4075 max=4085
+[bar] min=4066 max=4086
+[bar] min=4069 max=4085
+[bar] min=4076 max=4093
+[bar] min=4073 max=4095
+[bar] min=4067 max=4083
+[bar] min=4078 max=4084
+[bar] min=4077 max=4088
+[bar] min=4074 max=4090
+[bar] min=4064 max=4084
+[bar] min=4070 max=4086
+[bar] min=4076 max=4086
+[bar] min=4074 max=4095
+[bar] min=4074 max=4095
+[bar] min=4075 max=4087
+[bar] min=4060 max=4084
+[bar] min=4078 max=4091
+[bar] min=4078 max=4093
+[bar] min=4076 max=4088
+[bar] min=4076 max=4091
+[bar] min=4069 max=4086
+[bar] min=4075 max=4085
+[bar] min=4076 max=4088
+[bar] min=4065 max=4085
+[bar] min=4077 max=4085
+[bar] min=4075 max=4094
+[bar] min=4073 max=4095
+[bar] min=4073 max=4090
+[bar] min=4076 max=4088
+[bar] min=4068 max=4094
+[bar] min=4077 max=4091
+[bar] min=4077 max=4091
+[bar] min=4076 max=4091
+[bar] min=4075 max=4092
+[bar] min=4074 max=4084
+[bar] min=4078 max=4083
+[bar] min=4076 max=4094
+[bar] min=4066 max=4084
+[bar] min=4058 max=4083
+[bar] min=4068 max=4090
+[bar] min=4075 max=4088
+[bar] min=4078 max=4084
+[bar] min=4059 max=4084
+[bar] min=4072 max=4095
+[bar] min=4076 max=4091
+[bar] min=4077 max=4086
+[bar] min=4071 max=4086
+[bar] min=4076 max=4086
+[bar] min=4068 max=4084
+[bar] min=4075 max=4084
+[bar] min=4067 max=4085
+[bar] min=4069 max=4086
+[bar] min=4074 max=4088
+[bar] min=4073 max=4084
+[bar] min=4066 max=4090
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4058 max=4088
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4069 max=4093
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4058 max=4086
+[edge] black ended, 0.0 mm, at 0 mm, level 187
+[edge] white ended, 0.0 mm, at 0 mm, level 4077
+[bar] min=4080 max=4086
+[bar] min=4077 max=4084
+[edge] black ended, 0.0 mm, at 0 mm, level 184
+[edge] white ended, 0.0 mm, at 0 mm, level 4083
+[bar] min=4077 max=4095
+[edge] black ended, 0.0 mm, at 0 mm, level 173
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[edge] white ended, 0.0 mm, at 0 mm, level 4076
+[edge] black ended, 0.0 mm, at 0 mm, level 171
+[edge] white ended, 0.0 mm, at 0 mm, level 4080
+[bar] min=4074 max=4095
+[bar] min=4073 max=4092
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4076 max=4084
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4076 max=4089
+[bar] min=4070 max=4088
+[bar] min=4070 max=4088
+[bar] min=4069 max=4084
+[bar] min=4065 max=4089
+[bar] min=4076 max=4088
+[bar] min=4075 max=4092
+[bar] min=4076 max=4095
+[bar] min=4077 max=4085
+[edge] black ended, 0.0 mm, at 0 mm, level 172
+[edge] white ended, 0.0 mm, at 0 mm, level 4077
+[bar] min=4076 max=4089
+[bar] min=4065 max=4087
+[bar] min=4078 max=4095
+[bar] min=4075 max=4095
+[bar] min=4070 max=4088
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[bar] min=4075 max=4086
+[bar] min=4068 max=4093
+[bar] min=4075 max=4084
+[bar] min=4074 max=4088
+[bar] min=4073 max=4088
+[bar] min=4072 max=4085
+[bar] min=4074 max=4083
+[bar] min=4066 max=4095
+[bar] min=4074 max=4091
+[bar] min=4075 max=4090
+[bar] min=4075 max=4093
+[bar] min=4077 max=4094
+[bar] min=4065 max=4094
+[bar] min=4074 max=4095
+[bar] min=4074 max=4089
+[bar] min=4077 max=4095
+[bar] min=4068 max=4083
+[bar] min=4069 max=4095
+[bar] min=4074 max=4084
+[bar] min=4071 max=4090
+[bar] min=4063 max=4095
+[bar] min=4077 max=4084
+[bar] min=4078 max=4086
+[bar] min=4072 max=4095
+[bar] min=4070 max=4084
+[bar] min=4072 max=4092
+[bar] min=4070 max=4084
+[bar] min=4078 max=4083
+[bar] min=4078 max=4093
+[bar] min=4076 max=4094
+[bar] min=4062 max=4089
+[bar] min=4066 max=4088
+[bar] min=4078 max=4088
+[bar] min=4065 max=4093
+[bar] min=4066 max=4086
+[bar] min=4070 max=4092
+[bar] min=4066 max=4093
+[bar] min=4068 max=4095
+[bar] min=4064 max=4094
+[bar] min=4074 max=4086
+[bar] min=4076 max=4085
+[bar] min=4074 max=4083
+[bar] min=4068 max=4088
+[bar] min=4077 max=4095
+[bar] min=4078 max=4095
+[bar] min=4076 max=4085
+[bar] min=4072 max=4084
+[bar] min=4060 max=4095
+[bar] min=4058 max=4085
+[bar] min=4069 max=4093
+[bar] min=4076 max=4089
+[bar] min=4079 max=4086
+[bar] min=4059 max=4087
+[bar] min=4070 max=4084
+[bar] min=4074 max=4094
+[bar] min=4062 max=4084
+[bar] min=4065 max=4083
+[bar] min=4076 max=4084
+[bar] min=4077 max=4089
+[bar] min=4072 max=4083
+[bar] min=4069 max=4082
+[edge] black ended, 0.0 mm, at 0 mm, level 176
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1 deg=1
+[barcode] elements=65 letter=- widths_0.1mm= 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[barcode] command=0 count=0 rejects=1 at_mm=0
+[edge] white ended, 42.4 mm, at 42 mm, level 1789
+[edge] black ended, 0.1 mm, at 42 mm, level 235
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+[TEST] === test run start ===
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U20 PASS  decodes *Z*
+
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 11 passed, 0 failed
+
+[TEST] === test run end ===
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 28.1 mm, at 28 mm, level 4079
+[edge] black ended, 1.4 mm, at 29 mm, level 184
+[edge] white ended, 17.0 mm, at 46 mm, level 4078
+[edge] black ended, 1.4 mm, at 48 mm, level 185
+[edge] white ended, 7.9 mm, at 56 mm, level 4077
+[edge] black ended, 10.7 mm, at 66 mm, level 186
+[edge] white ended, 7.4 mm, at 74 mm, level 4074
+[edge] black ended, 10.5 mm, at 84 mm, level 185
+[edge] white ended, 7.3 mm, at 92 mm, level 4081
+[edge] black ended, 1.3 mm, at 93 mm, level 171
+[edge] white ended, 7.6 mm, at 101 mm, level 4076
+[edge] black ended, 10.6 mm, at 111 mm, level 173
+[edge] white ended, 7.3 mm, at 119 mm, level 4080
+[edge] black ended, 1.4 mm, at 120 mm, level 172
+[edge] white ended, 7.0 mm, at 127 mm, level 4078
+[edge] black ended, 1.9 mm, at 129 mm, level 184
+[edge] white ended, 15.8 mm, at 145 mm, level 2373
+[edge] black ended, 1.4 mm, at 146 mm, level 186
+[edge] white ended, 7.4 mm, at 154 mm, level 4080
+[edge] black ended, 10.6 mm, at 165 mm, level 237
+[edge] white ended, 7.4 mm, at 172 mm, level 4078
+[edge] black ended, 1.0 mm, at 173 mm, level 185
+[edge] white ended, 16.5 mm, at 190 mm, level 4078
+[edge] black ended, 0.6 mm, at 190 mm, level 171
+[edge] white ended, 7.8 mm, at 198 mm, level 4078
+[edge] black ended, 9.9 mm, at 208 mm, level 185
+[edge] white ended, 7.6 mm, at 216 mm, level 4076
+[edge] black ended, 10.1 mm, at 226 mm, level 184
+[edge] white ended, 7.5 mm, at 233 mm, level 4080
+[edge] black ended, 0.8 mm, at 234 mm, level 176
+[barcode] elements=29 letter=A widths_0.1mm= 14 170 14 79 107 74 105 73 13 76 106 73 14 70 19 158 14 74 106 74 10 165 6 78 99 76 101 75 8
+[line] bench done after 2000 ms
+[barcode] command=1 count=1 rejects=0 at_mm=263
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=280 deg=4
+[edge] white ended, 45.9 mm, at 280 mm, level 4085
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=280 deg=4
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=280 deg=4
+[bar] min=4078 max=4093
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=280 deg=4
+[bar] min=4080 max=4090
+[edge] black ended, 0.0 mm, at 280 mm, level 186
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=280 deg=4
+[edge] white ended, 0.0 mm, at 280 mm, level 4064
+[edge] black ended, 0.0 mm, at 280 mm, level 195
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 41.3 mm, at 321 mm, level 4078
+[edge] black ended, 1.7 mm, at 323 mm, level 174
+[edge] white ended, 16.9 mm, at 340 mm, level 4081
+[edge] black ended, 1.4 mm, at 342 mm, level 172
+[edge] white ended, 7.7 mm, at 349 mm, level 4081
+[edge] black ended, 10.5 mm, at 360 mm, level 182
+[edge] white ended, 7.4 mm, at 367 mm, level 4076
+[edge] black ended, 10.4 mm, at 378 mm, level 172
+[edge] white ended, 7.7 mm, at 385 mm, level 4080
+[edge] black ended, 0.9 mm, at 386 mm, level 171
+[edge] white ended, 7.7 mm, at 394 mm, level 4078
+[edge] black ended, 10.0 mm, at 404 mm, level 175
+[edge] white ended, 7.6 mm, at 412 mm, level 4076
+[edge] black ended, 1.2 mm, at 413 mm, level 186
+[edge] white ended, 7.5 mm, at 421 mm, level 4075
+[edge] black ended, 1.3 mm, at 422 mm, level 179
+[edge] white ended, 16.2 mm, at 438 mm, level 4077
+[edge] black ended, 1.4 mm, at 440 mm, level 241
+[edge] white ended, 7.6 mm, at 447 mm, level 4075
+[edge] black ended, 10.6 mm, at 458 mm, level 185
+[edge] white ended, 7.5 mm, at 465 mm, level 4075
+[edge] black ended, 1.2 mm, at 467 mm, level 178
+[edge] white ended, 16.3 mm, at 483 mm, level 4075
+[edge] black ended, 0.6 mm, at 484 mm, level 183
+[edge] white ended, 7.5 mm, at 491 mm, level 4090
+[edge] black ended, 9.7 mm, at 501 mm, level 185
+[edge] white ended, 7.3 mm, at 508 mm, level 4076
+[edge] black ended, 10.1 mm, at 519 mm, level 185
+[edge] white ended, 7.3 mm, at 526 mm, level 4075
+[edge] black ended, 1.1 mm, at 527 mm, level 171
+[barcode] elements=29 letter=A widths_0.1mm= 17 169 14 77 105 74 104 77 9 77 100 76 12 75 13 162 14 76 106 75 12 163 6 75 97 73 101 73 11
+[line] bench done after 2000 ms
+[barcode] command=1 count=2 rejects=0 at_mm=556
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=562 deg=9
+[edge] white ended, 35.2 mm, at 562 mm, level 4082
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=562 deg=9
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=562 deg=9
+[bar] min=4070 max=4083
+[bar] min=4078 max=4083
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=562 deg=9
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=562 deg=9
+[edge] black ended, 0.0 mm, at 562 mm, level 334
+[line] put the car on the line, starting in 5 s
+[edge] white ended, 50.0 mm, at 612 mm, level 4083
+[edge] black ended, 1.3 mm, at 614 mm, level 171
+[edge] white ended, 7.9 mm, at 622 mm, level 4080
+[edge] black ended, 10.5 mm, at 632 mm, level 182
+[edge] white ended, 7.2 mm, at 640 mm, level 4078
+[edge] black ended, 10.7 mm, at 650 mm, level 172
+[edge] white ended, 7.4 mm, at 658 mm, level 4080
+[edge] black ended, 1.7 mm, at 659 mm, level 180
+[edge] white ended, 16.4 mm, at 676 mm, level 4074
+[edge] black ended, 1.9 mm, at 678 mm, level 184
+[edge] white ended, 6.6 mm, at 684 mm, level 4075
+[edge] black ended, 10.4 mm, at 695 mm, level 174
+[edge] white ended, 6.3 mm, at 701 mm, level 4078
+[edge] black ended, 2.2 mm, at 704 mm, level 183
+[edge] white ended, 15.7 mm, at 719 mm, level 4075
+[edge] black ended, 2.0 mm, at 721 mm, level 185
+[edge] white ended, 6.8 mm, at 728 mm, level 4079
+[edge] black ended, 1.9 mm, at 730 mm, level 185
+[edge] white ended, 6.8 mm, at 737 mm, level 4072
+[edge] black ended, 10.4 mm, at 747 mm, level 181
+[edge] white ended, 7.0 mm, at 754 mm, level 4079
+[edge] black ended, 1.5 mm, at 756 mm, level 173
+[edge] white ended, 6.9 mm, at 763 mm, level 1496
+[edge] black ended, 10.5 mm, at 773 mm, level 184
+[edge] white ended, 6.8 mm, at 780 mm, level 4078
+[edge] black ended, 10.3 mm, at 791 mm, level 185
+[edge] white ended, 6.7 mm, at 797 mm, level 4079
+[edge] black ended, 1.6 mm, at 799 mm, level 187
+[edge] white ended, 15.7 mm, at 815 mm, level 4079
+[edge] black ended, 1.3 mm, at 816 mm, level 172
+[line] bench done after 2000 ms
+[edge] white ended, 27.0 mm, at 843 mm, level 1916
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=843 deg=14
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=843 deg=14
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=843 deg=14
+[bar] min=4068 max=4082
+[bar] min=4077 max=4095
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=843 deg=14
+[edge] black ended, 0.0 mm, at 843 mm, level 171
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=843 deg=14
+[line] put the car on the line, starting in 5 s
+[barcode] elements=31 letter=- widths_0.1mm= 13 79 105 72 107 74 17 164 19 66 104 63 22 157 20 68 19 68 104 70 15 69 105 68 103 67 16 157 13
+[edge] white ended, 40.7 mm, at 884 mm, level 4076
+[edge] black ended, 1.8 mm, at 886 mm, level 171
+[edge] white ended, 7.1 mm, at 893 mm, level 4078
+[edge] black ended, 10.9 mm, at 904 mm, level 181
+[edge] white ended, 7.4 mm, at 911 mm, level 4080
+[edge] black ended, 10.6 mm, at 922 mm, level 185
+[edge] white ended, 7.5 mm, at 929 mm, level 4078
+[edge] black ended, 1.5 mm, at 931 mm, level 176
+[edge] white ended, 16.9 mm, at 948 mm, level 4080
+[edge] black ended, 1.7 mm, at 950 mm, level 178
+[edge] white ended, 7.1 mm, at 957 mm, level 4077
+[edge] black ended, 10.6 mm, at 967 mm, level 279
+[edge] white ended, 6.7 mm, at 974 mm, level 4077
+[edge] black ended, 1.9 mm, at 976 mm, level 170
+[edge] white ended, 15.6 mm, at 992 mm, level 4075
+[edge] black ended, 1.8 mm, at 993 mm, level 184
+[edge] white ended, 7.0 mm, at 1001 mm, level 4080
+[edge] black ended, 1.4 mm, at 1002 mm, level 172
+[edge] white ended, 7.2 mm, at 1009 mm, level 4075
+[edge] black ended, 10.0 mm, at 1019 mm, level 179
+[edge] white ended, 7.1 mm, at 1027 mm, level 4078
+[edge] black ended, 1.5 mm, at 1028 mm, level 171
+[edge] white ended, 7.1 mm, at 1035 mm, level 4076
+[edge] black ended, 10.8 mm, at 1046 mm, level 171
+[edge] white ended, 6.7 mm, at 1053 mm, level 4076
+[edge] black ended, 10.8 mm, at 1064 mm, level 182
+[edge] white ended, 6.6 mm, at 1070 mm, level 4074
+[edge] black ended, 1.7 mm, at 1072 mm, level 185
+[edge] white ended, 15.2 mm, at 1087 mm, level 4072
+[edge] black ended, 1.8 mm, at 1089 mm, level 182
+[barcode] elements=29 letter=A widths_0.1mm= 18 71 109 74 106 75 15 169 17 71 106 67 19 156 18 70 14 72 100 71 15 71 108 67 108 66 17 152 18
+[line] bench done after 2000 ms
+[barcode] command=1 count=3 rejects=1 at_mm=1118
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1125 deg=19
+[edge] white ended, 35.7 mm, at 1125 mm, level 4070
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1125 deg=19
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1125 deg=19
+[bar] min=4058 max=4088
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1125 deg=19
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1125 deg=19
+[edge] black ended, 0.0 mm, at 1125 mm, level 181
+[edge] white ended, 0.6 mm, at 1126 mm, level 1509
+[edge] black ended, 0.0 mm, at 1126 mm, level 338
+[edge] white ended, 0.0 mm, at 1126 mm, level 4088
+[bar] min=4075 max=4089
+[bar] min=4076 max=4084
+[edge] black ended, 0.0 mm, at 1126 mm, level 226

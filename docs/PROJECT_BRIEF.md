@@ -61,6 +61,8 @@ From the supplied barcode and line specification and sample barcodes:
 
 The sample barcodes use letters outside A to D (F, W, X, Y, Z), so the decoder must reject any letter not in the course's command mapping.
 
+On the example course, the barcode beside the long straight between the two loops reads `*Z*`. It is the brief's 20 mm from the line, on the side that is the car's left heading towards the left loop. Its bars are about 7 mm narrow and 20 mm wide (measured from a photo, using the 18 mm line as the scale), and it ends about 150 mm before the crossing at the left loop. `g_actions` maps Z to a left turn there.
+
 ### Expected behaviour
 
 **Line following** must tolerate minor lighting changes, slight track imperfections and speed variation.

@@ -21,16 +21,16 @@
 #define BARCODE_END   30000u /* um: 30 mm, over 3 wide bars. */
 
 /* The course's barcodes: change these lines when the letters are announced
- * (any number of letters per command). Other valid letters are rejected. */
+ * (any number of letters per command). Other valid letters are rejected. Z is
+ * the barcode between the loops on the example course. */
 static const struct
 {
     char letter;
     uint8_t command; /* BARCODE_DECODER_... */
 } g_actions[] = {
-    {'A', BARCODE_DECODER_LEFT},
-    {'B', BARCODE_DECODER_RIGHT},
-    {'C', BARCODE_DECODER_STRAIGHT},
-    {'D', BARCODE_DECODER_UTURN},
+    {'A', BARCODE_DECODER_LEFT},     {'B', BARCODE_DECODER_RIGHT},
+    {'C', BARCODE_DECODER_STRAIGHT}, {'D', BARCODE_DECODER_UTURN},
+    {'Z', BARCODE_DECODER_LEFT},
 };
 
 static ID gh_mutex;

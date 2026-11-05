@@ -20,6 +20,7 @@
 #define S3_TEST_WIDE        9000u
 #define S3_TEST_A           0x109u /* Code 39 patterns, 1 = wide. */
 #define S3_TEST_Z           0x0D0u
+#define S3_TEST_BAD         0x1E0u /* 4 wide: no character. */
 #define S3_TEST_START       0x094u /* '*' */
 #define S3_TEST_FIRST_GAP   9u
 #define S3_BENCH_POLL_MS    10 /* Waits 2 kernel ticks: a poll every 20 ms. */
@@ -30,8 +31,14 @@
 #define S3_BENCH_RUN_MS     15000u
 #define S3_BENCH_SPEED_MM_S 150u
 #define S3_BENCH_RAW_POLLS  25u /* Print the barcode level every 0.5 s. */
+#define S3_BENCH_AXLE_MM   110u /* As the Vehicle Controller's junction move. */
+#define S3_BENCH_TURN_DEG  90u
+#define S3_BENCH_UTURN_DEG 180u
 
 static void subsystem3_bench_task(INT stacd, void * p_exinf);
+static uint32_t subsystem3_bench_barcode(barcode_decoder_t * p_last);
+static bool subsystem3_bench_turn(uint32_t command);
+static bool subsystem3_bench_move(bool b_started);
 static void subsystem3_symbol(uint16_t * p_widths, uint32_t pattern,
                               bool b_reversed);
 
@@ -84,11 +91,13 @@ void subsystem3_test(void)
     TEST_CHECK("S3-U11", ('A' == letter) && ('A' == code39_decode(widths)),
                "decodes *A* read either way");
     subsystem3_symbol(widths, S3_TEST_Z, false);
+    TEST_CHECK("S3-U20", 'Z' == code39_decode(widths), "decodes *Z*");
+    subsystem3_symbol(widths, S3_TEST_BAD, false);
     letter = code39_decode(widths);
     subsystem3_symbol(widths, S3_TEST_A, false);
     widths[S3_TEST_FIRST_GAP] = S3_TEST_WIDE; /* A wide gap: misread. */
     TEST_CHECK("S3-U12", (0u == letter) && (0u == code39_decode(widths)),
-               "rejects *Z* and a misread *A*");
+               "rejects a 4-wide letter and a misread *A*");
     TEST_CHECK("S3-U13", 8u == sizeof(barcode), "packed barcode 8 bytes");
     TEST_SUMMARY("subsystem3");
 
@@ -150,10 +159,103 @@ static bool subsystem3_bench_report(line_following_t * p_last)
 }
 
 /*!
+ * @brief Print a barcode read or rejected since *p_last.
+ *
+ * @return The command of a new valid barcode, else BARCODE_DECODER_NONE.
+ */
+static uint32_t subsystem3_bench_barcode(barcode_decoder_t * p_last)
+{
+    barcode_decoder_t barcode = {0};
+    uint32_t command = BARCODE_DECODER_NONE;
+
+    barcode_decoder_get(&barcode);
+    if ((barcode.count != p_last->count) ||
+        (barcode.rejects != p_last->rejects))
+    {
+        /* (UB *): tm_printf() takes unsigned chars. */
+        tm_printf((UB *)"[barcode] command=%u count=%u rejects=%u at_mm=%u\n",
+                  barcode.command, barcode.count, barcode.rejects,
+                  barcode.distance_mm);
+        command = (barcode.count != p_last->count) ? barcode.command
+                                                   : BARCODE_DECODER_NONE;
+        *p_last = barcode;
+    }
+    return command;
+}
+
+/*!
+ * @brief Wait for a motion command to finish.
+ *
+ * @param[in] b_started The command was accepted.
+ * @return True if it completed.
+ */
+static bool subsystem3_bench_move(bool b_started)
+{
+    motion_control_status_t motion = {0};
+
+    motion_control_get_status(&motion);
+    while (b_started && (MOTION_CONTROL_RUNNING == motion.state))
+    {
+        tk_dly_tsk(S3_BENCH_POLL_MS);
+        motion_control_get_status(&motion);
+    }
+    return b_started && (MOTION_CONTROL_COMPLETE == motion.state);
+}
+
+/*!
+ * @brief At a junction, do as the Vehicle Controller does: roll the axle
+ * onto the junction, turn for the command (none for straight on), then
+ * follow the line again.
+ *
+ * @param[in] command BARCODE_DECODER_... other than NONE.
+ * @return False if a move failed; the car is then stopped.
+ */
+static bool subsystem3_bench_turn(uint32_t command)
+{
+    bool b_ok = false;
+
+    /* (UB *): tm_printf() takes unsigned chars. */
+    tm_printf((UB *)"[line] junction: command %u\n", command);
+    line_following_stop();
+    b_ok = subsystem3_bench_move(motion_control_move_forward(S3_BENCH_AXLE_MM));
+    if (b_ok && (BARCODE_DECODER_LEFT == command))
+    {
+        b_ok =
+            subsystem3_bench_move(motion_control_turn_left(S3_BENCH_TURN_DEG));
+    }
+    else if (b_ok && (BARCODE_DECODER_RIGHT == command))
+    {
+        b_ok =
+            subsystem3_bench_move(motion_control_turn_right(S3_BENCH_TURN_DEG));
+    }
+    else if (b_ok && (BARCODE_DECODER_UTURN == command))
+    {
+        b_ok =
+            subsystem3_bench_move(motion_control_turn_left(S3_BENCH_UTURN_DEG));
+    }
+    else
+    {
+        /* Straight on, or the roll forward failed. */
+    }
+    if (b_ok)
+    {
+        (void)line_following_start(S3_BENCH_SPEED_MM_S);
+    }
+    else
+    {
+        motion_control_stop();
+        /* (UB *): tm_printf() takes unsigned chars. */
+        tm_printf((UB *)"[line] junction move failed\n");
+    }
+    return b_ok;
+}
+
+/*!
  * @brief Bench task. Prints the line state on every change. Releasing GP21
  * after holding it for 1 s starts a run: after 5 s the car follows the
- * line at 150 mm/s, straight over junctions, until a lost line or 15 s,
- * then stops.
+ * line at 150 mm/s until a lost line or 15 s, then stops. At the first
+ * junction after a valid barcode it turns as the Vehicle Controller does;
+ * it drives straight over other junctions.
  */
 static void subsystem3_bench_task(INT stacd, void * p_exinf)
 {
@@ -161,8 +263,11 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
     uint32_t run_ms = 0u;
     uint32_t held_ms = 0u;
     uint32_t polls = 0u;
+    uint32_t pending = BARCODE_DECODER_NONE; /* Command for the junction. */
+    uint32_t command = BARCODE_DECODER_NONE;
+    bool b_was_junction = false;
+    bool b_stop = false;
     barcode_decoder_raw_t raw = {0};
-    barcode_decoder_t barcode = {0};
     barcode_decoder_t last_barcode = {0};
 
     (void)stacd;
@@ -177,17 +282,7 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
     for (;;)
     {
         (void)subsystem3_bench_report(&last);
-        barcode_decoder_get(&barcode);
-        if ((barcode.count != last_barcode.count) ||
-            (barcode.rejects != last_barcode.rejects))
-        {
-            /* (UB *): tm_printf() takes unsigned chars. */
-            tm_printf((UB *)"[barcode] command=%u count=%u rejects=%u "
-                            "at_mm=%u\n",
-                      barcode.command, barcode.count, barcode.rejects,
-                      barcode.distance_mm);
-            last_barcode = barcode;
-        }
+        (void)subsystem3_bench_barcode(&last_barcode);
         polls++;
         if (polls >= S3_BENCH_RAW_POLLS)
         {
@@ -209,10 +304,21 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
                       S3_BENCH_GO_MS / 1000);
             tk_dly_tsk(S3_BENCH_GO_MS);
             (void)line_following_start(S3_BENCH_SPEED_MM_S);
-            for (run_ms = 0u; (run_ms < S3_BENCH_RUN_MS) &&
-                              (!subsystem3_bench_report(&last));
+            pending = BARCODE_DECODER_NONE;
+            b_stop = false;
+            for (run_ms = 0u; (run_ms < S3_BENCH_RUN_MS) && (!b_stop);
                  run_ms += S3_BENCH_STEP_MS)
             {
+                b_was_junction = last.b_junction;
+                b_stop = subsystem3_bench_report(&last);
+                command = subsystem3_bench_barcode(&last_barcode);
+                pending = (BARCODE_DECODER_NONE != command) ? command : pending;
+                if ((!b_stop) && last.b_junction && (!b_was_junction) &&
+                    (BARCODE_DECODER_NONE != pending))
+                {
+                    b_stop = !subsystem3_bench_turn(pending);
+                    pending = BARCODE_DECODER_NONE;
+                }
                 tk_dly_tsk(S3_BENCH_POLL_MS);
             }
             line_following_stop();

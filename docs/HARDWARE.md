@@ -247,7 +247,7 @@ A TCRT5000 datasheet was also supplied. If the kit's modules use that sensor ins
 | Emitter wavelength       | 950 nm   |
 | Daylight blocking filter | Yes      |
 
-Either way, mount the sensors a few millimetres above the surface and keep the height constant: reflective sensors are very sensitive to distance. Set the potentiometers with the sensors at their final height, over the actual track surface.
+Either way, mount the sensors a few millimetres above the surface and keep the height constant: reflective sensors are very sensitive to distance. Set the potentiometers with the sensors at their final height, over the actual track surface. Turn the barcode sensor so its emitter and detector sit side by side across the direction of travel, parallel to the bars; along the travel direction its spot is then narrow enough for the narrow bars ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#calibration)).
 
 The Pico W ADC is 12-bit (0 to 4095) referenced to ADC_VREF, nominally 3.3 V. The barcode sampling rate depends on bar width and car speed and has to be established on the track (assumption A3).
 

@@ -1,0 +1,107 @@
+# 2026-11-05 INT-07: normal image 1bd93ff on the course, fresh *Z* before the left loop's crossing. [imu] x/y/z and plain-white [bar] lines removed.
+=== FLASH normal 1bd93ff ===
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[imu] calibrated: offsets x=32 y=31 z=-207 mg
+[vc] INIT -> READY: IMU calibrated
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 4 mm
+[imu] motion: accelerating
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: accelerating
+[imu] hump: peak 47 mm
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: braking
+[imu] hump: peak 19 mm
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 11 mm
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: impact
+[imu] FAULT: impact
+[imu] hump: peak 14 mm
+[safety] stop, cause 0x1
+[vc] READY -> SAFE_STOP: safety latched
+[vc] max hump 47 mm
+[imu] hump: peak 9 mm
+[imu] hump: peak 17 mm
+[imu] hump: peak 20 mm
+
+microT-Kernel Version 3.00
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[imu] calibrated: offsets x=27 y=41 z=-208 mg
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[imu] motion: accelerating
+[imu] motion: steady
+[vc] barcode 1 pending
+[vc] FOLLOW -> TURN: junction
+[imu] motion: braking
+[imu] motion: steady
+[vc] TURN -> FOLLOW: turn done
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: impact
+[imu] FAULT: impact
+[safety] stop, cause 0x1
+[vc] FOLLOW -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] FAULT: tilt
+[imu] hump: peak 97 mm
+[imu] hump: peak 18 mm
+[imu] hump: peak 16 mm
+[imu] hump: peak 8 mm
+[imu] hump: peak 28 mm

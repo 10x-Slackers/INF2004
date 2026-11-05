@@ -45,7 +45,7 @@ The car shall:
 | C       | Go straight |
 | D       | U-turn      |
 
-The letters are the brief's example mapping. Turns must be executed with encoder-based motion control.
+The letters are the brief's example mapping. The course's letters are announced on the day, with time to reflash, so the mapping is one table (`g_actions` in `barcode_decoder.c`). Turns must be executed with encoder-based motion control.
 
 ### Course markings
 
@@ -60,6 +60,8 @@ From the supplied barcode and line specification and sample barcodes:
 | Narrow bar | About 3 mm (141 mm over the 47 narrow-bar widths of a three-character Code 39 symbol, wide = 3 × narrow) |
 
 The sample barcodes use letters outside A to D (F, W, X, Y, Z), so the decoder must reject any letter not in the course's command mapping.
+
+On the example course, the barcode beside the long straight between the two loops reads `*Z*`. It is the brief's 20 mm from the line, on the side that is the car's left heading towards the left loop. Its bars are about 7 mm narrow and 20 mm wide (measured from a photo, using the 18 mm line as the scale), and it ends about 150 mm before the crossing at the left loop. `g_actions` maps Z to a left turn there.
 
 ### Expected behaviour
 

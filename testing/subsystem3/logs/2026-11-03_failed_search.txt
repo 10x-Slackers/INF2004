@@ -1,0 +1,8 @@
+S3-U17 on the car, TEST=1 image from 2c7101f, LINE_FOLLOWING_LOST_MM 80. A line ending with no line within 300 mm; GP21 held, car on the line before the end.
+No [line] print shows a sensor on black, so the car never saw the line: both sensors were white from the start (likely the line between them), and the search began about 90 mm later.
+Search towards last=1 from heading 47 deg; braked with lost=1 at 272 deg = 47 - 135.
+
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=1060 deg=47
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=1 mm=1467 deg=272
+[line] bench done after 5260 ms

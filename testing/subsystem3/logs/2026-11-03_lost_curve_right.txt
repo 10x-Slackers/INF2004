@@ -1,0 +1,42 @@
+S3-U16 (right curve) on the car, TEST=1 image from 2c7101f, LINE_FOLLOWING_LOST_MM 80. GP21 held, car on the line before a right curve.
+Heading turned from 0 to 34 deg through 285 and 143 (about 325 deg right). Two searches towards last=2, each found the line; lost=0 throughout. The bench stopped at a junction on the course after 8.3 s.
+
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=13 deg=1
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=22 deg=0
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=87 deg=0
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=132 deg=351
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=135 deg=350
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=147 deg=348
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=267 deg=299
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=345 deg=285
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=351 deg=281
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=377 deg=276
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=380 deg=276
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=395 deg=275
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=398 deg=274
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=401 deg=274
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=404 deg=273
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=424 deg=270
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=427 deg=270
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=430 deg=270
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=511 deg=239
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=514 deg=238
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=544 deg=225
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=547 deg=224
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=550 deg=222
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=556 deg=220
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=648 deg=182
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=657 deg=179
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=679 deg=171
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=682 deg=170
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=685 deg=169
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=691 deg=167
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=694 deg=166
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=697 deg=166
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=709 deg=162
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=788 deg=143
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=956 deg=24
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=963 deg=31
+[line] left=1 right=1 junction=1 last=1 following=1 searching=0 lost=0 mm=966 deg=34
+[line] bench done after 8340 ms

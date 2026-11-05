@@ -39,7 +39,7 @@ static barcode_decoder_raw_t g_raw;
 
 /* Barcode Decoder task only. */
 static uint16_t g_widths[CODE39_ELEMENTS];
-static uint32_t g_elements;  /* Elements so far; over 29 is too many. */
+static uint32_t g_elements;  /* Elements so far; widths kept for 29. */
 static uint32_t g_run_start; /* um. */
 static bool gb_black;
 static bool gb_in_code;
@@ -158,7 +158,7 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
             /* In a barcode, width is at most BARCODE_END: it fits. */
             g_widths[g_elements] = (uint16_t)width;
         }
-        g_elements++; /* Over 29 in a barcode; reset when one starts. */
+        g_elements++; /* Reset when a barcode starts. */
         g_run_start = pos;
         gb_black = b_black;
     }
@@ -178,8 +178,10 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
  */
 static void barcode_decoder_end(uint32_t odometer_mm)
 {
+    /* Extra elements after a barcode (a crossing line, the edge of the
+     * print) are ignored: only the first 29 are kept. */
     uint32_t const letter =
-        (CODE39_ELEMENTS == g_elements) ? code39_decode(g_widths) : 0u;
+        (g_elements >= CODE39_ELEMENTS) ? code39_decode(g_widths) : 0u;
     uint32_t command = BARCODE_DECODER_NONE;
     uint32_t action = 0u;
 #if APP_TEST

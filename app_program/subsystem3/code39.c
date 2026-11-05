@@ -22,11 +22,15 @@ static const uint16_t g_patterns[] = {
     0x085u, 0x184u, 0x0C4u, 0x0A8u, 0x0A2u, 0x08Au, 0x02Au, 0x094u};
 static const char g_letters[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%*";
 
-static uint32_t code39_one_way(const uint16_t * p_widths, uint32_t threshold);
-static uint32_t code39_char(const uint16_t * p_widths, uint32_t threshold);
+static uint32_t code39_one_way(const uint16_t * p_widths,
+                               const uint32_t * p_threshold);
+static uint32_t code39_char(const uint16_t * p_widths,
+                            const uint32_t * p_threshold);
 
 /*!
- * @brief Decode *X*, read in either direction.
+ * @brief Decode *X*, read in either direction. Bars and spaces are split
+ * into narrow and wide separately, halfway between the narrowest and widest
+ * of each: the sensor's spot makes bars read narrower and spaces wider.
  *
  * @param[in] p_widths CODE39_ELEMENTS widths in any one unit, in the order
  *                     the sensor saw them, first bar first.
@@ -35,21 +39,30 @@ static uint32_t code39_char(const uint16_t * p_widths, uint32_t threshold);
 uint32_t code39_decode(const uint16_t * p_widths)
 {
     uint16_t reversed[CODE39_ELEMENTS] = {0};
-    uint32_t min = UINT16_MAX;
-    uint32_t max = 0u;
+    uint32_t min[2] = {UINT16_MAX, UINT16_MAX}; /* Bars [0], spaces [1]. */
+    uint32_t max[2] = {0u, 0u};
+    uint32_t threshold[2] = {0u, 0u};
     uint32_t letter = 0u;
     uint32_t element = 0u;
+    uint32_t kind = 0u;
 
+    /* Elements alternate from a bar, and 29 is odd, so reversing keeps
+     * every element's kind. */
     for (element = 0u; element < CODE39_ELEMENTS; element++)
     {
-        min = (p_widths[element] < min) ? p_widths[element] : min;
-        max = (p_widths[element] > max) ? p_widths[element] : max;
+        kind = element % 2u;
+        min[kind] =
+            (p_widths[element] < min[kind]) ? p_widths[element] : min[kind];
+        max[kind] =
+            (p_widths[element] > max[kind]) ? p_widths[element] : max[kind];
         reversed[CODE39_ELEMENTS - 1u - element] = p_widths[element];
     }
-    letter = code39_one_way(p_widths, (min + max) / 2u);
+    threshold[0] = (min[0] + max[0]) / 2u;
+    threshold[1] = (min[1] + max[1]) / 2u;
+    letter = code39_one_way(p_widths, threshold);
     if (0u == letter)
     {
-        letter = code39_one_way(reversed, (min + max) / 2u);
+        letter = code39_one_way(reversed, threshold);
     }
     return letter;
 }
@@ -59,13 +72,16 @@ uint32_t code39_decode(const uint16_t * p_widths)
  *
  * @return The character X, or 0.
  */
-static uint32_t code39_one_way(const uint16_t * p_widths, uint32_t threshold)
+static uint32_t code39_one_way(const uint16_t * p_widths,
+                               const uint32_t * p_threshold)
 {
-    uint32_t const start = code39_char(&p_widths[0], threshold);
-    uint32_t const letter = code39_char(&p_widths[CODE39_STRIDE], threshold);
-    uint32_t const stop = code39_char(&p_widths[2u * CODE39_STRIDE], threshold);
-    bool const b_gaps = (p_widths[CODE39_PER_CHR] <= threshold) &&
-                        (p_widths[CODE39_STRIDE + CODE39_PER_CHR] <= threshold);
+    uint32_t const start = code39_char(&p_widths[0], p_threshold);
+    uint32_t const letter = code39_char(&p_widths[CODE39_STRIDE], p_threshold);
+    uint32_t const stop =
+        code39_char(&p_widths[2u * CODE39_STRIDE], p_threshold);
+    bool const b_gaps =
+        (p_widths[CODE39_PER_CHR] <= p_threshold[1]) &&
+        (p_widths[CODE39_STRIDE + CODE39_PER_CHR] <= p_threshold[1]);
 
     return (b_gaps && ('*' == start) && ('*' == stop) && ('*' != letter))
                ? letter
@@ -77,7 +93,8 @@ static uint32_t code39_one_way(const uint16_t * p_widths, uint32_t threshold)
  *
  * @return The character, or 0 if unknown or not exactly 3 wide.
  */
-static uint32_t code39_char(const uint16_t * p_widths, uint32_t threshold)
+static uint32_t code39_char(const uint16_t * p_widths,
+                            const uint32_t * p_threshold)
 {
     uint32_t pattern = 0u;
     uint32_t wide = 0u;
@@ -88,7 +105,7 @@ static uint32_t code39_char(const uint16_t * p_widths, uint32_t threshold)
     for (element = 0u; element < CODE39_PER_CHR; element++)
     {
         pattern <<= 1;
-        if (p_widths[element] > threshold)
+        if (p_widths[element] > p_threshold[element % 2u]) /* Bar first. */
         {
             pattern |= 1u;
             wide++;

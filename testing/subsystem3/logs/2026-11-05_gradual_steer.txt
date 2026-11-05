@@ -1,0 +1,2117 @@
+Line following tuning on the course, 2026-11-05. Periodic [imu] and [bar] lines removed. '== session N' lines mark each flash and its settings (added by hand).
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+
+
+
+
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+
+
+
+
+
+
+
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+
+[TEST] S4-U18 PASS  motion is steady on a still board
+
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+
+[TEST] S5-U40 PASS  avoidance boots idle
+
+
+
+
+
+
+
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+
+[scan] forward_mm=632 fault=0
+
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+
+[TEST] === test run end ===
+
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=0 junction=0 last=0 following=1 searching=1 lost=0 mm=80 deg=1
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=85 deg=4
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=119 deg=0
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=128 deg=357
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=137 deg=355
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=149 deg=353
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=178 deg=347
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=259 deg=333
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=290 deg=305
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=315 deg=284
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=322 deg=280
+[line] bench done after 2860 ms
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=279
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=279
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=279
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=327 deg=280
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] S5-U40 PASS  avoidance boots idle
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=590 fault=0
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[TEST] === test run end ===
+== session 2, image 095be2b
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+
+
+
+
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+
+
+
+
+
+
+
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+
+[TEST] S4-U18 PASS  motion is steady on a still board
+
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+
+[TEST] S5-U40 PASS  avoidance boots idle
+
+
+
+
+
+
+
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+
+[scan] forward_mm=589 fault=0
+
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+
+[TEST] === test run end ===
+
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=359
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1 deg=358
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1 deg=358
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1 deg=358
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=22 deg=359
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=39 deg=359
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=83 deg=356
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=92 deg=356
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=136 deg=357
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=168 deg=3
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=212 deg=12
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=263 deg=35
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=265 deg=37
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=277 deg=50
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=325 deg=61
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=356 deg=59
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=360 deg=58
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=376 deg=55
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=452 deg=53
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=486 deg=86
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=492 deg=90
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=497 deg=93
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=541 deg=90
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=547 deg=86
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=557 deg=80
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=633 deg=67
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=669 deg=100
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=674 deg=105
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=679 deg=108
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=696 deg=112
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=749 deg=116
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=762 deg=117
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=766 deg=116
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=774 deg=116
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=854 deg=116
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=917 deg=177
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=923 deg=183
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=927 deg=187
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=941 deg=192
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=1021 deg=200
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1038 deg=184
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1113 deg=133
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=1122 deg=126
+[line] bench done after 15000 ms
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1945 deg=107
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1945 deg=107
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1945 deg=107
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1945 deg=107
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1945 deg=106
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1945 deg=106
+== session 3, image 095be2b + TURN_MIN 300, RISE 30, FALL 10
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] S5-U40 PASS  avoidance boots idle
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=659 fault=0
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[TEST] === test run end ===
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1 deg=1
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=6 deg=2
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=10 deg=1
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=18 deg=0
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=51 deg=359
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=60 deg=359
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=137 deg=0
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=142 deg=3
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=193 deg=339
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=215 deg=329
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=217 deg=329
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=251 deg=323
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=265 deg=319
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=272 deg=317
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=374 deg=307
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=378 deg=307
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=408 deg=310
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=474 deg=270
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=550 deg=244
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=623 deg=173
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=831 deg=339
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=865 deg=324
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=871 deg=322
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=948 deg=311
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1161 deg=250
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1181 deg=248
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1203 deg=245
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1222 deg=239
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=1309 deg=230
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[TEST] S4-U05 FAIL  start-up calibration ends within 3 s   (../app_program/subsystem4/subsystem4_test.c:46)
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[TEST] S4-U01 FAIL  GY-511 answers on I2C0 and readings arrive   (../app_program/subsystem4/subsystem4_test.c:53)
+[TEST] S4-U06 FAIL  a reading every 10 ms (45..55 in 500 ms)   (../app_program/subsystem4/subsystem4_test.c:55)
+[TEST] S4-U02 FAIL  flat: z ~ +1000 mg, x and y ~ 0   (../app_program/subsystem4/subsystem4_test.c:60)
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 4 passed, 4 failed
+[TEST] S5-U40 PASS  avoidance boots idle
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1 deg=1
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=186 fault=0
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[TEST] === test run end ===
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2 deg=2
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3 deg=2
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=3 deg=3
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=4 deg=4
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4 deg=4
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4 deg=4
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=5 deg=4
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=5 deg=4
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=13 deg=5
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=21 deg=4
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=89 deg=3
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=94 deg=4
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=173 deg=6
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=180 deg=11
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=195 deg=9
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=199 deg=8
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=237 deg=22
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=239 deg=23
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=265 deg=26
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=268 deg=25
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=317 deg=52
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=338 deg=56
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=376 deg=71
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=377 deg=72
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=411 deg=74
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=412 deg=73
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=453 deg=85
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=454 deg=86
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=487 deg=86
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=494 deg=83
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=529 deg=92
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=532 deg=95
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=563 deg=92
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=569 deg=88
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=604 deg=97
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=605 deg=98
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=642 deg=94
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=643 deg=93
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=680 deg=99
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=683 deg=102
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=717 deg=97
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=721 deg=94
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=743 deg=95
+[line] left=1 right=1 junction=1 last=1 following=1 searching=0 lost=0 mm=750 deg=97
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=757 deg=98
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=764 deg=99
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=841 deg=101
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=846 deg=104
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=867 deg=101
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=877 deg=98
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=896 deg=100
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=905 deg=102
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=922 deg=101
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=953 deg=99
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=977 deg=93
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=987 deg=90
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=994 deg=89
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=996 deg=89
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1038 deg=71
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1059 deg=68
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1114 deg=38
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1135 deg=36
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1191 deg=358
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1196 deg=354
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=1205 deg=351
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1213 deg=350
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1270 deg=309
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1275 deg=305
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=1284 deg=302
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1292 deg=301
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1313 deg=294
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=1392 deg=280
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1454 deg=218
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1470 deg=207
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1474 deg=204
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1495 deg=203
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1503 deg=205
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1522 deg=201
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1530 deg=198
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=1545 deg=198
+[line] left=1 right=1 junction=1 last=1 following=1 searching=0 lost=0 mm=1552 deg=199
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1563 deg=199
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1565 deg=199
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1571 deg=199
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1582 deg=198
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1641 deg=194
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1644 deg=194
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1689 deg=193
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1696 deg=194
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1741 deg=195
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1749 deg=194
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1792 deg=192
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1797 deg=192
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=1877 deg=193
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1881 deg=196
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1904 deg=192
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1912 deg=190
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1934 deg=192
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1943 deg=195
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1966 deg=192
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1970 deg=191
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1993 deg=193
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2000 deg=195
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2020 deg=193
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2029 deg=191
+[line] bench done after 15000 ms
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2041 deg=192
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=2041 deg=192
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=2041 deg=192
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=2041 deg=192
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=2041 deg=192
+== session 4, TURN_MIN 200, RISE 30, FALL 10, LOST 120
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] S5-U40 PASS  avoidance boots idle
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=592 fault=0
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[TEST] === test run end ===
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=22 deg=2
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=32 deg=1
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=129 deg=0
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=132 deg=0
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=183 deg=1
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=198 deg=3
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=222 deg=7
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=252 deg=15
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=258 deg=18
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=273 deg=21
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=276 deg=21
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=318 deg=41
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=321 deg=43
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=345 deg=49
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=348 deg=49
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=387 deg=65
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=390 deg=68
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=425 deg=69
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=427 deg=67
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=442 deg=65
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=564 deg=63
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=601 deg=99
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=607 deg=105
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=609 deg=107
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=619 deg=112
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=738 deg=123
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=782 deg=83
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=791 deg=78
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=793 deg=76
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=820 deg=78
+[line] left=1 right=1 junction=1 last=1 following=1 searching=0 lost=0 mm=828 deg=81
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=834 deg=82
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=854 deg=86
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=862 deg=89
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=882 deg=89
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=888 deg=87
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=909 deg=90
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=921 deg=92
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=933 deg=92
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=944 deg=90
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=956 deg=91
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1010 deg=93
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1027 deg=90
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1057 deg=86
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1087 deg=78
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1093 deg=75
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1105 deg=73
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1146 deg=55
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1148 deg=52
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1172 deg=47
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1214 deg=26
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1216 deg=24
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=1233 deg=19
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1236 deg=19
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1265 deg=9
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=1384 deg=351
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1456 deg=280
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1473 deg=270
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1478 deg=267
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1488 deg=266
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1494 deg=266
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1531 deg=249
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1534 deg=246
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1554 deg=243
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1605 deg=217
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1638 deg=214
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1641 deg=216
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1656 deg=219
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1703 deg=221
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1717 deg=220
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1720 deg=220
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1732 deg=220
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=1852 deg=222
+[line] bench done after 15000 ms
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1902 deg=271
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1903 deg=272
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1903 deg=272
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1903 deg=272
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1903 deg=272
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1903 deg=272
+== session 5, TURN_MIN 200, RISE 30, FALL 10, LOST 80
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] S5-U40 PASS  avoidance boots idle
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=569 fault=0
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[TEST] === test run end ===
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+== session 6, heading hold: TURN_MIN 200, RISE 30, FALL 10, UNDO 50, HOLD_GAIN 30, LOST 80
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] S5-U40 PASS  avoidance boots idle
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=569 fault=0
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[TEST] === test run end ===
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1 deg=358
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=2 deg=357
+[line] put the car on the line, starting in 5 s
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=66 deg=358
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=74 deg=359
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=153 deg=359
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=161 deg=4
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=186 deg=0
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=193 deg=358
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=215 deg=359
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=224 deg=2
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=238 deg=2
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=247 deg=0
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=277 deg=6
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=285 deg=9
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=298 deg=11
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=304 deg=10
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=345 deg=29
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=369 deg=33
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=371 deg=32
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=417 deg=57
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=420 deg=59
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=450 deg=63
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=453 deg=62
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=467 deg=59
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=544 deg=60
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=573 deg=87
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=580 deg=93
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=583 deg=95
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=617 deg=92
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=620 deg=90
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=653 deg=94
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=658 deg=98
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=694 deg=91
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=698 deg=88
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=733 deg=96
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=736 deg=99
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=744 deg=103
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=824 deg=103
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=829 deg=100
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=834 deg=98
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=841 deg=97
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=848 deg=96
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=852 deg=96
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=854 deg=96
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=884 deg=87
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=889 deg=85
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=927 deg=94
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=928 deg=95
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=938 deg=99
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=1020 deg=99
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1030 deg=90
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1046 deg=85
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1057 deg=81
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1066 deg=81
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1077 deg=81
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1103 deg=74
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1109 deg=72
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1118 deg=70
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1125 deg=70
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1168 deg=49
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1190 deg=45
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1239 deg=21
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1241 deg=19
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=1259 deg=15
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1262 deg=15
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1287 deg=8
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=1366 deg=3
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1429 deg=300
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1454 deg=286
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1455 deg=285
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1468 deg=282
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1472 deg=282
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1514 deg=259
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1516 deg=256
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=1536 deg=252
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1538 deg=252
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1558 deg=248
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=1637 deg=247
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1684 deg=199
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1695 deg=192
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1701 deg=190
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1723 deg=190
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1728 deg=192
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1735 deg=193
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=1742 deg=193
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1749 deg=192
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1764 deg=190
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1775 deg=188
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1794 deg=189
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1802 deg=191
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1820 deg=189
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1832 deg=186
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1853 deg=188
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1859 deg=190
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1881 deg=188
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1890 deg=186
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1909 deg=188
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1918 deg=190
+[line] bench done after 15000 ms
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1926 deg=192
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1926 deg=192
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1926 deg=192
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1926 deg=192
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1926 deg=192
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1928 deg=190
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1928 deg=190
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1928 deg=190
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1929 deg=188
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1929 deg=188
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1930 deg=189
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1931 deg=188
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1931 deg=189
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1931 deg=189
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1931 deg=189
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1932 deg=190
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1932 deg=190
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1932 deg=190
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1932 deg=190
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1932 deg=190
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1933 deg=190
+== session 7, sensors moved apart; TURN_MIN 300, RISE 30, FALL 10, LOST 80
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] S5-U40 PASS  avoidance boots idle
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=30 fault=0
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[TEST] === test run end ===
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=359
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=359
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=1 deg=1
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3 deg=358
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=3 deg=358
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=4 deg=358
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=5 deg=0
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=9 deg=1
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=14 deg=0
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=46 deg=0
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=54 deg=0
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=133 deg=357
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=140 deg=353
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=168 deg=358
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=179 deg=2
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=197 deg=1
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=212 deg=359
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=239 deg=5
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=272 deg=12
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=307 deg=26
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=312 deg=31
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=336 deg=36
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=339 deg=36
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=386 deg=58
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=391 deg=63
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=423 deg=66
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=428 deg=63
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=465 deg=75
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=470 deg=79
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=498 deg=78
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=506 deg=75
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=534 deg=79
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=548 deg=85
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=563 deg=85
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=601 deg=83
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=607 deg=84
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=628 deg=85
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=633 deg=86
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=712 deg=90
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=719 deg=94
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=743 deg=91
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=755 deg=88
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=773 deg=89
+[line] left=1 right=1 junction=1 last=1 following=1 searching=0 lost=0 mm=779 deg=90
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=785 deg=91
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=863 deg=92
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=869 deg=97
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=896 deg=92
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=905 deg=89
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=929 deg=90
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=946 deg=94
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=964 deg=92
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=997 deg=87
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1024 deg=79
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1054 deg=71
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1097 deg=49
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1100 deg=46
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1118 deg=43
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1123 deg=44
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1172 deg=16
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1174 deg=13
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1193 deg=9
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1263 deg=319
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1282 deg=314
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1357 deg=261
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1363 deg=256
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=1369 deg=253
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1376 deg=252
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1427 deg=218
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1432 deg=213
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1458 deg=211
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1468 deg=213
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1505 deg=200
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1510 deg=196
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1545 deg=198
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1550 deg=203
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1557 deg=206
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=1635 deg=215
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1668 deg=185
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1679 deg=179
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1686 deg=176
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1715 deg=179
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1726 deg=184
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1743 deg=183
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1767 deg=180
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1778 deg=181
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=1859 deg=185
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1866 deg=189
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1893 deg=185
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1902 deg=181
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1926 deg=183
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1941 deg=187
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1956 deg=186
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2000 deg=183
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2010 deg=184
+[line] bench done after 15000 ms
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=2087 deg=188
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2093 deg=188
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=2172 deg=188
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2180 deg=180
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2210 deg=187
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2219 deg=191
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2245 deg=187
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2254 deg=184
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2273 deg=186
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2300 deg=190
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2309 deg=189
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=2380 deg=186
+[line] left=1 right=1 junction=1 last=1 following=1 searching=0 lost=0 mm=2389 deg=187
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2397 deg=187
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2399 deg=187
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2475 deg=187
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2480 deg=188
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=2559 deg=189
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2565 deg=193
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2599 deg=183
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2603 deg=181
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2628 deg=178
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2634 deg=180
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2675 deg=161
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2677 deg=160
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2697 deg=156
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2700 deg=156
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2742 deg=133
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2743 deg=132
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2760 deg=128
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2764 deg=129
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2833 deg=82
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2844 deg=79
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2870 deg=70
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=2950 deg=55
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3003 deg=2
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3041 deg=335
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3043 deg=333
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3058 deg=330
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3102 deg=307
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3105 deg=305
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3130 deg=304
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3140 deg=306
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3172 deg=295
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3179 deg=291
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3181 deg=290
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=3188 deg=288
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3194 deg=286
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3228 deg=293
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3232 deg=296
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3245 deg=299
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=3325 deg=304
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3348 deg=281
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3357 deg=276
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3368 deg=273
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3393 deg=277
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3406 deg=280
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3419 deg=279
+[line] left=0 right=0 junction=0 last=2 following=1 searching=1 lost=0 mm=3497 deg=278
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3502 deg=275
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3527 deg=279
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3541 deg=284
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3563 deg=281
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3576 deg=278
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3594 deg=280
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=3670 deg=283
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3675 deg=287
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3695 deg=286
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3704 deg=284
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3743 deg=299
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3747 deg=303
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3771 deg=306
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3778 deg=304
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3824 deg=332
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3827 deg=334
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3849 deg=337
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3853 deg=336
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3887 deg=347
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3894 deg=354
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3927 deg=355
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3934 deg=353
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3962 deg=359
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3975 deg=4
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3988 deg=4
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=4033 deg=4
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=4046 deg=6
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=4109 deg=9
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=4113 deg=10
+[line] bench done after 15000 ms
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=4125 deg=11
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=4125 deg=11
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=4125 deg=11
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=4125 deg=11
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=4125 deg=11
+== session 8, wider sensors + drift 40 mm; TURN_MIN 300, RISE 30, FALL 10, LOST 80
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] S5-U40 PASS  avoidance boots idle
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=634 fault=0
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[TEST] === test run end ===
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=4 deg=355
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=9 deg=350
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=12 deg=347
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=13 deg=346
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=13 deg=346
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=13 deg=346
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=13 deg=346
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=13 deg=346
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=13 deg=346
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=13 deg=346
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=13 deg=346
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=13 deg=346
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=13 deg=346
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=14 deg=346
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 mm=14 deg=346
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 mm=14 deg=346
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 mm=14 deg=346
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=32 deg=348
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=42 deg=347
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=99 deg=344
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=110 deg=345
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=128 deg=347
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=142 deg=346
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=187 deg=343
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=196 deg=344
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=232 deg=346
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=256 deg=341
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=283 deg=336
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=319 deg=322
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=325 deg=318
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=339 deg=316
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=342 deg=316
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=387 deg=291
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=390 deg=289
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=414 deg=286
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=420 deg=287
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=456 deg=274
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=458 deg=272
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=487 deg=271
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=493 deg=273
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=520 deg=269
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=529 deg=265
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=547 deg=265
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=559 deg=267
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=574 deg=265
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=634 deg=260
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=646 deg=260
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=667 deg=262
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=679 deg=261
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=755 deg=257
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=770 deg=258
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=782 deg=259
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 mm=791 deg=259
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=797 deg=259
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=846 deg=260
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=855 deg=259
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=914 deg=256
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=927 deg=257
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=996 deg=261
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1014 deg=266
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1042 deg=271
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1075 deg=284
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1079 deg=289
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1099 deg=293
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1101 deg=292
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1143 deg=313
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1146 deg=316
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1167 deg=321
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1170 deg=320
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1222 deg=352
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1242 deg=359
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1268 deg=8
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=1347 deg=27
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1397 deg=75
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1413 deg=89
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1415 deg=90
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1427 deg=94
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1429 deg=94
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1468 deg=117
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1487 deg=123
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1490 deg=123
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1526 deg=139
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1529 deg=142
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1556 deg=145
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1562 deg=144
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1593 deg=151
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=1599 deg=154
+[line] left=1 right=1 junction=1 last=1 following=1 searching=0 lost=0 mm=1608 deg=157
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1611 deg=158
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1635 deg=157
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1644 deg=155
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1670 deg=160
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1679 deg=163
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1694 deg=163
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1718 deg=162
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1727 deg=163
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1805 deg=170
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1817 deg=169
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1847 deg=167
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1859 deg=168
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=1922 deg=172
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=1935 deg=171
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1953 deg=169
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=1965 deg=170
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2007 deg=173
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2013 deg=172
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2067 deg=170
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2076 deg=171
+[line] bench done after 15000 ms
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=2143 deg=175
+[line] put the car on the line, starting in 5 s
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2155 deg=174
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2187 deg=171
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2195 deg=172
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2272 deg=176
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2285 deg=175
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2303 deg=172
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2318 deg=174
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2357 deg=176
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2363 deg=176
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2435 deg=173
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=2453 deg=176
+[line] left=1 right=1 junction=1 last=1 following=1 searching=0 lost=0 mm=2460 deg=178
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2467 deg=179
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2487 deg=176
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2501 deg=174
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2517 deg=176
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2534 deg=178
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2543 deg=177
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2619 deg=174
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2642 deg=177
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2673 deg=181
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2700 deg=188
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2714 deg=193
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2719 deg=194
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2728 deg=195
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2767 deg=214
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2769 deg=215
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2792 deg=220
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2834 deg=242
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2835 deg=243
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=2854 deg=248
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2857 deg=248
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=2911 deg=282
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2912 deg=283
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=2926 deg=289
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2929 deg=289
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2955 deg=299
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=2963 deg=304
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3003 deg=338
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3024 deg=345
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3055 deg=358
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=3131 deg=17
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3180 deg=65
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3186 deg=70
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3191 deg=75
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3217 deg=75
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3225 deg=73
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3244 deg=77
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3251 deg=79
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 mm=3254 deg=79
+[line] left=1 right=1 junction=1 last=1 following=1 searching=0 lost=0 mm=3259 deg=80
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3266 deg=81
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3270 deg=81
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3323 deg=82
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3332 deg=83
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3408 deg=89
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3416 deg=89
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3481 deg=88
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3491 deg=88
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3518 deg=92
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3531 deg=91
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3571 deg=89
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3576 deg=89
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 mm=3654 deg=93
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3657 deg=94
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3674 deg=93
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3691 deg=90
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3700 deg=90
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3725 deg=92
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3746 deg=89
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3786 deg=82
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3820 deg=69
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3826 deg=64
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3844 deg=62
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3847 deg=62
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3894 deg=36
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3921 deg=31
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=3927 deg=33
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=3961 deg=23
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3965 deg=20
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=3994 deg=19
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=4000 deg=21
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=4031 deg=15
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=4038 deg=11
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=4062 deg=12
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=4071 deg=14
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=4093 deg=11
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=4104 deg=8
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=4116 deg=8
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 mm=4188 deg=10
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 mm=4206 deg=8
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=4230 deg=5
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 mm=4239 deg=6
+[line] bench done after 15000 ms
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4276 deg=7
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4277 deg=6
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=4277 deg=6
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 mm=4277 deg=6
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 mm=4277 deg=6
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4277 deg=6
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=4277 deg=6
+
+
+
+
+microT-Kernel Version 3.00
+
+
+
+
+
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+
+dual-core (SMP) build, usermain on core 0
+
+all subsystems started
+
+
+
+[TEST] === test run start ===
+
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+
+wifi: cyw43_utk_task starting (proc 1)
+
+wifi: cyw43_init() ...
+
+wifi: cyw43_init() returned, bringing interface up ...
+
+[TEST] S2-U16 PASS  boots idle with the motors braked
+
+[TEST] S2-U17 PASS  out-of-range commands are rejected
+
+[TEST] S2-U18 PASS  a rejected command does not start the motors
+
+[TEST] S2-U19 PASS  12-byte packed status and telemetry
+
+[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+
+[TEST] S2-U28 PASS  a latched safety stop refuses every command
+
+[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+
+[motion] bench: tap GP21 to start
+
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+
+[TEST] S3-U02 PASS  packed line state 8 bytes
+
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+
+[TEST] S3-U05 PASS  line following boots stopped
+
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+
+[TEST] S3-U11 PASS  decodes *A* read either way
+
+[TEST] S3-U12 PASS  rejects *Z* and a misread *A*
+
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+
+[TEST] subsystem3 SUMMARY 10 passed, 0 failed
+
+[line] bench: hold GP21 for 1 s to follow the line
+
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 mm=0 deg=0
+
+
+
+
+
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+
+
+
+
+
+
+
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+
+[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+
+[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+
+[TEST] S4-U18 PASS  motion is steady on a still board
+
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+
+[TEST] S5-U40 PASS  avoidance boots idle
+
+
+
+
+
+
+
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+
+[scan] forward_mm=274 fault=0
+
+[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+
+[TEST] === test run end ===
+
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 mm=0 deg=0

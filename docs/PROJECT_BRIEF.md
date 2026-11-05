@@ -45,7 +45,7 @@ The car shall:
 | C       | Go straight |
 | D       | U-turn      |
 
-The letters are the brief's example mapping. Turns must be executed with encoder-based motion control.
+The letters are the brief's example mapping. The course's letters are announced on the day, with time to reflash, so the mapping is one table (`g_actions` in `barcode_decoder.c`). Turns must be executed with encoder-based motion control.
 
 ### Course markings
 

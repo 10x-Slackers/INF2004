@@ -21,7 +21,7 @@ Define a test here before running it. Test IDs never change.
 | S3-U09 | Raw barcode level is bit-packed | Minimum-bit data | auto | As above | `S3-U09 PASS`: `barcode_decoder_raw_t` is 8 bytes |
 | S3-U10 | Barcode sensor tells black from white | FR3, A3 | manual | Sensor at its final height over the track. Hold it still over white, then over a black bar of a sample barcode, 5 s each; read the `[bar]` lines | White and black readings differ by well over the min-max spread of either, so one threshold separates them. Record both levels |
 | S3-U11 | `*A*` decodes in both reading directions | FR3 | auto | `TEST=1` image, read the console | `S3-U11 PASS`: synthetic 3 mm / 9 mm widths of `*A*`, forwards and reversed, give A |
-| S3-U12 | Invalid barcodes are rejected | FR3 | auto | As above | `S3-U12 PASS`: `*Z*`, and `*A*` with a wide gap, give 0 |
+| S3-U12 | Invalid barcodes are rejected | FR3 | auto | As above | `S3-U12 PASS`: a letter with 4 wide bars, and `*A*` with a wide gap, give 0 |
 | S3-U13 | Barcode result is bit-packed | Minimum-bit data | auto | As above | `S3-U13 PASS`: `barcode_decoder_t` is 8 bytes |
 | S3-U14 | Barcodes are read while driving | FR3, NFR3, A3 | manual | `TEST=1` image. Lay a printed `*A*` 20 mm beside a straight line, then a `*Z*`. Hold GP21 for 1 s, put the car on the line before them | `[barcode] command=1` with count +1 for `*A*`; rejects +1 and no new command for `*Z*`; then repeat driving the other way along the line |
 | S3-U15 | RAM and record sizes before/after minimum-bit | Minimum-bit CR | host | Commands in `logs/2026-10-31_ram.txt` | Packed is smaller |
@@ -29,6 +29,7 @@ Define a test here before running it. Test IDs never change.
 | S3-U17 | A failed search stops the car | FR2, NFR5 | manual | `TEST=1` image. A straight line that ends with no line within 300 mm. Hold GP21 for 1 s, put the car on the line | About `LINE_FOLLOWING_LOST_MM` (80 mm) past the end, `[line] … searching=1`; the car pivots about `LINE_FOLLOWING_SEARCH_DEG` (135°) towards `last`, then back to as far the other side, and brakes: `[line] … following=0 searching=0 lost=1`, its `deg=` about 135° from the `searching=1` line's (the start heading), then `[line] bench done` |
 | S3-U18 | Longest all-white stretch on a straight | FR2, NFR3 | manual | `TEST=1` image on the longest straight, as S3-U06. From the `[line]` lines, the largest `mm=` gap after a `left=0 right=0` line | Record the stretch. `LINE_FOLLOWING_LOST_MM` is about 1.5 times it and under 185 mm (`docs/LINE_FOLLOWING.md`, Calibration) |
 | S3-U19 | Corrections are gradual | FR2, NFR3 | manual | `TEST=1` image, as S3-U06, on a straight then a curve; record a video | On the straight the car corrects with small, smooth turns and does not twitch from side to side; on the curve it holds the line with no more searches than before |
+| S3-U20 | Letters outside A to D decode | FR3 | auto | `TEST=1` image, read the console | `S3-U20 PASS`: synthetic `*Z*` gives Z (the course's letters are announced on the day) |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
 **manual** = a person observes the result (LED, scope, meter, phone app…).

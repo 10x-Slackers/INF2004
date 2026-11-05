@@ -2,10 +2,11 @@
  *
  * @brief Barcode Decoder API (interface I2). The Barcode Decoder task reads
  * the barcode sensor every 10 ms, measures each bar against the distance
- * the car has rolled (I5), and publishes every validated *A* to *D*.
+ * the car has rolled (I5), decodes Code 39 and publishes the command of
+ * each letter listed in g_actions (barcode_decoder.c).
  *
  * Poll barcode_decoder_get() and act when count changes. A barcode that
- * is read but not valid (a letter outside A to D, a misread) only bumps
+ * is read but not valid (a letter not in g_actions, a misread) only bumps
  * rejects; an unvalidated command is never published.
  */
 
@@ -17,10 +18,10 @@
 
 /* barcode_decoder_t.command */
 #define BARCODE_DECODER_NONE     0u
-#define BARCODE_DECODER_LEFT     1u /* A */
-#define BARCODE_DECODER_RIGHT    2u /* B */
-#define BARCODE_DECODER_STRAIGHT 3u /* C */
-#define BARCODE_DECODER_UTURN    4u /* D */
+#define BARCODE_DECODER_LEFT     1u
+#define BARCODE_DECODER_RIGHT    2u
+#define BARCODE_DECODER_STRAIGHT 3u
+#define BARCODE_DECODER_UTURN    4u
 
 /* Last validated barcode. */
 typedef struct

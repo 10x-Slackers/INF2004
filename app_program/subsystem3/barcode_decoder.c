@@ -18,6 +18,19 @@
 #define BARCODE_WHITE 1500u  /* ~4070 (S3-U10). Hysteresis between. */
 #define BARCODE_END   30000u /* um: 30 mm, over 3 wide bars. */
 
+/* The course's barcodes: change these lines when the letters are announced
+ * (any number of letters per command). Other valid letters are rejected. */
+static const struct
+{
+    char letter;
+    uint8_t command; /* BARCODE_DECODER_... */
+} g_actions[] = {
+    {'A', BARCODE_DECODER_LEFT},
+    {'B', BARCODE_DECODER_RIGHT},
+    {'C', BARCODE_DECODER_STRAIGHT},
+    {'D', BARCODE_DECODER_UTURN},
+};
+
 static ID gh_mutex;
 static barcode_decoder_t g_barcode;
 static barcode_decoder_raw_t g_raw;
@@ -165,6 +178,8 @@ static void barcode_decoder_end(uint32_t odometer_mm)
 {
     uint32_t const letter =
         (CODE39_ELEMENTS == g_elements) ? code39_decode(g_widths) : 0u;
+    uint32_t command = BARCODE_DECODER_NONE;
+    uint32_t action = 0u;
 #if APP_TEST
     uint32_t element = 0u;
 
@@ -172,7 +187,7 @@ static void barcode_decoder_end(uint32_t odometer_mm)
     if (g_elements >= CODE39_PER_CHR)
     {
         /* (UB *): tm_printf() takes unsigned chars. (int): letter is 0
-         * or 'A'..'D'. */
+         * or a Code 39 character. */
         tm_printf((UB *)"[barcode] elements=%u letter=%c widths_0.1mm=",
                   g_elements, (0u != letter) ? (int)letter : '-');
         for (element = 0u;
@@ -184,10 +199,18 @@ static void barcode_decoder_end(uint32_t odometer_mm)
     }
 #endif
 
-    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
-    if (0u != letter)
+    for (action = 0u; action < (sizeof(g_actions) / sizeof(g_actions[0]));
+         action++)
     {
-        g_barcode.command = BARCODE_DECODER_LEFT + (letter - 'A');
+        command = ((uint32_t)g_actions[action].letter == letter)
+                      ? g_actions[action].command
+                      : command;
+    }
+
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+    if (BARCODE_DECODER_NONE != command)
+    {
+        g_barcode.command = command;
         g_barcode.count++;
         g_barcode.distance_mm = odometer_mm;
     }

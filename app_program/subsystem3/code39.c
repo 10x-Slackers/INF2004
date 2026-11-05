@@ -2,8 +2,8 @@
  *
  * @brief Code 39 decoding of one three-character symbol, *X*. Each
  * character is 9 elements, bar first, of which exactly 3 are wide (about
- * 3 x narrow). Only the start/stop character and A to D are known; any
- * other letter is rejected. Checked against the course's sample barcodes.
+ * 3 x narrow). All 43 characters and '*' are known; the patterns were
+ * checked against the Code 39 table on Wikipedia.
  */
 
 #include "code39.h"
@@ -12,9 +12,15 @@
 #define CODE39_STRIDE 10u /* 9 elements and the gap after them. */
 #define CODE39_WIDE   3u
 
-/* Patterns, first element in the most significant of 9 bits, 1 = wide. */
-static const uint16_t g_patterns[] = {0x094u, 0x109u, 0x049u, 0x148u, 0x019u};
-static const uint8_t g_letters[] = {'*', 'A', 'B', 'C', 'D'};
+/* Patterns, first element in the most significant of 9 bits, 1 = wide,
+ * in the order of g_letters. */
+static const uint16_t g_patterns[] = {
+    0x034u, 0x121u, 0x061u, 0x160u, 0x031u, 0x130u, 0x070u, 0x025u, 0x124u,
+    0x064u, 0x109u, 0x049u, 0x148u, 0x019u, 0x118u, 0x058u, 0x00Du, 0x10Cu,
+    0x04Cu, 0x01Cu, 0x103u, 0x043u, 0x142u, 0x013u, 0x112u, 0x052u, 0x007u,
+    0x106u, 0x046u, 0x016u, 0x181u, 0x0C1u, 0x1C0u, 0x091u, 0x190u, 0x0D0u,
+    0x085u, 0x184u, 0x0C4u, 0x0A8u, 0x0A2u, 0x08Au, 0x02Au, 0x094u};
+static const char g_letters[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%*";
 
 static uint32_t code39_one_way(const uint16_t * p_widths, uint32_t threshold);
 static uint32_t code39_char(const uint16_t * p_widths, uint32_t threshold);
@@ -24,7 +30,7 @@ static uint32_t code39_char(const uint16_t * p_widths, uint32_t threshold);
  *
  * @param[in] p_widths CODE39_ELEMENTS widths in any one unit, in the order
  *                     the sensor saw them, first bar first.
- * @return 'A' to 'D', or 0 if the widths are not a valid *A* to *D*.
+ * @return The character X, or 0 if the widths are not a valid *X*.
  */
 uint32_t code39_decode(const uint16_t * p_widths)
 {
@@ -51,7 +57,7 @@ uint32_t code39_decode(const uint16_t * p_widths)
 /*!
  * @brief Decode *X* read forwards.
  *
- * @return 'A' to 'D', or 0.
+ * @return The character X, or 0.
  */
 static uint32_t code39_one_way(const uint16_t * p_widths, uint32_t threshold)
 {
@@ -69,7 +75,7 @@ static uint32_t code39_one_way(const uint16_t * p_widths, uint32_t threshold)
 /*!
  * @brief Decode one character.
  *
- * @return '*', 'A' to 'D', or 0 if unknown or not exactly 3 wide.
+ * @return The character, or 0 if unknown or not exactly 3 wide.
  */
 static uint32_t code39_char(const uint16_t * p_widths, uint32_t threshold)
 {
@@ -88,10 +94,12 @@ static uint32_t code39_char(const uint16_t * p_widths, uint32_t threshold)
             wide++;
         }
     }
-    for (known = 0u; (CODE39_WIDE == wide) && (known < sizeof(g_letters));
+    for (known = 0u; (CODE39_WIDE == wide) &&
+                     (known < (sizeof(g_patterns) / sizeof(g_patterns[0])));
          known++)
     {
-        letter = (g_patterns[known] == pattern) ? g_letters[known] : letter;
+        letter =
+            (g_patterns[known] == pattern) ? (uint8_t)g_letters[known] : letter;
     }
     return letter;
 }

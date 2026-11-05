@@ -50,9 +50,9 @@ A junction does not stop line following: the controller decides what to do at on
 
 | Field         | Range        | Meaning                                                                  |
 | ------------- | ------------ | ------------------------------------------------------------------------ |
-| `command`     | 0–4          | `NONE`, `LEFT` (A), `RIGHT` (B), `STRAIGHT` (C), `UTURN` (D)              |
+| `command`     | 0–4          | `NONE`, `LEFT`, `RIGHT`, `STRAIGHT`, `UTURN`, from the letter (`g_actions`) |
 | `count`       | 0–15, wraps  | Barcodes validated                                                       |
-| `rejects`     | 0–15, wraps  | Barcodes read but not valid: a letter outside A to D, or a misread       |
+| `rejects`     | 0–15, wraps  | Barcodes read but not valid: a letter not in `g_actions`, or a misread  |
 | `distance_mm` | wraps        | Motion odometer (`distance_mm`) where the barcode ended                  |
 
 An unvalidated barcode only bumps `rejects`; its command is never published.
@@ -64,7 +64,7 @@ An unvalidated barcode only bumps `rejects`; its command is never published.
 - **Lost line:** both white also looks like a lost line, so the line counts as lost only after `LINE_FOLLOWING_LOST_MM` (80 mm) of travel with both sensors white (`distance_mm` from the motion status). The car then pivots on the spot towards `last_side`, where a curve usually takes the line, up to `LINE_FOLLOWING_SEARCH_DEG` (135°), then the other way to as far past its starting heading (`heading_deg`). Either sensor seeing black resumes normal following. If the whole sweep finds nothing, the task brakes, stops following and sets `b_lost`; the Vehicle Controller takes a safe stop. On a straight, a false alarm costs a small pivot: the line soon reaches one sensor. While `b_searching` is set the Vehicle Controller pauses obstacle avoidance, since the pivot sweeps the ultrasonic sensor across the sides; nothing checks collisions during the pivot, as during every other turn.
 - **Search reach:** the sensors are 110 mm ahead of the axle, so the pivot sweeps a circle of that radius. The longer the all-white threshold, the further the car rolls past the point where the line left. On a 90° corner, a 90° sweep stops reaching the new line after about 110 mm of all-white travel, a 135° sweep after about 185 mm, and any sweep after about 220 mm (it would need reversing). So the threshold must stay short however long the straights run without touching a sensor, and the sweep must match it: 80 mm needs under 90°.
 - **Barcodes:** the barcode sensor's AO is converted every 0.5 ms; DMA copies each sample into a 256-sample ring with no interrupt. Every 10 ms the decoder spreads the new samples along the distance rolled in that block, in µm, so bar widths do not depend on speed. The distance comes from `motion_control_distance_um()`, read just after the samples: it counts encoder edges up to that moment, not up to the last 10 ms motion step. A bar is black above 2500 counts and ends below 1500 (hysteresis). A barcode starts at the first black after white and ends at a white run over 30 mm.
-- **Code 39:** exactly 29 elements (`*`, the letter, `*`, with narrow gaps between) are split into narrow and wide at halfway between the narrowest and widest. Each character must have exactly 3 wide elements and match `*`, A, B, C or D, read in either direction.
+- **Code 39:** exactly 29 elements (`*`, the letter, `*`, with narrow gaps between) are split into narrow and wide at halfway between the narrowest and widest. Each character must have exactly 3 wide elements and match one of the 43 Code 39 characters or `*`, read in either direction. `g_actions` at the top of `barcode_decoder.c` gives each course letter its command (A left, B right, C straight, D U-turn by default); edit it when the letters are announced.
 
 ## Calibration
 
@@ -74,6 +74,7 @@ Constants are at the top of each `.c` file; change one, rebuild and rerun the be
 2. **Steering:** `LINE_FOLLOWING_TURN_MIN` (300 permille), `LINE_FOLLOWING_RISE_MM` (30) and `LINE_FOLLOWING_FALL_MM` (10). Raise the min if the car reacts late to a drift, lower it if small corrections look abrupt. Lower the rise if the car runs off curves, raise it if it weaves on straights. Lower the fall if the car overshoots to the other side after a correction, raise it if corrections end abruptly. `LINE_FOLLOWING_DRIFT_MM` (40): lower it if the car still pivots in small false searches on straights, raise it if it weaves while centred. `LINE_FOLLOWING_TURN_MAX` (1000 permille) caps the turn.
 3. **Lost-line threshold:** `LINE_FOLLOWING_LOST_MM` (80). Run the bench on the longest straight: `[line]` lines print the odometer (`mm=`) on every change, so the longest all-white stretch is the gap between a `left=0 right=0` line and the next line. Set the threshold about 1.5 times that, but under about 185 mm, the reach of the 135° sweep (`LINE_FOLLOWING_SEARCH_DEG`) on a sharp corner (above). If 1.5 times is more than that, make the car weave more (step 2) instead. A narrower sweep is quicker if the course has no sharp corners.
 4. **Barcode levels:** hold the sensor still over white and over a black bar (S3-U10) and keep `BARCODE_BLACK` and `BARCODE_WHITE` well inside the two levels. White reads about 170 counts and black about 4070.
+5. **Barcode letters:** list the announced letters in `g_actions` (`barcode_decoder.c`), one line each, and rebuild the normal image.
 
 ## Bench sequence
 

@@ -20,6 +20,7 @@
 #define S3_TEST_WIDE        9000u
 #define S3_TEST_A           0x109u /* Code 39 patterns, 1 = wide. */
 #define S3_TEST_Z           0x0D0u
+#define S3_TEST_BAD         0x1E0u /* 4 wide: no character. */
 #define S3_TEST_START       0x094u /* '*' */
 #define S3_TEST_FIRST_GAP   9u
 #define S3_BENCH_POLL_MS    10 /* Waits 2 kernel ticks: a poll every 20 ms. */
@@ -84,11 +85,13 @@ void subsystem3_test(void)
     TEST_CHECK("S3-U11", ('A' == letter) && ('A' == code39_decode(widths)),
                "decodes *A* read either way");
     subsystem3_symbol(widths, S3_TEST_Z, false);
+    TEST_CHECK("S3-U20", 'Z' == code39_decode(widths), "decodes *Z*");
+    subsystem3_symbol(widths, S3_TEST_BAD, false);
     letter = code39_decode(widths);
     subsystem3_symbol(widths, S3_TEST_A, false);
     widths[S3_TEST_FIRST_GAP] = S3_TEST_WIDE; /* A wide gap: misread. */
     TEST_CHECK("S3-U12", (0u == letter) && (0u == code39_decode(widths)),
-               "rejects *Z* and a misread *A*");
+               "rejects a 4-wide letter and a misread *A*");
     TEST_CHECK("S3-U13", 8u == sizeof(barcode), "packed barcode 8 bytes");
     TEST_SUMMARY("subsystem3");
 

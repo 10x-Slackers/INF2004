@@ -40,7 +40,7 @@ These system states (ARCHITECTURE.md) have no state of their own here:
 
 - **Hump Monitoring:** Subsystem 4 tracks humps by itself while the car follows the line. The run's highest hump is printed on every safe stop.
 - **Line Recovery** and **Line Lost:** a bypass ends stopped on the original line, so FOLLOW simply restarts line following. The line follower searches for a lost line by itself ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works)); if its search fails it sets `b_lost` and the controller takes a safe stop (`line lost`).
-- **Mission Complete:** needs a course-finish event (FR12); until one is defined, a junction with nothing pending is driven straight over.
+- **Mission Complete:** the courses have no finish marker, so a course ends with a GP20 Stop, and SAFE_STOP prints the run's highest hump (FR12). A junction with nothing pending is driven straight over.
 
 ## GP20
 

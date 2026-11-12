@@ -178,7 +178,7 @@ These IDs come from the Week 6 design review. Use them in commits, tests and rep
 | FR9  | Establish Wi-Fi/MQTT, publish telemetry and heartbeat, accept permitted supervisory commands, and recover connectivity without blocking local control                        | Wi-Fi and MQTT Telemetry          |
 | FR10 | Classify stationary, accelerating, turning, climbing, descending and impact events; report odometry-derived turn rate and calibrated tilt                                    | IMU and Terrain Monitor           |
 | FR11 | Latch a stop on critical faults or explicit Stop: invalidate pending motion, brake the motors, and require reset/revalidation plus a new Start before moving                 | Safety Monitor                    |
-| FR12 | Enter Mission Complete only on a validated course-finish event; stop the motors and report final status and the run's maximum valid hump estimate                            | Vehicle Controller                |
+| FR12 | End a course on Stop: brake the motors and report final status and the run's maximum valid hump estimate. Courses run back to back, so there is no finish event              | Vehicle Controller                |
 
 ### Non-functional
 

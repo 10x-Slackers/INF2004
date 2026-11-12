@@ -150,10 +150,8 @@ stateDiagram-v2
     ObstacleHandling --> Bypassing: safe bypass planned
     Bypassing --> LineRecovery: obstacle cleared
     LineRecovery --> LineFollowing: line reacquired
-    LineFollowing --> MissionComplete: course finished
     LineFollowing --> SafeStop: no safe path / critical fault / Stop
     SafeStop --> Ready: recovery permitted
-    MissionComplete --> [*]
 ```
 
 Barcode Handling, Obstacle Handling, Bypassing and Line Recovery also drop to Safe Stop on a critical fault or Stop. Collision risk is checked only where avoidance reads the range ([Interfaces](#interfaces), notes).
@@ -170,11 +168,10 @@ Barcode Handling, Obstacle Handling, Bypassing and Line Recovery also drop to Sa
 | Line Recovery     | Search for the original line, reacquire it, realign heading                                                           |
 | Safe Stop         | Motors stopped immediately. Wait for a recovery command                                                               |
 | Fault             | A subsystem failed, a sensor is missing, or initialisation errored                                                    |
-| Mission Complete  | Course finished: stop motors, report final telemetry including the maximum hump estimate                              |
 
-The Vehicle Controller folds Hump Monitoring, Line Recovery and Mission Complete into its other states ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#states)).
+The Vehicle Controller folds Hump Monitoring and Line Recovery into its other states ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#states)).
 
-Safe Stop is latched. Leaving it requires the fault to clear or a reset, followed by a new Start (FR11). Mission Complete is entered only on a validated course-finish event (FR12).
+Safe Stop is latched. Leaving it requires the fault to clear or a reset, followed by a new Start (FR11). The courses run back to back with no finish marker, so a course ends on Stop: Safe Stop brakes the motors and reports the run's maximum hump estimate (FR12).
 
 ## Subsystem statecharts
 

@@ -49,18 +49,19 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 5 | `ultrasonic_scan_t.forward_mm`: latest range straight ahead | 20 to 4000 mm (4000: nothing in range) | 12 | `unsigned int` bit-field | Readers copy it with `ultrasonic_scan_get()`, under the scan mutex |
 | 5 | `.request`: request number the latest scan served | 0 to 15, wraps | 4 | As above | As above |
 | 5 | `.forward_ms`: kernel time of `forward_mm` | 0 to 2³²−1 ms, wraps | 32 | `uint32_t`, the kernel time's width | As above |
-| 5 | `scan_profile_t.closest_mm`: closest point of the servo sweep | 20 to 4000 mm | 12 | `unsigned int` bit-field | Inside `ultrasonic_scan_t`, as above |
-| 5 | `.closest_deg`, `.right_deg`, `.left_deg`: servo angles of the closest point and the obstacle edges | 80 to 100° | 7 each | As above | As above |
-| 5 | `.b_obstacle`: closest point within 150 mm | 0 or 1 | 1 | As above | As above |
-| 5 | `.width_mm`: rough obstacle width, the arc between the edges at the closest distance | 0 to 52 mm (150 mm × 20°) | 7 | As above | As above |
+| 5 | `scan_profile_t.closest_mm`: closest point of the obstacle ahead | 20 to 4000 mm | 12 | `unsigned int` bit-field | Inside `ultrasonic_scan_t`, as above |
+| 5 | `.closest_deg`, `.right_deg`, `.left_deg`: servo angles of the closest point and the obstacle edges | 45 to 135° | 8 each | As above | As above |
+| 5 | `.b_obstacle`: ray ahead within 150 mm | 0 or 1 | 1 | As above | As above |
+| 5 | `.width_mm`: rough obstacle width, the arc between the edges at the closest distance | 0 to 235 mm (150 mm × 90°) | 8 | As above | As above |
+| 5 | `.left_mm`, `.right_mm`: rays at 135° and 45°, the clearance each side | 20 to 4000 mm | 12 each | As above | As above |
 | 5 | `obstacle_avoidance_status_t.state`: idle, monitor, profile, bypass, stopped | 0 to 4 | 3 | `unsigned int` bit-field | Readers copy it with `obstacle_avoidance_get_status()`, under the avoidance mutex |
 | 5 | `.side`: none, left, right | 0 to 2 | 2 | As above | As above |
 | 5 | `.step`: bypass step | 0 to 7 | 3 | As above | As above |
 | 5 | `.bypasses`: bypasses finished | 0 to 15, wraps | 4 | As above | As above |
-| 5 | `.left_mm`, `.right_mm`: clearance with the car turned 45° left and right | 0 to 4000 mm (0: not measured) | 12 each | As above | As above |
+| 5 | `.left_mm`, `.right_mm`: clearance 45° left and right, copied from the profile | 0 to 4000 mm (0: not measured) | 12 each | As above | As above |
 | 5 | `g_next.mode` (scan): requested scan, forward or profile | 0 or 1 | 1 | `unsigned int` bit-field; written under the scan mutex | `ultrasonic_scan_request()` and the scan task |
 | 5 | `g_next.request` (scan): requests made | 0 to 15, wraps | 4 | As above | As above |
-| 5 | `g_angle` (scan): servo angle last set | 80 to 100° | 8 | `uint8_t` | Scan task only |
+| 5 | `g_angle` (scan): servo angle last set | 45 to 135° | 8 | `uint8_t` | Scan task only |
 | 5 | `g_rise_us`, `g_width_us`, `g_trigger_us` (driver): echo rise time, echo width, last trigger time | 0 to 2³²−1 µs, wraps | 32 each | `uint32_t`, in the TIMER register's format (out of scope) | Edge callback writes the first two, the scan task reads them after it wakes |
 | 5 | `gb_rose`, `gb_fell` (driver): echo edges seen | 0 or 1 | 1 each | `volatile bool`: written by the edge callback, these loads are atomic | As above |
 | 3 | `line_following_t.bits`: left and right sensor over black | One bit each | 2 | `unsigned int` bit-field | Readers copy it with `line_following_get()`, under the line mutex |
@@ -87,7 +88,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
 | Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | Controller task only |
 | Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | `bool` bit-field | Controller task only |
-| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 82, 92, 64, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
+| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 82, 92, 68, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
 | 1 | Message buffer entry (topic number + payload) and command event flag: [TELEMETRY.md](TELEMETRY.md#inside-the-car) | Topic 0 to 3; commands one bit each | 8 + payload; 3 | `uint8_t` topic, the smallest unit of a message; event flag bits, set and clear atomic | Telemetry task → Wi-Fi service, both `TMO_POL`; Wi-Fi service → Vehicle Controller |
 
 ## Evidence

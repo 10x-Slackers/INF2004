@@ -1,0 +1,14 @@
+[TEST] S5-U40 PASS  avoidance boots idle
+[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=372 fault=0
+[TEST] S5-U42 PASS  packed status 8, scan 20, profile 12 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[scan] forward_mm=189 fault=0 closest=189@90 edges=90..90 width=0 obstacle=0 clear=386/248
+[avoid] state=0 faults=0x0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0
+[scan] forward_mm=192 fault=0 closest=189@90 edges=90..90 width=0 obstacle=0 clear=245/248
+[avoid] state=0 faults=0x0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0
+[scan] forward_mm=192 fault=0 closest=189@90 edges=90..90 width=0 obstacle=0 clear=386/248
+[avoid] state=0 faults=0x0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0
+[scan] forward_mm=189 fault=0 closest=189@90 edges=90..90 width=0 obstacle=0 clear=403/257
+[avoid] state=0 faults=0x0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0

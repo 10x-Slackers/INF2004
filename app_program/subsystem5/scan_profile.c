@@ -4,6 +4,7 @@
  */
 
 #include "scan_profile.h"
+#include <stdbool.h>
 
 /*!
  * @brief Echo pulse width to distance: 58 us per cm there and back.
@@ -29,51 +30,53 @@ uint32_t scan_profile_median(uint32_t first, uint32_t second, uint32_t third)
 }
 
 /*!
- * @brief Build the profile of the obstacle nearest the car.
+ * @brief Build the profile of the obstacle ahead.
  *
  * @param[in]  p_rays    SCAN_PROFILE_RAYS ranges in mm, each ray at
- *                       SCAN_PROFILE_MIN_DEG + 5 * ray degrees.
+ *                       SCAN_PROFILE_MIN_DEG + 5 * ray degrees. Rays not
+ *                       measured read SCAN_PROFILE_FAR_MM.
  * @param[out] p_profile The profile.
  */
 void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
 {
-    uint32_t closest = 0u;
-    uint32_t right = 0u;
-    uint32_t left = 0u;
+    bool const b_obstacle =
+        (p_rays[SCAN_PROFILE_AHEAD] <= SCAN_PROFILE_BLOCK_MM);
+    uint32_t closest = SCAN_PROFILE_AHEAD;
+    uint32_t right = SCAN_PROFILE_AHEAD;
+    uint32_t left = SCAN_PROFILE_AHEAD;
     uint32_t ray = 0u;
 
-    for (ray = 1u; ray < SCAN_PROFILE_RAYS; ray++)
-    {
-        closest = (p_rays[ray] < p_rays[closest]) ? ray : closest;
-    }
-
-    /* The obstacle is the run of blocked rays around the closest one. */
-    right = closest;
-    while ((right > 0u) && (p_rays[right - 1u] <= SCAN_PROFILE_BLOCK_MM))
+    /* The obstacle is the run of blocked rays around the one ahead. */
+    while (b_obstacle && (right > 0u) &&
+           (p_rays[right - 1u] <= SCAN_PROFILE_BLOCK_MM))
     {
         right--;
     }
-    left = closest;
-    while (((left + 1u) < SCAN_PROFILE_RAYS) &&
+    while (b_obstacle && ((left + 1u) < SCAN_PROFILE_RAYS) &&
            (p_rays[left + 1u] <= SCAN_PROFILE_BLOCK_MM))
     {
         left++;
+    }
+    for (ray = right; ray <= left; ray++)
+    {
+        closest = (p_rays[ray] < p_rays[closest]) ? ray : closest;
     }
 
     p_profile->closest_mm = p_rays[closest];
     p_profile->closest_deg =
         SCAN_PROFILE_MIN_DEG + (closest * SCAN_PROFILE_STEP_DEG);
-    p_profile->b_obstacle = (p_rays[closest] <= SCAN_PROFILE_BLOCK_MM);
+    p_profile->b_obstacle = b_obstacle;
     p_profile->right_deg =
         SCAN_PROFILE_MIN_DEG + (right * SCAN_PROFILE_STEP_DEG);
     p_profile->left_deg = SCAN_PROFILE_MIN_DEG + (left * SCAN_PROFILE_STEP_DEG);
 
     /* Arc length r * angle, with pi / 180 as 1745 / 100000. */
-    p_profile->width_mm = p_profile->b_obstacle
-                              ? ((p_rays[closest] * (left - right) *
-                                  SCAN_PROFILE_STEP_DEG * 1745u) /
-                                 100000u)
-                              : 0u;
+    p_profile->width_mm = b_obstacle ? ((p_rays[closest] * (left - right) *
+                                         SCAN_PROFILE_STEP_DEG * 1745u) /
+                                        100000u)
+                                     : 0u;
+    p_profile->left_mm = p_rays[SCAN_PROFILE_RAYS - 1u];
+    p_profile->right_mm = p_rays[0];
 }
 
 /*!

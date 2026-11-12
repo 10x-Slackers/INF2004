@@ -127,7 +127,7 @@ Not drawn: every task reports health to the Safety Monitor over I10.
 Notes:
 
 - I3 is a one-slot mailbox: a new target replaces the old one, and the Vehicle Controller must renew it before it expires, otherwise Wheel Motion Control brakes.
-- Collision risk belongs to Obstacle Avoidance, which brakes on the second forward reading in a row within 150 mm. It reads the range only while the car follows the line or drives straight in a bypass: nothing checks it during turns (avoidance's look and bypass turns, the controller's junction turns, the line follower's lost-line pivot). The Safety Monitor does not read I8: a range backstop could never act before avoidance, which brakes on the same reading, and only avoidance requests readings. An IMU fault on I9 asserts the I11 stop.
+- Collision risk belongs to Obstacle Avoidance, which brakes on the second forward reading in a row within 150 mm. It reads the range only while the car follows the line or drives straight in a bypass: nothing checks it during turns (avoidance's bypass turns, the controller's junction turns, the line follower's lost-line pivot). The Safety Monitor does not read I8: a range backstop could never act before avoidance, which brakes on the same reading, and only avoidance requests readings. An IMU fault on I9 asserts the I11 stop.
 - A validated `STOP` from the supervisor also raises a safety request on I11, so it latches like any other stop.
 - The stop on I11 carries a generation number. Motion requests issued before the stop are stale and must be discarded (FR11).
 - The supervisor may only start, stop and reset. It never steers or sets speed (FR1).

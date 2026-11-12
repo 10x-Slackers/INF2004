@@ -10,7 +10,7 @@ All topics start with `csc13/`. Every message is QoS 0, not retained.
 | ----------- | ---------------- | ------------------------------------------------------ | ------------------------------------------------ |
 | `telemetry` | car → supervisor | Every 200 ms                                           | 11 bytes, below                                  |
 | `motion`    | car → supervisor | With every `telemetry`                                 | 12 bytes, `motion_control_pack()` ([MOTION_CONTROL.md](MOTION_CONTROL.md#telemetry-payload)) |
-| `scan`      | car → supervisor | Once per obstacle profile, when avoidance leaves `PROFILE` | 8 bytes, below                               |
+| `scan`      | car → supervisor | Once per obstacle profile, when avoidance leaves `PROFILE` | 9 bytes, below                               |
 | `heartbeat` | car → supervisor | Every 1 s                                              | 2 bytes: a count, wraps                          |
 | `cmd`       | supervisor → car | On demand                                              | 1 byte, below                                    |
 
@@ -45,19 +45,19 @@ Each field's range is in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#fields)
 | 60–71 | `forward_mm` | `ultrasonic_scan_t.forward_mm` |
 | 72–81 | `faults` | `app_faults()`: the shared fault bitmask, `APP_FAULT_...` in `app_fault.h` |
 
-### `scan`: 64 bits
+### `scan`: 68 bits
 
 Fields of `ultrasonic_scan_t.profile` and `obstacle_avoidance_status_t`, same names.
 
 | Bits  | Field         |
 | ----- | ------------- |
 | 0–11 | `closest_mm` |
-| 12–18 | `closest_deg` |
-| 19–25 | `right_deg` |
-| 26–32 | `left_deg` |
-| 33–39 | `width_mm` |
-| 40–51 | `left_mm` |
-| 52–63 | `right_mm` |
+| 12–19 | `closest_deg` |
+| 20–27 | `right_deg` |
+| 28–35 | `left_deg` |
+| 36–43 | `width_mm` |
+| 44–55 | `left_mm` |
+| 56–67 | `right_mm` |
 
 ### `cmd`: 8 bits
 

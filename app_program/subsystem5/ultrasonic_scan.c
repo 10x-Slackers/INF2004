@@ -119,10 +119,33 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
 
     if (ULTRASONIC_SCAN_PROFILE == mode)
     {
+        /* Coarse: every 15 degrees. Rays not measured read as open. Each
+         * range is at most SCAN_PROFILE_FAR_MM (4000), so it fits. */
         for (ray = 0u; ray < SCAN_PROFILE_RAYS; ray++)
         {
-            /* At most SCAN_PROFILE_FAR_MM (4000), so it fits. */
-            rays[ray] = (uint16_t)ultrasonic_scan_ray(ray, &b_fault);
+            rays[ray] = (0u == (ray % SCAN_PROFILE_COARSE))
+                            ? (uint16_t)ultrasonic_scan_ray(ray, &b_fault)
+                            : (uint16_t)SCAN_PROFILE_FAR_MM;
+        }
+        /* Fine: out from the ray ahead, each way, while blocked. */
+        for (ray = SCAN_PROFILE_AHEAD;
+             (ray > 0u) && (rays[ray] <= SCAN_PROFILE_BLOCK_MM); ray--)
+        {
+            if (0u != ((ray - 1u) % SCAN_PROFILE_COARSE))
+            {
+                rays[ray - 1u] =
+                    (uint16_t)ultrasonic_scan_ray(ray - 1u, &b_fault);
+            }
+        }
+        for (ray = SCAN_PROFILE_AHEAD; ((ray + 1u) < SCAN_PROFILE_RAYS) &&
+                                       (rays[ray] <= SCAN_PROFILE_BLOCK_MM);
+             ray++)
+        {
+            if (0u != ((ray + 1u) % SCAN_PROFILE_COARSE))
+            {
+                rays[ray + 1u] =
+                    (uint16_t)ultrasonic_scan_ray(ray + 1u, &b_fault);
+            }
         }
         scan_profile_build(rays, &profile);
     }
@@ -159,7 +182,7 @@ static void ultrasonic_scan_aim(uint32_t angle_deg)
     {
         drv_sg90_set(angle_deg);
         tk_dly_tsk(ULTRASONIC_SCAN_SETTLE_MS);
-        g_angle = (uint8_t)angle_deg; /* 80..100 degrees: fits. */
+        g_angle = (uint8_t)angle_deg; /* 45..135 degrees: fits. */
     }
 }
 

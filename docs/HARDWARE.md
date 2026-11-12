@@ -144,7 +144,7 @@ No SG90 datasheet was supplied. The values below are the usual ones for this ser
 
 Let the servo settle before taking a range reading at a new angle.
 
-On the car, the sensor's mount stops the servo about 15° either side of straight ahead. The firmware sweeps only 10° either side, so the servo never stalls against the stops, and turns the car itself to look further to the side.
+On the car, the sensor's mount limits the servo to a little under 60° either side of straight ahead. The firmware sweeps 45° either side, so the servo never stalls against the stops.
 
 The servo runs on PWM slice 6 A at 50 Hz (1 MHz counter, TOP 19999). GP13 shares slice 6, so it shares that frequency.
 

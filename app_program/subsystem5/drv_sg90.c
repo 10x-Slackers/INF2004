@@ -12,11 +12,11 @@
 #define DRV_SG90_PIN    12u
 #define DRV_SG90_DIV    (125u << 4) /* 8.4 fixed point: 1 MHz counter. */
 #define DRV_SG90_TOP    19999u      /* 20 ms period. */
-#define DRV_SG90_MIN_US 1450u       /* Pulse at 80 degrees (right). */
+#define DRV_SG90_MIN_US 1200u       /* Pulse at 45 degrees (right). */
 #define DRV_SG90_MID_US 1700u       /* At 90 degrees (ahead). */
-#define DRV_SG90_MAX_US 1950u       /* At 100 degrees (left). */
+#define DRV_SG90_MAX_US 2200u       /* At 135 degrees (left). */
 #define DRV_SG90_MID    90u
-#define DRV_SG90_HALF   10u /* Degrees from either end to the middle. */
+#define DRV_SG90_HALF   45u /* Degrees from either end to the middle. */
 
 /*!
  * @brief Start the 50 Hz PWM with the servo pointing ahead.
@@ -31,7 +31,7 @@ void drv_sg90_init(void)
 }
 
 /*!
- * @brief Point the servo, 80..100 degrees. Each half of the travel has
+ * @brief Point the servo, 45..135 degrees. Each half of the travel has
  * its own pulse range, so the middle can be calibrated on its own.
  */
 void drv_sg90_set(uint32_t angle_deg)

@@ -9,7 +9,6 @@
 #include "drv_sg90.h"
 #include "subsystem5.h"
 
-#define ULTRASONIC_SCAN_AHEAD     90u
 #define ULTRASONIC_SCAN_SETTLE_MS 200 /* Servo travel before a reading. */
 #define ULTRASONIC_SCAN_READS     3u  /* Readings per ray, for a median. */
 
@@ -21,11 +20,11 @@ static struct
     unsigned int request : 4; /* Requests made, wraps. */
 } g_next;
 static ultrasonic_scan_t g_scan;
-static uint8_t g_angle = ULTRASONIC_SCAN_AHEAD; /* Scan task only. */
+static uint8_t g_angle = SCAN_PROFILE_AHEAD_DEG; /* Scan task only. */
 
 static void ultrasonic_scan_serve(uint32_t mode, uint32_t request);
 static void ultrasonic_scan_aim(uint32_t angle_deg);
-static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * pb_fault);
+static uint16_t ultrasonic_scan_ray(uint32_t ray, bool * pb_fault);
 
 /*!
  * @brief Create the lock and the request semaphore, set up the sensor and
@@ -114,19 +113,37 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
     scan_profile_t profile = {0};
     SYSTIM now = {0};
     uint32_t ray = 0u;
+    int32_t dir = 0;  /* -1 right, +1 left. */
+    int32_t fine = 0; /* Ray of the fine scan. */
     uint32_t range_mm = 0u;
     bool b_fault = false;
 
     if (ULTRASONIC_SCAN_PROFILE == mode)
     {
+        /* Coarse: every 15 degrees. Rays not measured read as open. */
         for (ray = 0u; ray < SCAN_PROFILE_RAYS; ray++)
         {
-            /* At most SCAN_PROFILE_FAR_MM (4000), so it fits. */
-            rays[ray] = (uint16_t)ultrasonic_scan_ray(ray, &b_fault);
+            rays[ray] = (0u == (ray % SCAN_PROFILE_COARSE))
+                            ? ultrasonic_scan_ray(ray, &b_fault)
+                            : (uint16_t)SCAN_PROFILE_FAR_MM;
+        }
+        /* Fine: out from the ray ahead, right then left, while blocked. */
+        for (dir = -1; dir <= 1; dir += 2)
+        {
+            for (fine = (int32_t)SCAN_PROFILE_AHEAD + dir;
+                 (fine >= 0) && (fine < (int32_t)SCAN_PROFILE_RAYS) &&
+                 (rays[fine - dir] <= SCAN_PROFILE_BLOCK_MM);
+                 fine += dir)
+            {
+                if (0 != (fine % (int32_t)SCAN_PROFILE_COARSE))
+                {
+                    rays[fine] = ultrasonic_scan_ray((uint32_t)fine, &b_fault);
+                }
+            }
         }
         scan_profile_build(rays, &profile);
     }
-    ultrasonic_scan_aim(ULTRASONIC_SCAN_AHEAD);
+    ultrasonic_scan_aim(SCAN_PROFILE_AHEAD_DEG);
     b_fault = (!drv_hcsr04_measure(&range_mm)) || b_fault;
     (void)tk_get_otm(&now);
 
@@ -159,29 +176,32 @@ static void ultrasonic_scan_aim(uint32_t angle_deg)
     {
         drv_sg90_set(angle_deg);
         tk_dly_tsk(ULTRASONIC_SCAN_SETTLE_MS);
-        g_angle = (uint8_t)angle_deg; /* 80..100 degrees: fits. */
+        g_angle = (uint8_t)angle_deg; /* 45..135 degrees: fits. */
     }
 }
 
 /*!
  * @brief Median of three readings along one ray.
  *
- * @return mm, or 0 if the sensor gave no echo.
+ * @return mm. SCAN_PROFILE_FAR_MM if the sensor gave no echo, so the fine
+ * scan stops; *pb_fault reports it.
  */
-static uint32_t ultrasonic_scan_ray(uint32_t ray, bool * pb_fault)
+static uint16_t ultrasonic_scan_ray(uint32_t ray, bool * pb_fault)
 {
     uint32_t range_mm[ULTRASONIC_SCAN_READS] = {0};
     bool b_echo = true;
     uint32_t reading = 0u;
 
-    ultrasonic_scan_aim(SCAN_PROFILE_MIN_DEG + (ray * SCAN_PROFILE_STEP_DEG));
+    ultrasonic_scan_aim(SCAN_PROFILE_DEG(ray));
     for (reading = 0u; reading < ULTRASONIC_SCAN_READS; reading++)
     {
         b_echo = (drv_hcsr04_measure(&range_mm[reading])) && b_echo;
     }
     *pb_fault = (*pb_fault) || (!b_echo);
-    return b_echo ? scan_profile_median(range_mm[0], range_mm[1], range_mm[2])
-                  : 0u;
+    /* At most SCAN_PROFILE_FAR_MM (4000), so it fits. */
+    return b_echo ? (uint16_t)scan_profile_median(range_mm[0], range_mm[1],
+                                                  range_mm[2])
+                  : (uint16_t)SCAN_PROFILE_FAR_MM;
 }
 
 /*** end of file ***/

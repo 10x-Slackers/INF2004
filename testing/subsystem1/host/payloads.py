@@ -28,8 +28,8 @@ LAYOUTS = {
         ("right_count", 16, 0), ("distance_mm", 24, 0),
     ],
     "scan": [
-        ("closest_mm", 12, 0), ("closest_deg", 7, 0), ("right_deg", 7, 0),
-        ("left_deg", 7, 0), ("width_mm", 7, 0), ("left_mm", 12, 0),
+        ("closest_mm", 12, 0), ("closest_deg", 8, 0), ("right_deg", 8, 0),
+        ("left_deg", 8, 0), ("width_mm", 8, 0), ("left_mm", 12, 0),
         ("right_mm", 12, 0),
     ],
     "heartbeat": [("count", 16, 0)],
@@ -46,8 +46,8 @@ SAMPLES = {
     "motion": dict(state=1, command=5, heading_deg=271,
                    left_speed=198, right_speed=203, left_count=48211,
                    right_count=48902, distance_mm=12450),
-    "scan": dict(closest_mm=310, closest_deg=90, right_deg=85, left_deg=95,
-                 width_mm=71, left_mm=820, right_mm=0),
+    "scan": dict(closest_mm=120, closest_deg=90, right_deg=70, left_deg=105,
+                 width_mm=73, left_mm=820, right_mm=140),
     "heartbeat": dict(count=1234),
     "cmd": dict(cmd=1),
 }

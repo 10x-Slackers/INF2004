@@ -1,0 +1,11 @@
+[avoid] last run: 5 records
+[scan] forward_mm=403 fault=0 closest=136@90 edges=75..120 width=106 obstacle=1 clear=498/167
+[avoid] t=30 ms state=1 faults=0x0 side=2 step=0 bypasses=1 right_mm=498 left_mm=167 motion=1
+[scan] forward_mm=141 fault=0 closest=136@90 edges=75..120 width=106 obstacle=1 clear=498/167
+[avoid] t=2970 ms state=2 faults=0x0 side=2 step=0 bypasses=1 right_mm=498 left_mm=167 motion=0
+[scan] forward_mm=129 fault=0 closest=130@85 edges=80..120 width=90 obstacle=1 clear=417/160
+[avoid] t=8340 ms state=3 faults=0x0 side=2 step=1 bypasses=1 right_mm=417 left_mm=160 motion=1
+[scan] forward_mm=165 fault=0 closest=130@85 edges=80..120 width=90 obstacle=1 clear=417/160
+[avoid] t=10020 ms state=4 faults=0x80 side=0 step=0 bypasses=1 right_mm=417 left_mm=160 motion=0
+[scan] forward_mm=165 fault=0 closest=130@85 edges=80..120 width=90 obstacle=1 clear=417/160
+[avoid] t=10020 ms state=0 faults=0x80 side=0 step=0 bypasses=1 right_mm=417 left_mm=160 motion=0

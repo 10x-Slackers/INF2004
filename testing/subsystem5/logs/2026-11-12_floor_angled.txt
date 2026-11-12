@@ -1,0 +1,20 @@
+[scan] forward_mm=144 fault=0 closest=0@0 edges=0..0 width=0 obstacle=0 clear=0/0
+[avoid] t=3570 ms state=2 faults=0x0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0
+[scan] forward_mm=126 fault=0 closest=127@90 edges=60..115 width=121 obstacle=1 clear=570/837
+[avoid] t=9660 ms state=3 faults=0x0 side=0 step=1 bypasses=0 right_mm=0 left_mm=0 motion=1
+[scan] forward_mm=502 fault=0 closest=127@90 edges=60..115 width=121 obstacle=1 clear=570/837
+[avoid] t=11970 ms state=3 faults=0x0 side=2 step=2 bypasses=0 right_mm=570 left_mm=837 motion=1
+[scan] forward_mm=317 fault=0 closest=127@90 edges=60..115 width=121 obstacle=1 clear=570/837
+[avoid] t=14430 ms state=3 faults=0x0 side=2 step=3 bypasses=0 right_mm=570 left_mm=837 motion=1
+[scan] forward_mm=926 fault=0 closest=127@90 edges=60..115 width=121 obstacle=1 clear=570/837
+[avoid] t=15270 ms state=3 faults=0x0 side=2 step=4 bypasses=0 right_mm=570 left_mm=837 motion=1
+[scan] forward_mm=462 fault=0 closest=127@90 edges=60..115 width=121 obstacle=1 clear=570/837
+[avoid] t=20280 ms state=3 faults=0x0 side=2 step=5 bypasses=0 right_mm=570 left_mm=837 motion=1
+[scan] forward_mm=436 fault=0 closest=127@90 edges=60..115 width=121 obstacle=1 clear=570/837
+[avoid] t=21090 ms state=3 faults=0x0 side=2 step=6 bypasses=0 right_mm=570 left_mm=837 motion=1
+[scan] forward_mm=273 fault=0 closest=127@90 edges=60..115 width=121 obstacle=1 clear=570/837
+[avoid] t=23520 ms state=3 faults=0x0 side=2 step=7 bypasses=0 right_mm=570 left_mm=837 motion=1
+[scan] forward_mm=354 fault=0 closest=127@90 edges=60..115 width=121 obstacle=1 clear=570/837
+[avoid] t=24360 ms state=1 faults=0x0 side=2 step=0 bypasses=1 right_mm=570 left_mm=837 motion=2
+[scan] forward_mm=354 fault=0 closest=127@90 edges=60..115 width=121 obstacle=1 clear=570/837
+[avoid] t=24360 ms state=0 faults=0x0 side=2 step=0 bypasses=1 right_mm=570 left_mm=837 motion=2

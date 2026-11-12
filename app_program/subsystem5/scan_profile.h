@@ -16,16 +16,20 @@
 
 #include <stdint.h>
 
-#define SCAN_PROFILE_MIN_DEG  45u
-#define SCAN_PROFILE_MAX_DEG  135u
-#define SCAN_PROFILE_STEP_DEG 5u
-#define SCAN_PROFILE_RAYS     19u   /* 45..135 degrees in 5 degree steps. */
-#define SCAN_PROFILE_AHEAD    9u    /* Ray at 90 degrees. */
-#define SCAN_PROFILE_COARSE   3u    /* Coarse rays: every third, 15 degrees. */
-#define SCAN_PROFILE_MIN_MM   20u   /* Sensor's shortest range. */
-#define SCAN_PROFILE_FAR_MM   4000u /* Nothing within the sensor's range. */
-#define SCAN_PROFILE_BLOCK_MM 150u  /* A ray this close hits an obstacle. */
-#define SCAN_PROFILE_CLEAR_MM 250u  /* A side this open can be passed. */
+#define SCAN_PROFILE_MIN_DEG   45u
+#define SCAN_PROFILE_AHEAD_DEG 90u
+#define SCAN_PROFILE_STEP_DEG  5u
+#define SCAN_PROFILE_RAYS      19u   /* 45..135 degrees in 5 degree steps. */
+#define SCAN_PROFILE_AHEAD     9u    /* Ray at 90 degrees. */
+#define SCAN_PROFILE_COARSE    3u    /* Coarse rays: every third, 15 degrees. */
+#define SCAN_PROFILE_MIN_MM    20u   /* Sensor's shortest range. */
+#define SCAN_PROFILE_FAR_MM    4000u /* Nothing within the sensor's range. */
+#define SCAN_PROFILE_BLOCK_MM  150u  /* A ray this close hits an obstacle. */
+#define SCAN_PROFILE_CLEAR_MM  250u  /* A side this open can be passed. */
+
+/* Servo angle of a ray. */
+#define SCAN_PROFILE_DEG(ray)                                                  \
+    (SCAN_PROFILE_MIN_DEG + ((ray) * SCAN_PROFILE_STEP_DEG))
 
 /* scan_profile_side() */
 #define SCAN_PROFILE_NONE  0u
@@ -50,6 +54,7 @@ typedef struct
 
 uint32_t scan_profile_mm(uint32_t echo_us);
 uint32_t scan_profile_median(uint32_t first, uint32_t second, uint32_t third);
+uint32_t scan_profile_arc_mm(uint32_t range_mm, uint32_t angle_deg);
 void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile);
 uint32_t scan_profile_side(uint32_t left_mm, uint32_t right_mm);
 

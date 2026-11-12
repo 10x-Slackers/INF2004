@@ -129,7 +129,7 @@ static void subsystem5_bench_report(uint32_t start_ms, bool b_run)
     (void)tk_get_otm(&now);
     rec.faults = app_faults();
     rec.motion = motion.state;
-    rec.ms = now.lo - start_ms;
+    rec.ms = b_run ? (now.lo - start_ms) : 0u;
     if (b_run && (g_logged < S5_BENCH_LOG))
     {
         g_log[g_logged] = rec;
@@ -154,7 +154,7 @@ static void subsystem5_bench_task(INT stacd, void * p_exinf)
     SYSTIM start = {0};
     uint32_t bypasses = 0u;
     uint32_t request = 0u;
-    uint32_t rec = 0u;
+    uint32_t shown = 0u;
 
     (void)stacd;
     (void)p_exinf;
@@ -170,9 +170,9 @@ static void subsystem5_bench_task(INT stacd, void * p_exinf)
         while (!subsystem5_bench_press())
         {
             tm_printf((UB *)"[avoid] last run: %u records\n", g_logged);
-            for (rec = 0u; rec < g_logged; rec++)
+            for (shown = 0u; shown < g_logged; shown++)
             {
-                subsystem5_bench_print(&g_log[rec]);
+                subsystem5_bench_print(&g_log[shown]);
             }
             request = ultrasonic_scan_request(ULTRASONIC_SCAN_PROFILE);
             ultrasonic_scan_get(&scan);

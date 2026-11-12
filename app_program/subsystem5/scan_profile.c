@@ -30,10 +30,18 @@ uint32_t scan_profile_median(uint32_t first, uint32_t second, uint32_t third)
 }
 
 /*!
+ * @brief Arc length range * angle, with pi / 180 as 1745 / 100000.
+ */
+uint32_t scan_profile_arc_mm(uint32_t range_mm, uint32_t angle_deg)
+{
+    return (range_mm * angle_deg * 1745u) / 100000u;
+}
+
+/*!
  * @brief Build the profile of the obstacle ahead.
  *
  * @param[in]  p_rays    SCAN_PROFILE_RAYS ranges in mm, each ray at
- *                       SCAN_PROFILE_MIN_DEG + 5 * ray degrees. Rays not
+ *                       SCAN_PROFILE_DEG(ray) degrees. Rays not
  *                       measured read SCAN_PROFILE_FAR_MM.
  * @param[out] p_profile The profile.
  */
@@ -47,15 +55,17 @@ void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
     uint32_t ray = 0u;
 
     /* The obstacle is the run of blocked rays around the one ahead. */
-    while (b_obstacle && (right > 0u) &&
-           (p_rays[right - 1u] <= SCAN_PROFILE_BLOCK_MM))
+    if (b_obstacle)
     {
-        right--;
-    }
-    while (b_obstacle && ((left + 1u) < SCAN_PROFILE_RAYS) &&
-           (p_rays[left + 1u] <= SCAN_PROFILE_BLOCK_MM))
-    {
-        left++;
+        while ((right > 0u) && (p_rays[right - 1u] <= SCAN_PROFILE_BLOCK_MM))
+        {
+            right--;
+        }
+        while (((left + 1u) < SCAN_PROFILE_RAYS) &&
+               (p_rays[left + 1u] <= SCAN_PROFILE_BLOCK_MM))
+        {
+            left++;
+        }
     }
     for (ray = right; ray <= left; ray++)
     {
@@ -63,18 +73,13 @@ void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
     }
 
     p_profile->closest_mm = p_rays[closest];
-    p_profile->closest_deg =
-        SCAN_PROFILE_MIN_DEG + (closest * SCAN_PROFILE_STEP_DEG);
+    p_profile->closest_deg = SCAN_PROFILE_DEG(closest);
     p_profile->b_obstacle = b_obstacle;
-    p_profile->right_deg =
-        SCAN_PROFILE_MIN_DEG + (right * SCAN_PROFILE_STEP_DEG);
-    p_profile->left_deg = SCAN_PROFILE_MIN_DEG + (left * SCAN_PROFILE_STEP_DEG);
-
-    /* Arc length r * angle, with pi / 180 as 1745 / 100000. */
-    p_profile->width_mm = b_obstacle ? ((p_rays[closest] * (left - right) *
-                                         SCAN_PROFILE_STEP_DEG * 1745u) /
-                                        100000u)
-                                     : 0u;
+    p_profile->right_deg = SCAN_PROFILE_DEG(right);
+    p_profile->left_deg = SCAN_PROFILE_DEG(left);
+    /* With no obstacle the edges meet, so the width is 0. */
+    p_profile->width_mm = scan_profile_arc_mm(
+        p_rays[closest], SCAN_PROFILE_DEG(left) - SCAN_PROFILE_DEG(right));
     p_profile->left_mm = p_rays[SCAN_PROFILE_RAYS - 1u];
     p_profile->right_mm = p_rays[0];
 }

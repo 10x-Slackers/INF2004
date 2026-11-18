@@ -180,7 +180,7 @@ These IDs come from the Week 6 design review. Use them in commits, tests and rep
 | FR7  | Stop for profiling; choose and execute the bypass with least route deviation; reacquire the line. Reverse is disabled (no rear-clearance sensing); replanning is bounded; no safe route means Safe Stop | Obstacle Avoidance and Recovery   |
 | FR8  | Coordinate navigation, line following, barcodes, wheel control, terrain monitoring, avoidance and recovery through one mission controller                                    | Vehicle Controller                |
 | FR9  | Establish Wi-Fi/MQTT, publish telemetry and heartbeat, accept permitted supervisory commands, and recover connectivity without blocking local control                        | Wi-Fi and MQTT Telemetry          |
-| FR10 | Classify stationary, accelerating, turning, climbing and descending; report odometry-derived turn rate and calibrated tilt; latch a stop within 0.5 s of the car being turned upside down (lifted at the end of a run) | IMU and Terrain Monitor           |
+| FR10 | Classify stationary, accelerating, turning, climbing and descending; report odometry-derived turn rate and calibrated tilt; latch a stop within 0.5 s of the car being turned upside down (lifted at the end of a run), and at once on a quick lift | IMU and Terrain Monitor           |
 | FR11 | Latch a stop on critical faults or explicit Stop: invalidate pending motion, brake the motors, and require reset/revalidation plus a new Start before moving                 | Safety Monitor                    |
 | FR12 | End a course on Stop: brake the motors and report final status and the run's maximum valid hump estimate. Courses run back to back, so there is no finish event              | Vehicle Controller                |
 

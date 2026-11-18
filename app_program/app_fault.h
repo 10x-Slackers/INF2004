@@ -28,10 +28,13 @@
 #define APP_FAULT_AVOID_MOTION  (1u << 8) /* Move failed or hung. */
 /* S1. */
 #define APP_FAULT_WIFI (1u << 9) /* Wi-Fi or MQTT lost. */
+/* S4, cleared once Z settles. */
+#define APP_FAULT_LIFTED (1u << 10) /* Lifted quickly. */
 
 #define APP_FAULT_MOTION                                                       \
     (APP_FAULT_STALL_LEFT | APP_FAULT_STALL_RIGHT | APP_FAULT_ENCODER)
-#define APP_FAULT_IMU (APP_FAULT_UPSIDE_DOWN | APP_FAULT_TILT)
+#define APP_FAULT_IMU                                                          \
+    (APP_FAULT_UPSIDE_DOWN | APP_FAULT_TILT | APP_FAULT_LIFTED)
 #define APP_FAULT_AVOID                                                        \
     (APP_FAULT_AVOID_SENSOR | APP_FAULT_AVOID_BLOCKED | APP_FAULT_AVOID_MOTION)
 

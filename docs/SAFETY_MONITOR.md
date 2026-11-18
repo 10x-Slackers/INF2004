@@ -14,7 +14,7 @@ Every 10 ms the task latches a stop for any of these. The cause is printed with 
 
 | Cause           | Value | Condition                                                                                                   |
 | --------------- | ----- | ----------------------------------------------------------------------------------------------------------- |
-| `IMU`           | 1     | `APP_FAULT_UPSIDE_DOWN` or `APP_FAULT_TILT` is set in the shared fault bitmask (I9)                          |
+| `IMU`           | 1     | `APP_FAULT_UPSIDE_DOWN`, `APP_FAULT_TILT` or `APP_FAULT_LIFTED` is set in the shared fault bitmask (I9)      |
 | `STALL`         | 4     | Motion `FAILED`: a wheel stalled during a move, turn or drive                                                |
 | `CONTROLLER`    | 8     | Raised by the Vehicle Controller for its own stops: GP20, an avoidance safe stop, a lost line, a failed junction move     |
 
@@ -26,7 +26,7 @@ Collision risk is not checked here: obstacle avoidance stops on the second forwa
 | ----------------------------- | -------------------------------------------------------------------------------------------- |
 | `safety_monitor_stop(cause)`  | `motion_control_latch(true)` (brake and refuse every command); if it was not latched yet, print the cause |
 | `motion_control_latched()`    | True while a stop is latched                                                                  |
-| `safety_monitor_clear()`      | Release the latch. Returns false, and stays latched, while an IMU fault is set (those latch until reset) |
+| `safety_monitor_clear()`      | Release the latch. Returns false, and stays latched, while an IMU fault is set (tilt and upside down latch until reset; lifted clears once Z settles) |
 
 The controller enters SAFE_STOP whenever the latch is set, and a GP20 press there calls `safety_monitor_clear()`. Moving again then needs a second press (FR11).
 

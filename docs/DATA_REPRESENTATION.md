@@ -15,7 +15,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 
 | Subsystem | Field | Valid range | Bits | Representation | Shared with |
 | --- | --- | --- | --- | --- | --- |
-| Shared | Fault bitmask: one bit per fault of S1, S2, S4 and S5 (`APP_FAULT_...` in `app_fault.h`) | One bit each | 10 | Kernel event flag pattern, read with `app_faults()` | Every task and ISR: `tk_set_flg` and `tk_clr_flg` are atomic across both cores, and each owner changes only its own bits |
+| Shared | Fault bitmask: one bit per fault of S1, S2, S4 and S5 (`APP_FAULT_...` in `app_fault.h`) | One bit each | 11 | Kernel event flag pattern, read with `app_faults()` | Every task and ISR: `tk_set_flg` and `tk_clr_flg` are atomic across both cores, and each owner changes only its own bits |
 | 4 | `s4_accel_t.x`, `.y`, `.z`: latest acceleration per axis | −2048 to 2047 mg (sensor's 12-bit output at ±2 g) | 12 each | `signed int` bit-field | Readers copy it with `s4_get_accel()`, under mutex `gh_s4_mutex` |
 | 4 | `s4_accel_t.count`: readings taken | 0 to 255, wraps | 8 | `unsigned int` bit-field | As above |
 | 4 | `s4_tilt_t.pitch`, `.roll`: tilt from the start surface | −900 to 900 (0.1 degree) | 11 each | `signed int` bit-field | Readers copy it with `s4_get_tilt()`, under mutex `gh_s4_mutex` |

@@ -256,6 +256,27 @@ int main(void)
                    (0u == g_hump.count) && (0u == g_hump.max),
                "rolled over sideways: upside down, and no hump recorded");
 
+    /* Quick lift: Z 500 mg over 1 g for 100 ms. Set on the 5th sample
+     * (50 ms), not before; cleared once Z settles; nothing latched. */
+    test_reset();
+    test_feed(0, 0, TEST_G_MG + 500, (S4_LIFT_MS / S4_IMU_MS) - 1);
+    b_early = (0u != (g_faults & APP_FAULT_LIFTED));
+    test_feed(0, 0, TEST_G_MG + 500, 1);
+    test_check((!b_early) && (APP_FAULT_LIFTED == g_faults),
+               "quick lift: lifted fault at 50 ms, not before, alone");
+    test_feed(0, 0, TEST_G_MG + 500, 5);
+    test_feed(0, 0, TEST_G_MG, 1);
+    test_check(0u == g_faults, "lift over, Z settled: lifted fault cleared");
+
+    /* Not lifts: a 40 ms knock at the sensor's limit, a slow lift (Z 150
+     * mg over 1 g for 1 s), and Z just at S4_LIFT_MG for 1 s. */
+    test_reset();
+    test_feed(0, 0, 2047, (S4_LIFT_MS / S4_IMU_MS) - 1);
+    test_feed(0, 0, TEST_G_MG, 10);
+    test_feed(0, 0, TEST_G_MG + 150, 100);
+    test_feed(0, 0, TEST_G_MG + S4_LIFT_MG, 100);
+    test_check(0u == g_faults, "40 ms knock, slow lift, 300 mg: no fault");
+
     printf("%s: %d failure(s)\n", (0 == g_failures) ? "ALL PASS" : "FAILED",
            g_failures);
     return (0 == g_failures) ? 0 : 1;

@@ -119,7 +119,7 @@ Not drawn: every task reports health to the Safety Monitor over I10.
 | I6  | Vehicle Controller ↔ Obstacle Avoidance                                         | Activate / cancel one way; proposed bypass, progress and faults the other             |
 | I7  | Vehicle Controller → Ultrasonic Scan                                            | Scan request: `FORWARD`, `COARSE` or `FINE`                                           |
 | I8  | Ultrasonic Scan → Vehicle Controller, Obstacle Avoidance                        | Range or profile, angle, validity                                                     |
-| I9  | IMU and Terrain Monitor → Vehicle Controller, Safety Monitor                    | Pitch, turn rate, hump height, upside-down / tilt fault                               |
+| I9  | IMU and Terrain Monitor → Vehicle Controller, Safety Monitor                    | Pitch, turn rate, hump height, upside-down / tilt / lifted fault                      |
 | I10 | Every task → Safety Monitor                                                     | Health, data freshness, faults                                                        |
 | I11 | Safety Monitor → Vehicle Controller, Wheel Motion Control                       | Latched stop, cause, generation                                                       |
 | I12 | Wi-Fi and MQTT ↔ Vehicle Controller                                             | `START` / `STOP` / `RESET` from the supervisor; telemetry, heartbeat and events to it |
@@ -242,19 +242,19 @@ stateDiagram-v2
     LevelMonitoring --> OnHump: right wheel height reaches the start threshold
     OnHump --> LogAndReport: height back below the end threshold
     LogAndReport --> LevelMonitoring: peak logged
-    OnHump --> TiltUpsideDownFault: excessive tilt / upside down
+    OnHump --> TiltUpsideDownFault: excessive tilt / upside down / lifted
     TiltUpsideDownFault --> SafeStop: emergency event
     SafeStop --> LevelMonitoring: fault cleared / reset
 ```
 
-Excessive tilt and being upside down are checked in every monitoring state, not only the one drawn.
+Excessive tilt, being upside down and being lifted are checked in every monitoring state, not only the one drawn.
 
 - **Level Monitoring** calibrates the start-surface baseline, then tracks filtered pitch, roll and acceleration.
 - Humps pass under the right wheel only; the left side carries the barcode sensors. The car rests on three points (two drive wheels and a front caster), so it tips about the line from the left wheel to the caster, and the right wheel's height is the track width × sin(roll). No encoder travel is needed (FR5).
 - **On Hump** tracks the highest height until the wheel is back on flat ground.
 - **Log and Report** updates the run maximum and queues the hump event for telemetry.
 - The task also publishes one current motion class, highest first: climbing or descending a hump, accelerating or braking, steady. Steady covers both parked and cruising: the accelerometer cannot tell them apart, so stationary and turning need odometry (I5).
-- Excessive tilt is pitch or roll beyond 25° for 500 ms, replacing the review's 30° for 100 ms. Upside down is calibrated Z below 0 mg (over 90° from the start surface) for 200 ms: lifting the car and turning it over ends a demo run, however fast it is lifted. Tilt alone cannot see this, as pitch and roll come from X and Y and read near 0 again once the car is fully inverted. Driving never takes Z below 0: that needs a 1 g downward push held for 200 ms. Once Z is below 0 any hump in progress is dropped, so rolling the car over its side is not measured as a hump. Both faults latch, and the Safety Monitor stops the motors. The review's impact detection is dropped, as the course replaced collision detection with this lift stop; it also tripped on humps.
+- Excessive tilt is pitch or roll beyond 25° for 500 ms, replacing the review's 30° for 100 ms. Upside down is calibrated Z below 0 mg (over 90° from the start surface) for 200 ms: lifting the car and turning it over ends a demo run, however fast it is lifted. Tilt alone cannot see this, as pitch and roll come from X and Y and read near 0 again once the car is fully inverted. Driving never takes Z below 0: that needs a 1 g downward push held for 200 ms. Once Z is below 0 any hump in progress is dropped, so rolling the car over its side is not measured as a hump. Lifted is Z over 1.3 g for 50 ms, the push of a quick lift; knocks from humps and the ramp edge are shorter (checked on the car, S4-U27), and a slow lift is left to the upside-down check. Tilt and upside down latch; lifted clears once Z settles, so a car picked up after calibration needs one Start/Stop press, not a reset. Any of the three makes the Safety Monitor stop the motors. The review's impact detection is dropped, as the course replaced collision detection with this lift stop; it also tripped on humps.
 - A start threshold that must hold for a minimum time, above a lower end threshold, on low-pass filtered data, rejects vibration and jolts. Turning pushes sideways on the sensor and looks like roll, so cornering is the main source of false humps (A4).
 
 The review's diagram mentions gyro data. The GY-511 has no gyroscope, so everything here comes from the accelerometer, and turn rate comes from odometry.

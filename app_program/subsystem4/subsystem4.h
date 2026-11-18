@@ -44,6 +44,8 @@
 #define S4_TILT_MAX  250 /* Pitch or roll beyond 25.0 degrees... */
 #define S4_TILT_MS   500 /* ...for this long: excessive tilt. */
 #define S4_UPSIDE_MS 200 /* Z below 0 mg this long: upside down. */
+#define S4_LIFT_MG   300 /* Z this far above 1 g... */
+#define S4_LIFT_MS   50  /* ...this long: lifted (quick lifts only). */
 
 /* Largest values the packed fields below hold. */
 #define S4_AXIS_MAX_MG 2047

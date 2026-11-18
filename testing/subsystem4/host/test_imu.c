@@ -244,6 +244,18 @@ int main(void)
     test_check(0u != (g_faults & APP_FAULT_UPSIDE_DOWN),
                "upside-down fault stays latched after righting the car");
 
+    /* Rolled over the right side across 1 s: the right wheel rises as on
+     * a hump, but no hump may be recorded. */
+    test_reset();
+    for (i = 0; i <= 100; i++)
+    {
+        test_roll(180.0 * i / 100.0, 1);
+    }
+    test_feed(0, 0, -TEST_G_MG, 50);
+    test_check((0u != (g_faults & APP_FAULT_UPSIDE_DOWN)) &&
+                   (0u == g_hump.count) && (0u == g_hump.max),
+               "rolled over sideways: upside down, and no hump recorded");
+
     printf("%s: %d failure(s)\n", (0 == g_failures) ? "ALL PASS" : "FAILED",
            g_failures);
     return (0 == g_failures) ? 0 : 1;

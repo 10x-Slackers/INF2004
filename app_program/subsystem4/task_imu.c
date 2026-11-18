@@ -246,6 +246,11 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
         (-S4_TRACK_MM * g_imu.smooth_x) / (IMU_SMOOTH * IMU_MG_PER_G);
     g_imu.high_count =
         (sample.height_mm >= S4_HUMP_ON_MM) ? (g_imu.high_count + 1) : 0;
+    if (sample.z_mg < 0)
+    {
+        g_imu.high_count = 0; /* Rolled over, not on a hump: drop it. */
+        g_imu.peak_mm = 0;
+    }
     if (((g_imu.high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||
          (g_imu.peak_mm > 0)) &&
         (sample.height_mm > g_imu.peak_mm))

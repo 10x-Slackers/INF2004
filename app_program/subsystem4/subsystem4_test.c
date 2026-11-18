@@ -79,7 +79,7 @@ void subsystem4_test(void)
 
     /* Board still since power-on: no fault latched. */
     TEST_CHECK("S4-U14", 0u == (app_faults() & APP_FAULT_IMU),
-               "no impact or tilt fault on a still board");
+               "no upside-down or tilt fault on a still board");
     hump.peak = S4_HUMP_MAX_MM;
     hump.count = S4_TEST_HUMPS_MAX;
     hump.count++;

@@ -14,7 +14,7 @@ Every 10 ms the task latches a stop for any of these. The cause is printed with 
 
 | Cause           | Value | Condition                                                                                                   |
 | --------------- | ----- | ----------------------------------------------------------------------------------------------------------- |
-| `IMU`           | 1     | `APP_FAULT_IMPACT` or `APP_FAULT_TILT` is set in the shared fault bitmask (I9)                               |
+| `IMU`           | 1     | `APP_FAULT_UPSIDE_DOWN` or `APP_FAULT_TILT` is set in the shared fault bitmask (I9)                          |
 | `STALL`         | 4     | Motion `FAILED`: a wheel stalled during a move, turn or drive                                                |
 | `CONTROLLER`    | 8     | Raised by the Vehicle Controller for its own stops: GP20, an avoidance safe stop, a lost line, a failed junction move     |
 

@@ -41,9 +41,9 @@
 #define S4_BEEP_MS    200
 #define S4_ALARM_MS   1000 /* Beep on a fault. */
 
-#define S4_IMPACT_MG 800 /* Jump from the smoothed X or Y: impact. */
 #define S4_TILT_MAX  250 /* Pitch or roll beyond 25.0 degrees... */
 #define S4_TILT_MS   500 /* ...for this long: excessive tilt. */
+#define S4_UPSIDE_MS 200 /* Z below 0 mg this long: upside down. */
 
 /* Largest values the packed fields below hold. */
 #define S4_AXIS_MAX_MG 2047
@@ -83,17 +83,16 @@ typedef struct
     unsigned int on : 1;
 } s4_hump_t;
 
-/* Current motion class, highest first: impact (latched with the fault),
- * climbing or descending a hump, accelerating or braking, steady (parked
- * or cruising: telling them apart needs encoder speed). */
+/* Current motion class, highest first: climbing or descending a hump,
+ * accelerating or braking, steady (parked or cruising: telling them apart needs
+ * encoder speed). */
 typedef enum
 {
     S4_STEADY,
     S4_ACCELERATING,
     S4_BRAKING,
     S4_CLIMBING,
-    S4_DESCENDING,
-    S4_IMPACT
+    S4_DESCENDING
 } s4_motion_class_t;
 
 /* An s4_motion_class_t in 3 bits, stored in 4 bytes. */

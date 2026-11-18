@@ -208,7 +208,7 @@ A minimal setup:
 
 Each axis is a 16-bit two's complement value, left-justified. In high-resolution mode shift right by 4 to get a 12-bit value at 1 mg per LSB (±2 g range).
 
-The design review asked for ±4 g. The firmware uses ±2 g (1 mg per LSB), so anything beyond 2 g clips. Impact is therefore detected as a sudden jump rather than an absolute g level.
+The design review asked for ±4 g. The firmware uses ±2 g (1 mg per LSB), so anything beyond 2 g clips. Nothing needs more: tilt, humps and being turned over all come from gravity, which reads at most 1 g.
 
 On the car the module lies flat, chips up, with −Y pointing forward, +X to the left and +Z up (found by tilting the car). If Z sits at full scale (about 2040 mg) whatever the orientation while X and Y still work, the module is faulty: replace it. The firmware does not check for this, and start-up calibration accepts the stuck value.
 

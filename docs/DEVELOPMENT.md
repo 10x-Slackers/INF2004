@@ -1,10 +1,10 @@
 # Development Guide
 
-How to build, flash and add code. Environment setup is in the [root README](../README.md#getting-started-dev-container). The build options `SMP`, `CONSOLE`, `WIFI`, `TEST` and `CRASH_REPORT` are explained in section 3 of the same README; `NET` and `MQTT` are in [Building with MQTT](#building-with-mqtt) below.
+How to build, flash and add code. The rules for working in the repository (ownership, coding standard, tests) are in [AGENTS.md](../AGENTS.md); environment set-up and the build options `SMP`, `CONSOLE`, `WIFI`, `TEST` and `CRASH_REPORT` are in the [root README](../README.md).
 
 ## Build, flash, console
 
-Run from the repository root, inside the Dev Container or with the SDK and compiler set up as in the root README, section 1.
+Run from the repository root, inside the Dev Container or with the SDK and compiler set up as in the [root README](../README.md#without-the-dev-container).
 
 | Step       | Command                                                                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------------ |
@@ -56,7 +56,7 @@ Every `.c` file in `app_program/` and in its direct subfolders (one level down) 
 
 `usermain()` in `app_program/app_main.c` is the entry point. It calls every `subsystemN_init()` (create kernel objects), then every `subsystemN_start()` (start tasks), then sleeps forever; it must not return.
 
-Each subsystem lives in `app_program/subsystemN/`. `subsystemN.h` is its public interface (object IDs, message formats, priorities); everything else stays `static` in its `.c` files. Device drivers go in the owning subsystem's folder as `drv_<name>.c` / `drv_<name>.h`. A task is started with `app_start_task()` from `app.h`:
+Each subsystem lives in `app_program/subsystemN/`. `subsystemN.h` is its public interface; everything else stays `static` in its `.c` files. A periodic task is started with `app_start_task()` and woken by `app_start_cyclic()`, both from `app.h`:
 
 ```c
 #define S5_PRI_RANGE 12 /* From the subsystem's band in TEAM.md. */
@@ -66,27 +66,23 @@ static void subsystem5_range_task(INT stacd, void * p_exinf)
 {
     (void)stacd;
     (void)p_exinf;
-
     for (;;)
     {
+        (void)tk_slp_tsk(TMO_FEVR); /* Woken every S5_RANGE_MS. */
         /* Read the sensor, publish the result. */
-        (void)tk_dly_tsk(S5_RANGE_MS);
     }
 }
 
 ER subsystem5_start(void)
 {
     /* FP is the kernel's generic task pointer type. */
-    ID h_task = app_start_task((FP)subsystem5_range_task, S5_PRI_RANGE, 0,
-                                "s5_range");
-
-    return (h_task < E_OK) ? h_task : E_OK;
+    return app_start_cyclic(app_start_task((FP)subsystem5_range_task,
+                                           S5_PRI_RANGE, 0, "s5_range"),
+                            S5_RANGE_MS);
 }
 ```
 
-The third argument pins the task to a core: `TP_PRC1` (core 0), `TP_PRC2` (core 1) or `0` for any. Take each task's priority from the subsystem's band in `TEAM.md` section 4, keeping the task order of [ARCHITECTURE.md](ARCHITECTURE.md#tasks). A lower number is a higher priority.
-
-The upstream template (`upstream` remote) has a worked example in subsystems 1–4 that uses every kernel object below.
+The third argument of `app_start_task()` pins the task to a core: `TP_PRC1` (core 0), `TP_PRC2` (core 1) or `0` for any. Priorities come from the subsystem's band in `TEAM.md` section 4, in the task order of [ARCHITECTURE.md](ARCHITECTURE.md#tasks); a lower number is a higher priority.
 
 ### Things to know
 
@@ -145,44 +141,7 @@ tm_printf((UB *)"[line] pos=%d\n", pos);
 
 ## Networking
 
-The radio, lwIP and the MQTT client belong to the kernel's Wi-Fi service task. Application tasks only read its status with `cyw43_utk_get_status()` and hand data to it through a kernel object; the rules are in `TEAM.md` section 3 ("WiFi and MQTT are special"). The MQTT client is `lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c`.
-
-## Conventions
-
-### Engineering posture
-
-This is coursework, not a product. Prefer fewer lines, readability and simplicity over production hardening: skip defensive checks, speculative abstraction and configuration nobody uses yet. See [AGENTS.md](../AGENTS.md).
-
-### Coding standard
-
-Application code follows the [Barr Group Embedded C Coding Standard](https://barrgroup.com/embedded-systems/books/embedded-c-coding-standard) (NFR2). The rules that come up most:
-
-- Braces around every `if`, `else`, `for` and `while` body, each brace on its own line.
-- Four-space indentation, no tabs, lines at most 80 characters.
-- Fixed-width integer types (`uint8_t`, `int32_t`) rather than bare `int`.
-- No magic numbers: name constants.
-- Public functions and types carry their module's prefix.
-- One header per module, exposing only what other modules need.
-
-The deviations every subsystem shares (kernel types for kernel calls, the `TEST_*` macros, the clang-format layout) are listed at the top of `app_program/app.h`. A subsystem lists any further ones of its own in its header or its doc.
-
-The layout rules (braces, indentation, line length, spacing) are applied automatically by clang-format through the pre-commit hook, using the root `.clang-format`. Run `pre-commit install` once after cloning. To format by hand:
-
-```sh
-pre-commit run clang-format --files app_program/*/*
-```
-
-clang-format only handles layout. Naming, types and magic numbers are still checked by review.
-
-The hook covers `app_program/` only. The kernel sources in `kernel/`, `lib/`, `device/` and `include/` keep their upstream style. Do not reformat them.
-
-### Design discipline
-
-- Respect [hardware ownership](ARCHITECTURE.md#hardware-ownership). If your task needs another task's device, ask for the data through an interface.
-- Drive the motors only through the motion API ([design rule 1](ARCHITECTURE.md#design-rules)).
-- Claim pins, peripherals, priorities and interfaces in `TEAM.md` before coding them.
-- Size application data to its range and record each field in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md).
-- Automate unit tests in `subsystemN_test.c` with `TEST_CHECK` and record every test in `testing/` (see `testing/README.md`). Measurements and calibration values are assessed evidence (NFR8).
+The radio, lwIP and the MQTT client belong to the kernel's Wi-Fi service task. Application tasks only read its status with `cyw43_utk_get_status()` and hand data to it through a kernel object; the rules are in `TEAM.md` section 3 ("Wi-Fi and MQTT"). The MQTT client is `lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c`.
 
 ## Troubleshooting
 
@@ -192,4 +151,4 @@ The hook covers `app_program/` only. The kernel sources in `kernel/`, `lib/`, `d
 | `PICO_SDK_PATH is not set`            | The Dev Container did not clone the SDK. Delete `.pico-sdk/` and rebuild the Dev Container                         |
 | Build succeeds but there is no `.uf2` | The host `elf2uf2` tool failed to compile. Look for a `g++` error earlier in the output                            |
 | Nothing on the console                | The port has not been open long enough for the host to enumerate. Wait a second or two                             |
-| Console stops mid-run                 | The firmware crashed or froze before the USB task could send the output. Rebuild with `CRASH_REPORT=1` (README §3) |
+| Console stops mid-run                 | The firmware crashed or froze before the USB task could send the output. Rebuild with `CRASH_REPORT=1` ([build options](../README.md#build-options)) |

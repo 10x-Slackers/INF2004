@@ -2,11 +2,9 @@
 
 **Subsystem:** Motion control  ·  **Student ID:** 2503068  ·  **Code:** `app_program/subsystem2/`
 
-See `testing/README.md` for how to run tests and record results. Manual tests use the `TEST=1` bench sequence in [docs/MOTION_CONTROL.md](../../docs/MOTION_CONTROL.md#bench-sequence).
+Methods and how to record results: `testing/README.md`. Manual tests use the `TEST=1` bench sequence in [docs/MOTION_CONTROL.md](../../docs/MOTION_CONTROL.md#bench-sequence).
 
 ## Test cases
-
-Define a test here before running it. Test IDs never change.
 
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
@@ -28,12 +26,7 @@ Define a test here before running it. Test IDs never change.
 | S2-U28 | A latched safety stop refuses every command | FR11 | auto | `subsystem2_test.c` | `[TEST] S2-U28 PASS` |
 | S2-U29 | Commands are accepted again after the latch is released | FR11 | auto | `subsystem2_test.c` | `[TEST] S2-U29 PASS` |
 
-*Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
-**manual** = a person observes the result (LED, scope, meter, phone app…).
-
 ## Results
-
-Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|

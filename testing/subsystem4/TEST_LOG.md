@@ -2,11 +2,9 @@
 
 **Subsystem:** IMU and terrain  ·  **Student ID:** 2503999  ·  **Code:** `app_program/subsystem4/`
 
-See `testing/README.md` for how to run tests and record results.
+Methods and how to record results: `testing/README.md`.
 
 ## Test cases
-
-Define a test here before running it. Test IDs never change.
 
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
@@ -40,12 +38,7 @@ Define a test here before running it. Test IDs never change.
 | S4-U28 | On synthetic samples: a 10 ms jolt (Z −500 mg) on the way down a 30 mm hump does not lose it (one hump, 28..30 mm); the lifted fault is held for the 1 s beep after Z settles, then cleared (replaces S4-U26's clear on the first settled sample); after S4-U25's roll, righting the car the same way records no hump either | FR5, FR10 | host | As S4-U24 (same program) | `ALL PASS`, including `jolt on a hump` and `held while it beeps` |
 | S4-U29 | On synthetic samples: a 30 mm "hump" under way (car tilted 16° by hand) when a quick lift sets the lifted fault, then righted, records no hump | FR5, FR10 | host | As S4-U24 (same program) | `ALL PASS`, including `lifted mid-tilt` |
 
-*Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
-**manual** = a person observes the result (LED, scope, meter, phone app…).
-
 ## Results
-
-Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|

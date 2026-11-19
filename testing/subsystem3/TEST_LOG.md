@@ -2,11 +2,9 @@
 
 **Subsystem:** Line following and barcodes  ·  **Student ID:** 2502564  ·  **Code:** `app_program/subsystem3/`
 
-See `testing/README.md` for how to run tests and record results.
+Methods and how to record results: `testing/README.md`.
 
 ## Test cases
-
-Define a test here before running it. Test IDs never change.
 
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
@@ -32,12 +30,7 @@ Define a test here before running it. Test IDs never change.
 | S3-U20 | Letters outside A to D decode | FR3 | auto | `TEST=1` image, read the console | `S3-U20 PASS`: synthetic `*Z*` gives Z (the course's letters are announced on the day) |
 | S3-U21 | The bench turns at a junction after a barcode | FR2, FR3 | manual | `TEST=1` image on the course: start on the long straight between the loops, heading for the left loop with the `*Z*` on the car's left. Hold GP21 for 1 s | `[barcode] command=1`, then at the crossing `[line] junction: command 1`; the car turns left onto the line down to the bottom loop and follows it |
 
-*Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
-**manual** = a person observes the result (LED, scope, meter, phone app…).
-
 ## Results
-
-Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|

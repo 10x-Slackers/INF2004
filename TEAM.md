@@ -80,36 +80,13 @@ configuration, so record it below first.
 | GPIO edge callback on IRQ13 | Ultrasonic (Buddy 5) | `drv_hcsr04_edge`, registered with `app_gpio_register()` | GP1 echo |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
-### WiFi and MQTT are special
+### Wi-Fi and MQTT
 
-The radio and the network stack belong to the kernel's built-in WiFi service
-task, `cyw43_utk_task` (`lib/libwifi/sysdepend/pico_rp2040/`). **No student
-task may call `cyw43_...`, lwIP or MQTT functions, not even from a
-"WiFi subsystem".** The calls are not safe from any other task, on either core.
-
-What students *can* do:
-
-- **Read the connection state** from any task, which is always safe:
-  ```c
-  #include "cyw43_utk.h"
-  T_CYW43_UTK_STATUS st;
-  cyw43_utk_get_status(&st);   /* st.ready, st.link_status, st.ip_addr, ... */
-  ```
-- **Send or receive data over the network** through code that *runs
-  inside the service task*. The MQTT client is in
-  `lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c`. It publishes what
-  Subsystem 1's Telemetry task puts in a message buffer, which it reads
-  with `TMO_POL` (never blocking), and passes commands back through an
-  event flag (interface I12, `docs/TELEMETRY.md`).
-  Changing it changes shared library code, so **agree it with the team
-  and the instructor first**, and record it as an interface in section 5.
-  It needs the `NET=lwip MQTT=1` build (`make help`).
+The radio, lwIP and MQTT belong to the kernel's Wi-Fi service task, `cyw43_utk_task`. **No application task may call `cyw43_...`, lwIP or MQTT functions**: they are not safe from any other task. Any task may read the link state with `cyw43_utk_get_status()`. The MQTT client (`lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c`, `NET=lwip MQTT=1` builds) runs inside the service task: it publishes what the Telemetry task puts in a message buffer and passes commands back through an event flag (I12, `docs/TELEMETRY.md`). It is shared library code, so change it only by team agreement.
 
 ## 4. Task priorities
 
-1 is the highest. 1–4 are used by the kernel (USB console 3, WiFi 4). The bands follow the task order in
-`docs/ARCHITECTURE.md` (Tasks), so a lower `P` number always gets a higher priority. Change a band only by team
-agreement. Write down every task you create.
+1 is the highest; 1–4 belong to the kernel (USB console 3, Wi-Fi 4). The bands follow the task order in `docs/ARCHITECTURE.md` (Tasks). Change a band by team agreement, and list every task.
 
 | Subsystem | Priority band | Tasks (name – priority – core) |
 |---|---|---|

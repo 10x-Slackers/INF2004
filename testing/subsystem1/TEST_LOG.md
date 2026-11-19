@@ -2,11 +2,9 @@
 
 **Subsystem:** Wi-Fi, command and telemetry  ·  **Student ID:** 2503014  ·  **Code:** `app_program/subsystem1/`
 
-See `testing/README.md` for how to run tests and record results.
+Methods and how to record results: `testing/README.md`.
 
 ## Test cases
-
-Define a test here before running it. Test IDs never change.
 
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
@@ -15,13 +13,7 @@ Define a test here before running it. Test IDs never change.
 | S1-U03 | The dashboard decodes the bytes of S1-U02, with enumerated fields and faults by name; ignores a wrong size and a topic that is not ours; logs state changes, the run summary on a safe stop, barcodes and faults, and heartbeat gaps across the count's wrap and a restart | FR9, FR12, I12 | host | `cd tools/supervisor && pip install -r requirements.txt && python3 -m unittest -v test_dashboard` | `OK` |
 | S1-U04 | The dashboard against a Mosquitto broker on the PC, without the car: payloads sent with `mosquitto_pub` show decoded on the page's `/state`; each button's request publishes its byte on `csc13/cmd` | FR9, I12 | host | Commands in `logs/2026-11-19_host_mqtt.txt` | `/state` holds the values of S1-U02; `mosquitto_sub` prints `01`, `02`, `04` for START, STOP, RESET |
 
-*Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
-**manual** = a person observes the result (LED, scope, meter, phone app…);
-**host** = runs on the PC.
-
 ## Results
-
-Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|

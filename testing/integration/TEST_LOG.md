@@ -1,12 +1,10 @@
 # Integration — test log
 
-Tests that two or more subsystems work together. There is one test (or more) for every interface listed in TEAM.md section 5. Both owners agree on the test and sign off the result.
+Tests that two or more subsystems work together. Usually one per interface in TEAM.md section 5.
 
-See `testing/README.md` for how to run tests and record results.
+Methods and how to record results: `testing/README.md`.
 
 ## Test cases
-
-Define a test here before running it. Test IDs never change.
 
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
@@ -27,12 +25,7 @@ Define a test here before running it. Test IDs never change.
 | INT-15 | Lifting the car ends the run: the motors stop | I9, I11, FR10, FR11 | manual | Normal build, car following the line. Pick it up and turn it upside down, once slowly and once quickly (reset between) | `[imu] FAULT: upside down` (or `tilt`), `[safety] stop, cause 0x1`, `FOLLOW -> SAFE_STOP: safety latched`; the wheels stop within 0.5 s of inverting and stay stopped |
 | INT-16 | A quick level lift stops the motors; one GP20 press clears it, the next starts | I9, I11, FR10, FR11 | manual | Normal build. 1. After `[imu] calibrated`, pick the car up quickly, carry it to the start and set it down. 2. Once it is still and the beep has ended, press GP20, then press it again. 3. While it follows the line, snatch it straight up, level | 1: `[imu] FAULT: lifted`, `READY -> SAFE_STOP: safety latched`. 2: `[safety] cleared`, then `READY -> FOLLOW: GP20`. 3: `[imu] FAULT: lifted`, `[safety] stop, cause 0x1`, `FOLLOW -> SAFE_STOP: safety latched`; the wheels stop |
 
-*Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
-**manual** = a person observes the result (LED, scope, meter, phone app…).
-
 ## Results
-
-Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|

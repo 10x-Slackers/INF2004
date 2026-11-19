@@ -2,11 +2,9 @@
 
 **Subsystem:** Ultrasonic scanning and obstacle avoidance  ·  **Student ID:** 2503992  ·  **Code:** `app_program/subsystem5/`
 
-See `testing/README.md` for how to run tests and record results. Manual tests use the `TEST=1` bench sequence in [docs/OBSTACLE_AVOIDANCE.md](../../docs/OBSTACLE_AVOIDANCE.md#bench-sequence). Wiring: TRIG on GP0, level-shifted ECHO on GP1, SG90 on GP12.
+Methods and how to record results: `testing/README.md`. Manual tests use the `TEST=1` bench sequence in [docs/OBSTACLE_AVOIDANCE.md](../../docs/OBSTACLE_AVOIDANCE.md#bench-sequence). Wiring: TRIG on GP0, level-shifted ECHO on GP1, SG90 on GP12.
 
 ## Test cases
-
-Define a test here before running it. Test IDs never change.
 
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
@@ -22,13 +20,7 @@ Define a test here before running it. Test IDs never change.
 | S5-U49 | No open side | FR7, NFR5 | manual | As S5-U48, with walls 150 mm either side of the box (about 210 mm along the 45° rays) | `state=4` (stopped), `faults=0x80`, `right_mm` and `left_mm` under 250, and the car does not move after braking; no reverse |
 | S5-U50 | Side path blocked beside the car | FR7, NFR5 | manual | As S5-U48, with a wall about 250 mm to the left of the car's path, starting level with the box (outside the 45° ray at braking), the right open | Brakes, scans, turns left, turns 120° to the right after one forward reading, then bypasses on the right: `side=2`, `bypasses=1`, `faults=0`; no collision |
 
-*Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
-**host** = runs on the PC;
-**manual** = a person observes the result (LED, scope, meter, phone app…).
-
 ## Results
-
-Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|

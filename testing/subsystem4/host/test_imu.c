@@ -296,6 +296,17 @@ int main(void)
     test_feed(0, 0, TEST_G_MG + S4_LIFT_MG, 100);
     test_check(0u == g_faults, "40 ms knock, slow lift, 300 mg: no fault");
 
+    /* Picked up mid-tilt, as by hand at the end of a run: a 30 mm "hump"
+     * is under way when a quick lift sets the lifted fault; then righted. */
+    test_reset();
+    test_roll(16.0, 30);
+    test_feed((int32_t)(-TEST_G_MG * sin(16.0 * TEST_PI / 180.0)), 0,
+              TEST_G_MG + 500, (S4_LIFT_MS / S4_IMU_MS) + 1);
+    test_roll(16.0, 10);
+    test_feed(0, 0, TEST_G_MG, 100);
+    test_check((0u == g_hump.count) && (0u == g_hump.max),
+               "lifted mid-tilt, then righted: no hump recorded");
+
     printf("%s: %d failure(s)\n", (0 == g_failures) ? "ALL PASS" : "FAILED",
            g_failures);
     return (0 == g_failures) ? 0 : 1;

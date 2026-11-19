@@ -24,7 +24,8 @@
  * Humps pass under the right wheel only, so its height is
  * track width x sin(roll). A hump starts when that height stays at
  * S4_HUMP_ON_MM or more for S4_HUMP_MIN_MS, which ignores jolts, and ends,
- * with its peak logged, when it falls below S4_HUMP_OFF_MM.
+ * with its peak logged, when it falls below S4_HUMP_OFF_MM. None are tracked
+ * while an IMU fault is set: the car is being handled, not driven.
  */
 
 #include "subsystem4.h"
@@ -254,9 +255,9 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
         (-S4_TRACK_MM * g_imu.smooth_x) / (IMU_SMOOTH * IMU_MG_PER_G);
     g_imu.high_count =
         (sample.height_mm >= S4_HUMP_ON_MM) ? (g_imu.high_count + 1) : 0;
-    if (0u != (g_imu.faults & APP_FAULT_UPSIDE_DOWN))
+    if (0u != (app_faults() & APP_FAULT_IMU))
     {
-        g_imu.high_count = 0; /* Turned over: no humps until reset. */
+        g_imu.high_count = 0; /* Picked up or turned over: not a hump. */
         g_imu.peak_mm = 0;
     }
     if (((g_imu.high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||

@@ -18,7 +18,7 @@ Events (barcode read, hump measured, bypass done, state change) need no topic of
 
 ## Encoding
 
-Each payload is one bit stream, most significant bit first, padded with zero bits to whole bytes, as in `motion_control_pack()`. A signed field is sent as value + offset so it is never negative. `supervisor/payloads.py` packs and unpacks every payload and is the reference decoder.
+Each payload is one bit stream, most significant bit first, padded with zero bits to whole bytes, as in `motion_control_pack()`. A signed field is sent as value + offset so it is never negative. `tools/supervisor/payloads.py` packs and unpacks every payload and is the reference decoder.
 
 ### `telemetry`: 83 bits
 
@@ -88,7 +88,7 @@ The service connects once the Wi-Fi link is up. When an attempt fails or the con
 
 ## Supervisor dashboard
 
-[supervisor/](../supervisor/README.md) has the laptop side: `dashboard.py` subscribes to `csc13/#`, decodes each payload with `payloads.py`, and serves a local page with the live state, an event log and the Start, Stop and Reset commands. Its README covers running the broker and the dashboard for a demo.
+[tools/supervisor/](../tools/supervisor/README.md) has the laptop side: `dashboard.py` subscribes to `csc13/#`, decodes each payload with `payloads.py`, and serves a local page with the live state, an event log and the Start, Stop and Reset commands. Its README covers running the broker and the dashboard for a demo.
 
 ## Size
 

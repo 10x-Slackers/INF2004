@@ -29,7 +29,7 @@
   .hero {
     display: flex; flex-wrap: wrap; justify-content: space-between;
     align-items: flex-end; gap: 1.5rem; padding: 1.75rem 0 1.5rem;
-    border-bottom: 6px solid var(--ink); /* The tape the car follows. */
+    border-bottom: 6px solid var(--ink);
   }
   h1 {
     margin: 0; font-size: clamp(2.6rem, 7vw, 5.25rem); line-height: 1;
@@ -86,7 +86,8 @@
 
   .log { margin-top: 2.5rem; }
   .log h2 { display: flex; justify-content: space-between; align-items: baseline; }
-  .log a { font: .9rem system-ui, sans-serif; color: var(--ready); }
+  .log a, .log h2 button { font: .9rem system-ui, sans-serif; color: var(--ready); }
+  .log h2 button, .log h2 button:hover:not(:disabled) { padding: 0 1rem 0 0; border: 0; background: none; text-decoration: underline; }
   #events { list-style: none; margin: 0; padding: 0; max-height: 22rem; overflow-y: auto; border-top: 1px solid var(--rule); }
   #events li { display: grid; grid-template-columns: 5.5rem 1fr; padding: .35rem 0; border-bottom: 1px solid var(--rule); }
   #events time { color: var(--muted); }
@@ -108,14 +109,14 @@
 
 <section class="hero">
   <div>
-    <h1 id="state"></h1>
+    <h1 id="state">Starting</h1>
     <p id="since"></p>
     <p id="hint"></p>
   </div>
   <div class="controls">
-    <button id="START" title="Begin following the line (READY only)">Start</button>
-    <button id="STOP" title="Brake and latch a safe stop (Esc)">Stop</button>
-    <button id="RESET" title="Clear the safe stop (SAFE_STOP only)">Reset</button>
+    <button type="button" id="START" title="Begin following the line (READY only)">Start</button>
+    <button type="button" id="STOP" title="Brake and latch a safe stop (Esc)">Stop</button>
+    <button type="button" id="RESET" title="Clear the safe stop (SAFE_STOP only)">Reset</button>
     <p id="notice">Esc sends Stop</p>
   </div>
 </section>
@@ -123,7 +124,7 @@
 <main>
   <section>
     <h2>Line</h2>
-    <div class="sensors" aria-label="Line sensors"><span id="sensor-left"></span><span id="sensor-right"></span></div>
+    <div class="sensors"><span id="sensor-left"></span><span id="sensor-right"></span></div>
     <dl id="line"></dl>
   </section>
   <section><h2>Motion</h2><dl id="motion"></dl></section>
@@ -145,7 +146,7 @@
 </main>
 
 <section class="log">
-  <h2>Events <a href="/log" download="car-log.txt">Download log</a></h2>
+  <h2>Events <span><button type="button" id="clear-log">Clear log</button> <a href="/log" download="car-log.txt">Download log</a></span></h2>
   <ol id="events"></ol>
 </section>
 
@@ -161,7 +162,7 @@
   };
   const MOVING = ['READY', 'FOLLOW', 'AVOID', 'TURN'];
   const yes = v => v ? 'yes' : 'no';
-  const deg = v => (v / 10).toFixed(1) + '°';
+  const deg = v => `${(v / 10).toFixed(1)}°`;
   const GROUPS = {  // List id: [label, topic, text from the topic's fields].
     line: [
       ['Junction', 'telemetry', t => yes(t.junction)],
@@ -170,30 +171,30 @@
       ['Barcodes read', 'telemetry', t => t.barcodes],
     ],
     motion: [
-      ['Speed left', 'motion', m => m.left_speed + ' mm/s'],
-      ['Speed right', 'motion', m => m.right_speed + ' mm/s'],
-      ['Distance', 'motion', m => (m.distance_mm / 1000).toFixed(2) + ' m'],
-      ['Heading', 'motion', m => m.heading_deg + '°'],
-      ['Move', 'motion', m => m.command + ', ' + m.state],
-      ['Encoders', 'motion', m => m.left_count + ' / ' + m.right_count],
+      ['Speed left', 'motion', m => `${m.left_speed} mm/s`],
+      ['Speed right', 'motion', m => `${m.right_speed} mm/s`],
+      ['Distance', 'motion', m => `${(m.distance_mm / 1000).toFixed(2)} m`],
+      ['Heading', 'motion', m => `${m.heading_deg}°`],
+      ['Move', 'motion', m => `${m.command}, ${m.state}`],
+      ['Encoders', 'motion', m => `${m.left_count} / ${m.right_count}`],
     ],
     terrain: [
       ['Pitch', 'telemetry', t => deg(t.pitch)],
       ['Roll', 'telemetry', t => deg(t.roll)],
       ['Motion', 'telemetry', t => t.motion_class],
-      ['Highest hump since boot', 'telemetry', t => t.hump_max + ' mm'],
+      ['Highest hump since boot', 'telemetry', t => `${t.hump_max} mm`],
       ['Humps', 'telemetry', t => t.humps],
       ['On a hump', 'telemetry', t => yes(t.on_hump)],
     ],
     'obstacle-values': [
-      ['Ahead', 'telemetry', t => t.forward_mm >= 4000 ? 'clear' : t.forward_mm + ' mm'],
+      ['Ahead', 'telemetry', t => t.forward_mm >= 4000 ? 'clear' : `${t.forward_mm} mm`],
       ['Avoidance', 'telemetry', t => t.avoid_state],
       ['Bypass side', 'telemetry', t => t.avoid_side],
       ['Bypasses', 'telemetry', t => t.bypasses],
-      ['Closest', 'scan', s => s.closest_mm + ' mm at ' + s.closest_deg + '°'],
-      ['Width', 'scan', s => s.width_mm + ' mm'],
-      ['Clearance left', 'scan', s => s.left_mm + ' mm'],
-      ['Clearance right', 'scan', s => s.right_mm + ' mm'],
+      ['Closest', 'scan', s => `${s.closest_mm} mm at ${s.closest_deg}°`],
+      ['Width', 'scan', s => `${s.width_mm} mm`],
+      ['Clearance left', 'scan', s => `${s.left_mm} mm`],
+      ['Clearance right', 'scan', s => `${s.right_mm} mm`],
     ],
     safety: [['Safety latch', 'telemetry', t => t.latched ? 'held' : 'clear']],
   };
@@ -245,9 +246,10 @@
       : t && stale ? `No telemetry for ${Math.round(age)} s. Check the car is on and on the broker's network.`
       : hint;
     document.body.classList.toggle('stale', stale);
-    $('START').disabled = !broker || name !== 'READY';
-    $('RESET').disabled = !broker || name !== 'SAFE_STOP';
-    $('STOP').disabled = !broker || (carOnline && !MOVING.includes(name));
+    const off = !broker || !carOnline;  // A command would reach no one.
+    $('START').disabled = off || name !== 'READY';
+    $('RESET').disabled = off || name !== 'SAFE_STOP';
+    $('STOP').disabled = off || !MOVING.includes(name);
   }
 
   // Newest first; the server sends only the events after lastEvent.
@@ -267,7 +269,7 @@
   async function refresh() {
     let data;
     try {
-      data = await (await fetch('/state?since=' + lastEvent)).json();
+      data = await (await fetch(`/state?since=${lastEvent}`)).json();
     } catch {
       $('link').textContent = 'Dashboard server stopped';
       document.documentElement.style.setProperty('--link', 'var(--stop)');
@@ -308,12 +310,16 @@
   }
 
   async function send(name) {
-    const response = await fetch('/cmd/' + name, {method: 'POST'}).catch(() => null);
+    const response = await fetch(`/cmd/${name}`, {method: 'POST'}).catch(() => null);
     $('notice').textContent = !response ? 'Not sent: the dashboard server stopped'
       : response.ok ? `Sent ${name[0] + name.slice(1).toLowerCase()}` : await response.text();
   }
 
   for (const id of ['START', 'STOP', 'RESET']) $(id).onclick = () => send(id);
+  $('clear-log').onclick = async () => {
+    await fetch('/clear', {method: 'POST'}).catch(() => null);
+    $('events').replaceChildren();
+  };
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && !$('STOP').disabled) send('STOP');
   });

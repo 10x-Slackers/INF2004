@@ -4,12 +4,13 @@ Subscribes to csc13/#, decodes each payload with payloads.py, keeps an event
 log of what changed, and serves a local page with the live state and the
 Start, Stop and Reset commands. Run:
 
-    python3 supervisor/dashboard.py --broker <broker IP>
+    python3 tools/supervisor/dashboard.py --broker <broker IP>
     then open http://127.0.0.1:8000
 """
 
 import argparse
 import collections
+import itertools
 import json
 import threading
 import time
@@ -28,6 +29,7 @@ client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 lock = threading.Lock()  # Guards latest and events: MQTT and HTTP threads.
 latest = {}  # Topic name: (time received, decoded fields).
 events = collections.deque(maxlen=1000)  # {"id", "t", "text", "kind"}.
+ids = itertools.count(1)  # Not reset by Clear log, so the page's since holds.
 RUN = time.time()  # Tells the page this server restarted, ids from 1 again.
 
 
@@ -35,8 +37,11 @@ def decode(topic, payload):
     """A topic's name and decoded fields, or None if it is not a payload of
     ours. Enumerated fields are given by name, faults as a list of names."""
     name = topic.removeprefix(PREFIX)
-    if (not topic.startswith(PREFIX) or name not in payloads.LAYOUTS
-            or len(payload) != payloads.size(name)):
+    if (
+        not topic.startswith(PREFIX)
+        or name not in payloads.LAYOUTS
+        or len(payload) != payloads.size(name)
+    ):
         return None
     values = payloads.unpack(name, payload)
     for field, names in payloads.NAMES.get(name, {}).items():
@@ -44,8 +49,9 @@ def decode(topic, payload):
             values[field] = names[values[field]]
     if name == "telemetry":
         faults = values["faults"]
-        values["faults"] = [fault for bit, fault in enumerate(payloads.FAULTS)
-                            if faults >> bit & 1]
+        values["faults"] = [
+            fault for bit, fault in enumerate(payloads.FAULTS) if faults >> bit & 1
+        ]
     return name, values
 
 
@@ -56,21 +62,32 @@ def telemetry_events(old, new):
     if new["state"] != old["state"]:
         found.append((f"{old['state']} → {new['state']}", "state"))
         if new["state"] == "SAFE_STOP":  # FR12: a run ends on Stop.
-            found.append((f"Run ended: highest hump since power-on "
-                          f"{new['hump_max']} mm, "
-                          f"faults: {', '.join(new['faults']) or 'none'}",
-                          "summary"))
+            found.append(
+                (
+                    (
+                        f"Run ended: highest hump since power-on "
+                        f"{new['hump_max']} mm, "
+                        f"faults: {', '.join(new['faults']) or 'none'}"
+                    ),
+                    "summary",
+                )
+            )
     if new["barcodes"] != old["barcodes"]:
         found.append((f"Barcode read: {new['barcode']}", "info"))
     if new["humps"] != old["humps"]:
-        found.append((f"Hump measured, highest so far {new['hump_max']} mm",
-                      "info"))
+        found.append((f"Hump measured, highest so far {new['hump_max']} mm", "info"))
     if new["bypasses"] != old["bypasses"]:
         found.append(("Bypass complete", "info"))
-    found += [(f"Fault: {fault}", "fault")
-              for fault in new["faults"] if fault not in old["faults"]]
-    found += [(f"Fault cleared: {fault}", "info")
-              for fault in old["faults"] if fault not in new["faults"]]
+    found += [
+        (f"Fault: {fault}", "fault")
+        for fault in new["faults"]
+        if fault not in old["faults"]
+    ]
+    found += [
+        (f"Fault cleared: {fault}", "info")
+        for fault in old["faults"]
+        if fault not in new["faults"]
+    ]
     return found
 
 
@@ -87,8 +104,14 @@ def heartbeat_event(old_count, count):
 
 def log(text, kind="info"):
     with lock:
-        events.append({"id": (events[-1]["id"] + 1) if events else 1,
-                       "t": time.time(), "text": text, "kind": kind})
+        events.append(
+            {
+                "id": next(ids),
+                "t": time.time(),
+                "text": text,
+                "kind": kind,
+            }
+        )
 
 
 def on_connect(client, userdata, flags, reason_code, properties):
@@ -113,14 +136,23 @@ def on_message(client, userdata, message):
             old = dict(old, **{k: values[k] for k in COUNTS})
         latest[name] = (time.time(), values)
     if name == "telemetry":
-        found = (telemetry_events(old, values) if old else
-                 [(f"Telemetry received: {values['state']}", "state")])
+        found = (
+            telemetry_events(old, values)
+            if old
+            else [(f"Telemetry received: {values['state']}", "state")]
+        )
     elif name == "heartbeat":
         found = [heartbeat_event(old and old["count"], values["count"])]
     elif name == "scan":
-        found = [(f"Obstacle profiled: closest {values['closest_mm']} mm at "
-                  f"{values['closest_deg']}°, width {values['width_mm']} mm",
-                  "info")]
+        found = [
+            (
+                (
+                    f"Obstacle profiled: closest {values['closest_mm']} mm at "
+                    f"{values['closest_deg']}°, width {values['width_mm']} mm"
+                ),
+                "info",
+            )
+        ]
     else:
         found = []
     for event in filter(None, found):
@@ -132,10 +164,15 @@ def snapshot(since):
     events after id since."""
     now = time.time()
     with lock:
-        return {"run": RUN, "broker": client.is_connected(),
-                "topics": {name: {"age_s": round(now - t, 1), "values": v}
-                           for name, (t, v) in latest.items()},
-                "events": [e for e in events if e["id"] > since][-200:]}
+        return {
+            "run": RUN,
+            "broker": client.is_connected(),
+            "topics": {
+                name: {"age_s": round(now - t, 1), "values": v}
+                for name, (t, v) in latest.items()
+            },
+            "events": [e for e in events if e["id"] > since][-200:],
+        }
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -145,15 +182,21 @@ class Handler(BaseHTTPRequestHandler):
             self.reply(200, json.dumps(snapshot(since)), "application/json")
         elif self.path == "/log":  # The whole event log, as a text file.
             with lock:
-                lines = [time.strftime("%H:%M:%S ", time.localtime(e["t"]))
-                         + e["text"] for e in events]
+                lines = [
+                    time.strftime("%H:%M:%S ", time.localtime(e["t"])) + e["text"]
+                    for e in events
+                ]
             self.reply(200, "\n".join(lines) + "\n", "text/plain")
         else:
             self.reply(200, PAGE.read_bytes(), "text/html")
 
-    def do_POST(self):  # /cmd/START, /cmd/STOP or /cmd/RESET.
+    def do_POST(self):  # /clear, or /cmd/START, /cmd/STOP or /cmd/RESET.
         name = self.path.removeprefix("/cmd/")
-        if name not in payloads.COMMANDS:
+        if self.path == "/clear":
+            with lock:
+                events.clear()
+            self.reply(200, "", "text/plain")
+        elif name not in payloads.COMMANDS:
             self.reply(404, "Unknown command", "text/plain")
         elif not client.is_connected():
             self.reply(503, "Not sent: no broker connection", "text/plain")
@@ -178,8 +221,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--broker", default="127.0.0.1", help="broker address")
     parser.add_argument("--broker-port", type=int, default=1883)
-    parser.add_argument("--port", type=int, default=8000,
-                        help="port of the local page")
+    parser.add_argument("--port", type=int, default=8000, help="port of the local page")
     args = parser.parse_args()
 
     client.on_connect = on_connect
@@ -187,8 +229,10 @@ def main():
     client.on_message = on_message
     client.connect_async(args.broker, args.broker_port)  # Broker may be late.
     client.loop_start()  # Its own thread; it reconnects by itself.
-    print(f"Broker {args.broker}:{args.broker_port}, "
-          f"page http://127.0.0.1:{args.port}", flush=True)
+    print(
+        f"Broker {args.broker}:{args.broker_port}, page http://127.0.0.1:{args.port}",
+        flush=True,
+    )
     ThreadingHTTPServer(("127.0.0.1", args.port), Handler).serve_forever()
 
 

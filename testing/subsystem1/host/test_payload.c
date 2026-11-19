@@ -2,9 +2,8 @@
  *
  * @brief Host test of payload.c: the C packers must give the bytes that
  * payloads.pack() gives for the same values (C_TELEMETRY_BYTES and
- * C_SCAN_BYTES in payloads.py, which S1-U01 checks). Every field has its
- * top bit set, so a field packed too narrow fails; roll is negative
- * instead, for the offset. Build and run as in S1-U02 of
+ * C_SCAN_BYTES in payloads.py, which S1-U01 checks; it says why these
+ * values). Build and run as in S1-U02 of
  * testing/subsystem1/TEST_LOG.md.
  */
 

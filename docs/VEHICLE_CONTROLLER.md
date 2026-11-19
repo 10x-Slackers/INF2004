@@ -64,7 +64,7 @@ The supervisor's `cmd` byte ([TELEMETRY.md](TELEMETRY.md#cmd-8-bits)) reaches th
 | STOP    | READY, FOLLOW, AVOID, TURN  | SAFE_STOP, latching the Safety Monitor like the controller's other stops     |
 | RESET   | SAFE_STOP                   | What a GP20 press does there: INIT (READY once calibrated), if `safety_monitor_clear()` succeeds |
 
-A command in any other state is dropped, not kept for later. STOP is taken first, so a byte or a cycle that carries STOP with START only stops. A stop the controller has already decided on in that cycle (safety latched, GP20, avoidance stopped, line lost) is taken before any command. No command steers or sets a speed.
+A command in any other state is dropped, not kept for later. STOP is refused in INIT because nothing moves yet, and a stop there would let RESET skip the IMU calibration. STOP is taken first, so a byte or a cycle that carries STOP with START only stops. A stop the controller has already decided on in that cycle (safety latched, GP20, avoidance stopped, line lost) is taken before any command. No command steers or sets a speed.
 
 ## Calibration
 

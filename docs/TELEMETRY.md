@@ -61,7 +61,7 @@ Fields of `ultrasonic_scan_t.profile` and `obstacle_avoidance_status_t`, same na
 
 ### `cmd`: 8 bits
 
-One bit per command, the same bits as the controller's event flag: 1 START, 2 STOP, 4 RESET. Other bits are ignored, and so is a payload that is not exactly one byte. START and RESET do what GP20 does ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#gp20)): START from READY, RESET from SAFE_STOP, and are ignored in any other state. STOP is accepted in READY, FOLLOW, AVOID and TURN: the controller calls `safety_monitor_stop()`, so the car brakes and the controller goes to SAFE_STOP. In INIT nothing moves yet, and a stop there would let RESET skip the IMU calibration ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#mqtt-commands)). No command steers or sets a speed.
+One bit per command, the same bits as the controller's event flag: 1 START, 2 STOP, 4 RESET. Other bits are ignored, and so is a payload that is not exactly one byte. The states in which the controller accepts each command, and what it does, are in [VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#mqtt-commands). No command steers or sets a speed.
 
 ## Inside the car
 

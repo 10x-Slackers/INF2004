@@ -21,22 +21,6 @@ import paho.mqtt.client as mqtt
 import payloads
 
 PREFIX = "csc13/"
-COMMANDS = {"START": 1, "STOP": 2, "RESET": 4}  # Bits of the cmd byte.
-FAULTS = ["STALL_LEFT", "STALL_RIGHT", "ENCODER", "UPSIDE_DOWN", "TILT",
-          "NO_ECHO", "AVOID_SENSOR", "AVOID_BLOCKED", "AVOID_MOTION", "WIFI",
-          "LIFTED"]  # APP_FAULT_... in app_fault.h, bit 0 first.
-NAMES = {  # Names of the enumerated fields, by value, from the C headers.
-    ("telemetry", "state"): payloads.STATES,
-    ("telemetry", "barcode"): ["none", "left", "right", "straight", "U-turn"],
-    ("telemetry", "motion_class"): ["steady", "accelerating", "braking",
-                                    "climbing", "descending"],
-    ("telemetry", "avoid_state"): ["idle", "watching", "profiling",
-                                   "bypassing", "stopped"],
-    ("telemetry", "avoid_side"): ["none", "left", "right"],
-    ("motion", "state"): ["idle", "running", "complete", "failed"],
-    ("motion", "command"): ["none", "forward", "backward", "left", "right",
-                            "drive"],
-}
 PAGE = Path(__file__).with_name("dashboard.html")
 
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
@@ -50,16 +34,16 @@ def decode(topic, payload):
     ours. Enumerated fields are given by name, faults as a list of names."""
     name = topic.removeprefix(PREFIX)
     if (not topic.startswith(PREFIX) or name not in payloads.LAYOUTS
-            or len(payload) != (payloads.width(name) + 7) // 8):
+            or len(payload) != payloads.size(name)):
         return None
-    # unpack() fills its dict from the last field back: keep payload order.
-    values = dict(reversed(payloads.unpack(name, payload).items()))
-    for (topic_name, field), names in NAMES.items():
-        if topic_name == name and values[field] < len(names):
+    values = payloads.unpack(name, payload)
+    for field, names in payloads.NAMES.get(name, {}).items():
+        if values[field] < len(names):  # A value the C side added later.
             values[field] = names[values[field]]
     if name == "telemetry":
-        values["faults"] = [fault for bit, fault in enumerate(FAULTS)
-                            if values["faults"] >> bit & 1]
+        faults = values["faults"]
+        values["faults"] = [fault for bit, fault in enumerate(payloads.FAULTS)
+                            if faults >> bit & 1]
     return name, values
 
 
@@ -134,20 +118,24 @@ def on_message(client, userdata, message):
         log(*event)
 
 
-def snapshot():
-    """What the page shows: each topic's latest fields and age, the events."""
+def snapshot(since):
+    """What the page shows: each topic's latest fields and age, and the
+    events after id since (all of them if since is ahead, after a restart)."""
     now = time.time()
     with lock:
+        if events and since > events[-1]["id"]:
+            since = 0
         return {"broker": client.is_connected(),
                 "topics": {name: {"age_s": round(now - t, 1), "values": v}
                            for name, (t, v) in latest.items()},
-                "events": list(events)[-200:]}
+                "events": [e for e in events if e["id"] > since][-200:]}
 
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == "/state":
-            self.reply(200, json.dumps(snapshot()), "application/json")
+        if self.path.startswith("/state"):  # /state?since=<last event id>
+            since = int(self.path.partition("since=")[2] or 0)
+            self.reply(200, json.dumps(snapshot(since)), "application/json")
         elif self.path == "/log":  # The whole event log, as a text file.
             with lock:
                 lines = [time.strftime("%H:%M:%S ", time.localtime(e["t"]))
@@ -158,12 +146,12 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):  # /cmd/START, /cmd/STOP or /cmd/RESET.
         name = self.path.removeprefix("/cmd/")
-        if name not in COMMANDS:
+        if name not in payloads.COMMANDS:
             self.reply(404, "Unknown command", "text/plain")
         elif not client.is_connected():
             self.reply(503, "Not sent: no broker connection", "text/plain")
         else:
-            client.publish(PREFIX + "cmd", bytes([COMMANDS[name]]))
+            client.publish(PREFIX + "cmd", bytes([payloads.COMMANDS[name]]))
             log(f"Sent {name.capitalize()}", "command")
             self.reply(200, "", "text/plain")
 

@@ -7,7 +7,6 @@
  * therefore queues each payload in a message buffer, and the service takes
  * it from there to publish. The service calls the mqtt_utk_app_...()
  * functions at the end of this file; mqtt_utk.h declares and names them.
- * Without MQTT=1 only the command flag is built: nothing sets it.
  */
 
 #include "subsystem1.h"
@@ -26,12 +25,6 @@
 #define S1_HEARTBEAT_CYCLES 5u   /* heartbeat every 1 s. */
 #define S1_HEARTBEAT_BYTES  2u   /* A 16-bit count. */
 #define S1_QUEUE_BYTES      128  /* About three cycles of messages. */
-
-/* Topic number, the first byte of a queued message. */
-#define S1_TOPIC_TELEMETRY 0u
-#define S1_TOPIC_MOTION    1u
-#define S1_TOPIC_SCAN      2u
-#define S1_TOPIC_HEARTBEAT 3u
 
 #if (MQTT_UTK_MSG_MAX < (1u + MOTION_CONTROL_PACKET_BYTES)) ||                 \
     (MQTT_UTK_MSG_MAX < (1u + PAYLOAD_TELEMETRY_BYTES))
@@ -109,9 +102,9 @@ static void s1_telemetry_task(INT stacd, void * p_exinf)
         ultrasonic_scan_get(&scan);
 
         s1_pack_telemetry(&avoid, &scan, &message[1]);
-        s1_send(message, S1_TOPIC_TELEMETRY, PAYLOAD_TELEMETRY_BYTES);
+        s1_send(message, MQTT_UTK_TOPIC_TELEMETRY, PAYLOAD_TELEMETRY_BYTES);
         motion_control_pack(&motion, &message[1]);
-        s1_send(message, S1_TOPIC_MOTION, MOTION_CONTROL_PACKET_BYTES);
+        s1_send(message, MQTT_UTK_TOPIC_MOTION, MOTION_CONTROL_PACKET_BYTES);
 
         /* A profile was taken if avoidance went on to bypass, or stopped
          * with both sides blocked; not if it was cancelled or failed. */
@@ -119,7 +112,7 @@ static void s1_telemetry_task(INT stacd, void * p_exinf)
                             (0u != (app_faults() & APP_FAULT_AVOID_BLOCKED))))
         {
             payload_pack_scan(&scan.profile, &message[1]);
-            s1_send(message, S1_TOPIC_SCAN, PAYLOAD_SCAN_BYTES);
+            s1_send(message, MQTT_UTK_TOPIC_SCAN, PAYLOAD_SCAN_BYTES);
         }
         b_profiling = (OBSTACLE_AVOIDANCE_PROFILE == avoid.state);
 
@@ -128,7 +121,7 @@ static void s1_telemetry_task(INT stacd, void * p_exinf)
             /* Most significant byte first, like every payload. */
             message[1] = (uint8_t)(heartbeats >> 8);
             message[2] = (uint8_t)(heartbeats & 0xFFu);
-            s1_send(message, S1_TOPIC_HEARTBEAT, S1_HEARTBEAT_BYTES);
+            s1_send(message, MQTT_UTK_TOPIC_HEARTBEAT, S1_HEARTBEAT_BYTES);
             heartbeats++;
         }
         /* 0..4 fits uint8_t. */
@@ -186,7 +179,7 @@ static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
  * is full, so a slow network never blocks the task.
  *
  * @param[in,out] p_message The payload from byte 1; byte 0 is set here.
- * @param[in]     topic     S1_TOPIC_...
+ * @param[in]     topic     MQTT_UTK_TOPIC_...
  * @param[in]     bytes     Payload length.
  */
 static void s1_send(uint8_t * p_message, uint8_t topic, uint32_t bytes)

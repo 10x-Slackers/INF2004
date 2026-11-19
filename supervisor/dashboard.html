@@ -108,9 +108,9 @@
 
 <section class="hero">
   <div>
-    <h1 id="state">Waiting for the car</h1>
+    <h1 id="state"></h1>
     <p id="since"></p>
-    <p id="hint">Power on the car; its telemetry appears here once it reaches the broker.</p>
+    <p id="hint"></p>
   </div>
   <div class="controls">
     <button id="START" title="Begin following the line (READY only)">Start</button>
@@ -151,6 +151,7 @@
 
 <script>
   const STATES = {  // Title, colour, what to do next.
+    WAITING: ['Waiting for the car', '--muted', 'Power on the car; its telemetry appears here once it reaches the broker.'],
     INIT: ['Starting up', '--muted', 'Calibrating the IMU. Keep the car still.'],
     READY: ['Ready', '--ready', 'Press Start or GP20 to follow the line.'],
     FOLLOW: ['Following the line', '--go', 'Stop or GP20 ends the run.'],
@@ -235,36 +236,40 @@
   function showState(t, age, broker, carOnline) {
     const name = t ? t.state : null;
     if (name !== stateName) { stateName = name; stateSince = Date.now(); }
-    const [title, tone, hint] = STATES[name] ||
-      ['Waiting for the car', '--muted', 'Power on the car; its telemetry appears here once it reaches the broker.'];
+    const [title, tone, hint] = STATES[name] || STATES.WAITING;
+    const stale = !t || age > 1.5;
     $('state').textContent = title;
     document.documentElement.style.setProperty('--tone', `var(${tone})`);
     $('since').textContent = name ? `${name} for ${Math.round((Date.now() - stateSince) / 1000)} s` : '';
     $('hint').textContent = !broker ? 'The dashboard has no broker connection. Check --broker and that Mosquitto is running.'
-      : t && age > 1.5 ? `No telemetry for ${Math.round(age)} s. Check the car is on and on the broker's network.`
+      : t && stale ? `No telemetry for ${Math.round(age)} s. Check the car is on and on the broker's network.`
       : hint;
-    document.body.classList.toggle('stale', !t || age > 1.5);
+    document.body.classList.toggle('stale', stale);
     $('START').disabled = !broker || name !== 'READY';
     $('RESET').disabled = !broker || name !== 'SAFE_STOP';
     $('STOP').disabled = !broker || (carOnline && !MOVING.includes(name));
   }
 
+  // Newest first. The server sends only events after lastEvent, or all of
+  // them again after a restart, when the ids start from 1.
   function showEvents(events) {
-    if (!events.length || events.at(-1).id === lastEvent) return;
+    if (!events.length) return;
+    if (events[0].id <= lastEvent) $('events').replaceChildren();
     lastEvent = events.at(-1).id;
-    $('events').replaceChildren(...events.slice().reverse().map(e => {
+    $('events').prepend(...events.reverse().map(e => {
       const li = document.createElement('li'), time = document.createElement('time');
       time.textContent = new Date(e.t * 1000).toLocaleTimeString([], {hour12: false});
       li.className = e.kind;
       li.append(time, e.text);
       return li;
     }));
+    while ($('events').children.length > 200) $('events').lastChild.remove();
   }
 
   async function refresh() {
     let data;
     try {
-      data = await (await fetch('/state')).json();
+      data = await (await fetch('/state?since=' + lastEvent)).json();
     } catch {
       $('link').textContent = 'Dashboard server stopped';
       document.documentElement.style.setProperty('--link', 'var(--stop)');

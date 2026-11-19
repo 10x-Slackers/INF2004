@@ -33,8 +33,30 @@ LAYOUTS = {
         ("right_mm", 12, 0),
     ],
     "heartbeat": [("count", 16, 0)],
-    "cmd": [("cmd", 8, 0)],  # Event flag bits: 1 START, 2 STOP, 4 RESET.
+    "cmd": [("cmd", 8, 0)],  # COMMANDS bits, below.
 }
+
+# Names of the enumerated fields by value, from the C headers.
+STATES = ["INIT", "READY", "FOLLOW", "AVOID", "TURN", "SAFE_STOP"]
+NAMES = {
+    "telemetry": {
+        "state": STATES,
+        "barcode": ["none", "left", "right", "straight", "U-turn"],
+        "motion_class": ["steady", "accelerating", "braking", "climbing",
+                         "descending"],
+        "avoid_state": ["idle", "watching", "profiling", "bypassing",
+                        "stopped"],
+        "avoid_side": ["none", "left", "right"],
+    },
+    "motion": {
+        "state": ["idle", "running", "complete", "failed"],
+        "command": ["none", "forward", "backward", "left", "right", "drive"],
+    },
+}
+FAULTS = ["STALL_LEFT", "STALL_RIGHT", "ENCODER", "UPSIDE_DOWN", "TILT",
+          "NO_ECHO", "AVOID_SENSOR", "AVOID_BLOCKED", "AVOID_MOTION", "WIFI",
+          "LIFTED"]  # APP_FAULT_... in app_fault.h, bit 0 first.
+COMMANDS = {"START": 1, "STOP": 2, "RESET": 4}  # S1_CMD_... in subsystem1.h.
 
 # Typical values, as the car would send them.
 SAMPLES = {
@@ -73,7 +95,6 @@ C_SCAN_VALUES = dict(closest_mm=2100, closest_deg=135, right_deg=130,
 C_SCAN_BYTES = bytes.fromhex("834878287c8fa08020")
 
 # The same data as Week 6 JSON: names spelled out, enums as words.
-STATES = ["INIT", "READY", "FOLLOW", "AVOID", "TURN", "SAFE_STOP"]
 COMMON = {"v": 1, "robot_id": "CSC13", "seq": 1234}
 CMD_JSON = {"v": 1, "robot_id": "CSC13", "session_id": "s1", "command_id": "c7",
             "seq": 7, "cmd": "START", "challenge": "n4"}  # Week 6, verbatim.
@@ -86,24 +107,27 @@ def width(name):
     return sum(bits for _, bits, _ in LAYOUTS[name])
 
 
+def size(name):
+    """Bytes in a payload: its bits padded with zeros to whole bytes."""
+    return (width(name) + 7) // 8
+
+
 def pack(name, values):
-    total = width(name)
     v = 0
     for field, bits, offset in LAYOUTS[name]:
         raw = values[field] + offset
         assert 0 <= raw < (1 << bits), (name, field, values[field])
         v = (v << bits) | raw
-    pad = -total % 8
-    return (v << pad).to_bytes((total + pad) // 8, "big")
+    return (v << (size(name) * 8 - width(name))).to_bytes(size(name), "big")
 
 
 def unpack(name, payload):
-    total = width(name)
-    v = int.from_bytes(payload, "big") >> (len(payload) * 8 - total)
+    v = int.from_bytes(payload, "big")
+    shift = len(payload) * 8
     out = {}
-    for field, bits, offset in reversed(LAYOUTS[name]):
-        out[field] = (v & ((1 << bits) - 1)) - offset
-        v >>= bits
+    for field, bits, offset in LAYOUTS[name]:  # In payload order.
+        shift -= bits
+        out[field] = (v >> shift & ((1 << bits) - 1)) - offset
     return out
 
 

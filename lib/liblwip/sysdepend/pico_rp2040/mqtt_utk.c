@@ -31,7 +31,10 @@
 
 /* Indexed by the topic number that starts each queued message. */
 static const char *const topics[] = {
-	"csc13/telemetry", "csc13/motion", "csc13/scan", "csc13/heartbeat"
+	[MQTT_UTK_TOPIC_TELEMETRY] = "csc13/telemetry",
+	[MQTT_UTK_TOPIC_MOTION] = "csc13/motion",
+	[MQTT_UTK_TOPIC_SCAN] = "csc13/scan",
+	[MQTT_UTK_TOPIC_HEARTBEAT] = "csc13/heartbeat"
 };
 
 static mqtt_client_t	*client;

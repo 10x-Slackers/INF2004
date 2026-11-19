@@ -2,7 +2,7 @@
  *
  * @brief The MQTT payloads subsystem 1 packs itself: telemetry and scan
  * (docs/TELEMETRY.md). Each is one bit stream, most significant bit first,
- * in the layout of testing/subsystem1/host/payloads.py. No kernel headers,
+ * in the layout of supervisor/payloads.py. No kernel headers,
  * so the host test builds it on its own.
  */
 

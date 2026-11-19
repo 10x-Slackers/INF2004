@@ -95,3 +95,7 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-11-18 | S4-U24 | `be19db4` | commit2main | PASS | `logs/2026-11-18_imu_host_rollover.txt` | Re-run after the hump drop on Z below 0: all earlier checks unchanged, slow flip still at sample 120 |
 | 2026-11-18 | S4-U25 | `be19db4` | commit2main | PASS | `logs/2026-11-18_imu_host_rollover.txt` | Without the fix (task_imu.c at `f611430`) this check fails: the roll recorded a hump |
 | 2026-11-18 | S4-U26 | `21cbd37` | commit2main | PASS | `logs/2026-11-18_imu_host_lift.txt` | Lifted set on the 5th sample of +500 mg and cleared on the first settled sample. With the clear removed (mutation), the clear check fails. S4-U24 and S4-U25 still pass in the same run |
+| 2026-11-19 | S4-U24 | `3735a6a` | commit2main | PASS | `logs/2026-11-19_imu_host.txt` | Re-run with the lift fault and the hump fixes; slow flip still at sample 120 |
+| 2026-11-19 | S4-U25 | `3735a6a` | commit2main | PASS | `logs/2026-11-19_imu_host.txt` | Now also rights the car the same way; fails on `a3a3970`, which recorded a hump on the way back |
+| 2026-11-19 | S4-U26 | `3735a6a` | commit2main | PASS | `logs/2026-11-19_imu_host.txt` | Clear now waits for the 1 s beep (S4-U28) |
+| 2026-11-19 | S4-U28 | `3735a6a` | commit2main | PASS | `logs/2026-11-19_imu_host.txt` | Both checks fail on `8544aa0`: the jolt lost the hump, and the lifted fault cleared on the first settled sample |

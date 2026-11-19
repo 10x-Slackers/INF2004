@@ -15,7 +15,8 @@ stateDiagram-v2
     [*] --> INIT
     INIT --> READY: IMU calibrated
     READY --> FOLLOW: GP20 / MQTT START
-    READY --> SAFE_STOP: MQTT STOP
+    INIT --> SAFE_STOP: safety latched
+    READY --> SAFE_STOP: MQTT STOP / safety latched
     FOLLOW --> AVOID: avoidance PROFILE or BYPASS
     AVOID --> FOLLOW: avoidance back to MONITOR
     FOLLOW --> TURN: junction with a barcode pending
@@ -30,18 +31,18 @@ stateDiagram-v2
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | INIT      | Waits for the IMU's start-up calibration (`s4_get_tilt()`, `cal`)                                                                                                                                         |
 | READY     | Car stopped. Barcodes read now are ignored                                                                                                                                                               |
-| FOLLOW    | `line_following_start(200)` and `obstacle_avoidance_start()`. A newly validated barcode becomes the pending command; a later one replaces it. While the line follower pivots to find a lost line (`b_searching`), avoidance is cancelled, so the sweep is not taken for an obstacle ahead, and started again once the line is found                                                              |
+| FOLLOW    | `line_following_start(VC_SPEED_MM_S)` and `obstacle_avoidance_start()`. A newly validated barcode becomes the pending command; a later one replaces it. While the line follower pivots to find a lost line (`b_searching`), avoidance is cancelled, so the sweep is not taken for an obstacle ahead, and started again once the line is found                                                              |
 | AVOID     | Hands off: avoidance has already stopped line following and drives the car until it is back to `MONITOR`, stopped on the original line                                                                   |
-| TURN      | Stops line following, cancels avoidance, rolls forward `VC_AXLE_MM` onto the junction, then turns for the pending command: A left 90°, B right 90°, C none, D left 180°. Each move must finish in 5 s |
+| TURN      | Stops line following, cancels avoidance, rolls forward `VC_AXLE_MM` onto the junction, then turns for the pending command: A or Z left 90°, B right 90°, C none, D left 180°. Each move must finish in 5 s |
 | SAFE_STOP | Entered whenever the Safety Monitor is latched, from any state; the controller's own stops latch it too. Cancels avoidance and stops line following (which brakes). GP20 clears the latch and returns to INIT, which moves on to READY as soon as the IMU is calibrated, so a stop taken before calibration cannot skip it; a second press starts again (FR11). Tilt and upside-down faults stay latched until reset, so the car stays here; a lifted fault clears about 1 s after the lift, so a car picked up after calibration needs one press to clear before the press that starts it |
 
-A barcode or junction seen during TURN or AVOID is taken once FOLLOW resumes. A junction is acted on at its first sample (`b_junction` rising), and only with a command pending.
+A barcode validated during TURN or AVOID becomes the pending command once FOLLOW resumes. A junction is acted on at its first sample (`b_junction` rising), and only in FOLLOW with a command pending: one crossed during a bypass or a turn is not taken later, unless, after a bypass, the sensors are still on it when FOLLOW resumes.
 
-These system states (ARCHITECTURE.md) have no state of their own here:
+Some parts of the mission have no state of their own:
 
-- **Hump Monitoring:** Subsystem 4 tracks humps by itself while the car follows the line. The run's highest hump is printed on every safe stop.
-- **Line Recovery** and **Line Lost:** a bypass ends stopped on the original line, so FOLLOW simply restarts line following. The line follower searches for a lost line by itself ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works)); if its search fails it sets `b_lost` and the controller takes a safe stop (`line lost`).
-- **Mission Complete:** the courses have no finish marker, so a course ends with a GP20 Stop or the supervisor's STOP, and SAFE_STOP prints the run's highest hump (FR12). A junction with nothing pending is driven straight over.
+- **Humps:** Subsystem 4 tracks humps by itself in every state. Each Start (READY to FOLLOW) resets the highest hump, so it covers the current run, and every safe stop prints it.
+- **Line recovery:** a bypass ends stopped on the original line, so FOLLOW simply restarts line following. The line follower searches for a lost line by itself ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works)); if its search fails it sets `b_lost` and the controller takes a safe stop (`line lost`).
+- **End of a course:** the courses have no finish marker, so a course ends with a GP20 Stop or the supervisor's STOP, and SAFE_STOP prints the run's highest hump (FR12). A junction with nothing pending is driven straight over.
 
 ## GP20
 
@@ -72,8 +73,8 @@ Constants are at the top of `vehicle_controller.c`.
 
 | Constant         | Default | Set it to                                                                                |
 | ---------------- | ------- | ---------------------------------------------------------------------------------------- |
-| `VC_AXLE_MM`     | 110     | Distance from the line sensors back to the wheel axle, so turns pivot over the junction  |
-| `VC_SPEED_MM_S`  | 150     | Line following speed, 1 to 500; the barcode decoder is tuned for about 200               |
+| `VC_AXLE_MM`     | 115     | Distance from the line sensors back to the wheel axle, so turns pivot over the junction  |
+| `VC_SPEED_MM_S`  | 150     | Line following speed, 1 to 500                                                           |
 | `VC_MOVE_CYCLES` | 500     | Limit on each junction move, in 10 ms cycles                                              |
 
 ## Console

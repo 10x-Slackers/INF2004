@@ -13,7 +13,7 @@ Reference and guides for the INF2004 autonomous robotic car (µT-Kernel 3.0 on R
 | [TELEMETRY.md](TELEMETRY.md) | Buddy 1 MQTT topics, binary payloads, commands and the supervisor dashboard |
 | [VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md) | The mission state machine: states, GP20 Start/Stop, calibration and console output |
 | [SAFETY_MONITOR.md](SAFETY_MONITOR.md) | The latched safety stop: checks, causes, API and the motion latch |
-| [DEVELOPMENT.md](DEVELOPMENT.md)                 | How to build, flash, add a task, and the conventions application code follows                    |
+| [DEVELOPMENT.md](DEVELOPMENT.md)                 | How to build and flash, add a task, pass data between tasks and use the hardware |
 | [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md) | The minimum-bit rules for application data and the table of every field's range and bits         |
 
-These describe this project and are derived from the course brief, the Week 6 design review and the component datasheets. The course template's own guide (build options, `app_program/` layout) is the [root README](../README.md); team ownership is in [TEAM.md](../TEAM.md) and test records in [testing/](../testing/README.md).
+These describe this project and are derived from the course brief, the Week 6 design review and the component datasheets. How to work in the repository (ownership, conventions, tests) is in [AGENTS.md](../AGENTS.md), and set-up and build options in the [root README](../README.md); team ownership is in [TEAM.md](../TEAM.md), test records in [testing/](../testing/README.md), and the supervisor dashboard in [tools/supervisor/](../tools/supervisor/README.md).

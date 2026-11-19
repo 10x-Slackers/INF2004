@@ -1,4 +1,4 @@
-INT-14, 2026-11-19. Car firmware: NET=lwip MQTT=1 build of c1d4511, broker 10.0.80.119 (Mosquitto 2.1.4 in Podman via tools/supervisor/compose.yaml). Bench run, Start/Stop over about 10 cm.
+INT-08, 2026-11-19. Car firmware: NET=lwip MQTT=1 build of c1d4511, broker 10.0.80.119 (Mosquitto 2.1.4 in Podman via tools/supervisor/compose.yaml). Bench run, Start/Stop over about 10 cm.
 
 == Dashboard event log (Download log), steps 2-6 ==
 09:15:20 Sent Start

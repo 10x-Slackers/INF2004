@@ -6,7 +6,7 @@
  * with a lag, the right motor is 15% weaker, and wheels coast briefly after
  * braking. Geometry matches the firmware (65 mm wheels, 2537 edges/rev,
  * 113.5 mm track), so heading and distance are checked against the model's
- * true motion. Build and run as in S2-U21 of testing/subsystem2/TEST_LOG.md.
+ * true motion. Build and run as in S2-U10 of testing/subsystem2/TEST_LOG.md.
  */
 
 #include "../../../app_program/subsystem2/drv_motion.h"

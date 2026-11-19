@@ -1,4 +1,4 @@
-Buddy 2 host test (S2-U21 command, simulated robot)
+Buddy 2 host test (S2-U10 command, simulated robot)
 Code: 673b8ca + uncommitted Buddy 2 changes
 
 PASS  left 90 deg: turned 91.2 deg in 1.23 s, heading field 91

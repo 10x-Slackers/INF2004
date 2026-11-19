@@ -1,5 +1,5 @@
-S4-U12 on the car, TEST=1 image from 2c7101f. Car flat and still on the floor at boot (IMU calibrated), short GP21 tap, whole motion bench sequence on flat floor.
-Result: no [imu] hump: line. Height ranged -10..+8 mm. faults=4 during the 200 mm/s forward 300 and the turn after it (as S2-U26).
+S4-U11 on the car, TEST=1 image from 2c7101f. Car flat and still on the floor at boot (IMU calibrated), short GP21 tap, whole motion bench sequence on flat floor.
+Result: no [imu] hump: line. Height ranged -10..+8 mm. faults=4 during the 200 mm/s forward 300 and the turn after it (as S2-U14).
 
 [imu] calibrated: offsets x=28 y=41 z=-195 mg
 [TEST] S4-U05 PASS  start-up calibration ends within 3 s
@@ -7,9 +7,9 @@ Result: no [imu] hump: line. Height ranged -10..+8 mm. faults=4 during the 200 m
 [TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
 [TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
 [TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
-[TEST] S4-U14 PASS  no impact or tilt fault on a still board
-[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
-[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] S4-U13 PASS  no impact or tilt fault on a still board
+[TEST] S4-U12 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U16 PASS  motion is steady on a still board
 
 [motion] bench: drive +-100, forward/backward 300, left 90, right 90, left 180, forward 300 at 200, left 180, forward 300
 [trace] 58000 0 0

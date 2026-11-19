@@ -1,4 +1,4 @@
-S5-U45 on the car, TEST=1 image from 21463ff. Plain HC-SR04 on Grove 1 (3.3 V). Short GP20 presses, flat target ahead.
+S5-U06 on the car, TEST=1 image from 21463ff. Plain HC-SR04 on Grove 1 (3.3 V). Short GP20 presses, flat target ahead.
 True distance measured with a tape from the front of the sensor's cans. Only the 1000 mm point was run; 100 and 300 mm were not re-run and open space was not available in the lab.
 An earlier 1000 mm attempt (985 mm x3) is left out: the tester set the distance up wrongly.
 

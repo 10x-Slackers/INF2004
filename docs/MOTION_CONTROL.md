@@ -57,7 +57,7 @@ Faults are bits in the shared fault bitmask (`app_faults()`, `app_fault.h`), cle
 
 ## How it works
 
-- **Encoders:** 2537 edges per wheel turn (measured), 0.080 mm per edge. Each edge interrupts core 0. If a phase is missed, the ISR counts two edges in the last direction and sets fault bit 4.
+- **Encoders:** 2537 edges per wheel turn (measured), 0.080 mm per edge. Each edge interrupts core 0. If a phase is missed, the ISR counts two edges in the last direction; the next 10 ms step sets `APP_FAULT_ENCODER` (bit 2) if a command is running.
 - **Speed control:** every 10 ms, one PID per wheel: `duty = (Kp·e + Ki·Σe + Kd·Δe) / 256 + 100‰`, limited to 800‰. The integral holds while the output is limited. Defaults Kp 256, Ki 16, Kd 0. Measured speed is the edges counted since the last step over the kernel time since then (10 ms, or 20 ms then 0 ms after a late wake-up); the hardware timer is not used. The 0 ms step only counts edges: speeds, stall counts, the PID and the outputs wait for the next step.
 - **Moves and turns:** each wheel rolls a set number of edges: `mm × 2537 / (π × 65)` for a move, `track × angle × 2537 / (360 × 65)` for a turn. Speed ramps up at 500 mm/s² and slows to 30 mm/s at the end, so stops are repeatable.
 - **Going straight:** the wheel that is ahead slows by (edge difference ÷ 4) mm/s and the other speeds up by the same amount.
@@ -70,7 +70,7 @@ Measured values are in the [test log](../testing/subsystem2/TEST_LOG.md). Consta
 1. **Edges per turn:** wheels lifted, after `bench done`, turn a wheel 10 turns by hand between two status lines. The count should rise by about 25 370; otherwise set `MOTION_COUNTS_PER_REV` to the rise ÷ 10.
 2. **Distance:** measure the 300 mm moves. If off by more than 1%, scale `MOTION_WHEEL_DIAMETER_UM` by actual ÷ commanded.
 3. **Turns:** measure the turns. Set `MOTION_TRACK_UM` to `113500 × commanded ÷ actual` and repeat until within ±3°.
-4. **PID:** plot the `[trace] time_ms left right` lines of the two `forward 300` moves (100 and 200 mm/s). Adjust `MOTION_KP`, `MOTION_KI`, `MOTION_KD`.
+4. **PID:** plot the `[trace] time_ms left right` lines of the three `forward 300` moves (100, 200 and 100 mm/s). Adjust `MOTION_KP`, `MOTION_KI`, `MOTION_KD`.
 
 ## Bench sequence
 

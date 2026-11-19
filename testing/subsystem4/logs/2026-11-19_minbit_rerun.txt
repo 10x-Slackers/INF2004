@@ -1,11 +1,11 @@
-S4-U22 and S4-U24..S4-U29 re-run at 9ceba21 (fix/exact-periods-hump-reset, with the minimum-bit commits cherry-picked).
+S4-U19 and S4-U21..S4-U26 re-run at 9ceba21 (fix/exact-periods-hump-reset, with the minimum-bit commits cherry-picked).
 
 == task_imu.o and test image (arm-none-eabi-size, make TEST=1)
    text	   data	    bss	    dec	    hex	filename
    2863	      0	     60	   2923	    b6b	build_make/mtkernel_3/app_program/subsystem4/task_imu.o
  303498	     92	  27472	 331062	  50d36	build_make/mtk3pico_smp1_usb_cdc_wifi_test.elf
 
-== Host test (S4-U24 command)
+== Host test (S4-U21 command)
 PASS  five motion classes with names, fit the 3-bit field
 PASS  calibrated after S4_CAL_N
 PASS  flat for 1 s: no fault

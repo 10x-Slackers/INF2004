@@ -20,7 +20,7 @@ Tool and BEFORE method as in 2026-10-31_ram.txt (sed widening of every bit-field
 
 Records (sizeof on the host): scan_profile_t 20 B -> 8 B; ultrasonic_scan_t 36 B -> 16 B; obstacle_avoidance_status_t 28 B -> 8 B.
 
-Same behaviour: the BEFORE version run through the host test (S5-U43):
+Same behaviour: the BEFORE version run through the host test (S5-U04):
   FAIL  packed profile 8, scan 16, avoidance status 8 bytes
   FAILED: 1 failure(s)
   Only the size check differs, as expected; every profile and side check passes.

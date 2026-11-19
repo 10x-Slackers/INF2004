@@ -46,17 +46,17 @@ void subsystem5_test(void)
 
     TEST_INIT();
     obstacle_avoidance_get_status(&status);
-    TEST_CHECK("S5-U40", OBSTACLE_AVOIDANCE_IDLE == status.state,
+    TEST_CHECK("S5-U01", OBSTACLE_AVOIDANCE_IDLE == status.state,
                "avoidance boots idle");
     request = ultrasonic_scan_request(ULTRASONIC_SCAN_FORWARD);
     tk_dly_tsk(S5_TEST_SCAN_MS);
     ultrasonic_scan_get(&scan);
-    TEST_CHECK("S5-U41", request == scan.request,
+    TEST_CHECK("S5-U02", request == scan.request,
                "a forward scan finishes within 500 ms");
     /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[scan] forward_mm=%u fault=%u\n", scan.forward_mm,
               (0u != (app_faults() & APP_FAULT_NO_ECHO)));
-    TEST_CHECK("S5-U42",
+    TEST_CHECK("S5-U03",
                (8u == sizeof(status)) && (20u == sizeof(scan)) &&
                    (12u == sizeof(scan_profile_t)),
                "packed status 8, scan 20, profile 12 bytes");

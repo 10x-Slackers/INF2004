@@ -56,7 +56,7 @@ $ mosquitto -p 18830 &
 $ (cd testing/subsystem1/host && uv run --with 'paho-mqtt>=2,<3' python dashboard.py --broker-port 18830 --port 8765) &
 Broker 127.0.0.1:18830, page http://127.0.0.1:8765
 
-# The S1-U02 bytes, the S2-U21 motion bytes, a heartbeat of 1234, then a telemetry of the wrong size.
+# The S1-U02 bytes, the S2-U10 motion bytes, a heartbeat of 1234, then a telemetry of the wrong size.
 $ printf <bb933c207caab29fa0c000 as bytes> | mosquitto_pub -p 18830 -t csc13/telemetry -s
 $ printf <834878287c8fa08020 as bytes> | mosquitto_pub -p 18830 -t csc13/scan -s
 $ printf <9d663220c1234abcdef01230 as bytes> | mosquitto_pub -p 18830 -t csc13/motion -s

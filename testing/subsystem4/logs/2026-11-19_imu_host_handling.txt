@@ -1,4 +1,4 @@
-S4-U24..S4-U26, S4-U28, S4-U29 at 9dc05d7, 2026-11-19
+S4-U21..S4-U23, S4-U25, S4-U26 at 9dc05d7, 2026-11-19
 $ cc ... test_imu.c && /tmp/test_imu
 PASS  five motion classes with names, fit the 3-bit field
 PASS  calibrated after S4_CAL_N

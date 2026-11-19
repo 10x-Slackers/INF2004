@@ -1,6 +1,6 @@
 # Data Representation
 
-Application data uses only the bits its valid range needs (change requirement "Minimum-Bit Data Representation"). This page states the rules and lists every application data field. Measurements that compare before and after (RAM, message sizes, timing) are test evidence and live in each subsystem's `testing/` log; [Evidence](#evidence) lists them.
+Application data uses only the bits its valid range needs (change requirement "Minimum-Bit Data Representation"). This page states the rules and lists every application data field. Measurements (RAM, message sizes, timing) are test evidence and live in each subsystem's `testing/` log; [Evidence](#evidence) lists them.
 
 ## Rules
 
@@ -66,7 +66,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 5 | `gb_rose`, `gb_fell` (driver): echo edges seen | 0 or 1 | 1 each | `volatile bool`: written by the edge callback, these loads are atomic | As above |
 | 3 | `line_following_t.bits`: left and right sensor over black | One bit each | 2 | `unsigned int` bit-field | Readers copy it with `line_following_get()`, under the line mutex |
 | 3 | `.last_side`: last single sensor to see black | `DRV_LINE_LEFT` or `DRV_LINE_RIGHT`, 0 before the first | 2 | As above | As above |
-| 3 | `.b_junction`: both sensors black for 3 samples | 0 or 1 | 1 | As above | As above |
+| 3 | `.b_junction`: both sensors black for 6 samples | 0 or 1 | 1 | As above | As above |
 | 3 | `.b_following`: steering the car | 0 or 1 | 1 | As above | As above |
 | 3 | `.b_searching`: pivoting to find a lost line | 0 or 1 | 1 | As above | As above |
 | 3 | `.b_lost`: the lost-line search failed | 0 or 1 | 1 | As above | As above |
@@ -75,7 +75,9 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `g_search.from_mm` (line following): odometer when a sensor last saw black | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | `unsigned int` bit-field | Line Following task and `line_following_start()`, under the line mutex |
 | 3 | `g_search.phase`: none, pivoting towards `last_side`, pivoting back | 0 to 2 | 2 | As above | As above |
 | 3 | `g_search.start_deg`: heading when the search began | 0 to 359° (motion's `heading_deg`) | 9 | As above | As above |
-| 3 | `g_speed_mm_s` (line following): forward speed while following | 1 to 500 mm/s | 16 | `uint16_t`, the smallest standard type that fits | `line_following_start()` and the Line Following task, under the line mutex |
+| 3 | `g_steer.turn` (line following): current turn, permille of the speed, + left | −1000 to 1000 | 11 | `signed int` bit-field | Line Following task only, under the line mutex |
+| 3 | `g_steer.from_mm`: odometer at the last steering step | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | `unsigned int` bit-field | As above |
+| 3 | `g_steer.speed_mm_s`: forward speed while following | 1 to 500 mm/s | 9 | `unsigned int` bit-field | `line_following_start()` and the Line Following task, under the line mutex |
 | 3 | `barcode_decoder_raw_t.min`, `.max`: barcode sensor level over the last 10 ms | 0 to 4095 ADC counts | 12 each | `unsigned int` bit-field | Readers copy it with `barcode_decoder_get_raw()`, under the barcode mutex |
 | 3 | `.samples`: samples taken | 0 to 65535, wraps | 16 | As above | As above |
 | 3 | `g_ring` (driver): barcode samples | 0 to 4095 | 16 each | `volatile uint16_t`, the ADC FIFO's format written by DMA (out of scope) | DMA writes, the Barcode Decoder task reads |
@@ -83,6 +85,16 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `.count`, `.rejects`: barcodes validated and rejected | 0 to 15 each, wrap | 4 each | As above | As above |
 | 3 | `.distance_mm`: odometer at the end of the barcode | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
 | 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in µm (0 to 30000) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
+| 3 | `g_code.elements`, `.b_black`, `.b_in_code` (barcode decoder): elements in the barcode so far, black now, inside a barcode | 0 to 31, stops at 31 (29 are decoded); 0 or 1 each | 5; 1 each | `unsigned int` bit-field | Barcode Decoder task only |
+| 3 | `g_run_start` (barcode decoder): where the current bar or space began | 0 to 2³²−1 µm, wraps (`motion_control_distance_um()`) | 32 | `uint32_t`, the odometer's own width | Barcode Decoder task only |
+| 3 | `g_read` (driver): next ring index to hand out | 0 to 255 | 8 | `uint8_t` | Barcode Decoder task only |
+| 4 | `g_imu.cal_count` (IMU task): calibration samples so far | 0 to 200 | 8 | `unsigned int` bit-field | IMU task only |
+| 4 | `g_imu.sum_x`, `.sum_y`, `.sum_z`: calibration sums | ±409 600 mg (200 readings) | 20 each | `signed int` bit-field | IMU task only |
+| 4 | `g_imu.offset_x`, `.offset_y`, `.offset_z`: calibration offsets | −2048 to 2047 mg; z less 1 g: −3048 to 1047 mg | 12, 12, 13 | `signed int` bit-field | IMU task only |
+| 4 | `g_imu.smooth_x`, `.smooth_y`, `.avg_y`: low-pass filters (8 × mg) and slow average of y (256 × mg) | ±32 767; ±1 048 575 | 17 each; 22 | `signed int` bit-field | IMU task only |
+| 4 | `g_imu.pushed_count`, `.tilted_count`, `.upside_count`, `.lift_count`, `.high_count`: samples in a row | 0 to 63, stops at 63 (longest threshold 50) | 6 each | `unsigned int` bit-field | IMU task only |
+| 4 | `g_imu.peak_mm`, `.print_count`, `.beep_left`: top of the current hump, print divider, samples until the buzzer stops | 0 to 466 mm; 0 to 9; 0 to 100 | 9; 4; 7 | `unsigned int` bit-field | IMU task only |
+| 4 | `g_imu.faults`, `.push_class`, `.b_descending`: latched IMU fault bits, motion class from the forward push, past the hump's top | Fault bitmask; 0 to 4; 0 or 1 | 11; 3; 1 | `unsigned int` bit-field | IMU task only |
 | Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `volatile unsigned int` bit-field | Controller task writes; telemetry reads it with `vehicle_controller_state()`, one load, no lock |
 | Shared | `g_vc.cycles`: 10 ms cycles since the state or junction move began | 0 to 1023, wraps (only TURN reads it, below 502) | 10 | As above | Controller task only |
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
@@ -95,13 +107,13 @@ Application data uses only the bits its valid range needs (change requirement "M
 
 ## Evidence
 
-Change Requirement 1 asks for this table, RAM and message sizes before and after, and proof that nothing was lost. "Before" is the same source with every bit-field widened to a 32-bit integer, or the code's earlier unpacked version where one exists; each log states which.
+Change Requirement 1 asks for this table and evidence for the final implementation. The logs also compare against a "before" build: the same source with every bit-field widened to a 32-bit integer, or the code's earlier unpacked version where one exists; each log states which.
 
 | Evidence | Where |
 | --- | --- |
-| RAM, whole image and Vehicle Controller | INT-11, `testing/integration/logs/2026-10-31_ram.txt` |
-| RAM and record sizes, per subsystem | S2-U22, S3-U15, S4-U22, S5-U44 in each `testing/subsystemN/TEST_LOG.md` |
-| Inter-task record sizes (each `get()` copies one) | The same logs; S3-U02, U09, U13, S4-U04, U13, U18 and S5-U42 check them on the car |
+| RAM, whole image and Vehicle Controller | INT-06, `testing/integration/logs/2026-10-31_ram.txt` |
+| RAM and record sizes, per subsystem | S2-U11, S3-U15, S4-U19, S5-U05 in each `testing/subsystemN/TEST_LOG.md` |
+| Inter-task record sizes (each `get()` copies one) | The same logs; S3-U02, U09, U13, S4-U04, U12, U16 and S5-U03 check them on the car |
 | MQTT payload sizes against the Week 6 JSON | S1-U01, `testing/subsystem1/logs/2026-10-31_payloads.txt` |
-| No loss of function | Every subsystem's unit tests run on the packed code; the widened versions pass the same host tests (S2-U21, S5-U43) except their size checks; S1-U01 round-trips every payload field at its limits, and S1-U02 checks the C packers against the same layout |
-| No loss of timing | S2-U14 (`max_tick_us` of the 10 ms control step) |
+| No loss of function | Every subsystem's unit tests run on the packed code; the widened versions pass the same host tests (S2-U10, S5-U04) except their size checks; S1-U01 round-trips every payload field at its limits, and S1-U02 checks the C packers against the same layout |
+| No loss of timing | S2-U04 (`max_tick_us` of the 10 ms control step) |

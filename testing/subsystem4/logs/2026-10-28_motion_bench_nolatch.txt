@@ -1,4 +1,4 @@
-# S4-U19 and S4-U20 bench, 2026-10-28, with the slow-average fix but BEFORE the descending latch (not committed code). Slide forward, then ramp sideways right side up and slow lowering by hand; the wires had tipped the module since calibration.
+# S4-U17 and S4-U18 bench, 2026-10-28, with the slow-average fix but BEFORE the descending latch (not committed code). Slide forward, then ramp sideways right side up and slow lowering by hand; the wires had tipped the module since calibration.
 [imu] calibrated: offsets x=57 y=35 z=1040 mg
 [imu] x=-1 y=6 z=1000 mg pitch=-1 roll=1 (0.1 deg) h=0 mm
 [imu] x=5 y=65 z=1000 mg pitch=-31 roll=2 (0.1 deg) h=0 mm

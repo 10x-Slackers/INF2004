@@ -131,7 +131,7 @@ SAMPLES = {
     "cmd": {"cmd": 1},
 }
 
-# motion_control_pack() output for these values, from S2-U21's
+# motion_control_pack() output for these values, from S2-U10's
 # testing/subsystem2/host/test_motion.c, so both sides use one layout.
 C_MOTION_VALUES = {
     "state": 2,

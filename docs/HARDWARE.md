@@ -17,7 +17,7 @@ Pin assignments, wiring and the datasheet facts needed to write drivers. Sources
 
 ## Pin map
 
-The design review's assignment, with three changes: the GY-511 moved to Grove 3 (GP4, GP5) for I2C0, the encoders are the other way round, right on Grove 2 (GP2, GP3) and left on Grove 4 (GP16, GP17), and so are the line sensors, right on Grove 5 (GP6) and left on Grove 7 (GP7). The owner column is the only task allowed to touch the pin (see [ARCHITECTURE.md](ARCHITECTURE.md#hardware-ownership)).
+The GY-511 sits on Grove 3 (GP4, GP5) for I2C0; the right encoder and line sensor are on Grove 2 and Grove 5, the left ones on Grove 4 and Grove 7. The owner column is the only task allowed to touch the pin (see [ARCHITECTURE.md](ARCHITECTURE.md#hardware-ownership)).
 
 | GPIO | Signal          | Connects to                 | Interface               | Owner task              |
 | ---- | --------------- | --------------------------- | ----------------------- | ----------------------- |
@@ -36,7 +36,12 @@ The design review's assignment, with three changes: the GY-511 moved to Grove 3 
 | GP12 | `SONAR_PAN_PWM` | SG90 signal (servo header)  | Servo PWM               | Ultrasonic Scan         |
 | GP16 | `ENC_L_A`       | Left motor pin 02          | GPIO in, edge interrupt | Wheel Motion Control    |
 | GP17 | `ENC_L_B`       | Left motor pin 03          | GPIO in, edge interrupt | Wheel Motion Control    |
+| GP20 | `START_STOP`    | Robo Pico button (on board) | GPIO in, pull-up        | Vehicle Controller      |
+| GP21 | `BENCH`         | Robo Pico button (on board) | GPIO in, pull-up        | Motion and line following benches (`TEST=1`) |
+| GP22 | `BUZZER`        | Robo Pico buzzer (on board) | PWM slice 3 A           | IMU and Terrain Monitor |
 | GP26 | `BARCODE_AO`    | Auxiliary IR module AO      | ADC0                    | Barcode Decoder         |
+
+In `TEST=1` builds GP20 steps the avoidance bench instead, and GP21 starts the motion bench on a tap (under 0.5 s) or the line following bench on a hold of 1 s or more. The buzzer has a mute switch on the board.
 
 Where each signal lands on the Robo Pico:
 
@@ -59,8 +64,6 @@ GP26 appears on both Grove 5 and Grove 6. Connect the barcode sensor once, throu
 | GP13, GP14, GP15       | Free. Spare servo headers                                                                |
 | GP18                   | Robo Pico NeoPixel RGB LEDs                                                              |
 | GP19                   | Free                                                                                     |
-| GP20, GP21             | Robo Pico programmable buttons. A tap of GP21 (under 0.5 s) starts the motion bench, a hold of 1 s or more the line following bench, and GP20 steps the avoidance bench (`TEST=1` only); in normal builds GP20 is the mission Start/Stop button ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md)) |
-| GP22                   | Robo Pico piezo buzzer (has a mute switch)                                               |
 | GP27                   | Free. ADC1                                                                               |
 | GP28                   | Free. ADC2. Reads VBAT / 2 if the VBAT sense jumper on the back of the board is soldered |
 | GP23, GP24, GP25, GP29 | **Reserved by the Pico W radio.** Do not use                                             |
@@ -84,6 +87,21 @@ Things that clash with this pin map:
 - `CRASH_REPORT=1` takes GP0 and GP1, which carry the HC-SR04. Unplug the sensor before using a crash-report build.
 - The GY-511 sits on Grove 3 (GP4, GP5) because those are the Robo Pico's I2C0 pins, the only I2C unit the kernel driver registers. The template's default I2C0 pins (GP8, GP9) are the left motor, so `DEVCNF_I2C0_SDA_PIN` and `DEVCNF_I2C0_SCL_PIN` must stay at 4 and 5.
 - The ADC channel for the barcode sensor (GP26, channel 0) needs `DEVCONF_ADC_PIN_INIT_0` set to `TRUE`.
+
+## Car geometry
+
+Measured on the assembled car. Distances along the car are from the drive (encoder) axle.
+
+| Dimension | Value | Used by |
+| --- | --- | --- |
+| Line sensors ahead of the axle | 115 mm | `VC_AXLE_MM` (junction turns), `S3_BENCH_AXLE_MM`, the lost-line search reach ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works)) |
+| Spacing of the two line sensors | 20 mm between their inner edges, about 30 mm centre to centre | Line following ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#calibration)) |
+| Caster ball bearing from the axle | 80 mm | The three-point stance the hump estimate assumes ([ARCHITECTURE.md](ARCHITECTURE.md#imu-terrain-monitoring)) |
+| Ultrasonic sensor ahead of the axle | 100 mm | `OBSTACLE_AVOIDANCE_FRONT_MM` |
+| Axle to the back of the car | 80 mm | `OBSTACLE_AVOIDANCE_REAR_MM` |
+| Car width | 170 mm | `OBSTACLE_AVOIDANCE_HALF_MM` (85) |
+| Track (drive wheel centres) | about 114 mm | `MOTION_TRACK_UM` (calibrated, 113.5 mm), `S4_TRACK_MM` |
+| Wheel diameter | 65 mm | `MOTION_WHEEL_DIAMETER_UM` |
 
 ## Power
 
@@ -172,13 +190,13 @@ Power the module from 5 V, not from the Grove port's 3.3 V: the datasheet specif
 
 The [HC-SR04-R](https://cdn.sparkfun.com/assets/6/7/a/d/1/Ultrasonic_Ranging_Module_HC-SR04-R__SEN-28798.pdf) (RCWL-9610A) variant is rated for 3.3 V. Powered from the Grove port's 3.3 V, with M1 and M2 open (GPIO mode), its ECHO needs no divider.
 
-The driver gets ECHO's edges through subsystem 2's GPIO interrupt and times them on the RP2040's 1 MHz TIMER, whose tick `usermain()` starts. With nothing in range, ECHO stays high for about 38 ms (much longer on some modules) and the driver reads 4000 mm: clear.
+The driver gets ECHO's edges through the shared GPIO interrupt in `app_main.c` (`app_gpio_register()`) and times them on the RP2040's 1 MHz TIMER, whose tick the kernel's `startup_clock()` starts. With nothing in range, ECHO stays high for about 38 ms (much longer on some modules) and the driver reads 4000 mm: clear.
 
 Narrow, angled or soft objects reflect poorly. The datasheet's accuracy figure assumes a smooth target of at least 0.5 m².
 
 ## GY-511 (LSM303DLHC) IMU
 
-Accelerometer and magnetometer only. **There is no gyroscope**, which is why turn rate is derived from odometry (FR10).
+Accelerometer and magnetometer only. **There is no gyroscope**: turning is measured by the encoders (the motion status's heading), not the IMU.
 
 | Parameter                | Value                                                |
 | ------------------------ | ---------------------------------------------------- |

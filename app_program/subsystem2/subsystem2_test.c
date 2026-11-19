@@ -40,12 +40,12 @@ void subsystem2_test(void)
     TEST_INIT();
     tk_dly_tsk(S2_TEST_WAIT_MS);
     motion_control_get_status(&status);
-    TEST_CHECK("S2-U16",
+    TEST_CHECK("S2-U05",
                (MOTION_CONTROL_IDLE == status.state) &&
                    (MOTION_CONTROL_CMD_NONE == status.command),
                "boots idle with the motors braked");
     TEST_CHECK(
-        "S2-U17",
+        "S2-U06",
         (!motion_control_move_forward(0u)) &&
             (!motion_control_move_forward(MOTION_CONTROL_MAX_DISTANCE_MM +
                                           1u)) &&
@@ -53,26 +53,26 @@ void subsystem2_test(void)
             (!motion_control_drive(MOTION_CONTROL_MAX_SPEED_MM_S + 1, 0)),
         "out-of-range commands are rejected");
     motion_control_get_status(&status);
-    TEST_CHECK("S2-U18", MOTION_CONTROL_IDLE == status.state,
+    TEST_CHECK("S2-U07", MOTION_CONTROL_IDLE == status.state,
                "a rejected command does not start the motors");
     motion_control_pack(&status, packet);
-    TEST_CHECK("S2-U19",
+    TEST_CHECK("S2-U08",
                (MOTION_CONTROL_PACKET_BYTES == sizeof(status)) &&
                    (0u == packet[0]),
                "12-byte packed status and telemetry");
-    TEST_CHECK("S2-U20",
+    TEST_CHECK("S2-U09",
                (subsystem2_max_tick_us() > 0u) &&
                    (subsystem2_max_tick_us() < S2_TEST_TICK_US),
                "control step runs and takes under 1 ms");
     (void)motion_control_latch(true);
-    TEST_CHECK("S2-U28",
+    TEST_CHECK("S2-U16",
                (motion_control_latched()) &&
                    (!motion_control_move_forward(100u)) &&
                    (!motion_control_turn_left(90u)) &&
                    (!motion_control_drive(100, 100)),
                "a latched safety stop refuses every command");
     (void)motion_control_latch(false);
-    TEST_CHECK("S2-U29", motion_control_drive(0, 0),
+    TEST_CHECK("S2-U17", motion_control_drive(0, 0),
                "commands are accepted again after the latch is released");
     motion_control_stop();
     TEST_SUMMARY("subsystem2");

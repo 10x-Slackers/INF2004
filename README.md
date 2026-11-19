@@ -1,10 +1,17 @@
 # INF2004 Embedded Systems Programming Project
 
-> [!NOTE]
-> WIP, remove this note when project is ready.
-
 Autonomous Robotic Car Challenge based on µT-Kernel 3.0 (RP2040 dual-core SMP Port).
-Project documentation is in [docs/](docs/README.md); who owns which subsystem, pin and priority is in [TEAM.md](TEAM.md).
+The car follows a line, acts on Code 39 barcodes at junctions, measures humps
+with the IMU, profiles and drives around obstacles, publishes telemetry over
+MQTT, and stops when it is picked up.
+
+| Where | What |
+|---|---|
+| [AGENTS.md](AGENTS.md) | How to work in this repository: ownership, conventions, tests, checks |
+| [docs/](docs/README.md) | Requirements, architecture, hardware and each subsystem |
+| [TEAM.md](TEAM.md) | Who owns which subsystem, pin, peripheral, priority and interface |
+| [testing/](testing/README.md) | Test cases and results |
+| [tools/supervisor/](tools/supervisor/README.md) | The laptop dashboard that shows telemetry and sends Start, Stop and Reset |
 
 ## Getting Started (Dev Container)
 
@@ -27,13 +34,8 @@ Project documentation is in [docs/](docs/README.md); who owns which subsystem, p
    code INF2004/
    ```
 
-2. Click on the "Re-open in Dev Container" prompt. The container installs the compiler and `picotool`, clones the [Pico SDK](https://github.com/raspberrypi/pico-sdk) into `.pico-sdk/` and sets `PICO_SDK_PATH`, so section 1 below can be skipped.
-3. Install the pre-commit hooks
-
-   ```sh
-   pre-commit install
-   ```
-
+2. Click on the "Re-open in Dev Container" prompt. The container installs the compiler and `picotool`, clones the [Pico SDK](https://github.com/raspberrypi/pico-sdk) into `.pico-sdk/` with the USB, Wi-Fi and lwIP submodules, sets `PICO_SDK_PATH` and installs the pre-commit hooks, so section 1 below can be skipped.
+3. For the MQTT build, copy `config/wifi_secrets.example.h` to `config/wifi_secrets.h` and fill in the Wi-Fi network and broker address (section 3).
 4. Build from the repository root with `make -C build_make -j$(nproc)` (or the VS Code `Build` task), then flash with `picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2` (or the `Flash` task) while the Pico W is in BOOTSEL mode. Build options are in section 3.
 
 ### Developer Tooling
@@ -41,7 +43,9 @@ Project documentation is in [docs/](docs/README.md); who owns which subsystem, p
 - Dev Containers
   - Standardised developer environment
 - Pre-Commit
-  - Run linting and formatting for all files during git commit
+  - Formats `app_program/` with clang-format (`.clang-format`, Barr C layout) on every commit
+- VS Code tasks
+  - `Build`, `Build (tests)`, `Build (crash report)`, `Clean` and `Flash`
 
 ### Template upstream
 
@@ -58,8 +62,10 @@ The rest of this file is the template's own guide.
 
 ## micro T-Kernel 3.0 project for Raspberry Pi Pico W
 
-A starting point for your project: micro T-Kernel 3.0 running on **both cores**
-of the Pico W's RP2040, with a USB serial console and the WiFi driver built in.
+The firmware runs micro T-Kernel 3.0 on **both cores** of the Pico W's
+RP2040, with a USB serial console, the Wi-Fi driver and, in the MQTT build,
+lwIP and an MQTT client built in. It runs on a Cytron Robo Pico carrier
+board; the wiring is in [docs/HARDWARE.md](docs/HARDWARE.md).
 
 You need a **Raspberry Pi Pico W**, a USB cable, and a computer running
 macOS, Linux, or Windows with **WSL (Ubuntu)**. On Windows, run every
@@ -95,10 +101,11 @@ sudo apt update && sudo apt install -y git make g++
 mkdir -p ~/pico && cd ~/pico
 git clone --branch 2.2.0 https://github.com/raspberrypi/pico-sdk.git
 cd pico-sdk
-git submodule update --init lib/tinyusb lib/cyw43-driver
+git submodule update --init lib/tinyusb lib/cyw43-driver lib/lwip
 ```
 
-The `submodule` line is required: it downloads the USB and WiFi drivers.
+The `submodule` line is required: it downloads the USB and WiFi drivers and
+the lwIP network stack (used by the MQTT build).
 (SDK 2.3.0 has also been tested and works.)
 
 **1.3 Install the Arm GNU Toolchain (the compiler)**
@@ -138,12 +145,12 @@ toolchain's `bin` folder. Fix that before going further.
 
 ## 2. Clone this repo and build the `.uf2` file
 
-**2.1 Clone your project**
+**2.1 Clone the repository**
 
 ```sh
 cd ~/pico
-git clone <URL-of-this-repo> my-project
-cd my-project
+git clone git@github.com:10x-Slackers/INF2004.git
+cd INF2004
 ```
 
 **2.2 Build**
@@ -170,6 +177,10 @@ To build a single-core, UART-only or test version, see section 3.
 2. Copy the `.uf2` file onto that drive. On WSL, run `explorer.exe .` in
    `build_make` to open the folder in Windows. The Pico reboots by itself.
 
+With `picotool` installed (it is in the Dev Container), run
+`picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2` instead of
+copying.
+
 **2.4 See the output**
 
 Open the Pico's USB serial port at 115200 baud:
@@ -180,41 +191,14 @@ screen /dev/ttyACM0 115200            # Linux
 ```
 
 On Windows, use PuTTY or the VS Code *Serial Monitor* on the new COM port.
-You should see the kernel banner and "all subsystems started".
+You should see the kernel banner and "all subsystems started", then
+`[imu] calibrated` after about 2 s with the car still, and `[vc] INIT ->
+READY`. Press GP20 on the Robo Pico to start a run and again to stop it
+([docs/VEHICLE_CONTROLLER.md](docs/VEHICLE_CONTROLLER.md)).
 
-**2.5 Write your own code**
-
-Your code lives in **`app_program/`**. Every `.c` file there, and in its
-subfolders, is compiled automatically.
-
-- **`app_main.c` → `usermain()` is where the program starts.** It first calls
-  every subsystem's `subsystemN_init()` (create kernel objects), then every
-  `subsystemN_start()` (start tasks). Read its comments first.
-- **One folder per student:** `app_program/subsystem1/` … `subsystem5/`.
-  Each starts as an empty template. The upstream template repository
-  (`upstream` remote) has a worked example in subsystems 1–4 that uses the
-  main micro T-Kernel APIs and passes data between subsystems.
-- `subsystemN.h` is that subsystem's public interface: the object IDs and
-  data formats the other subsystems may use.
-- `app.h` holds the definitions shared by the whole team.
-- **Drivers go in your subsystem folder too**, as a `drv_<name>.c` /
-  `drv_<name>.h` pair, e.g. `subsystem2/drv_ultrasonic.c`. They are compiled
-  automatically. Do not add drivers under `device/`: that folder holds the
-  kernel's own serial, I2C and ADC drivers, and adding to it means editing
-  kernel and makefile files shared by the whole team.
-
-**Working as a team:** record owners, pins, priorities and the interfaces
-between subsystems in **`TEAM.md`**, and record every test in **`testing/`**
-(see `testing/README.md`). `make TEST=1` builds a test image that runs all
-the subsystem tests at power-up. Short videos of tests and demos are shared
-as unlisted YouTube links, listed in **`videos/`**.
-
-Pins: use **GP0–GP22 and GP26–GP28**. GP0/GP1 are free unless your team
-builds with `CRASH_REPORT=1` (section 3), which needs them. Never use
-GP23/GP24/GP25/GP29: they are wired to the Pico W radio. The Pico W's
-on-board LED is also on the radio, so use an external LED instead.
-
-After editing, run `make -j8` again in `build_make` and copy the new `.uf2`.
+After a change, run `make -j8` again in `build_make` and flash the new
+`.uf2`. Working on the code itself is covered in [AGENTS.md](AGENTS.md) and
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 ---
 
@@ -259,53 +243,38 @@ UART output *is* sent at once, even inside the crash handler. So when you
 need to know why the Pico crashed or froze, build with `CRASH_REPORT=1`,
 connect a USB-serial adapter (adapter RX → GP0, adapter GND → GND), and read
 it at 115200 baud. Normal `tm_printf` output on USB works the same with
-either setting. If a subsystem has claimed GP0/GP1 in `TEAM.md`, unplug that
-hardware before using `CRASH_REPORT=1`.
+either setting. GP0/GP1 carry the HC-SR04 on this car: unplug it before
+using `CRASH_REPORT=1`.
 
 The options are part of the image name, e.g.
 `mtk3pico_smp1_usb_cdc_wifi_test.uf2`, so you can always tell which build
 you are flashing. Switching options needs no `make clean`: the makefile
 notices and recompiles everything.
 
-Using an option in C code:
+Kernel settings such as the maximum number of tasks are not make options:
+they are `CNF_MAX_...` in `config/config.h`.
 
-```c
-#if TK_SUPPORT_SMP
-    ctsk.tskatr |= TA_ASSPRC;   /* core affinity only exists on the dual-core build */
-#endif
+### Network and MQTT: `NET`, `MQTT`
 
-#if APP_TEST
-    /* code that only exists in the test build */
-#endif
+The telemetry and supervisor commands need two more options, handled the
+same way:
+
+| Option | Values (**default**) | What it does | Image name | C macro |
+|---|---|---|---|---|
+| `NET` | **`none`**, `lwip` | `lwip` adds the lwIP TCP/IP stack, run by the Wi-Fi service task. Needs `WIFI=cyw43` | `_lwip` | `TM_NET_LWIP` |
+| `MQTT` | **`0`**, `1` | `1` adds the MQTT client and Subsystem 1's Telemetry task. Needs `NET=lwip` | `_mqtt` | `TM_MQTT` |
+
+They need the SDK's `lib/lwip` submodule and a `config/wifi_secrets.h` with
+the Wi-Fi network and broker address (copy `config/wifi_secrets.example.h`;
+the file is gitignored, never commit it). The car's full image for the demo:
+
+```sh
+make NET=lwip MQTT=1 -j8
+#  -> build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2
 ```
 
-### Where the options live in the makefile
-
-All five are handled in **`build_make/pico_rp2040.mk`**. To find each piece, search the file for the
-names in the left column (e.g. `grep -n "TEST" build_make/pico_rp2040.mk`).
-Each option goes through the same steps:
-
-| Step | What to look for | Example for `TEST` |
-|---|---|---|
-| 1. Default value | `NAME ?= value` near the top of the file | `TEST ?= 0` |
-| 2. Allowed values | an `$(error Unknown ...)` check just below it | `$(error Unknown TEST '$(TEST)'; use 0 or 1)` |
-| 3. Image-name suffix | `NAME_SUFFIX :=` and the `EXE_FILE :=` line | `TEST_SUFFIX := _test` |
-| 4. C macro for the code | a `CFLAGS += -D...` line | `CFLAGS += -DAPP_TEST=$(TEST)` |
-| 5. Rebuild on change | the `PROFILE_ID :=` line | `...-test$(TEST)` |
-| 6. Extra source files (`CONSOLE`, `WIFI` only) | an `ifeq ($(CONSOLE),usb_cdc)` or `ifeq ($(WIFI),cyw43)` block that adds the USB/radio files and SDK include paths | — |
-
-- **Changing a default:** edit the `?=` line from step 1, e.g.
-  `CONSOLE ?= uart`. Every `make` without that option then uses the new value.
-- **Adding your own option** (say `DEBUG=1` to turn on extra prints): copy
-  how `TEST` is done. Add steps 1 to 5 next to the `TEST` lines, then
-  use `#if APP_DEBUG` in your code. **Step 5 matters:** without it, switching
-  the option can quietly link files that were compiled with the old setting.
-- **Kernel settings** such as the maximum number of tasks, semaphores or
-  mailboxes are not make options. They are in `config/config.h` (`CNF_MAX_...`).
-
-The makefile also has `NET=lwip` and `MQTT=1` (TCP/IP and MQTT over WiFi).
-They need the SDK's `lib/lwip` submodule and a `config/wifi_secrets.h`
-(copy `config/wifi_secrets.example.h`). This guide does not cover them.
+Topics, payloads and the laptop dashboard are in
+[docs/TELEMETRY.md](docs/TELEMETRY.md).
 
 ---
 

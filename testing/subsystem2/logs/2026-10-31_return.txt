@@ -21,15 +21,15 @@ wifi: cyw43_init() ...
 
 wifi: cyw43_init() returned, bringing interface up ...
 
-[TEST] S2-U16 PASS  boots idle with the motors braked
+[TEST] S2-U05 PASS  boots idle with the motors braked
 
-[TEST] S2-U17 PASS  out-of-range commands are rejected
+[TEST] S2-U06 PASS  out-of-range commands are rejected
 
-[TEST] S2-U18 PASS  a rejected command does not start the motors
+[TEST] S2-U07 PASS  a rejected command does not start the motors
 
-[TEST] S2-U19 PASS  12-byte packed status and telemetry
+[TEST] S2-U08 PASS  12-byte packed status and telemetry
 
-[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+[TEST] S2-U09 PASS  control step runs and takes under 1 ms
 
 [TEST] subsystem2 SUMMARY 5 passed, 0 failed
 
@@ -41,7 +41,7 @@ wifi: cyw43_init() returned, bringing interface up ...
 [TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
 [TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
 [TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
-[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  no impact or tilt fault on a still board
 [TEST] subsystem4 SUMMARY 5 passed, 1 failed
 [TEST] subsystem5 SUMMARY 0 passed, 0 failed
 [TEST] === test run end ===
@@ -1184,15 +1184,15 @@ wifi: cyw43_init() ...
 
 wifi: cyw43_init() returned, bringing interface up ...
 
-[TEST] S2-U16 PASS  boots idle with the motors braked
+[TEST] S2-U05 PASS  boots idle with the motors braked
 
-[TEST] S2-U17 PASS  out-of-range commands are rejected
+[TEST] S2-U06 PASS  out-of-range commands are rejected
 
-[TEST] S2-U18 PASS  a rejected command does not start the motors
+[TEST] S2-U07 PASS  a rejected command does not start the motors
 
-[TEST] S2-U19 PASS  12-byte packed status and telemetry
+[TEST] S2-U08 PASS  12-byte packed status and telemetry
 
-[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+[TEST] S2-U09 PASS  control step runs and takes under 1 ms
 
 [TEST] subsystem2 SUMMARY 5 passed, 0 failed
 
@@ -1204,7 +1204,7 @@ wifi: cyw43_init() returned, bringing interface up ...
 [TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
 [TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
 [TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
-[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  no impact or tilt fault on a still board
 [TEST] subsystem4 SUMMARY 6 passed, 0 failed
 [TEST] subsystem5 SUMMARY 0 passed, 0 failed
 [TEST] === test run end ===

@@ -1,5 +1,5 @@
-S4-U23 on the car, normal image at 8daed0a, 2026-11-19 (Wi-Fi lines removed).
-Boot 1: slow lift and flip. Boot 2: quick lift and flip. Boot 3: ~60 deg tilt by hand. Boot 4: extra, not part of S4-U23.
+S4-U20 on the car, normal image at 8daed0a, 2026-11-19 (Wi-Fi lines removed).
+Boot 1: slow lift and flip. Boot 2: quick lift and flip. Boot 3: ~60 deg tilt by hand. Boot 4: extra, not part of S4-U20.
 The GY-511 had read Z stuck near 2040 mg (offset z=1040) on the boot before; fixed by reseating the Grove cable with a power cycle.
 
 [imu] motion: climbing

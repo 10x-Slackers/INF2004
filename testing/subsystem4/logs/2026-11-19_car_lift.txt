@@ -1,4 +1,4 @@
-S4-U27 on the car, normal image at 9dc05d7, 2026-11-19 (Wi-Fi lines removed).
+S4-U24 on the car, normal image at 9dc05d7, 2026-11-19 (Wi-Fi lines removed).
 Boot 1: quick level lift. Boot 2: slow level lift. Boot 3: run from GP20 over the 10 mm practice hump; avoidance then stopped at a wall, so the ramp was not reached.
 
 microT-Kernel Version 3.00

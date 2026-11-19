@@ -17,19 +17,19 @@ wifi: cyw43_init() ...
 
 wifi: cyw43_init() returned, bringing interface up ...
 
-[TEST] S2-U16 PASS  boots idle with the motors braked
+[TEST] S2-U05 PASS  boots idle with the motors braked
 
-[TEST] S2-U17 PASS  out-of-range commands are rejected
+[TEST] S2-U06 PASS  out-of-range commands are rejected
 
-[TEST] S2-U18 PASS  a rejected command does not start the motors
+[TEST] S2-U07 PASS  a rejected command does not start the motors
 
-[TEST] S2-U19 PASS  12-byte packed status and telemetry
+[TEST] S2-U08 PASS  12-byte packed status and telemetry
 
-[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+[TEST] S2-U09 PASS  control step runs and takes under 1 ms
 
-[TEST] S2-U28 PASS  a latched safety stop refuses every command
+[TEST] S2-U16 PASS  a latched safety stop refuses every command
 
-[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+[TEST] S2-U17 PASS  commands are accepted again after the latch is released
 
 [TEST] subsystem2 SUMMARY 7 passed, 0 failed
 
@@ -166,19 +166,19 @@ wifi: cyw43_init() ...
 
 wifi: cyw43_init() returned, bringing interface up ...
 
-[TEST] S2-U16 PASS  boots idle with the motors braked
+[TEST] S2-U05 PASS  boots idle with the motors braked
 
-[TEST] S2-U17 PASS  out-of-range commands are rejected
+[TEST] S2-U06 PASS  out-of-range commands are rejected
 
-[TEST] S2-U18 PASS  a rejected command does not start the motors
+[TEST] S2-U07 PASS  a rejected command does not start the motors
 
-[TEST] S2-U19 PASS  12-byte packed status and telemetry
+[TEST] S2-U08 PASS  12-byte packed status and telemetry
 
-[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+[TEST] S2-U09 PASS  control step runs and takes under 1 ms
 
-[TEST] S2-U28 PASS  a latched safety stop refuses every command
+[TEST] S2-U16 PASS  a latched safety stop refuses every command
 
-[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+[TEST] S2-U17 PASS  commands are accepted again after the latch is released
 
 [TEST] subsystem2 SUMMARY 7 passed, 0 failed
 

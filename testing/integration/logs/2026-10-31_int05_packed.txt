@@ -1,4 +1,4 @@
-INT-05 at 7739da3 (#23) merged with cd9aa1f (#25), normal build, wheels lifted, no line
+INT-01 at 7739da3 (#23) merged with cd9aa1f (#25), normal build, wheels lifted, no line
 Capture: serial from boot; [imu] x= sample lines removed
 
 microT-Kernel Version 3.00

@@ -78,19 +78,19 @@ void subsystem4_test(void)
                "packed reading keeps -2048..2047 per axis in 8 bytes");
 
     /* Board still since power-on: no fault latched. */
-    TEST_CHECK("S4-U14", 0u == (app_faults() & APP_FAULT_IMU),
+    TEST_CHECK("S4-U13", 0u == (app_faults() & APP_FAULT_IMU),
                "no upside-down or tilt fault on a still board");
     hump.peak = S4_HUMP_MAX_MM;
     hump.count = S4_TEST_HUMPS_MAX;
     hump.count++;
-    TEST_CHECK("S4-U13",
+    TEST_CHECK("S4-U12",
                (S4_TEST_WORD_SIZE == sizeof(s4_hump_t)) &&
                    (S4_HUMP_MAX_MM == hump.peak) && (0u == hump.count),
                "packed hump record keeps 0..63 mm and a wrapping count");
 
     /* Board still since power-on: steady. */
     s4_get_motion(&motion);
-    TEST_CHECK("S4-U18",
+    TEST_CHECK("S4-U16",
                (S4_TEST_WORD_SIZE == sizeof(s4_motion_t)) &&
                    (S4_STEADY == motion.cls),
                "motion is steady on a still board");

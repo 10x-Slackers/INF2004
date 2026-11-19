@@ -1,8 +1,8 @@
 Normal image from 2c7101f on the course, 2026-11-03. Three boots (the board was reset between runs); only [vc], [safety], [imu] and hump lines kept.
-Run 1: impact fault in READY before any press (car handled). Run 2 (INT-08): GP20, following, drove over a 30 mm hump, impact fault, safe stop. Run 3 (INT-12): GP20, following, line lost at the end of a line, safe stop.
+Run 1: impact fault in READY before any press (car handled). Run 2 (INT-03): GP20, following, drove over a 30 mm hump, impact fault, safe stop. Run 3 (INT-07): GP20, following, line lost at the end of a line, safe stop.
 No GP20 press after either stop: the board was reset instead.
 
-== 11:55:17 flashed 2c7101f normal image for INT-05
+== 11:55:17 flashed 2c7101f normal image for INT-01
 == 11:55:22 port opened
 [vc] INIT -> READY: IMU calibrated
 [imu] motion: impact

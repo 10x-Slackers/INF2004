@@ -111,9 +111,9 @@ Change Requirement 1 asks for this table and evidence for the final implementati
 
 | Evidence | Where |
 | --- | --- |
-| RAM, whole image and Vehicle Controller | INT-11, `testing/integration/logs/2026-10-31_ram.txt` |
-| RAM and record sizes, per subsystem | S2-U22, S3-U15, S4-U22, S5-U44 in each `testing/subsystemN/TEST_LOG.md` |
-| Inter-task record sizes (each `get()` copies one) | The same logs; S3-U02, U09, U13, S4-U04, U13, U18 and S5-U42 check them on the car |
+| RAM, whole image and Vehicle Controller | INT-06, `testing/integration/logs/2026-10-31_ram.txt` |
+| RAM and record sizes, per subsystem | S2-U11, S3-U15, S4-U19, S5-U05 in each `testing/subsystemN/TEST_LOG.md` |
+| Inter-task record sizes (each `get()` copies one) | The same logs; S3-U02, U09, U13, S4-U04, U12, U16 and S5-U03 check them on the car |
 | MQTT payload sizes against the Week 6 JSON | S1-U01, `testing/subsystem1/logs/2026-10-31_payloads.txt` |
-| No loss of function | Every subsystem's unit tests run on the packed code; the widened versions pass the same host tests (S2-U21, S5-U43) except their size checks; S1-U01 round-trips every payload field at its limits, and S1-U02 checks the C packers against the same layout |
-| No loss of timing | S2-U14 (`max_tick_us` of the 10 ms control step) |
+| No loss of function | Every subsystem's unit tests run on the packed code; the widened versions pass the same host tests (S2-U10, S5-U04) except their size checks; S1-U01 round-trips every payload field at its limits, and S1-U02 checks the C packers against the same layout |
+| No loss of timing | S2-U04 (`max_tick_us` of the 10 ms control step) |

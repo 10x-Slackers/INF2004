@@ -26,19 +26,19 @@ wifi: cyw43_init() ...
 
 wifi: cyw43_init() returned, bringing interface up ...
 
-[TEST] S2-U16 PASS  boots idle with the motors braked
+[TEST] S2-U05 PASS  boots idle with the motors braked
 
-[TEST] S2-U17 PASS  out-of-range commands are rejected
+[TEST] S2-U06 PASS  out-of-range commands are rejected
 
-[TEST] S2-U18 PASS  a rejected command does not start the motors
+[TEST] S2-U07 PASS  a rejected command does not start the motors
 
-[TEST] S2-U19 PASS  12-byte packed status and telemetry
+[TEST] S2-U08 PASS  12-byte packed status and telemetry
 
-[TEST] S2-U20 PASS  control step runs and takes under 1 ms
+[TEST] S2-U09 PASS  control step runs and takes under 1 ms
 
-[TEST] S2-U28 PASS  a latched safety stop refuses every command
+[TEST] S2-U16 PASS  a latched safety stop refuses every command
 
-[TEST] S2-U29 PASS  commands are accepted again after the latch is released
+[TEST] S2-U17 PASS  commands are accepted again after the latch is released
 
 [TEST] subsystem2 SUMMARY 7 passed, 0 failed
 
@@ -100,15 +100,15 @@ wifi: cyw43_init() returned, bringing interface up ...
 
 [TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
 
-[TEST] S4-U14 PASS  no impact or tilt fault on a still board
+[TEST] S4-U13 PASS  no impact or tilt fault on a still board
 
-[TEST] S4-U13 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U12 PASS  packed hump record keeps 0..63 mm and a wrapping count
 
-[TEST] S4-U18 PASS  motion is steady on a still board
+[TEST] S4-U16 PASS  motion is steady on a still board
 
 [TEST] subsystem4 SUMMARY 8 passed, 0 failed
 
-[TEST] S5-U40 PASS  avoidance boots idle
+[TEST] S5-U01 PASS  avoidance boots idle
 
 [imu] x=-1 y=-2 z=1000 mg pitch=-2 roll=0 (0.1 deg) h=0 mm
 
@@ -122,11 +122,11 @@ wifi: cyw43_init() returned, bringing interface up ...
 
 [imu] x=-2 y=-16 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
 
-[TEST] S5-U41 PASS  a forward scan finishes within 500 ms
+[TEST] S5-U02 PASS  a forward scan finishes within 500 ms
 
 [scan] forward_mm=1718 fault=0
 
-[TEST] S5-U42 PASS  packed status 8, scan 16, profile 8 bytes
+[TEST] S5-U03 PASS  packed status 8, scan 16, profile 8 bytes
 
 [TEST] subsystem5 SUMMARY 3 passed, 0 failed
 

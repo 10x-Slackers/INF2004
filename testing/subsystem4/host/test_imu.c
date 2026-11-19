@@ -5,7 +5,7 @@
  *
  * Includes task_imu.c itself to reach its private sample functions. The
  * kernel, console and board calls come from stub/ and the stubs below.
- * One sample is one 10 ms period. Build and run as in S4-U24 of
+ * One sample is one 10 ms period. Build and run as in S4-U21 of
  * testing/subsystem4/TEST_LOG.md.
  */
 

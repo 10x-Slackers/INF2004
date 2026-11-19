@@ -23,7 +23,7 @@
     ((1u << DRV_MOTION_LEFT_A) | (1u << DRV_MOTION_LEFT_B) |                   \
      (1u << DRV_MOTION_RIGHT_A) | (1u << DRV_MOTION_RIGHT_B))
 
-/* Wiring polarity measured on the robot (S2-U11, S2-U24). */
+/* Wiring polarity measured on the robot (S2-U01, S2-U12). */
 #define DRV_MOTION_LEFT_MOTOR_SIGN    (-1)
 #define DRV_MOTION_RIGHT_MOTOR_SIGN   1
 #define DRV_MOTION_LEFT_ENCODER_SIGN  (-1)

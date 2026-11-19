@@ -1,4 +1,4 @@
-# S4-U17 then S4-U15, 2026-10-28: gentle ramp handling (no fault expected), then a knock (impact). After the knock the module came to rest leaning at -26 deg, which also latched the tilt fault.
+# S4-U15 then a knock (retired impact test), 2026-10-28: gentle ramp handling (no fault expected), then a knock (impact). After the knock the module came to rest leaning at -26 deg, which also latched the tilt fault.
 [imu] calibrated: offsets x=64 y=23 z=1040 mg
 [imu] x=2 y=1 z=1000 mg pitch=-1 roll=0 (0.1 deg)
 [imu] x=22 y=55 z=1000 mg pitch=-19 roll=4 (0.1 deg)
@@ -84,7 +84,7 @@
 [imu] x=-40 y=120 z=1000 mg pitch=-98 roll=-30 (0.1 deg)
 [imu] x=60 y=142 z=1000 mg pitch=-55 roll=-22 (0.1 deg)
 [imu] x=-42 y=29 z=1000 mg pitch=-20 roll=-26 (0.1 deg)
-# S4-U16 after a reset: module tilted and held
+# S4-U14 after a reset: module tilted and held
 [imu] calibrated: offsets x=34 y=30 z=1040 mg
 [imu] x=3 y=5 z=1000 mg pitch=0 roll=2 (0.1 deg)
 [imu] x=60 y=-11 z=1000 mg pitch=1 roll=7 (0.1 deg)

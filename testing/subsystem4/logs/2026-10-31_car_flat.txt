@@ -1,4 +1,4 @@
-# S4-U12, 2026-10-31: whole motion bench sequence on flat floor (GP21), sensor on the car. [trace] lines dropped.
+# S4-U11, 2026-10-31: whole motion bench sequence on flat floor (GP21), sensor on the car. [trace] lines dropped.
 [motion] bench: drive +-100, forward/backward 300, left 90, right 90, left 180, forward 300 at 200, left 180, forward 300
 [imu] x=41 y=-91 z=990 mg pitch=30 roll=8 (0.1 deg) h=-1 mm
 [imu] x=66 y=401 z=1070 mg pitch=-57 roll=14 (0.1 deg) h=-2 mm

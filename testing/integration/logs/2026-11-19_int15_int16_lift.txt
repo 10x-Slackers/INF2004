@@ -1,5 +1,5 @@
-INT-15 and INT-16 on the car, normal image at 9dc05d7, 2026-11-19 (Wi-Fi lines removed).
-Boot 1: slow lift and flip (car had just switched to AVOID). Boot 2: slow lift and flip. Boot 3: quick lift and flip. Boot 4: INT-16, quick level lift while following, GP20 twice, quick level lift again.
+INT-09 and INT-10 on the car, normal image at 9dc05d7, 2026-11-19 (Wi-Fi lines removed).
+Boot 1: slow lift and flip (car had just switched to AVOID). Boot 2: slow lift and flip. Boot 3: quick lift and flip. Boot 4: INT-10, quick level lift while following, GP20 twice, quick level lift again.
 
 microT-Kernel Version 3.00
 === micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===

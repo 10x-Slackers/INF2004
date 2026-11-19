@@ -1,4 +1,4 @@
-S4-U22 and S4-U24..S4-U29 after packing the IMU task's state (g_imu) to bit-fields.
+S4-U19 and S4-U21..S4-U26 after packing the IMU task's state (g_imu) to bit-fields.
 Before: 3688ced. After: 870bca9. Image: make -C build_make TEST=1, arm-none-eabi-size.
 
 == task_imu.o (text data bss)
@@ -6,7 +6,7 @@ before: 2239 0 100
 after:  2863 0 60
 Test image .bss: 27512 -> 27472 B (subsystems 3 and 4 together); .text 302778 -> 303498 B
 
-== Host test (S4-U24 command), after
+== Host test (S4-U21 command), after
 PASS  five motion classes with names, fit the 3-bit field
 PASS  calibrated after S4_CAL_N
 PASS  flat for 1 s: no fault

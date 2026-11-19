@@ -2,7 +2,7 @@
  *
  * @brief Host test of scan_profile.c: echo conversion, median, profile and
  * side choice, and the sizes of subsystem 5's packed records. Build and
- * run as in S5-U43 of testing/subsystem5/TEST_LOG.md.
+ * run as in S5-U04 of testing/subsystem5/TEST_LOG.md.
  */
 
 #include "../../../app_program/subsystem5/obstacle_avoidance.h"

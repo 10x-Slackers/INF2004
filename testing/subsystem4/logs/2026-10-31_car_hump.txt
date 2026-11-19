@@ -1,4 +1,4 @@
-# S4-U11, 2026-10-31: motion bench (GP21) with the right wheel ~5 cm before the replica hump (10 mm). drive +100 stops on the hump, drive -100 backs off it, forward 300 and backward 300 cross it. Cut at the first 180 deg turn. [trace] lines dropped.
+# S4-U10, 2026-10-31: motion bench (GP21) with the right wheel ~5 cm before the replica hump (10 mm). drive +100 stops on the hump, drive -100 backs off it, forward 300 and backward 300 cross it. Cut at the first 180 deg turn. [trace] lines dropped.
 [motion] bench: drive +-100, forward/backward 300, left 90, right 90, left 180, forward 300 at 200, left 180, forward 300
 [imu] x=-6 y=-84 z=1007 mg pitch=10 roll=0 (0.1 deg) h=0 mm
 [imu] x=19 y=-39 z=1011 mg pitch=26 roll=0 (0.1 deg) h=0 mm

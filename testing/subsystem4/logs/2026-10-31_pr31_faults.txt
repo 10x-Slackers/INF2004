@@ -1,4 +1,4 @@
-# Normal image, af4be0d. First boot: tilt held past 45 deg (S4-U16, INT-08). Port closed at the reset.
+# Normal image, af4be0d. First boot: tilt held past 45 deg (S4-U14, INT-03). Port closed at the reset.
 
 
 
@@ -41,7 +41,7 @@ wifi: cyw43_init() returned, bringing interface up ...
 [imu] motion: steady
 [imu] motion: braking
 
-# After the reset: a table rap (no fault), then one knuckle tap on the chassis (S4-U15).
+# After the reset: a table rap (no fault), then one knuckle tap on the chassis (retired impact test).
 
 
 

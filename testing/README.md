@@ -7,7 +7,7 @@ Test records for the project, used as evidence in the write-up and tribunals.
 | `subsystemN/` | `TEST_LOG.md` (cases and results), `logs/` (saved console output, photos), `host/` (host test programs), kept by the subsystem's owner |
 | `integration/` | Tests across two or more subsystems, usually one per interface in `TEAM.md` section 5 |
 
-Test IDs are `S1-U01`, `S2-U01`, … for a subsystem and `INT-01`, … for integration. Keep an ID once it is used, so result rows stay unambiguous.
+Test IDs are `S1-U01`, `S2-U01`, … for a subsystem and `INT-01`, … for integration. Number cases in order and give a new case the next free number.
 
 ## Kinds of test
 

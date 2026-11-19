@@ -40,7 +40,7 @@ Summary
   image .bss                 26252 B -> 26148 B (-104 B). Less than the app saving because the barcode DMA ring
                              is aligned to 512 B: smaller variables before it leave more padding in front of it.
   image .text                +1096 B (bit-field shifts and masks)
-Same behaviour: the controller has no automated test; INT-05..07 cover it on the car.
+Same behaviour: the controller has no automated test; INT-01..07 cover it on the car.
 
 Re-run at 42a79fa (adds vehicle_controller_state(), comments and static asserts), same method:
   Whole image BEFORE  text 293478  data 88  bss 26252

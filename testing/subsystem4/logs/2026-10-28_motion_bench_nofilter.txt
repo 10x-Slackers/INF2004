@@ -1,4 +1,4 @@
-# S4-U19 bench, 2026-10-28, BEFORE the slow-average and hysteresis fix (not committed code). Module slid forward by hand, then left resting ~3 deg nose up, then lifted to ~46 deg by its wires.
+# S4-U17 bench, 2026-10-28, BEFORE the slow-average and hysteresis fix (not committed code). Module slid forward by hand, then left resting ~3 deg nose up, then lifted to ~46 deg by its wires.
 [imu] calibrated: offsets x=61 y=39 z=1040 mg
 [imu] x=3 y=-1 z=1000 mg pitch=0 roll=1 (0.1 deg) h=0 mm
 [imu] x=-94 y=-76 z=1000 mg pitch=12 roll=-9 (0.1 deg) h=1 mm

@@ -1,4 +1,4 @@
-# S4-U20 and S4-U21 bench, 2026-10-28, final code. Module laid on the 6 deg ramp sideways right side up in one move, held ~3 s, then lifted off and laid flat (the landing latched the impact fault).
+# S4-U18 and retired impact-class bench, 2026-10-28, final code. Module laid on the 6 deg ramp sideways right side up in one move, held ~3 s, then lifted off and laid flat (the landing latched the impact fault).
 [imu] calibrated: offsets x=60 y=27 z=1040 mg
 [imu] x=-5 y=2 z=1000 mg pitch=-1 roll=0 (0.1 deg) h=0 mm
 [imu] x=9 y=54 z=1000 mg pitch=-10 roll=2 (0.1 deg) h=0 mm

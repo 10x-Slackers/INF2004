@@ -65,7 +65,7 @@ def telemetry_events(old, new):
             found.append(
                 (
                     (
-                        f"Run ended: highest hump since power-on "
+                        f"Run ended: highest hump this run "
                         f"{new['hump_max']} mm, "
                         f"faults: {', '.join(new['faults']) or 'none'}"
                     ),
@@ -75,7 +75,7 @@ def telemetry_events(old, new):
     if new["barcodes"] != old["barcodes"]:
         found.append((f"Barcode read: {new['barcode']}", "info"))
     if new["humps"] != old["humps"]:
-        found.append((f"Hump measured, highest so far {new['hump_max']} mm", "info"))
+        found.append((f"Hump measured, highest this run {new['hump_max']} mm", "info"))
     if new["bypasses"] != old["bypasses"]:
         found.append(("Bypass complete", "info"))
     found += [

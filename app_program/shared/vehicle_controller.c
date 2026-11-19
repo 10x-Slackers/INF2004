@@ -275,6 +275,7 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
 static void vc_enter(vc_state_t state, const char * p_cause)
 {
     s4_hump_t hump = {0};
+    vc_state_t const previous = (vc_state_t)g_vc.state;
 
     /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[vc] %s -> %s: %s\n", g_names[g_vc.state], g_names[state],
@@ -288,6 +289,10 @@ static void vc_enter(vc_state_t state, const char * p_cause)
             break;
 
         case VC_FOLLOW:
+            if (VC_READY == previous)
+            {
+                s4_reset_hump_max(); /* A new run: only the latest counts. */
+            }
             (void)line_following_start(VC_SPEED_MM_S);
             obstacle_avoidance_start(); /* Nothing if already watching. */
             break;

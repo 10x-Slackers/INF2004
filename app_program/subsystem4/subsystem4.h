@@ -110,6 +110,7 @@ void s4_get_accel(s4_accel_t * p_accel);
 void s4_get_tilt(s4_tilt_t * p_tilt);
 void s4_get_hump(s4_hump_t * p_hump);
 void s4_get_motion(s4_motion_t * p_motion);
+void s4_reset_hump_max(void); /* At each run's start. */
 void s4_imu_task(INT stacd, void * p_exinf);
 
 #endif /* SUBSYSTEM4_H */

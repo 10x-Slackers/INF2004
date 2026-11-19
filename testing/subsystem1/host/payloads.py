@@ -20,7 +20,7 @@ LAYOUTS = {
         ("pitch", 11, 1024), ("roll", 11, 1024),
         ("hump_max", 6, 0), ("humps", 4, 0), ("on_hump", 1, 0),
         ("avoid_state", 3, 0), ("avoid_side", 2, 0), ("bypasses", 4, 0),
-        ("forward_mm", 12, 0), ("faults", 10, 0),
+        ("forward_mm", 12, 0), ("faults", 11, 0),
     ],
     "motion": [
         ("state", 2, 0), ("command", 3, 0), ("heading_deg", 9, 0), ("left_speed", 11, 1024),

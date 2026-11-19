@@ -256,6 +256,17 @@ int main(void)
                    (0u == g_hump.count) && (0u == g_hump.max),
                "rolled over sideways: upside down, and no hump recorded");
 
+    /* A 10 ms jolt (Z -500 mg) coming down a 30 mm hump: still measured. */
+    test_reset();
+    test_roll(15.3, 50);
+    test_roll(5.0, 10);
+    test_feed((int32_t)(-TEST_G_MG * sin(5.0 * TEST_PI / 180.0)), 0, -500, 1);
+    test_roll(5.0, 5);
+    test_feed(0, 0, TEST_G_MG, 100);
+    test_check((1u == g_hump.count) && (g_hump.peak >= 28u) &&
+                   (g_hump.peak <= 30u),
+               "10 ms jolt on a hump: still measured 28..30 mm");
+
     /* Quick lift: Z 500 mg over 1 g for 100 ms. Set on the 5th sample
      * (50 ms), not before; cleared once Z settles; nothing latched. */
     test_reset();
@@ -266,7 +277,10 @@ int main(void)
                "quick lift: lifted fault at 50 ms, not before, alone");
     test_feed(0, 0, TEST_G_MG + 500, 5);
     test_feed(0, 0, TEST_G_MG, 1);
-    test_check(0u == g_faults, "lift over, Z settled: lifted fault cleared");
+    test_check(APP_FAULT_LIFTED == g_faults,
+               "Z settled: lifted fault held while it beeps");
+    test_feed(0, 0, TEST_G_MG, S4_ALARM_MS / S4_IMU_MS);
+    test_check(0u == g_faults, "beep over: lifted fault cleared");
 
     /* Not lifts: a 40 ms knock at the sensor's limit, a slow lift (Z 150
      * mg over 1 g for 1 s), and Z just at S4_LIFT_MG for 1 s. */

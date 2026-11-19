@@ -15,10 +15,11 @@
  * 90 degrees from the start surface) for S4_UPSIDE_MS. Lifting the car and
  * turning it over ends a demo run; pitch and roll cannot see that, as they
  * read near 0 again once the car is fully inverted. Lifted is not latched:
- * it is set while Z stays over 1 g by S4_LIFT_MG for S4_LIFT_MS, which only
- * a quick lift gives, and clears once Z settles, so a car carried to the
- * start needs one GP20 press to clear the stop. Each fault prints a line
- * and sounds the buzzer; the Safety Monitor then stops the motors.
+ * it is set once Z stays over 1 g by S4_LIFT_MG for S4_LIFT_MS, which only
+ * a quick lift gives, and clears once Z settles and the 1 s beep ends, so a
+ * car carried to the start needs one GP20 press to clear the stop. Each
+ * fault prints a line and sounds the buzzer; the Safety Monitor then stops
+ * the motors.
  *
  * Humps pass under the right wheel only, so its height is
  * track width x sin(roll). A hump starts when that height stays at
@@ -252,12 +253,11 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
     sample.height_mm =
         (-S4_TRACK_MM * g_imu.smooth_x) / (IMU_SMOOTH * IMU_MG_PER_G);
     g_imu.high_count =
-        ((sample.height_mm >= S4_HUMP_ON_MM) && (sample.z_mg >= 0))
-            ? (g_imu.high_count + 1)
-            : 0;
-    if (sample.z_mg < 0)
+        (sample.height_mm >= S4_HUMP_ON_MM) ? (g_imu.high_count + 1) : 0;
+    if (g_imu.upside_count >= (S4_UPSIDE_MS / S4_IMU_MS))
     {
-        g_imu.peak_mm = 0; /* Rolled over, not on a hump: drop it. */
+        g_imu.high_count = 0; /* Rolled over, not on a hump: drop it. */
+        g_imu.peak_mm = 0;
     }
     if (((g_imu.high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||
          (g_imu.peak_mm > 0)) &&
@@ -360,9 +360,13 @@ static void imu_publish(const imu_sample_t * p_sample)
     {
         app_fault_set(APP_FAULT_LIFTED);
     }
+    else if (0 == g_imu.beep_left)
+    {
+        app_fault_clear(APP_FAULT_LIFTED); /* Beep over: GP20 can clear. */
+    }
     else
     {
-        app_fault_clear(APP_FAULT_LIFTED); /* Settled: GP20 can clear. */
+        /* Held while it beeps, so the Safety Monitor cannot miss it. */
     }
     if (b_new_upside || b_new_tilt ||
         ((S4_LIFT_MS / S4_IMU_MS) == g_imu.lift_count))

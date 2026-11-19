@@ -27,6 +27,7 @@ client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 lock = threading.Lock()  # Guards latest and events: MQTT and HTTP threads.
 latest = {}  # Topic name: (time received, decoded fields).
 events = collections.deque(maxlen=1000)  # {"id", "t", "text", "kind"}.
+RUN = time.time()  # Tells the page this server restarted, ids from 1 again.
 
 
 def decode(topic, payload):
@@ -55,8 +56,8 @@ def telemetry_events(old, new):
         found.append((f"{old['state']} → {new['state']}", "state"))
         if new["state"] == "SAFE_STOP":  # FR12: a run ends on Stop.
             found.append((f"Run ended: highest hump {new['hump_max']} mm, "
-                          f"{new['barcodes']} barcodes, "
-                          f"{new['bypasses']} bypasses", "summary"))
+                          f"faults: {', '.join(new['faults']) or 'none'}",
+                          "summary"))
     if new["barcodes"] != old["barcodes"]:
         found.append((f"Barcode read: {new['barcode']}", "info"))
     if new["humps"] != old["humps"]:
@@ -72,12 +73,14 @@ def telemetry_events(old, new):
 
 
 def heartbeat_event(old_count, count):
-    """(text, kind) when the heartbeat count shows a restart or a gap."""
-    if count == 0:
-        return ("Car started", "state")
-    if old_count is None or (count - old_count) % 65536 == 1:
+    """(text, kind) when the heartbeat count shows a gap or a restart. The
+    count wraps at 65536; a count that goes back means the car restarted."""
+    step = None if old_count is None else (count - old_count) % 65536
+    if step is None or step == 1:
         return None
-    return (f"{(count - old_count - 1) % 65536} heartbeats missed", "fault")
+    if step > 32768:
+        return ("Car restarted", "state")
+    return (f"{step - 1} heartbeats missed", "fault")
 
 
 def log(text, kind="info"):
@@ -120,12 +123,10 @@ def on_message(client, userdata, message):
 
 def snapshot(since):
     """What the page shows: each topic's latest fields and age, and the
-    events after id since (all of them if since is ahead, after a restart)."""
+    events after id since."""
     now = time.time()
     with lock:
-        if events and since > events[-1]["id"]:
-            since = 0
-        return {"broker": client.is_connected(),
+        return {"run": RUN, "broker": client.is_connected(),
                 "topics": {name: {"age_s": round(now - t, 1), "values": v}
                            for name, (t, v) in latest.items()},
                 "events": [e for e in events if e["id"] > since][-200:]}

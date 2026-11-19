@@ -198,7 +198,7 @@
     safety: [['Safety latch', 'telemetry', t => t.latched ? 'held' : 'clear']],
   };
   const $ = id => document.getElementById(id);
-  let stateName = null, stateSince = 0, lastEvent = 0;
+  let stateName = null, stateSince = 0, lastEvent = 0, run = null;
 
   // One <dt>/<dd> per field, made once; refresh() fills in the <dd>.
   for (const [id, fields] of Object.entries(GROUPS)) {
@@ -250,11 +250,9 @@
     $('STOP').disabled = !broker || (carOnline && !MOVING.includes(name));
   }
 
-  // Newest first. The server sends only events after lastEvent, or all of
-  // them again after a restart, when the ids start from 1.
+  // Newest first; the server sends only the events after lastEvent.
   function showEvents(events) {
     if (!events.length) return;
-    if (events[0].id <= lastEvent) $('events').replaceChildren();
     lastEvent = events.at(-1).id;
     $('events').prepend(...events.reverse().map(e => {
       const li = document.createElement('li'), time = document.createElement('time');
@@ -300,7 +298,13 @@
       return li;
     }));
     showScan(t, topic('scan').values);
-    showEvents(data.events);
+    if (data.run !== run) {  // A new server: its ids start from 1 again.
+      run = data.run;
+      lastEvent = 0;
+      $('events').replaceChildren();
+    } else {
+      showEvents(data.events);
+    }
   }
 
   async function send(name) {

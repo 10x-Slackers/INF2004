@@ -33,8 +33,7 @@ class DashboardTest(unittest.TestCase):
                    faults=["TILT"])  # The barcode count wrapped.
         self.assertEqual(dashboard.telemetry_events(old, new), [
             ("FOLLOW → SAFE_STOP", "state"),
-            ("Run ended: highest hump 12 mm, 0 barcodes, 0 bypasses",
-             "summary"),
+            ("Run ended: highest hump 12 mm, faults: TILT", "summary"),
             ("Barcode read: right", "info"),
             ("Fault: TILT", "fault"),
             ("Fault cleared: NO_ECHO", "info")])
@@ -42,11 +41,11 @@ class DashboardTest(unittest.TestCase):
 
     def test_heartbeat_gaps_and_restarts(self):
         self.assertIsNone(dashboard.heartbeat_event(None, 7))
-        self.assertIsNone(dashboard.heartbeat_event(65534, 65535))
+        self.assertIsNone(dashboard.heartbeat_event(65535, 0))  # Wraps.
         self.assertEqual(dashboard.heartbeat_event(65535, 2),
                          ("2 heartbeats missed", "fault"))
-        self.assertEqual(dashboard.heartbeat_event(41, 0),
-                         ("Car started", "state"))
+        self.assertEqual(dashboard.heartbeat_event(410, 3),
+                         ("Car restarted", "state"))
 
 
 if __name__ == "__main__":

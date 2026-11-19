@@ -84,7 +84,7 @@ The task and the message buffer are built only with `NET=lwip MQTT=1` ([DEVELOPM
 
 ### Connection
 
-The service connects once the Wi-Fi link is up. When an attempt fails or the connection drops it tries again 3 s later, from one timer. `APP_FAULT_WIFI` is set from start-up until the broker accepts the connection, and again while it is lost. A connection the broker closes is noticed at once; one that goes silent, such as the car leaving Wi-Fi range, is noticed by the MQTT keep-alive after about 90 s. Nothing in the car reacts to the fault: the car drives the same with or without the supervisor. While the broker is away the buffer fills within about three cycles and then drops new messages, so the first few published after a reconnect are the old ones from when the link was lost, with `WIFI` set in their faults. Live telemetry never shows `WIFI`; the supervisor sees a lost link as the heartbeat stopping.
+The service connects once the Wi-Fi link is up. When an attempt fails or the connection drops it tries again 3 s later, from one timer. `APP_FAULT_WIFI` is set from start-up until the broker accepts the connection, and again while it is lost. A connection the broker closes is noticed at once; one that goes silent, such as the car leaving Wi-Fi range, is noticed by the MQTT keep-alive after about 90 s. Nothing in the car reacts to the fault: the car drives the same with or without the supervisor. While the broker is away the buffer fills and then drops new messages; when the broker accepts the connection the service empties it unpublished, so the supervisor sees only live data, and a gap in the heartbeat count shows how long the link was down. Live telemetry therefore never shows `WIFI`.
 
 ## Supervisor dashboard
 

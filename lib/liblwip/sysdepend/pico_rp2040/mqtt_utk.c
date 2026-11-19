@@ -63,6 +63,12 @@ static void incoming_data_cb(void *arg, const u8_t *data, u16_t len, u8_t flags)
 	}
 }
 
+static void subscribe_cb(void *arg, err_t err)
+{
+	(void)arg;
+	tm_printf((UB*)"mqtt: subscribe to " MQTT_UTK_CMD_TOPIC ", err=%d\n", (int)err);
+}
+
 /* mqtt.c calls this once per connection attempt that gets as far as TCP:
  * accepted, or failed. It calls it again when an accepted connection drops. */
 static void connection_cb(mqtt_client_t *c, void *arg, mqtt_connection_status_t status)
@@ -72,7 +78,12 @@ static void connection_cb(mqtt_client_t *c, void *arg, mqtt_connection_status_t 
 	mqtt_utk_app_online(status == MQTT_CONNECT_ACCEPTED);
 	if(status == MQTT_CONNECT_ACCEPTED) {
 		tm_printf((UB*)"mqtt: connected to " MQTT_BROKER_IP "\n");
-		if(mqtt_subscribe(c, MQTT_UTK_CMD_TOPIC, 0 /* qos */, NULL, NULL) != ERR_OK) {
+		/* Drop what was queued while offline: it is stale by now, and
+		 * the supervisor would take it for live data. */
+		tx_len = 0;
+		while(mqtt_utk_app_take(tx) > 0) {
+		}
+		if(mqtt_subscribe(c, MQTT_UTK_CMD_TOPIC, 0 /* qos */, subscribe_cb, NULL) != ERR_OK) {
 			tm_printf((UB*)"mqtt: subscribe to " MQTT_UTK_CMD_TOPIC " failed\n");
 		}
 	} else {
@@ -95,7 +106,10 @@ static void try_connect(void *arg)
 	(void)arg;
 	info.client_id = MQTT_CLIENT_ID;
 	info.keep_alive = MQTT_UTK_KEEPALIVE_S;
-	(void)ipaddr_aton(MQTT_BROKER_IP, &broker);
+	if(!ipaddr_aton(MQTT_BROKER_IP, &broker)) {
+		tm_printf((UB*)"mqtt: bad MQTT_BROKER_IP " MQTT_BROKER_IP "\n");
+		return;
+	}
 
 	err = mqtt_client_connect(client, &broker, MQTT_BROKER_PORT,
 				  connection_cb, NULL, &info);

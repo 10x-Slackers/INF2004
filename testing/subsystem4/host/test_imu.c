@@ -252,9 +252,14 @@ int main(void)
         test_roll(180.0 * i / 100.0, 1);
     }
     test_feed(0, 0, -TEST_G_MG, 50);
+    for (i = 100; i >= 0; i--)
+    {
+        test_roll(180.0 * i / 100.0, 1); /* Righted the same way. */
+    }
+    test_feed(0, 0, TEST_G_MG, 100);
     test_check((0u != (g_faults & APP_FAULT_UPSIDE_DOWN)) &&
                    (0u == g_hump.count) && (0u == g_hump.max),
-               "rolled over sideways: upside down, and no hump recorded");
+               "rolled over sideways and back: no hump recorded");
 
     /* A 10 ms jolt (Z -500 mg) coming down a 30 mm hump: still measured. */
     test_reset();

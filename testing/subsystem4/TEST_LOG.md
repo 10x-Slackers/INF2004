@@ -100,3 +100,5 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-11-19 | S4-U25 | `3735a6a` | commit2main | PASS | `logs/2026-11-19_imu_host.txt` | Now also rights the car the same way; fails on `a3a3970`, which recorded a hump on the way back |
 | 2026-11-19 | S4-U26 | `3735a6a` | commit2main | PASS | `logs/2026-11-19_imu_host.txt` | Clear now waits for the 1 s beep (S4-U28) |
 | 2026-11-19 | S4-U28 | `3735a6a` | commit2main | PASS | `logs/2026-11-19_imu_host.txt` | Both checks fail on `8544aa0`: the jolt lost the hump, and the lifted fault cleared on the first settled sample |
+| 2026-11-19 | S4-U23 | `8daed0a` | commit2main | PASS | `logs/2026-11-19_car_flip.txt` | Slow flip: `tilt` stopped it, then `upside down`. Quick flip: `lifted` stopped it, then `upside down`. 60° tilt: `tilt` only. The quick flip also logged a 33 mm hump before `upside down` latched, fixed in `9dc05d7` (S4-U29) |
+| 2026-11-19 | S4-U29 | `9dc05d7` | commit2main | PASS | `logs/2026-11-19_imu_host_handling.txt` | Fails with the fix reverted (`8daed0a`); S4-U24..S4-U26 and S4-U28 still pass in the same run |

@@ -2,20 +2,11 @@
  *	mqtt_utk.c
  *	MQTT bridge for micro T-Kernel (RP2040, NO_SYS=1)
  *
- *	Publishes the messages the application queues, and passes it the
- *	commands that arrive on csc13/cmd (docs/TELEMETRY.md).
- *
- *	Runs entirely on the single processor-1-owned task that already owns
- *	the CYW43439 and the rest of lwIP (docs/RELEASE.md safety rule 6):
- *	cyw43_utk_task() (cyw43_utk.c) calls mqtt_utk_poll() on every poll
- *	while the link is up. mqtt.c's keepalive timers and the retry timer
- *	below ride the sys_check_timeouts() polling that task already does for
- *	DHCP and TCP -- nothing runs on any other task or core.
- *
- *	This file does not include tk/tkernel.h or any pico-sdk/cyw43 header
- *	(unlike cyw43_utk.c and sys_arch.c), so it isn't subject to either
- *	file's size_t workaround -- tm/tmonitor.h alone is namespace-safe here.
- *	The kernel calls it needs are behind the mqtt_utk_app_...() functions.
+ *	Publishes the messages the application queues and passes it the
+ *	commands from csc13/cmd (docs/TELEMETRY.md). Runs only in
+ *	cyw43_utk_task(), which owns lwIP; its timers ride that task's
+ *	sys_check_timeouts(). No kernel headers: kernel calls go through the
+ *	mqtt_utk_app_...() functions.
  */
 
 #include "lwip/apps/mqtt.h"
@@ -44,8 +35,7 @@ static int32_t		tx_len;			/* Its length; 0 or less when there is none. */
 
 static void try_connect(void *arg);
 
-/* Only MQTT_UTK_CMD_TOPIC is subscribed, so every arriving publish is a
- * command. One is a single byte; any other size is ignored. */
+/* Only MQTT_UTK_CMD_TOPIC is subscribed; a command is one byte. */
 static void incoming_publish_cb(void *arg, const char *topic, u32_t tot_len)
 {
 	(void)arg;
@@ -69,8 +59,7 @@ static void subscribe_cb(void *arg, err_t err)
 	tm_printf((UB*)"mqtt: subscribe to " MQTT_UTK_CMD_TOPIC ", err=%d\n", (int)err);
 }
 
-/* mqtt.c calls this once per connection attempt that gets as far as TCP:
- * accepted, or failed. It calls it again when an accepted connection drops. */
+/* Once per attempt (accepted or failed), and again if it drops later. */
 static void connection_cb(mqtt_client_t *c, void *arg, mqtt_connection_status_t status)
 {
 	(void)arg;
@@ -78,8 +67,7 @@ static void connection_cb(mqtt_client_t *c, void *arg, mqtt_connection_status_t 
 	mqtt_utk_app_online(status == MQTT_CONNECT_ACCEPTED);
 	if(status == MQTT_CONNECT_ACCEPTED) {
 		tm_printf((UB*)"mqtt: connected to " MQTT_BROKER_IP "\n");
-		/* Drop what was queued while offline: it is stale by now, and
-		 * the supervisor would take it for live data. */
+		/* Drop what was queued while offline: it is stale. */
 		tx_len = 0;
 		while(mqtt_utk_app_take(tx) > 0) {
 		}
@@ -93,10 +81,7 @@ static void connection_cb(mqtt_client_t *c, void *arg, mqtt_connection_status_t 
 	}
 }
 
-/* Starts one connection attempt. Also the retry timer's callback: the timer
- * is armed only where an attempt has just failed, here or in connection_cb(),
- * and each attempt fails at most once, so one timer is armed at a time and
- * the client is always disconnected when it fires. */
+/* One connection attempt; also the retry timer, armed once per failure. */
 static void try_connect(void *arg)
 {
 	struct mqtt_connect_client_info_t	info = {0};
@@ -129,9 +114,8 @@ void mqtt_utk_poll(void)
 		try_connect(NULL);
 	}
 
-	/* Publish until the queue is empty or mqtt_publish() refuses: it returns
-	 * ERR_MEM while its request pool or output buffer is full. That message
-	 * stays in tx for the next poll. */
+	/* Publish until the queue is empty or mqtt_publish() is full; a refused
+	 * message stays in tx for the next poll. */
 	while(mqtt_client_is_connected(client)) {
 		if(tx_len <= 0) {
 			tx_len = mqtt_utk_app_take(tx);

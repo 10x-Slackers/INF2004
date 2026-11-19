@@ -1,9 +1,7 @@
 /*
  *	mqtt_utk.h
  *	MQTT bridge for micro T-Kernel (RP2040, NO_SYS=1)
- *
- *	Plain C only: cyw43_utk.c and the application both include it, and
- *	neither side's headers suit the other (see mqtt_utk.c).
+ *	Plain C only: cyw43_utk.c and the application both include it.
  */
 
 #ifndef MQTT_UTK_H
@@ -21,19 +19,12 @@
 #define MQTT_UTK_TOPIC_SCAN		2u
 #define MQTT_UTK_TOPIC_HEARTBEAT	3u
 
-/*
- * Call from cyw43_utk_task() on every poll while the link is CYW43_LINK_UP
- * (see cyw43_utk.c). The first call connects to MQTT_BROKER_IP:
- * MQTT_BROKER_PORT (config/wifi_secrets.h); every call publishes what the
- * application has queued.
- */
+/* Call from cyw43_utk_task() on every poll while the link is up. The first
+ * call connects; every call publishes what the application has queued. */
 void mqtt_utk_poll(void);
 
-/*
- * The application's end of the bridge, defined in
- * app_program/subsystem1/subsystem1.c. All three are called from
- * cyw43_utk_task() only, and none may block.
- */
+/* The application's end, in subsystem1.c. Called from cyw43_utk_task()
+ * only; none may block. */
 
 /* Copies the next queued message to msg (MQTT_UTK_MSG_MAX bytes) and returns
  * its length; negative when nothing is queued. msg[0] is a topic number. */

@@ -6,8 +6,7 @@
  * safe stop when the Safety Monitor latches one. Its own stops (GP20, the
  * supervisor's STOP, an avoidance safe stop, a lost line, a failed junction
  * move) latch the Safety Monitor too, so every stop is held the same way.
- * The supervisor's MQTT commands (docs/TELEMETRY.md) can also start and
- * reset it, as GP20 does.
+ * MQTT START and RESET act as GP20 does.
  *
  * Every variable here belongs to the controller task, so none is locked.
  * Other tasks only read the state, with vehicle_controller_state().

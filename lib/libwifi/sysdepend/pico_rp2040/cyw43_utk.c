@@ -334,9 +334,7 @@ void cyw43_utk_task(int32_t stacd, void *exinf)
 #if TM_NET_LWIP
         sys_check_timeouts();
 #if TM_MQTT
-        /* Connects on its first call, then publishes what the application
-         * has queued. Reconnecting after a failure is left to mqtt_utk.c's
-         * retry timer, which sys_check_timeouts() above runs. */
+        /* Connects on its first call, then publishes the queue. */
         if(radio_status.link_status == CYW43_LINK_UP) {
             mqtt_utk_poll();
         }

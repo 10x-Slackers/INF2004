@@ -21,8 +21,7 @@
 #define S1_CMD_RESET 4u /* As GP20 in SAFE_STOP. */
 #define S1_CMD_ALL   (S1_CMD_START | S1_CMD_STOP | S1_CMD_RESET)
 
-/* Event flag: the Wi-Fi service sets the supervisor's command bits, the
- * Vehicle Controller takes them. It exists in every build. */
+/* Event flag: set by the Wi-Fi service, taken by the Vehicle Controller. */
 extern ID gh_s1_command_flag;
 
 #endif /* SUBSYSTEM1_H */

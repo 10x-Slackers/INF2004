@@ -78,7 +78,6 @@ static void payload_put(uint8_t * p_payload, uint32_t * p_bit, uint32_t value,
         shift--;
         if (0u != ((value >> shift) & 1u))
         {
-            /* 0x80 >> 0..7 is one bit of that byte. */
             p_payload[*p_bit / 8u] |= (uint8_t)(0x80u >> (*p_bit % 8u));
         }
         (*p_bit)++;

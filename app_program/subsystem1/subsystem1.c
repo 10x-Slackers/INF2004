@@ -1,12 +1,8 @@
 /** @file subsystem1.c
  *
  * @brief Subsystem 1 (Wi-Fi, command and telemetry): the Telemetry task and
- * the application's end of the MQTT bridge (docs/TELEMETRY.md).
- *
- * Only the kernel's Wi-Fi service task may call MQTT. The Telemetry task
- * therefore queues each payload in a message buffer, and the service takes
- * it from there to publish. The service calls the mqtt_utk_app_...()
- * functions at the end of this file; mqtt_utk.h declares and names them.
+ * the application's end of the MQTT bridge (docs/TELEMETRY.md). Only the
+ * Wi-Fi service task may call MQTT, so payloads go through a message buffer.
  */
 
 #include "subsystem1.h"
@@ -67,7 +63,6 @@ ER subsystem1_init(void)
 ER subsystem1_start(void)
 {
 #if TM_MQTT
-    /* FP is the kernel's generic task pointer type. */
     ID const h_task = app_start_task((FP)s1_telemetry_task, S1_PRI_TELEMETRY,
                                      0u, "s1_telemetry");
 
@@ -125,7 +120,6 @@ static void s1_telemetry_task(INT stacd, void * p_exinf)
             s1_send(message, MQTT_UTK_TOPIC_HEARTBEAT, S1_HEARTBEAT_BYTES);
             heartbeats++;
         }
-        /* 0..4 fits uint8_t. */
         cycles = (uint8_t)((cycles + 1u) % S1_HEARTBEAT_CYCLES);
     }
 }
@@ -186,15 +180,12 @@ static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
 static void s1_send(uint8_t * p_message, uint8_t topic, uint32_t bytes)
 {
     p_message[0] = topic;
-    /* (INT): the kernel's size type; a message is at most 13 bytes. */
     (void)tk_snd_mbf(gh_s1_queue, p_message, (INT)(1u + bytes), TMO_POL);
 }
 
 /*!
  * @brief Give the Wi-Fi service the next queued message to publish.
  *
- * @param[out] p_message Topic number, then the payload: MQTT_UTK_MSG_MAX
- * bytes at most.
  * @return The message's length in bytes; negative if the queue is empty.
  */
 int32_t mqtt_utk_app_take(uint8_t * p_message)

@@ -18,7 +18,7 @@ Events (barcode read, hump measured, bypass done, state change) need no topic of
 
 ## Encoding
 
-Each payload is one bit stream, most significant bit first, padded with zero bits to whole bytes, as in `motion_control_pack()`. A signed field is sent as value + offset so it is never negative. `testing/subsystem1/host/payloads.py` packs and unpacks every payload and is the reference decoder.
+Each payload is one bit stream, most significant bit first, padded with zero bits to whole bytes, as in `motion_control_pack()`. A signed field is sent as value + offset so it is never negative. `supervisor/payloads.py` packs and unpacks every payload and is the reference decoder.
 
 ### `telemetry`: 83 bits
 
@@ -88,21 +88,7 @@ The service connects once the Wi-Fi link is up. When an attempt fails or the con
 
 ## Supervisor dashboard
 
-`testing/subsystem1/host/dashboard.py` subscribes to `csc13/#`, decodes each payload with `payloads.py`, and serves a local page (`dashboard.html`) with the latest values of each topic, their age, and START, STOP and RESET buttons that publish the `cmd` byte. It needs Python 3.9 or later and a broker both it and the car can reach, such as Mosquitto on the laptop:
-
-```sh
-pip install -r testing/subsystem1/host/requirements.txt
-python3 testing/subsystem1/host/dashboard.py --broker <broker IP>
-```
-
-Mosquitto 2 accepts only clients on its own machine unless its configuration file names a listener. For the car, start it as `mosquitto -c <file>` with these two lines in the file, and put the laptop's address in `MQTT_BROKER_IP` of `config/wifi_secrets.h`:
-
-```
-listener 1883
-allow_anonymous true
-```
-
-Then open <http://127.0.0.1:8000>. `--broker` defaults to `127.0.0.1`, `--broker-port` to 1883 and `--port` (the page) to 8000. The telemetry state and faults are shown by name; every other field is the number sent. A periodic topic is greyed out once it is 2 s old.
+[supervisor/](../supervisor/README.md) has the laptop side: `dashboard.py` subscribes to `csc13/#`, decodes each payload with `payloads.py`, and serves a local page with the live state, an event log and the Start, Stop and Reset commands. Its README covers running the broker and the dashboard for a demo.
 
 ## Size
 

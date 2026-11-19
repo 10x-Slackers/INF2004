@@ -20,11 +20,13 @@ A page on the laptop that shows what the car is doing and sends it Start, Stop a
 - **The state**, large and coloured, with how long the car has been in it and what to do next. Start works only in READY, Reset only in SAFE_STOP; Stop works in every other state, and Esc sends it.
 - **Line** (FR2, FR3): the two IR sensors over the tape, junction, the last barcode and the count.
 - **Motion** (FR4): wheel speeds, distance, heading, the current move and the encoder counts.
-- **Terrain** (FR5, FR10): pitch, roll, motion class and the humps.
+- **Terrain** (FR5, FR10): pitch, roll, motion class, the number of humps and the highest since the car was powered on.
 - **Obstacle** (FR6, FR7): the range ahead and the last profile as a sketch (servo angles, 90° straight ahead, out to 0.6 m), with the avoidance state, side and clearances.
 - **Faults** (FR11): every active `APP_FAULT_...` and the safety latch.
-- **Events**: what changed, with the time, newest first. State changes, barcodes, humps, bypasses, faults set and cleared, profiled obstacles, missed heartbeats, a car restart, the commands sent, and on every safe stop the run's summary (FR12). **Download log** saves it as text, for test evidence.
+- **Events**: what changed, with the time, newest first. State changes, barcodes, humps, bypasses, faults set and cleared, profiled obstacles, missed heartbeats, a car restart, the commands sent, and on every safe stop a summary with the highest hump and the active faults (FR12). **Download log** saves it as text, for test evidence.
 
-The header turns red when no heartbeat has arrived for 2.5 s. The values dim when telemetry is over 1.5 s old: they are the last ones received.
+The header turns red when no heartbeat has arrived for 2.5 s. The values dim when telemetry is over 1.5 s old: they are the last ones received. The car drops what it queued while the broker was away, so after a gap the page shows live data straight away, and the log reports how many heartbeats were missed.
+
+After a telemetry gap of more than 2 s, the log does not report barcodes, humps or bypasses that happened during the gap, because a reboot also resets those counts. The page's counts are still right, and state changes and faults are still logged.
 
 The console still has what telemetry does not carry, such as calibration details, the bench commands and the kernel's crash report.

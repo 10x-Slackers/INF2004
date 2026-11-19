@@ -11,7 +11,7 @@
 #include "../subsystem2/motion_control.h"
 #include "../subsystem3/line_following.h"
 
-#define OBSTACLE_AVOIDANCE_POLL_MS  20u    /* Plus a tick: tk_dly_tsk(). */
+#define OBSTACLE_AVOIDANCE_POLL_MS  20u
 #define OBSTACLE_AVOIDANCE_STILL_MS 1000u  /* Braking to standstill. */
 #define OBSTACLE_AVOIDANCE_SCAN_MS  12000u /* Longest profile scan. */
 #define OBSTACLE_AVOIDANCE_MOVE_MS  10000u

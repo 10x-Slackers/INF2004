@@ -39,8 +39,7 @@
 #define IMU_PRINT_MS      100
 #define IMU_PWM_CLOCK_HZ  125000000u /* System clock, divider 1. */
 
-/* Written by the IMU task, under gh_s4_mutex; s4_reset_hump_max() also
- * clears g_hump.max. */
+/* Written under gh_s4_mutex. */
 static s4_accel_t g_accel;
 static s4_tilt_t g_tilt;
 static s4_hump_t g_hump;
@@ -127,8 +126,7 @@ void s4_get_hump(s4_hump_t * p_hump)
 }
 
 /*!
- * @brief Forget the highest hump, under gh_s4_mutex, so it is the highest of
- * the run that is starting.
+ * @brief Clear the highest hump, under gh_s4_mutex.
  */
 void s4_reset_hump_max(void)
 {

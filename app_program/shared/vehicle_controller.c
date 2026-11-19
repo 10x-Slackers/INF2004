@@ -291,7 +291,7 @@ static void vc_enter(vc_state_t state, const char * p_cause)
         case VC_FOLLOW:
             if (VC_READY == previous)
             {
-                s4_reset_hump_max(); /* A new run: only the latest counts. */
+                s4_reset_hump_max();
             }
             (void)line_following_start(VC_SPEED_MM_S);
             obstacle_avoidance_start(); /* Nothing if already watching. */

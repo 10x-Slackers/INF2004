@@ -71,7 +71,7 @@ static void safety_monitor_task(INT stacd, void * p_exinf)
     (void)p_exinf;
     for (;;)
     {
-        (void)tk_slp_tsk(TMO_FEVR); /* Woken every period. */
+        (void)tk_slp_tsk(TMO_FEVR); /* Woken every SAFETY_MONITOR_PERIOD_MS. */
         motion_control_get_status(&motion);
         cause =
             (0u != (app_faults() & APP_FAULT_IMU)) ? SAFETY_MONITOR_IMU : 0u;

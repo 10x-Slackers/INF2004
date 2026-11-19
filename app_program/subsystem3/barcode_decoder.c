@@ -20,6 +20,9 @@
 #define BARCODE_WHITE        600u
 #define BARCODE_END          30000u /* um: 30 mm, over 3 wide bars. */
 #define BARCODE_ELEMENTS_MAX 31u    /* g_code.elements stops here. */
+#if CODE39_ELEMENTS >= 31
+#error "g_code.elements needs more than 5 bits"
+#endif
 
 /* The course's barcodes: change these lines when the letters are announced
  * (any number of letters per command). Other valid letters are rejected. Z is

@@ -40,6 +40,12 @@
 #define IMU_COUNT_MAX     63u        /* Longest threshold: 50 samples (tilt). */
 #define IMU_PWM_CLOCK_HZ  125000000u /* System clock, divider 1. */
 
+/* The 6-bit samples-in-a-row counters must reach every threshold. */
+#if ((S4_TILT_MS / S4_IMU_MS) >= 63) || ((S4_UPSIDE_MS / S4_IMU_MS) >= 63) ||  \
+    ((S4_HUMP_MIN_MS / S4_IMU_MS) >= 63) || ((S4_ACCEL_MS / S4_IMU_MS) >= 63)
+#error "A samples-in-a-row threshold needs more than 6 bits"
+#endif
+
 /* Written under gh_s4_mutex. */
 static s4_accel_t g_accel;
 static s4_tilt_t g_tilt;

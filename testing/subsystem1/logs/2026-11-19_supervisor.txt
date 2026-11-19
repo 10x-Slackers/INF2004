@@ -1,0 +1,43 @@
+Commit 35c3cca, 2026-11-19, host (Linux x86_64), no car attached
+
+== S1-U01: python3 -I supervisor/payloads.py
+PASS  telemetry round trip (min)
+PASS  telemetry round trip (max)
+PASS  motion round trip (min)
+PASS  motion round trip (max)
+PASS  scan round trip (min)
+PASS  scan round trip (max)
+PASS  heartbeat round trip (min)
+PASS  heartbeat round trip (max)
+PASS  cmd round trip (min)
+PASS  cmd round trip (max)
+PASS  motion matches motion_control_pack()
+PASS  telemetry matches payload_pack_telemetry()
+PASS  scan matches payload_pack_scan()
+
+Topic      Bits  Binary B  JSON B  Saved  Hz  JSON B/s  Binary B/s
+telemetry    83        11     275    96%   5      1375          55
+           45261fa423548417260000  {"v":1,"robot_id":"CSC13","seq":1234,"state":"FOLLOW","latched":0,"line":1,"junction":0,"following":1,"barcode":1,"barcodes":3,"motion_class":0,"pitch":-12,"roll":35,"hump_max":21,"humps":2,"on_hump":0,"avoid_state":1,"avoid_side":0,"bypasses":1,"forward_mm":1830,"faults":0}
+motion       92        12     171    93%   5       855          60
+           6c3e634cbbc53bf060030a20  {"v":1,"robot_id":"CSC13","seq":1234,"state":1,"command":5,"heading_deg":271,"left_speed":198,"right_speed":203,"left_count":48211,"right_count":48902,"distance_mm":12450}
+scan         68         9     144    94%   -         0           0
+           0785a46694933408c0  {"v":1,"robot_id":"CSC13","seq":1234,"closest_mm":120,"closest_deg":90,"right_deg":70,"left_deg":105,"width_mm":73,"left_mm":820,"right_mm":140}
+heartbeat    16         2      50    96%   1        50           2
+           04d2  {"v":1,"robot_id":"CSC13","seq":1234,"count":1234}
+cmd           8         1     101    99%   -         0           0
+           01  {"v":1,"robot_id":"CSC13","session_id":"s1","command_id":"c7","seq":7,"cmd":"START","challenge":"n4"}
+
+Periodic total: JSON 2280 B/s, binary 117 B/s
+
+ALL PASS
+
+== S1-U03: cd supervisor && python3 -m unittest -v test_dashboard (paho-mqtt 2.x via uv)
+test_decodes_what_the_car_packs (test_dashboard.DashboardTest.test_decodes_what_the_car_packs) ... ok
+test_heartbeat_gaps_and_restarts (test_dashboard.DashboardTest.test_heartbeat_gaps_and_restarts) ... ok
+test_ignores_other_messages (test_dashboard.DashboardTest.test_ignores_other_messages) ... ok
+test_logs_what_changed (test_dashboard.DashboardTest.test_logs_what_changed) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK

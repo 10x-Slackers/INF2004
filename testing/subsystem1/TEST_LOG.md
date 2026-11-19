@@ -29,3 +29,4 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-10-31 | S1-U01 | `aedbf62` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Fault byte removed: telemetry 9 B; periodic topics 107 B/s instead of 2280 B/s |
 | 2026-10-31 | S1-U01 | `3a71771` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Shared fault word added to telemetry (11 B), motion without its fault bits (92 bits, still 12 B): periodic topics 117 B/s instead of 2280 B/s |
 | 2026-10-31 | S1-U01 | `af4be0d` | commit2main | PASS | `logs/2026-10-31_payloads_pr31.txt` | Re-run on PR #31; payload code unchanged |
+| 2026-11-19 | S1-U01 | `3735a6a` | commit2main | PASS | `logs/2026-11-19_payloads_faults11.txt` | Fault field widened to 11 bits for the lifted fault (bit 10); telemetry is 83 bits, still 11 bytes |

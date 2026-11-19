@@ -1,0 +1,86 @@
+S4-U23 on the car, normal image at 8daed0a, 2026-11-19 (Wi-Fi lines removed).
+Boot 1: slow lift and flip. Boot 2: quick lift and flip. Boot 3: ~60 deg tilt by hand. Boot 4: extra, not part of S4-U23.
+The GY-511 had read Z stuck near 2040 mg (offset z=1040) on the boot before; fixed by reseating the Grove cable with a power cycle.
+
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 6 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] FAULT: tilt
+[safety] stop, cause 0x1
+[vc] READY -> SAFE_STOP: safety latched
+[vc] max hump 6 mm
+[imu] FAULT: upside down
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=38 y=71 z=-137 mg
+[vc] INIT -> READY: IMU calibrated
+[imu] motion: climbing
+[imu] motion: descending
+[imu] FAULT: lifted
+[safety] stop, cause 0x1
+[vc] READY -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] motion: steady
+[imu] hump: peak 33 mm
+[imu] motion: accelerating
+[imu] FAULT: upside down
+[imu] motion: steady
+[imu] FAULT: tilt
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=41 y=66 z=-137 mg
+[vc] INIT -> READY: IMU calibrated
+[imu] FAULT: tilt
+[safety] stop, cause 0x1
+[vc] READY -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=43 y=67 z=-137 mg
+[vc] INIT -> READY: IMU calibrated
+[imu] FAULT: lifted
+[safety] stop, cause 0x1
+[vc] READY -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 15 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady

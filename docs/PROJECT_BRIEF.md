@@ -123,6 +123,8 @@ Objectives: reliable tracking, accurate barcode recognition, robust operation at
 
 IMU integration and calibration, tilt detection, hump detection, peak hump measurement, motion classification, collision detection, turn-rate monitoring, motion event reporting.
 
+The instructor later replaced collision detection, which conflicts with collision avoidance: the IMU must instead detect that the car has been picked up and stop the motors at once. At the demonstration the car is lifted, in any manner, and turned upside down to end the run. No finer lift or overturn classification is needed.
+
 Motion events to classify: stationary, accelerating, turning, climbing hump, descending hump, sudden impact.
 
 Objectives: reliable hump detection, accurate peak measurement, stable event classification.
@@ -151,6 +153,8 @@ Objectives: accurate detection, effective profiling, reliable avoidance, success
 | Integration   | Interfaces and teamwork                                   |
 | Demonstration | Clear evidence under test (Week 10)                       |
 
+The final demonstration scores one point for each of: detect a barcode, decode it, measure hump height, follow the line, follow the barcode's instruction, detect an obstacle, measure its width, navigate around it and rejoin the line, send telemetry over MQTT, and stop the motors when the car is picked up, which ends the run. Each team gets up to three runs and the last run counts, even if it scores lower.
+
 The briefing's advice on how to get there:
 
 1. Define inputs, outputs and ownership.
@@ -176,7 +180,7 @@ These IDs come from the Week 6 design review. Use them in commits, tests and rep
 | FR7  | Stop for profiling; choose and execute the bypass with least route deviation; reacquire the line. Reverse is disabled (no rear-clearance sensing); replanning is bounded; no safe route means Safe Stop | Obstacle Avoidance and Recovery   |
 | FR8  | Coordinate navigation, line following, barcodes, wheel control, terrain monitoring, avoidance and recovery through one mission controller                                    | Vehicle Controller                |
 | FR9  | Establish Wi-Fi/MQTT, publish telemetry and heartbeat, accept permitted supervisory commands, and recover connectivity without blocking local control                        | Wi-Fi and MQTT Telemetry          |
-| FR10 | Classify stationary, accelerating, turning, climbing, descending and impact events; report odometry-derived turn rate and calibrated tilt                                    | IMU and Terrain Monitor           |
+| FR10 | Classify stationary, accelerating, turning, climbing and descending; report odometry-derived turn rate and calibrated tilt; latch a stop within 0.5 s of the car being turned upside down (lifted at the end of a run), and at once on a quick lift | IMU and Terrain Monitor           |
 | FR11 | Latch a stop on critical faults or explicit Stop: invalidate pending motion, brake the motors, and require reset/revalidation plus a new Start before moving                 | Safety Monitor                    |
 | FR12 | End a course on Stop: brake the motors and report final status and the run's maximum valid hump estimate. Courses run back to back, so there is no finish event              | Vehicle Controller                |
 
@@ -200,5 +204,5 @@ These IDs come from the Week 6 design review. Use them in commits, tests and rep
 | A1  | Wi-Fi and MQTT can run without significantly delaying control tasks                         | Networking interferes with navigation, or telemetry is lost | Run the car while publishing continuously; measure task timing and reconnection behaviour | Buddy 1 |
 | A2  | Encoder counts are accurate enough for speed, distance and turns                            | Drift, overshot turns, inaccurate barcode manoeuvres        | Drive fixed distances and angles repeatedly; compare measured against actual              | Buddy 2 |
 | A3  | IR sensors reliably tell the black line and barcodes from the track under expected lighting | Lost line or misread barcodes                               | Record readings over black and white under different lighting and speeds                  | Buddy 3 |
-| A4  | IMU readings are stable enough to separate normal motion from humps and collisions          | False hump or collision events, wrong height estimates      | Record on flat ground, over humps of known height, and during controlled impacts          | Buddy 4 |
+| A4  | IMU readings are stable enough to separate normal motion from humps, and the car turned over from both | False hump or lift stops, wrong height estimates      | Record on flat ground, over humps of known height, and while lifting and inverting the car fast and slowly | Buddy 4 |
 | A5  | Ultrasonic scans give accurate enough distance and width while the servo moves              | Unsafe bypass chosen, or obstacles missed                   | Place objects at known distances and widths; compare computed profiles                    | Buddy 5 |

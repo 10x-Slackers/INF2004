@@ -1,0 +1,115 @@
+INT-15 and INT-16 on the car, normal image at 9dc05d7, 2026-11-19 (Wi-Fi lines removed).
+Boot 1: slow lift and flip (car had just switched to AVOID). Boot 2: slow lift and flip. Boot 3: quick lift and flip. Boot 4: INT-16, quick level lift while following, GP20 twice, quick level lift again.
+
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=39 y=72 z=-152 mg
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[vc] FOLLOW -> AVOID: obstacle
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] FAULT: tilt
+[safety] stop, cause 0x1
+[vc] AVOID -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] FAULT: upside down
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=35 y=74 z=-152 mg
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] FAULT: tilt
+[safety] stop, cause 0x1
+[vc] FOLLOW -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] FAULT: upside down
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=39 y=70 z=-152 mg
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] FAULT: upside down
+[safety] stop, cause 0x1
+[vc] FOLLOW -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] FAULT: tilt
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=36 y=69 z=-154 mg
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[imu] motion: accelerating
+[imu] FAULT: lifted
+[safety] stop, cause 0x1
+[vc] FOLLOW -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[safety] cleared
+[vc] SAFE_STOP -> INIT: GP20
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[imu] FAULT: lifted
+[safety] stop, cause 0x1
+[imu] motion: accelerating
+[vc] FOLLOW -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady

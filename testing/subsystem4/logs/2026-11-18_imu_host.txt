@@ -1,0 +1,14 @@
+# S4-U24 host test, commit 3d66894, cc (GCC) 16.2.1 20260810
+$ cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 -DAPP_TEST=0 -I testing/subsystem4/host/stub testing/subsystem4/host/test_imu.c -lm -o /tmp/test_imu && /tmp/test_imu
+PASS  five motion classes with names, fit the 3-bit field
+PASS  calibrated after S4_CAL_N
+PASS  flat for 1 s: no fault
+PASS  30 mm hump: measured 28..30 mm, no fault
+PASS  Z below 0 for 10 ms and 150 ms: no upside-down fault
+PASS  60 degrees for 1 s: tilt fault, no upside-down fault
+PASS  flipped at once: upside-down fault at 200 ms, not before
+PASS  fully inverted reads 0 pitch and roll (why tilt misses it)
+INFO  slow lift: upside down latched at sample 120
+PASS  turned over across 2 s: upside down within 200 ms of 90
+PASS  upside-down fault stays latched after righting the car
+ALL PASS: 0 failure(s)

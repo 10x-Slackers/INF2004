@@ -10,15 +10,22 @@
  * 15 degrees, reading low beyond about 25 degrees. Sensor axes on the car:
  * -Y forward, +X left, +Z up.
  *
- * Faults, latched until reset: impact when X or Y jumps more than
- * S4_IMPACT_MG from its smoothed value (slow changes such as tilt do not
- * count), tilt when pitch or roll stays beyond S4_TILT_MAX for S4_TILT_MS.
- * Each prints a line and sounds the buzzer.
+ * Faults, latched until reset: tilt when pitch or roll stays beyond
+ * S4_TILT_MAX for S4_TILT_MS, and upside down when Z stays below 0 mg (over
+ * 90 degrees from the start surface) for S4_UPSIDE_MS. Lifting the car and
+ * turning it over ends a demo run; pitch and roll cannot see that, as they
+ * read near 0 again once the car is fully inverted. Lifted is not latched:
+ * it is set once Z stays over 1 g by S4_LIFT_MG for S4_LIFT_MS, which only
+ * a quick lift gives, and clears once Z settles and the 1 s beep ends, so a
+ * car carried to the start needs one GP20 press to clear the stop. Each
+ * fault prints a line and sounds the buzzer; the Safety Monitor then stops
+ * the motors.
  *
  * Humps pass under the right wheel only, so its height is
  * track width x sin(roll). A hump starts when that height stays at
  * S4_HUMP_ON_MM or more for S4_HUMP_MIN_MS, which ignores jolts, and ends,
- * with its peak logged, when it falls below S4_HUMP_OFF_MM.
+ * with its peak logged, when it falls below S4_HUMP_OFF_MM. None are tracked
+ * while an IMU fault is set: the car is being handled, not driven.
  */
 
 #include "subsystem4.h"
@@ -53,11 +60,13 @@ static struct
     int32_t avg_y;        /* Slow average of y, 256 x mg. */
     int32_t pushed_count; /* Samples in a row beyond S4_ACCEL_MG. */
     int32_t tilted_count; /* Samples in a row beyond S4_TILT_MAX. */
+    int32_t upside_count; /* Samples in a row with Z below 0 mg. */
+    int32_t lift_count;   /* Samples in a row over S4_LIFT_MG. */
     int32_t high_count;   /* Samples in a row at S4_HUMP_ON_MM. */
     int32_t peak_mm;      /* Highest point of the current hump. */
     int32_t print_count;
     int32_t beep_left; /* Samples until the buzzer stops. */
-    uint32_t faults;   /* APP_FAULT_IMU bits latched. */
+    uint32_t faults;   /* Latched APP_FAULT_IMU bits (all but lifted). */
     s4_motion_class_t push_class;
     bool b_descending; /* Past the top of the current hump. */
 } g_imu;
@@ -71,12 +80,11 @@ typedef struct
     int32_t pitch; /* 0.1 degree. */
     int32_t roll;
     int32_t height_mm; /* Right wheel height. */
-    bool b_jolt;
     bool b_hump_over;
 } imu_sample_t;
 
 static const char * const g_motion_name[] = {
-    "steady", "accelerating", "braking", "climbing", "descending", "impact"};
+    "steady", "accelerating", "braking", "climbing", "descending"};
 
 static void imu_calibrate(int32_t x_mg, int32_t y_mg, int32_t z_mg);
 static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg);
@@ -222,10 +230,10 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
     sample.x_mg = x_mg - g_imu.offset_x;
     sample.y_mg = y_mg - g_imu.offset_y;
     sample.z_mg = z_mg - g_imu.offset_z;
-    sample.b_jolt =
-        (imu_beyond(sample.x_mg - (g_imu.smooth_x / IMU_SMOOTH),
-                    S4_IMPACT_MG)) ||
-        (imu_beyond(sample.y_mg - (g_imu.smooth_y / IMU_SMOOTH), S4_IMPACT_MG));
+    g_imu.upside_count = (sample.z_mg < 0) ? (g_imu.upside_count + 1) : 0;
+    g_imu.lift_count = (sample.z_mg > (IMU_MG_PER_G + S4_LIFT_MG))
+                           ? (g_imu.lift_count + 1)
+                           : 0;
     g_imu.smooth_x += sample.x_mg - (g_imu.smooth_x / IMU_SMOOTH);
     g_imu.smooth_y += sample.y_mg - (g_imu.smooth_y / IMU_SMOOTH);
     imu_push(sample.y_mg);
@@ -247,6 +255,11 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
         (-S4_TRACK_MM * g_imu.smooth_x) / (IMU_SMOOTH * IMU_MG_PER_G);
     g_imu.high_count =
         (sample.height_mm >= S4_HUMP_ON_MM) ? (g_imu.high_count + 1) : 0;
+    if (0u != (app_faults() & APP_FAULT_IMU))
+    {
+        g_imu.high_count = 0; /* Picked up or turned over: not a hump. */
+        g_imu.peak_mm = 0;
+    }
     if (((g_imu.high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||
          (g_imu.peak_mm > 0)) &&
         (sample.height_mm > g_imu.peak_mm))
@@ -295,7 +308,7 @@ static void imu_push(int32_t y_mg)
 static void imu_publish(const imu_sample_t * p_sample)
 {
     s4_motion_class_t motion_class = g_imu.push_class;
-    bool b_new_impact = false;
+    bool b_new_upside = false;
     bool b_new_tilt = false;
     bool b_changed = false;
 
@@ -307,11 +320,11 @@ static void imu_publish(const imu_sample_t * p_sample)
     g_tilt.pitch = p_sample->pitch;
     g_tilt.roll = p_sample->roll;
     g_tilt.cal = 1u;
-    b_new_impact =
-        (p_sample->b_jolt) && (0u == (g_imu.faults & APP_FAULT_IMPACT));
+    b_new_upside = (g_imu.upside_count >= (S4_UPSIDE_MS / S4_IMU_MS)) &&
+                   (0u == (g_imu.faults & APP_FAULT_UPSIDE_DOWN));
     b_new_tilt = (g_imu.tilted_count >= (S4_TILT_MS / S4_IMU_MS)) &&
                  (0u == (g_imu.faults & APP_FAULT_TILT));
-    g_imu.faults |= (b_new_impact ? APP_FAULT_IMPACT : 0u) |
+    g_imu.faults |= (b_new_upside ? APP_FAULT_UPSIDE_DOWN : 0u) |
                     (b_new_tilt ? APP_FAULT_TILT : 0u); /* Latched. */
     g_hump.on = (g_imu.peak_mm > 0) && (!p_sample->b_hump_over);
     if (p_sample->b_hump_over)
@@ -327,17 +340,13 @@ static void imu_publish(const imu_sample_t * p_sample)
         (g_hump.on) &&
         ((g_imu.b_descending) ||
          (p_sample->height_mm <= (g_imu.peak_mm - IMU_DESCEND_MM)));
-    if (0u != (g_imu.faults & APP_FAULT_IMPACT))
-    {
-        motion_class = S4_IMPACT;
-    }
-    else if (g_hump.on)
+    if (g_hump.on)
     {
         motion_class = g_imu.b_descending ? S4_DESCENDING : S4_CLIMBING;
     }
     else
     {
-        /* No impact or hump: the push class stands. */
+        /* No hump: the push class stands. */
     }
     b_changed = (motion_class != g_motion.cls);
     g_motion.cls = motion_class;
@@ -348,10 +357,25 @@ static void imu_publish(const imu_sample_t * p_sample)
     {
         tm_printf((UB *)"[imu] motion: %s\n", g_motion_name[motion_class]);
     }
-    if (b_new_impact || b_new_tilt)
+    if (g_imu.lift_count >= (S4_LIFT_MS / S4_IMU_MS))
+    {
+        app_fault_set(APP_FAULT_LIFTED);
+    }
+    else if (0 == g_imu.beep_left)
+    {
+        app_fault_clear(APP_FAULT_LIFTED); /* Beep over: GP20 can clear. */
+    }
+    else
+    {
+        /* Held while it beeps, so the Safety Monitor cannot miss it. */
+    }
+    if (b_new_upside || b_new_tilt ||
+        ((S4_LIFT_MS / S4_IMU_MS) == g_imu.lift_count))
     {
         app_fault_set(g_imu.faults);
-        tm_printf((UB *)"[imu] FAULT: %s\n", b_new_impact ? "impact" : "tilt");
+        tm_printf((UB *)"[imu] FAULT: %s\n",
+                  b_new_upside ? "upside down"
+                               : (b_new_tilt ? "tilt" : "lifted"));
         imu_beep_on();
         g_imu.beep_left = S4_ALARM_MS / S4_IMU_MS;
     }

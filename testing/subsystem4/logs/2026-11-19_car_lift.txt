@@ -1,0 +1,130 @@
+S4-U27 on the car, normal image at 9dc05d7, 2026-11-19 (Wi-Fi lines removed).
+Boot 1: quick level lift. Boot 2: slow level lift. Boot 3: run from GP20 over the 10 mm practice hump; avoidance then stopped at a wall, so the ramp was not reached.
+
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=42 y=65 z=-140 mg
+[vc] INIT -> READY: IMU calibrated
+[imu] FAULT: lifted
+[safety] stop, cause 0x1
+[vc] READY -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: climbing
+[imu] motion: braking
+[imu] hump: peak 3 mm
+[imu] motion: steady
+[imu] motion: braking
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=42 y=66 z=-141 mg
+[vc] INIT -> READY: IMU calibrated
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 6 mm
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=41 y=66 z=-141 mg
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: braking
+[imu] hump: peak 14 mm
+[imu] motion: steady
+[vc] FOLLOW -> AVOID: obstacle
+[imu] motion: braking
+[imu] motion: steady
+[vc] AVOID -> SAFE_STOP: avoidance stopped
+[safety] stop, cause 0x8
+[vc] max hump 14 mm
+[imu] motion: accelerating
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: accelerating
+[imu] hump: peak 5 mm
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] FAULT: tilt
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+
+Later runs, same image (boots 11 and 12 of the session; earlier boots excluded at the tester's request):
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=39 y=69 z=-148 mg
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 12 mm
+[vc] FOLLOW -> AVOID: obstacle
+[vc] AVOID -> SAFE_STOP: avoidance stopped
+[safety] stop, cause 0x8
+[vc] max hump 12 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[safety] cleared
+[vc] SAFE_STOP -> INIT: GP20
+[vc] INIT -> READY: IMU calibrated
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[imu] calibrated: offsets x=38 y=68 z=-148 mg
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 13 mm
+[vc] FOLLOW -> AVOID: obstacle
+[vc] AVOID -> SAFE_STOP: avoidance stopped
+[safety] stop, cause 0x8
+[vc] max hump 13 mm

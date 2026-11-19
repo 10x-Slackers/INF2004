@@ -18,8 +18,8 @@
 #define APP_FAULT_STALL_RIGHT (1u << 1) /* Driven 1 s with no edge. */
 #define APP_FAULT_ENCODER     (1u << 2) /* Missed phase; still runs. */
 /* S4, latched until reset. */
-#define APP_FAULT_IMPACT (1u << 3) /* Sudden jolt. */
-#define APP_FAULT_TILT   (1u << 4) /* Over 25 degrees for 0.5 s. */
+#define APP_FAULT_UPSIDE_DOWN (1u << 3) /* Picked up and turned over. */
+#define APP_FAULT_TILT        (1u << 4) /* Over 25 degrees for 0.5 s. */
 /* S5: no echo is updated by every scan; the rest are cleared by
  * obstacle_avoidance_start(). */
 #define APP_FAULT_NO_ECHO       (1u << 5) /* Last scan had no echo. */
@@ -28,10 +28,13 @@
 #define APP_FAULT_AVOID_MOTION  (1u << 8) /* Move failed or hung. */
 /* S1. */
 #define APP_FAULT_WIFI (1u << 9) /* Wi-Fi or MQTT lost. */
+/* S4, cleared once Z settles. */
+#define APP_FAULT_LIFTED (1u << 10) /* Lifted quickly. */
 
 #define APP_FAULT_MOTION                                                       \
     (APP_FAULT_STALL_LEFT | APP_FAULT_STALL_RIGHT | APP_FAULT_ENCODER)
-#define APP_FAULT_IMU (APP_FAULT_IMPACT | APP_FAULT_TILT)
+#define APP_FAULT_IMU                                                          \
+    (APP_FAULT_UPSIDE_DOWN | APP_FAULT_TILT | APP_FAULT_LIFTED)
 #define APP_FAULT_AVOID                                                        \
     (APP_FAULT_AVOID_SENSOR | APP_FAULT_AVOID_BLOCKED | APP_FAULT_AVOID_MOTION)
 

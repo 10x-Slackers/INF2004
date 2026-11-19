@@ -104,4 +104,4 @@ Change Requirement 1 asks for this table, RAM and message sizes before and after
 | Inter-task record sizes (each `get()` copies one) | The same logs; S3-U02, U09, U13, S4-U04, U13, U18 and S5-U42 check them on the car |
 | MQTT payload sizes against the Week 6 JSON | S1-U01, `testing/subsystem1/logs/2026-10-31_payloads.txt` |
 | No loss of function | Every subsystem's unit tests run on the packed code; the widened versions pass the same host tests (S2-U21, S5-U43) except their size checks; S1-U01 round-trips every payload field at its limits, and S1-U02 checks the C packers against the same layout |
-| No loss of timing | S2-U14 (`max_tick_us` of the 10 ms control step), and SYS-03 to SYS-09 in `testing/system/TEST_LOG.md` |
+| No loss of timing | S2-U14 (`max_tick_us` of the 10 ms control step) |

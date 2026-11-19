@@ -11,17 +11,15 @@ testing/
 │   └── logs/              saved console output, photos, scope captures
 ├── ...
 ├── subsystem5/
-├── integration/           tests across two or more subsystems (shared)
-└── system/                tests of the whole product against its requirements (shared)
+└── integration/           tests across two or more subsystems (shared)
 ```
 
-## Three levels of test
+## Two levels of test
 
 | Level | ID format | Tests what | Written by | Where |
 |---|---|---|---|---|
 | Unit | `S1-U01`, `S2-U01`, … | one subsystem on its own | the subsystem owner | `subsystemN/TEST_LOG.md` |
 | Integration | `INT-01`, … | an interface between subsystems (TEAM.md section 5) | the owners on both sides | `integration/TEST_LOG.md` |
-| System | `SYS-01`, … | the finished product against a requirement | whole team | `system/TEST_LOG.md` |
 
 Test IDs never change and are never reused, even if a test is dropped.
 
@@ -71,4 +69,3 @@ the test's result row. `videos/README.md` explains how.
   code it was run on. Commit your work *before* testing.
 - **A FAIL needs a note** saying what went wrong and, later, which commit fixed it.
 - Before merging a change into `main`, re-run your subsystem's unit tests.
-  Before a demo or hand-in, run every test and record the full set.

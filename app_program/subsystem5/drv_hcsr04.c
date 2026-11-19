@@ -16,7 +16,7 @@
 #define DRV_HCSR04_TRIG_US  10u     /* Datasheet: at least 10 us. */
 #define DRV_HCSR04_CYCLE_US 60000u  /* Datasheet: 60 ms between triggers. */
 #define DRV_HCSR04_ECHO_MS  50      /* With no target ECHO is high ~38 ms, */
-#define DRV_HCSR04_BUSY_US  250000u /* ...on some modules much longer. */
+#define DRV_HCSR04_BUSY_US  500000u /* ...on some modules much longer. */
 #define DRV_HCSR04_POLL_MS  10u
 
 /* Written by the edge callback, read after it wakes the task. */

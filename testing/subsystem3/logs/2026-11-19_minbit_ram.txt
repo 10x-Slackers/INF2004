@@ -1,0 +1,12 @@
+S3-U15 after packing g_turn, g_steer_mm, g_speed_mm_s (line following),
+g_elements, gb_black, gb_in_code (barcode decoder) and g_read (driver).
+Before: 3688ced. After: 870bca9. Image: make -C build_make TEST=1, arm-none-eabi-size.
+
+object             text  bss   before -> after
+drv_barcode.o      164   516 -> 164  513
+barcode_decoder.o  974   600 -> 982  598
+line_following.o   1136  30  -> 1224 32   (12 -> 8 B of fields; +2 B alignment padding in .bss)
+
+Both images build with no warnings. No host test covers subsystem 3; the
+behaviour is the same by construction (renamed fields, turn stays -1000..1000,
+element count capped at 31, above the 29 the decoder reads). On-car check owed.

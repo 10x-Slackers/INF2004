@@ -138,8 +138,8 @@ void drv_motion_read(drv_motion_counts_t * p_counts)
 }
 
 /*!
- * @brief Free-running 1 MHz timer, for test timing. usermain() starts its
- * tick. Wraps every 71 minutes.
+ * @brief Free-running 1 MHz timer, for test timing. The kernel's
+ * startup_clock() starts its tick. Wraps every 71 minutes.
  */
 uint32_t drv_motion_time_us(void)
 {

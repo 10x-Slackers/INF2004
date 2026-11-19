@@ -38,15 +38,19 @@ typedef struct
     unsigned int start_deg : 9; /* Heading when the search began. */
 } line_following_search_t;
 
-static ID gh_mutex;
 /* Steering, under gh_mutex. */
 typedef struct
 {
     signed int turn : 11;        /* Permille of the speed, +left: +-1000. */
-    unsigned int from_mm : 24;   /* Odometer at the last steer. */
     unsigned int speed_mm_s : 9; /* Following speed, 1..500. */
+    unsigned int from_mm : 24;   /* Odometer at the last steer. */
 } line_following_steer_t;
 
+#if (LINE_FOLLOWING_MAX_MM_S > 511u) || (LINE_FOLLOWING_TURN_MAX > 1023)
+#error "g_steer.speed_mm_s or g_steer.turn is too narrow"
+#endif
+
+static ID gh_mutex;
 static line_following_t g_line;
 static line_following_search_t g_search;
 static line_following_steer_t g_steer;
@@ -189,6 +193,7 @@ void line_following_task(INT stacd, void * p_exinf)
 static void line_following_steer(uint32_t bits, uint32_t distance_mm)
 {
     int32_t const speed = (int32_t)g_steer.speed_mm_s; /* 9 bits: fits. */
+    int32_t turn = g_steer.turn;
     /* A few mm since the last sample, so the cast keeps it. */
     int32_t const mm = (int32_t)((distance_mm - g_steer.from_mm) &
                                  MOTION_CONTROL_DISTANCE_MASK);
@@ -224,25 +229,23 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm)
         step = (mm * (LINE_FOLLOWING_TURN_MAX - LINE_FOLLOWING_TURN_MIN)) /
                LINE_FOLLOWING_RISE_MM;
         /* Below the min, or the other way: start at the min towards it. */
-        if (((target * g_steer.turn) / LINE_FOLLOWING_TURN_MAX) <
+        if (((target * turn) / LINE_FOLLOWING_TURN_MAX) <
             LINE_FOLLOWING_TURN_MIN)
         {
-            g_steer.turn =
-                (target * LINE_FOLLOWING_TURN_MIN) / LINE_FOLLOWING_TURN_MAX;
+            turn = (target * LINE_FOLLOWING_TURN_MIN) / LINE_FOLLOWING_TURN_MAX;
         }
     }
-    if (g_steer.turn < target)
+    if (turn < target)
     {
-        g_steer.turn =
-            ((g_steer.turn + step) < target) ? (g_steer.turn + step) : target;
+        turn = ((turn + step) < target) ? (turn + step) : target;
     }
     else
     {
-        g_steer.turn =
-            ((g_steer.turn - step) > target) ? (g_steer.turn - step) : target;
+        turn = ((turn - step) > target) ? (turn - step) : target;
     }
+    g_steer.turn = turn; /* Between the old turn and target: fits. */
     g_steer.from_mm = distance_mm;
-    step = (speed * g_steer.turn) / 1000; /* Wheel speed change, +left. */
+    step = (speed * turn) / 1000; /* Wheel speed change, +left. */
     (void)motion_control_drive(speed - step, speed + step);
 }
 

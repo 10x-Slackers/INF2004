@@ -37,12 +37,14 @@
 #define IMU_DECIDEG_PER_G 573 /* Small angles: 1 g ~ 1 rad = 57.3 deg. */
 #define IMU_DESCEND_MM    2   /* This far below the peak: descending. */
 #define IMU_PRINT_MS      100
-#define IMU_COUNT_MAX     63u        /* Longest threshold: 50 samples (tilt). */
+#define IMU_COUNT_MAX     63u
 #define IMU_PWM_CLOCK_HZ  125000000u /* System clock, divider 1. */
 
-/* The 6-bit samples-in-a-row counters must reach every threshold. */
-#if ((S4_TILT_MS / S4_IMU_MS) >= 63) || ((S4_UPSIDE_MS / S4_IMU_MS) >= 63) ||  \
-    ((S4_HUMP_MIN_MS / S4_IMU_MS) >= 63) || ((S4_ACCEL_MS / S4_IMU_MS) >= 63)
+#if ((S4_TILT_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                             \
+    ((S4_UPSIDE_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                           \
+    ((S4_HUMP_MIN_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                         \
+    ((S4_ACCEL_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                            \
+    ((S4_LIFT_MS / S4_IMU_MS) >= IMU_COUNT_MAX)
 #error "A samples-in-a-row threshold needs more than 6 bits"
 #endif
 
@@ -280,7 +282,7 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
     }
     if (((g_imu.high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||
          (g_imu.peak_mm > 0)) &&
-        (sample.height_mm > (int32_t)g_imu.peak_mm))
+        (sample.height_mm > g_imu.peak_mm))
     {
         g_imu.peak_mm = (uint32_t)sample.height_mm; /* On a hump: its top. */
     }
@@ -357,7 +359,7 @@ static void imu_publish(const imu_sample_t * p_sample)
     g_imu.b_descending =
         (g_hump.on) &&
         ((g_imu.b_descending) ||
-         (p_sample->height_mm <= ((int32_t)g_imu.peak_mm - IMU_DESCEND_MM)));
+         (p_sample->height_mm <= (g_imu.peak_mm - IMU_DESCEND_MM)));
     if (g_hump.on)
     {
         motion_class = g_imu.b_descending ? S4_DESCENDING : S4_CLIMBING;

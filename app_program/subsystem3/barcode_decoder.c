@@ -16,13 +16,9 @@
 
 /* ADC counts: white reads ~170, black ~4080 (S3-U10). Low, so narrow bars
  * count (S3-U14), with hysteresis between. */
-#define BARCODE_BLACK        1000u
-#define BARCODE_WHITE        600u
-#define BARCODE_END          30000u /* um: 30 mm, over 3 wide bars. */
-#define BARCODE_ELEMENTS_MAX 31u    /* g_code.elements stops here. */
-#if CODE39_ELEMENTS >= 31
-#error "g_code.elements needs more than 5 bits"
-#endif
+#define BARCODE_BLACK 1000u
+#define BARCODE_WHITE 600u
+#define BARCODE_END   30000u /* um: 30 mm, over 3 wide bars. */
 
 /* The course's barcodes: change these lines when the letters are announced
  * (any number of letters per command). Other valid letters are rejected. Z is
@@ -46,7 +42,7 @@ static uint16_t g_widths[CODE39_ELEMENTS];
 static uint32_t g_run_start; /* um, as motion_control_distance_um(). */
 static struct
 {
-    unsigned int elements : 5; /* So far, up to 31; widths kept for 29. */
+    unsigned int elements : 5; /* Widths kept, 0..CODE39_ELEMENTS (29). */
     unsigned int b_black : 1;
     unsigned int b_in_code : 1;
 } g_code;
@@ -164,9 +160,6 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
         {
             /* In a barcode, width is at most BARCODE_END: it fits. */
             g_widths[g_code.elements] = (uint16_t)width;
-        }
-        if (g_code.elements < BARCODE_ELEMENTS_MAX)
-        {
             g_code.elements++; /* Reset when a barcode starts. */
         }
         g_run_start = pos;
@@ -204,9 +197,7 @@ static void barcode_decoder_end(uint32_t odometer_mm)
          * or a Code 39 character. */
         tm_printf((UB *)"[barcode] elements=%u letter=%c widths_0.1mm=",
                   g_code.elements, (0u != letter) ? (int)letter : '-');
-        for (element = 0u;
-             (element < g_code.elements) && (element < CODE39_ELEMENTS);
-             element++)
+        for (element = 0u; element < g_code.elements; element++)
         {
             tm_printf((UB *)" %u", g_widths[element] / 100u);
         }

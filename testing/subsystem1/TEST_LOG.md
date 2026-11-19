@@ -17,23 +17,11 @@ Methods and how to record results: `testing/README.md`.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
-| 2026-10-31 | S1-U01 | `95d94ec` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Binary 10/12/8/2/1 B against JSON 275/182/141/50/101 B; periodic topics 172 B/s instead of 3245 B/s |
-| 2026-10-31 | S1-U01 | `615a548` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Re-run after the scan sample angles changed to 85/95°; sizes unchanged |
-| 2026-10-31 | S1-U01 | `42a79fa` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Adds the check against `motion_control_pack()`'s S2-U21 vector; sizes unchanged |
-| 2026-10-31 | S1-U01 | `2f4eac0` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | motion at 200 ms and cmd as event flag bits: periodic topics 112 B/s instead of 2335 B/s |
-| 2026-10-31 | S1-U01 | `aedbf62` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Fault byte removed: telemetry 9 B; periodic topics 107 B/s instead of 2280 B/s |
-| 2026-10-31 | S1-U01 | `3a71771` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Shared fault word added to telemetry (11 B), motion without its fault bits (92 bits, still 12 B): periodic topics 117 B/s instead of 2280 B/s |
-| 2026-10-31 | S1-U01 | `af4be0d` | commit2main | PASS | `logs/2026-10-31_payloads_pr31.txt` | Re-run on PR #31; payload code unchanged |
+| 2026-10-31 | S1-U01 | `3a71771` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Telemetry 11 B, motion 12 B (92 bits), scan 8 B, heartbeat 2 B, cmd 1 B; periodic topics 117 B/s against 2280 B/s as JSON (motion at 200 ms, cmd as event flag bits) |
 | 2026-11-19 | S1-U01 | `3735a6a` | commit2main | PASS | `logs/2026-11-19_payloads_faults11.txt` | Fault field widened to 11 bits for the lifted fault (bit 10); telemetry is 83 bits, still 11 bytes |
-| 2026-11-19 | S1-U01 | `94c5bc4` | commit2main | PASS | `logs/2026-11-19_host_mqtt.txt` | Re-run with the C packers' two vectors added to `payloads.py`; sizes unchanged. This row and the three below were run by the coding agent on the dev box, with no car attached |
-| 2026-11-19 | S1-U02 | `94c5bc4` | commit2main | PASS | `logs/2026-11-19_host_mqtt.txt` | Faults 0x600, angles of 130° and 135°, pitch 900, roll −900. With the fault, pitch or `closest_deg` field packed one bit narrower the test fails |
-| 2026-11-19 | S1-U03 | `94c5bc4` | commit2main | PASS | `logs/2026-11-19_host_mqtt.txt` | 4 tests. paho-mqtt came from `uv run --with 'paho-mqtt>=2,<3'` instead of pip |
-| 2026-11-19 | S1-U04 | `94c5bc4` | commit2main | PASS | `logs/2026-11-19_host_mqtt.txt` | Mosquitto 2.1.2 on port 18830. A telemetry message of the wrong size was ignored. The page was also opened in a browser: it showed the values, and a click on STOP published `02` |
-| 2026-11-19 | S1-U01 | `35c3cca` | commit2main | PASS | `logs/2026-11-19_supervisor.txt` | `payloads.py` moved to `supervisor/`, unchanged |
-| 2026-11-19 | S1-U03 | `35c3cca` | commit2main | PASS | `logs/2026-11-19_supervisor.txt` | 4 tests, with the event log. The page was also viewed in a browser against Mosquitto and a scripted stand-in for the car: READY, FOLLOW, SAFE_STOP and the car going silent each showed as expected, and Start and Esc (Stop) changed the stand-in's state |
-| 2026-11-19 | S1-U01 | `229ead5` | commit2main | PASS | `logs/2026-11-19_final_host.txt` | Final run on PR #43; payload layouts unchanged |
-| 2026-11-19 | S1-U02 | `229ead5` | commit2main | PASS | `logs/2026-11-19_final_host.txt` | Final run on PR #43 |
-| 2026-11-19 | S1-U03 | `229ead5` | commit2main | PASS | `logs/2026-11-19_final_host.txt` | Final run on PR #43: event log across gaps, reboots and the heartbeat wrap |
-| 2026-11-19 | S1-U01 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | Telemetry task woken by a cyclic handler; payload layouts unchanged |
+| 2026-11-19 | S1-U02 | `94c5bc4` | commit2main | PASS | `logs/2026-11-19_host_mqtt.txt` | Faults 0x600, angles 130° and 135°, pitch 900, roll −900. Packing the fault, pitch or `closest_deg` field one bit narrower makes the test fail. Run by the coding agent |
+| 2026-11-19 | S1-U04 | `94c5bc4` | commit2main | PASS | `logs/2026-11-19_host_mqtt.txt` | Mosquitto 2.1.2. A telemetry message of the wrong size was ignored. In a browser the page showed the values and STOP published `02`. Run by the coding agent |
+| 2026-11-19 | S1-U03 | `35c3cca` | commit2main | PASS | `logs/2026-11-19_supervisor.txt` | With the event log. In a browser against Mosquitto and a scripted stand-in for the car, READY, FOLLOW, SAFE_STOP and the car going silent each showed as expected, and Start and Esc (Stop) changed the stand-in's state |
+| 2026-11-19 | S1-U01 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | Payload layouts unchanged |
 | 2026-11-19 | S1-U02 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | Same run |
 | 2026-11-19 | S1-U03 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | Run-summary text now says the highest hump of this run |

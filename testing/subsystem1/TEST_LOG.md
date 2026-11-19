@@ -43,3 +43,6 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-11-19 | S1-U01 | `229ead5` | commit2main | PASS | `logs/2026-11-19_final_host.txt` | Final run on PR #43; payload layouts unchanged |
 | 2026-11-19 | S1-U02 | `229ead5` | commit2main | PASS | `logs/2026-11-19_final_host.txt` | Final run on PR #43 |
 | 2026-11-19 | S1-U03 | `229ead5` | commit2main | PASS | `logs/2026-11-19_final_host.txt` | Final run on PR #43: event log across gaps, reboots and the heartbeat wrap |
+| 2026-11-19 | S1-U01 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | Telemetry task woken by a cyclic handler; payload layouts unchanged |
+| 2026-11-19 | S1-U02 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | Same run |
+| 2026-11-19 | S1-U03 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | Run-summary text now says the highest hump of this run |

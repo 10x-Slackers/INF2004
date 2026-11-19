@@ -1,0 +1,27 @@
+S4-U22 and S4-U24..S4-U29 re-run at 9ceba21 (fix/exact-periods-hump-reset, with the minimum-bit commits cherry-picked).
+
+== task_imu.o and test image (arm-none-eabi-size, make TEST=1)
+   text	   data	    bss	    dec	    hex	filename
+   2863	      0	     60	   2923	    b6b	build_make/mtkernel_3/app_program/subsystem4/task_imu.o
+ 303498	     92	  27472	 331062	  50d36	build_make/mtk3pico_smp1_usb_cdc_wifi_test.elf
+
+== Host test (S4-U24 command)
+PASS  five motion classes with names, fit the 3-bit field
+PASS  calibrated after S4_CAL_N
+PASS  flat for 1 s: no fault
+PASS  30 mm hump: measured 28..30 mm, no fault
+PASS  Z below 0 for 10 ms and 150 ms: no upside-down fault
+PASS  60 degrees for 1 s: tilt fault, no upside-down fault
+PASS  flipped at once: upside-down fault at 200 ms, not before
+PASS  fully inverted reads 0 pitch and roll (why tilt misses it)
+INFO  slow lift: upside down latched at sample 120
+PASS  turned over across 2 s: upside down within 200 ms of 90
+PASS  upside-down fault stays latched after righting the car
+PASS  rolled over sideways and back: no hump recorded
+PASS  10 ms jolt on a hump: still measured 28..30 mm
+PASS  quick lift: lifted fault at 50 ms, not before, alone
+PASS  Z settled: lifted fault held while it beeps
+PASS  beep over: lifted fault cleared
+PASS  40 ms knock, slow lift, 300 mg: no fault
+PASS  lifted mid-tilt, then righted: no hump recorded
+ALL PASS: 0 failure(s)

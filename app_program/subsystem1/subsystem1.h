@@ -17,7 +17,7 @@
 
 /* Bits of the csc13/cmd byte and of gh_s1_command_flag. */
 #define S1_CMD_START 1u /* As GP20 in READY. */
-#define S1_CMD_STOP  2u /* Safe stop, in every state but INIT. */
+#define S1_CMD_STOP  2u /* Safe stop, in READY to TURN. */
 #define S1_CMD_RESET 4u /* As GP20 in SAFE_STOP. */
 #define S1_CMD_ALL   (S1_CMD_START | S1_CMD_STOP | S1_CMD_RESET)
 

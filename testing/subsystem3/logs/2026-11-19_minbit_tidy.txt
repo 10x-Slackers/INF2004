@@ -1,0 +1,10 @@
+S3-U15 re-measured at ca88b0c after tightening the packing (steering fields reordered, element count capped at 29).
+Image: make -C build_make TEST=1, arm-none-eabi-size.
+
+   text	   data	    bss	    dec	    hex	filename
+    164	      0	    513	    677	    2a5	build_make/mtkernel_3/app_program/subsystem3/drv_barcode.o
+    974	      0	    598	   1572	    624	build_make/mtkernel_3/app_program/subsystem3/barcode_decoder.o
+   1216	      0	     28	   1244	    4dc	build_make/mtkernel_3/app_program/subsystem3/line_following.o
+ 303482	     92	  27468	 331042	  50d22	build_make/mtk3pico_smp1_usb_cdc_wifi_test.elf
+
+line_following.o .bss 32 -> 28 B against logs/2026-11-19_minbit_rerun.txt; the others unchanged. No host test covers subsystem 3.

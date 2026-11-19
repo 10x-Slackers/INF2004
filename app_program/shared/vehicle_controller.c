@@ -25,7 +25,7 @@
 #define VC_BUTTON      20u  /* Robo Pico button, low when pressed. */
 #define VC_RELEASED    5u   /* Cycles released before a press counts. */
 #define VC_SPEED_MM_S  150u /* Line following speed. */
-#define VC_AXLE_MM     110u /* Line sensors ahead of the axle. */
+#define VC_AXLE_MM     115u /* Line sensors ahead of the axle. */
 #define VC_MOVE_CYCLES 500u /* 5 s limit on each junction move. */
 #define VC_TURN_DEG    90u  /* Barcode A and B. */
 #define VC_UTURN_DEG   180u /* Barcode D. */
@@ -70,14 +70,12 @@ static void vc_turn_step(const motion_control_status_t * p_motion);
  */
 ER vehicle_controller_start(void)
 {
-    ID h_task = 0;
-
     app_pull_up(VC_BUTTON);
 
     /* FP is the kernel's generic task pointer type. */
-    h_task = app_start_task((FP)vehicle_controller_task, VC_PRI, 0u, "vc");
-
-    return (h_task < E_OK) ? h_task : E_OK;
+    return app_start_cyclic(
+        app_start_task((FP)vehicle_controller_task, VC_PRI, 0u, "vc"),
+        VC_PERIOD_MS);
 }
 
 /*!
@@ -112,7 +110,7 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
     (void)p_exinf;
     for (;;)
     {
-        (void)tk_dly_tsk(VC_PERIOD_MS);
+        (void)tk_slp_tsk(TMO_FEVR); /* Woken every VC_PERIOD_MS. */
         g_vc.cycles++;
         b_press = vc_pressed();
         commands = 0u; /* tk_wai_flg() leaves it alone with no bit set. */
@@ -277,6 +275,7 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
 static void vc_enter(vc_state_t state, const char * p_cause)
 {
     s4_hump_t hump = {0};
+    vc_state_t const previous = (vc_state_t)g_vc.state;
 
     /* (UB *): tm_printf() takes unsigned chars. */
     tm_printf((UB *)"[vc] %s -> %s: %s\n", g_names[g_vc.state], g_names[state],
@@ -290,6 +289,10 @@ static void vc_enter(vc_state_t state, const char * p_cause)
             break;
 
         case VC_FOLLOW:
+            if (VC_READY == previous)
+            {
+                s4_reset_hump_max();
+            }
             (void)line_following_start(VC_SPEED_MM_S);
             obstacle_avoidance_start(); /* Nothing if already watching. */
             break;

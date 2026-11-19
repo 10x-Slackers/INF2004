@@ -1,0 +1,9 @@
+S3-U15 re-measured at 9ceba21 (fix/exact-periods-hump-reset, with the minimum-bit commits cherry-picked).
+Image: make -C build_make TEST=1, arm-none-eabi-size.
+
+   text	   data	    bss	    dec	    hex	filename
+    164	      0	    513	    677	    2a5	build_make/mtkernel_3/app_program/subsystem3/drv_barcode.o
+    982	      0	    598	   1580	    62c	build_make/mtkernel_3/app_program/subsystem3/barcode_decoder.o
+   1224	      0	     32	   1256	    4e8	build_make/mtkernel_3/app_program/subsystem3/line_following.o
+
+Same as the 'after' column of logs/2026-11-19_minbit_ram.txt.

@@ -36,7 +36,10 @@
 
 /* The ring must be aligned to its size for the DMA to wrap it. */
 static volatile uint16_t g_ring[DRV_BARCODE_RING] __attribute__((aligned(512)));
-static uint32_t g_read; /* Next ring index to hand out. */
+static uint8_t g_read; /* Next ring index to hand out; wraps at 256. */
+#if DRV_BARCODE_RING != 256u
+#error "g_read must wrap at DRV_BARCODE_RING"
+#endif
 
 /*!
  * @brief Start the ADC converting and the DMA filling the ring.
@@ -70,7 +73,7 @@ uint32_t drv_barcode_read(uint16_t * p_samples)
     while (g_read != write)
     {
         p_samples[count] = g_ring[g_read];
-        g_read = (g_read + 1u) % DRV_BARCODE_RING;
+        g_read++;
         count++;
     }
     return count;

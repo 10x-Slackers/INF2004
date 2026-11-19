@@ -37,38 +37,49 @@
 #define IMU_DECIDEG_PER_G 573 /* Small angles: 1 g ~ 1 rad = 57.3 deg. */
 #define IMU_DESCEND_MM    2   /* This far below the peak: descending. */
 #define IMU_PRINT_MS      100
+#define IMU_COUNT_MAX     63u
 #define IMU_PWM_CLOCK_HZ  125000000u /* System clock, divider 1. */
 
-/* Written only by the IMU task, under gh_s4_mutex. */
+#if ((S4_TILT_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                             \
+    ((S4_UPSIDE_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                           \
+    ((S4_HUMP_MIN_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                         \
+    ((S4_ACCEL_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                            \
+    ((S4_LIFT_MS / S4_IMU_MS) >= IMU_COUNT_MAX)
+#error "A samples-in-a-row threshold needs more than 6 bits"
+#endif
+
+/* Written under gh_s4_mutex. */
 static s4_accel_t g_accel;
 static s4_tilt_t g_tilt;
 static s4_hump_t g_hump;
 static s4_motion_t g_motion;
 
-/* Kept between samples. IMU task only. */
+/* Kept between samples. IMU task only. Each field is sized to its range
+ * (docs/DATA_REPRESENTATION.md): readings are -2048..2047 mg, so a sample
+ * less its offset is -4095..4095 mg. */
 static struct
 {
-    int32_t cal_count; /* Calibration samples so far. */
-    int32_t sum_x;
-    int32_t sum_y;
-    int32_t sum_z;
-    int32_t offset_x;
-    int32_t offset_y;
-    int32_t offset_z;
-    int32_t smooth_x; /* Low-pass x and y, 8 x mg. */
-    int32_t smooth_y;
-    int32_t avg_y;        /* Slow average of y, 256 x mg. */
-    int32_t pushed_count; /* Samples in a row beyond S4_ACCEL_MG. */
-    int32_t tilted_count; /* Samples in a row beyond S4_TILT_MAX. */
-    int32_t upside_count; /* Samples in a row with Z below 0 mg. */
-    int32_t lift_count;   /* Samples in a row over S4_LIFT_MG. */
-    int32_t high_count;   /* Samples in a row at S4_HUMP_ON_MM. */
-    int32_t peak_mm;      /* Highest point of the current hump. */
-    int32_t print_count;
-    int32_t beep_left; /* Samples until the buzzer stops. */
-    uint32_t faults;   /* Latched APP_FAULT_IMU bits (all but lifted). */
-    s4_motion_class_t push_class;
-    bool b_descending; /* Past the top of the current hump. */
+    unsigned int cal_count : 8; /* Calibration samples so far, 0..200. */
+    signed int sum_x : 20;      /* Up to 200 readings: +-409 600 mg. */
+    signed int sum_y : 20;
+    signed int sum_z : 20;
+    signed int offset_x : 12; /* -2048..2047 mg. */
+    signed int offset_y : 12;
+    signed int offset_z : 13; /* Less 1 g: -3048..1047 mg. */
+    signed int smooth_x : 17; /* Low-pass x and y, 8 x mg: +-32 767. */
+    signed int smooth_y : 17;
+    signed int avg_y : 22; /* Slow average of y, 256 x mg: +-1 048 575. */
+    unsigned int pushed_count : 6; /* Samples in a row beyond S4_ACCEL_MG, */
+    unsigned int tilted_count : 6; /* beyond S4_TILT_MAX, */
+    unsigned int upside_count : 6; /* with Z below 0 mg, */
+    unsigned int lift_count : 6;   /* over S4_LIFT_MG, */
+    unsigned int high_count : 6;   /* at S4_HUMP_ON_MM; imu_count() caps. */
+    unsigned int peak_mm : 9;      /* Top of the current hump, 0..466 mm. */
+    unsigned int print_count : 4;  /* 0..9. */
+    unsigned int beep_left : 7;    /* Samples until the buzzer stops. */
+    unsigned int faults : 11;    /* Latched APP_FAULT_IMU bits (not lifted). */
+    unsigned int push_class : 3; /* s4_motion_class_t. */
+    unsigned int b_descending : 1; /* Past the top of the current hump. */
 } g_imu;
 
 /* One calibrated sample, passed from imu_sample() to imu_publish(). */
@@ -93,6 +104,7 @@ static void imu_publish(const imu_sample_t * p_sample);
 static int32_t imu_clamp(int32_t value, int32_t limit);
 static bool imu_beyond(int32_t value, int32_t limit);
 static bool imu_moved(int32_t value, int32_t sum, int32_t count);
+static uint32_t imu_count(uint32_t count, bool b_holds);
 static void imu_beep_on(void);
 
 /*!
@@ -122,6 +134,16 @@ void s4_get_hump(s4_hump_t * p_hump)
 {
     (void)tk_loc_mtx(gh_s4_mutex, TMO_FEVR);
     *p_hump = g_hump;
+    (void)tk_unl_mtx(gh_s4_mutex);
+}
+
+/*!
+ * @brief Clear the highest hump, under gh_s4_mutex.
+ */
+void s4_reset_hump_max(void)
+{
+    (void)tk_loc_mtx(gh_s4_mutex, TMO_FEVR);
+    g_hump.max = 0u;
     (void)tk_unl_mtx(gh_s4_mutex);
 }
 
@@ -230,10 +252,9 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
     sample.x_mg = x_mg - g_imu.offset_x;
     sample.y_mg = y_mg - g_imu.offset_y;
     sample.z_mg = z_mg - g_imu.offset_z;
-    g_imu.upside_count = (sample.z_mg < 0) ? (g_imu.upside_count + 1) : 0;
-    g_imu.lift_count = (sample.z_mg > (IMU_MG_PER_G + S4_LIFT_MG))
-                           ? (g_imu.lift_count + 1)
-                           : 0;
+    g_imu.upside_count = imu_count(g_imu.upside_count, (sample.z_mg < 0));
+    g_imu.lift_count = imu_count(g_imu.lift_count,
+                                 (sample.z_mg > (IMU_MG_PER_G + S4_LIFT_MG)));
     g_imu.smooth_x += sample.x_mg - (g_imu.smooth_x / IMU_SMOOTH);
     g_imu.smooth_y += sample.y_mg - (g_imu.smooth_y / IMU_SMOOTH);
     imu_push(sample.y_mg);
@@ -244,17 +265,16 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
     sample.roll = imu_clamp((g_imu.smooth_x * IMU_DECIDEG_PER_G) /
                                 (IMU_SMOOTH * IMU_MG_PER_G),
                             S4_ANGLE_MAX);
-    g_imu.tilted_count = ((imu_beyond(sample.pitch, S4_TILT_MAX)) ||
-                          (imu_beyond(sample.roll, S4_TILT_MAX)))
-                             ? (g_imu.tilted_count + 1)
-                             : 0;
+    g_imu.tilted_count =
+        imu_count(g_imu.tilted_count, (imu_beyond(sample.pitch, S4_TILT_MAX) ||
+                                       imu_beyond(sample.roll, S4_TILT_MAX)));
 
     /* Only the right wheel crosses humps, so the car tips sideways about
      * the line from the left wheel to the caster. */
     sample.height_mm =
         (-S4_TRACK_MM * g_imu.smooth_x) / (IMU_SMOOTH * IMU_MG_PER_G);
     g_imu.high_count =
-        (sample.height_mm >= S4_HUMP_ON_MM) ? (g_imu.high_count + 1) : 0;
+        imu_count(g_imu.high_count, (sample.height_mm >= S4_HUMP_ON_MM));
     if (0u != (app_faults() & APP_FAULT_IMU))
     {
         g_imu.high_count = 0; /* Picked up or turned over: not a hump. */
@@ -264,7 +284,7 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
          (g_imu.peak_mm > 0)) &&
         (sample.height_mm > g_imu.peak_mm))
     {
-        g_imu.peak_mm = sample.height_mm; /* On a hump: track its top. */
+        g_imu.peak_mm = (uint32_t)sample.height_mm; /* On a hump: its top. */
     }
     sample.b_hump_over =
         (g_imu.peak_mm > 0) && (sample.height_mm < S4_HUMP_OFF_MM);
@@ -289,7 +309,7 @@ static void imu_push(int32_t y_mg)
     }
     else if (imu_beyond(push_mg, S4_ACCEL_MG))
     {
-        g_imu.pushed_count++;
+        g_imu.pushed_count = imu_count(g_imu.pushed_count, true);
         if (g_imu.pushed_count >= (S4_ACCEL_MS / S4_IMU_MS))
         {
             g_imu.push_class = (push_mg < 0) ? S4_ACCELERATING : S4_BRAKING;
@@ -307,7 +327,7 @@ static void imu_push(int32_t y_mg)
  */
 static void imu_publish(const imu_sample_t * p_sample)
 {
-    s4_motion_class_t motion_class = g_imu.push_class;
+    s4_motion_class_t motion_class = (s4_motion_class_t)g_imu.push_class;
     bool b_new_upside = false;
     bool b_new_tilt = false;
     bool b_changed = false;
@@ -432,6 +452,15 @@ static bool imu_beyond(int32_t value, int32_t limit)
 static bool imu_moved(int32_t value, int32_t sum, int32_t count)
 {
     return (count > 0) && (imu_beyond(value - (sum / count), S4_CAL_MG));
+}
+
+/*!
+ * @brief Samples in a row: count + 1 while b_holds, else 0. Stops at
+ * IMU_COUNT_MAX, above every threshold, so the 6-bit fields never wrap.
+ */
+static uint32_t imu_count(uint32_t count, bool b_holds)
+{
+    return b_holds ? ((count < IMU_COUNT_MAX) ? (count + 1u) : count) : 0u;
 }
 
 /*!

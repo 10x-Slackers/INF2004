@@ -31,7 +31,7 @@
 #define S3_BENCH_RUN_MS     15000u
 #define S3_BENCH_SPEED_MM_S 150u
 #define S3_BENCH_RAW_POLLS  25u /* Print the barcode level every 0.5 s. */
-#define S3_BENCH_AXLE_MM   110u /* As the Vehicle Controller's junction move. */
+#define S3_BENCH_AXLE_MM   115u /* As the Vehicle Controller's junction move. */
 #define S3_BENCH_TURN_DEG  90u
 #define S3_BENCH_UTURN_DEG 180u
 

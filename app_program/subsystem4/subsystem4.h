@@ -5,8 +5,8 @@
  *
  * The code follows BARR-C:2018, with the team's deviations listed in app.h
  * and these:
- * - 5.3.a: x, y, z, pitch and roll are signed bit-fields, packed to the
- *   minimum bits (docs/DATA_REPRESENTATION.md).
+ * - 5.3.a: x, y, z, pitch, roll and the IMU task's filter state are signed
+ *   bit-fields, packed to the minimum bits (docs/DATA_REPRESENTATION.md).
  * - 7.1.e: struct fields x, y, z and on keep their short names.
  * - 4.2.a, 4.3.c, 6.2.d: task_imu.c has no header of its own; this file
  *   declares its functions and gh_s4_mutex, shared with subsystem4.c.
@@ -110,6 +110,7 @@ void s4_get_accel(s4_accel_t * p_accel);
 void s4_get_tilt(s4_tilt_t * p_tilt);
 void s4_get_hump(s4_hump_t * p_hump);
 void s4_get_motion(s4_motion_t * p_motion);
+void s4_reset_hump_max(void); /* At each run's start. */
 void s4_imu_task(INT stacd, void * p_exinf);
 
 #endif /* SUBSYSTEM4_H */

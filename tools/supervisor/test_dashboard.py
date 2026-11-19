@@ -44,7 +44,7 @@ class DashboardTest(unittest.TestCase):
             [
                 ("FOLLOW → SAFE_STOP", "state"),
                 (
-                    "Run ended: highest hump since power-on 12 mm, faults: TILT",
+                    "Run ended: highest hump this run 12 mm, faults: TILT",
                     "summary",
                 ),
                 ("Barcode read: right", "info"),

@@ -38,12 +38,22 @@ typedef struct
     unsigned int start_deg : 9; /* Heading when the search began. */
 } line_following_search_t;
 
+/* Steering, under gh_mutex. */
+typedef struct
+{
+    signed int turn : 11;        /* Permille of the speed, +left: +-1000. */
+    unsigned int speed_mm_s : 9; /* Following speed, 1..500. */
+    unsigned int from_mm : 24;   /* Odometer at the last steer. */
+} line_following_steer_t;
+
+#if (LINE_FOLLOWING_MAX_MM_S > 511u) || (LINE_FOLLOWING_TURN_MAX > 1023)
+#error "g_steer.speed_mm_s or g_steer.turn is too narrow"
+#endif
+
 static ID gh_mutex;
 static line_following_t g_line;
-static uint16_t g_speed_mm_s; /* Under gh_mutex. */
 static line_following_search_t g_search;
-static int32_t g_turn;      /* Permille of the speed, +left. Under gh_mutex. */
-static uint32_t g_steer_mm; /* Odometer at the last steer. Under gh_mutex. */
+static line_following_steer_t g_steer;
 
 static void line_following_steer(uint32_t bits, uint32_t distance_mm);
 static void line_following_search(const motion_control_status_t * p_motion);
@@ -87,7 +97,7 @@ bool line_following_start(uint32_t speed_mm_s)
     if (b_valid)
     {
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
-        g_speed_mm_s = (uint16_t)speed_mm_s; /* <= MAX_MM_S: fits. */
+        g_steer.speed_mm_s = speed_mm_s; /* <= MAX_MM_S: fits. */
         g_line.b_following = true;
         g_line.b_lost = false;
         (void)tk_unl_mtx(gh_mutex);
@@ -159,8 +169,8 @@ void line_following_task(INT stacd, void * p_exinf)
         }
         else
         {
-            g_turn = 0; /* Steering starts again from straight on. */
-            g_steer_mm = motion.distance_mm;
+            g_steer.turn = 0; /* Steering starts again from straight on. */
+            g_steer.from_mm = motion.distance_mm;
             if (g_line.b_following)
             {
                 line_following_search(&motion);
@@ -182,10 +192,11 @@ void line_following_task(INT stacd, void * p_exinf)
  */
 static void line_following_steer(uint32_t bits, uint32_t distance_mm)
 {
-    int32_t const speed = g_speed_mm_s; /* 16 bits: fits. */
+    int32_t const speed = (int32_t)g_steer.speed_mm_s; /* 9 bits: fits. */
+    int32_t turn = g_steer.turn;
     /* A few mm since the last sample, so the cast keeps it. */
-    int32_t const mm =
-        (int32_t)((distance_mm - g_steer_mm) & MOTION_CONTROL_DISTANCE_MASK);
+    int32_t const mm = (int32_t)((distance_mm - g_steer.from_mm) &
+                                 MOTION_CONTROL_DISTANCE_MASK);
     /* All white beyond DRIFT_MM; the search starts before it gets large. */
     int32_t const white = (int32_t)((distance_mm - g_search.from_mm) &
                                     MOTION_CONTROL_DISTANCE_MASK) -
@@ -218,23 +229,23 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm)
         step = (mm * (LINE_FOLLOWING_TURN_MAX - LINE_FOLLOWING_TURN_MIN)) /
                LINE_FOLLOWING_RISE_MM;
         /* Below the min, or the other way: start at the min towards it. */
-        if (((target * g_turn) / LINE_FOLLOWING_TURN_MAX) <
+        if (((target * turn) / LINE_FOLLOWING_TURN_MAX) <
             LINE_FOLLOWING_TURN_MIN)
         {
-            g_turn =
-                (target * LINE_FOLLOWING_TURN_MIN) / LINE_FOLLOWING_TURN_MAX;
+            turn = (target * LINE_FOLLOWING_TURN_MIN) / LINE_FOLLOWING_TURN_MAX;
         }
     }
-    if (g_turn < target)
+    if (turn < target)
     {
-        g_turn = ((g_turn + step) < target) ? (g_turn + step) : target;
+        turn = ((turn + step) < target) ? (turn + step) : target;
     }
     else
     {
-        g_turn = ((g_turn - step) > target) ? (g_turn - step) : target;
+        turn = ((turn - step) > target) ? (turn - step) : target;
     }
-    g_steer_mm = distance_mm;
-    step = (speed * g_turn) / 1000; /* Wheel speed change, +left. */
+    g_steer.turn = turn; /* Between the old turn and target: fits. */
+    g_steer.from_mm = distance_mm;
+    step = (speed * turn) / 1000; /* Wheel speed change, +left. */
     (void)motion_control_drive(speed - step, speed + step);
 }
 

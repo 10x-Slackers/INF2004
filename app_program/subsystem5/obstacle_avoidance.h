@@ -2,12 +2,12 @@
  *
  * @brief Obstacle avoidance API (interface I6). Any task may call it.
  *
- * Once started, the avoidance task watches the range ahead. When something
- * is within SCAN_PROFILE_BLOCK_MM it stops the car, turns it left and right
- * to measure the clearance each side, profiles the obstacle with the servo
- * and drives round it on the more open side, ending on the original line
- * and heading, then watches again. With no open side it stops and stays
- * stopped (no reverse). Units: docs/OBSTACLE_AVOIDANCE.md.
+ * Once started, the avoidance task watches the range ahead. When two
+ * readings in a row are within SCAN_PROFILE_BLOCK_MM it stops the car,
+ * profiles the obstacle with the servo, taking the clearance each side from
+ * its 45 degree readings, and drives round it on the more open side, ending
+ * on the original line and heading, then watches again. With no open side
+ * it stops and stays stopped (no reverse). Units: docs/OBSTACLE_AVOIDANCE.md.
  */
 
 #ifndef OBSTACLE_AVOIDANCE_H

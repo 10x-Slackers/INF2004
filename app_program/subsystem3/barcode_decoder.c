@@ -39,10 +39,13 @@ static barcode_decoder_raw_t g_raw;
 
 /* Barcode Decoder task only. */
 static uint16_t g_widths[CODE39_ELEMENTS];
-static uint32_t g_elements;  /* Elements so far; widths kept for 29. */
-static uint32_t g_run_start; /* um. */
-static bool gb_black;
-static bool gb_in_code;
+static uint32_t g_run_start; /* um, as motion_control_distance_um(). */
+static struct
+{
+    unsigned int elements : 5; /* Widths kept, 0..CODE39_ELEMENTS (29). */
+    unsigned int b_black : 1;
+    unsigned int b_in_code : 1;
+} g_code;
 
 static void barcode_decoder_sample(uint32_t level, uint32_t pos,
                                    uint32_t odometer_mm);
@@ -139,33 +142,33 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
                                    uint32_t odometer_mm)
 {
     bool const b_black =
-        gb_black ? (level > BARCODE_WHITE) : (level > BARCODE_BLACK);
+        g_code.b_black ? (level > BARCODE_WHITE) : (level > BARCODE_BLACK);
     uint32_t const width = pos - g_run_start;
 
-    if (b_black != gb_black)
+    if (b_black != g_code.b_black)
     {
-        if (gb_black && (!gb_in_code))
+        if (g_code.b_black && (!g_code.b_in_code))
         {
-            gb_in_code = true; /* The first bar has ended. */
-            g_elements = 0u;
+            g_code.b_in_code = true; /* The first bar has ended. */
+            g_code.elements = 0u;
         }
-        if (gb_in_code && (width > BARCODE_END))
+        if (g_code.b_in_code && (width > BARCODE_END))
         {
-            gb_in_code = false; /* A bar this long is not a barcode. */
+            g_code.b_in_code = false; /* A bar this long is not a barcode. */
         }
-        if (gb_in_code && (g_elements < CODE39_ELEMENTS))
+        if (g_code.b_in_code && (g_code.elements < CODE39_ELEMENTS))
         {
             /* In a barcode, width is at most BARCODE_END: it fits. */
-            g_widths[g_elements] = (uint16_t)width;
+            g_widths[g_code.elements] = (uint16_t)width;
+            g_code.elements++; /* Reset when a barcode starts. */
         }
-        g_elements++; /* Reset when a barcode starts. */
         g_run_start = pos;
-        gb_black = b_black;
+        g_code.b_black = b_black;
     }
-    else if (gb_in_code && (!gb_black) && (width > BARCODE_END))
+    else if (g_code.b_in_code && (!g_code.b_black) && (width > BARCODE_END))
     {
         barcode_decoder_end(odometer_mm);
-        gb_in_code = false;
+        g_code.b_in_code = false;
     }
     else
     {
@@ -181,21 +184,20 @@ static void barcode_decoder_end(uint32_t odometer_mm)
     /* Extra elements after a barcode (a crossing line, the edge of the
      * print) are ignored: only the first 29 are kept. */
     uint32_t const letter =
-        (g_elements >= CODE39_ELEMENTS) ? code39_decode(g_widths) : 0u;
+        (g_code.elements >= CODE39_ELEMENTS) ? code39_decode(g_widths) : 0u;
     uint32_t command = BARCODE_DECODER_NONE;
     uint32_t action = 0u;
 #if APP_TEST
     uint32_t element = 0u;
 
     /* Bench evidence for S3-U14: what the sensor measured, in 0.1 mm. */
-    if (g_elements >= CODE39_PER_CHR)
+    if (g_code.elements >= CODE39_PER_CHR)
     {
         /* (UB *): tm_printf() takes unsigned chars. (int): letter is 0
          * or a Code 39 character. */
         tm_printf((UB *)"[barcode] elements=%u letter=%c widths_0.1mm=",
-                  g_elements, (0u != letter) ? (int)letter : '-');
-        for (element = 0u;
-             (element < g_elements) && (element < CODE39_ELEMENTS); element++)
+                  g_code.elements, (0u != letter) ? (int)letter : '-');
+        for (element = 0u; element < g_code.elements; element++)
         {
             tm_printf((UB *)" %u", g_widths[element] / 100u);
         }
@@ -218,7 +220,7 @@ static void barcode_decoder_end(uint32_t odometer_mm)
         g_barcode.count++;
         g_barcode.distance_mm = odometer_mm;
     }
-    else if (g_elements >= CODE39_PER_CHR)
+    else if (g_code.elements >= CODE39_PER_CHR)
     {
         g_barcode.rejects++; /* Shorter runs are specks, or the line. */
     }

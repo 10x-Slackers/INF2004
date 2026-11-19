@@ -1,0 +1,17 @@
+# Host tests at 3e7007a (branch fix/exact-periods-hump-reset), 2026-11-19
+
+$ cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 app_program/subsystem5/scan_profile.c testing/subsystem5/host/test_profile.c -o /tmp/test_profile && /tmp/test_profile
+PASS  echo time to mm; past 4 m reads as 4000 (nothing there)
+PASS  median of three
+PASS  centred obstacle: closest point and edges at 85..95
+PASS  width: 100 mm x 10 degrees = 17 mm (arc length)
+PASS  clearances: rays at 45 and 135 degrees
+PASS  run reaching right; a closer blocked run to the left is not it
+PASS  blocked across the sweep: edges at both ends, width 235 mm
+PASS  single blocked ray: width 0
+PASS  clear ahead: no obstacle, even with blocked side rays
+PASS  the more open side, left on a tie
+PASS  one side under 250 mm: the other side
+PASS  both sides under 250 mm: no side (safe stop)
+PASS  packed profile 12, scan 20, avoidance status 8 bytes
+ALL PASS: 0 failure(s)

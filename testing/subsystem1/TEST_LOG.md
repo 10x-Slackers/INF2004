@@ -11,9 +11,11 @@ Define a test here before running it. Test IDs never change.
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
 | S1-U01 | MQTT payloads round-trip every field at its limits; sizes against the Week 6 JSON | FR9, Minimum-bit CR | host | `python3 -I testing/subsystem1/host/payloads.py` | `ALL PASS`; every binary payload smaller than its JSON |
+| S1-U02 | The C packers `payload_pack_telemetry()` and `payload_pack_scan()` give the bytes `payloads.pack()` gives, with every field's top bit set and a negative roll | FR9, Minimum-bit CR | host | `cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 app_program/subsystem1/payload.c testing/subsystem1/host/test_payload.c -o /tmp/test_payload && /tmp/test_payload` | `ALL PASS` |
 
 *Method:* **auto** = `TEST_CHECK` in code, result printed on the console;
-**manual** = a person observes the result (LED, scope, meter, phone app…).
+**manual** = a person observes the result (LED, scope, meter, phone app…);
+**host** = runs on the PC.
 
 ## Results
 

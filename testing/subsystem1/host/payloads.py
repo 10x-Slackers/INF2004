@@ -59,6 +59,19 @@ C_MOTION_VALUES = dict(state=2, command=3, heading_deg=345,
                        right_count=0xABCD, distance_mm=0xEF0123)
 C_MOTION_BYTES = bytes.fromhex("9d663220c1234abcdef01230")
 
+# payload_pack_telemetry() and payload_pack_scan() output for these values,
+# from S1-U02's test_payload.c. Every field has its top bit set, so a field
+# packed too narrow shows; roll is negative instead, for the offset.
+C_TELEMETRY_VALUES = dict(state=5, latched=1, line=2, junction=1,
+                          following=1, barcode=4, barcodes=9, motion_class=4,
+                          pitch=900, roll=-900, hump_max=42, humps=10,
+                          on_hump=1, avoid_state=4, avoid_side=2, bypasses=9,
+                          forward_mm=4000, faults=0x600)
+C_TELEMETRY_BYTES = bytes.fromhex("bb933c207caab29fa0c000")
+C_SCAN_VALUES = dict(closest_mm=2100, closest_deg=135, right_deg=130,
+                     left_deg=135, width_mm=200, left_mm=4000, right_mm=2050)
+C_SCAN_BYTES = bytes.fromhex("834878287c8fa08020")
+
 # The same data as Week 6 JSON: names spelled out, enums as words.
 STATES = ["INIT", "READY", "FOLLOW", "AVOID", "TURN", "SAFE_STOP"]
 COMMON = {"v": 1, "robot_id": "CSC13", "seq": 1234}
@@ -117,6 +130,10 @@ def main():
                   f"{name} round trip ({label})")
     check(pack("motion", C_MOTION_VALUES) == C_MOTION_BYTES,
           "motion matches motion_control_pack()")
+    check(pack("telemetry", C_TELEMETRY_VALUES) == C_TELEMETRY_BYTES,
+          "telemetry matches payload_pack_telemetry()")
+    check(pack("scan", C_SCAN_VALUES) == C_SCAN_BYTES,
+          "scan matches payload_pack_scan()")
 
     json_s = binary_s = 0
     print(f"\n{'Topic':<10} {'Bits':>4} {'Binary B':>9} {'JSON B':>7} "

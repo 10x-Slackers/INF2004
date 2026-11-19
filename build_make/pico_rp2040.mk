@@ -67,8 +67,8 @@ endif
 
 # Optional MQTT client on top of NET=lwip. Connects and publishes from the
 # same processor-1-owned task as everything else above -- see
-# lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c. Broker address and topic
-# come from config/wifi_secrets.h (gitignored; copy from
+# lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c. The broker address
+# comes from config/wifi_secrets.h (gitignored; copy from
 # config/wifi_secrets.example.h), same as the WiFi credentials.
 MQTT ?= 0
 ifneq ($(filter $(MQTT),0 1),$(MQTT))

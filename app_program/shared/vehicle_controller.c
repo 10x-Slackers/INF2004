@@ -3,9 +3,11 @@
  * @brief Vehicle Controller task. Every 10 ms it starts and stops line
  * following, hands the car to obstacle avoidance and takes it back,
  * executes the last validated barcode at the next junction, and goes to a
- * safe stop when the Safety Monitor latches one. Its own stops (GP20, an
- * avoidance safe stop, a lost line, a failed junction move) latch the Safety
- * Monitor too, so every stop is held the same way.
+ * safe stop when the Safety Monitor latches one. Its own stops (GP20, the
+ * supervisor's STOP, an avoidance safe stop, a lost line, a failed junction
+ * move) latch the Safety Monitor too, so every stop is held the same way.
+ * The supervisor's MQTT commands (docs/TELEMETRY.md) can also start and
+ * reset it, as GP20 does.
  *
  * Every variable here belongs to the controller task, so none is locked.
  * Other tasks only read the state, with vehicle_controller_state().
@@ -13,6 +15,7 @@
 
 #include "vehicle_controller.h"
 #include "safety_monitor.h"
+#include "../subsystem1/subsystem1.h"
 #include "../subsystem2/motion_control.h"
 #include "../subsystem3/barcode_decoder.h"
 #include "../subsystem3/line_following.h"
@@ -88,8 +91,8 @@ uint32_t vehicle_controller_state(void)
 }
 
 /*!
- * @brief Controller task: read every input, take a safe stop if one is due,
- * otherwise step the state machine.
+ * @brief Controller task: read every input, take a safe stop if one is due
+ * or a command from the supervisor, otherwise step the state machine.
  */
 static void vehicle_controller_task(INT stacd, void * p_exinf)
 {
@@ -104,6 +107,7 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
     bool b_junction = false;
     bool b_barcode = false;
     bool b_moving = false;
+    UINT commands = 0u; /* S1_CMD_... bits from the supervisor. */
 
     (void)stacd;
     (void)p_exinf;
@@ -112,6 +116,9 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
         (void)tk_dly_tsk(VC_PERIOD_MS);
         g_vc.cycles++;
         b_press = vc_pressed();
+        commands = 0u; /* tk_wai_flg() leaves it alone with no bit set. */
+        (void)tk_wai_flg(gh_s1_command_flag, S1_CMD_ALL, TWF_ORW | TWF_CLR,
+                         &commands, TMO_POL);
         b_latched = motion_control_latched();
         barcode_decoder_get(&barcode);
         line_following_get(&line);
@@ -144,6 +151,21 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
         else if (b_moving && (0u != line.b_lost))
         {
             vc_enter(VC_SAFE_STOP, "line lost");
+        }
+        /* The supervisor's commands. STOP first, so it wins over a START
+         * or RESET sent with it; in SAFE_STOP it stops again, harmlessly. */
+        else if ((0u != (commands & S1_CMD_STOP)) && (VC_INIT != g_vc.state))
+        {
+            vc_enter(VC_SAFE_STOP, "MQTT STOP");
+        }
+        else if ((0u != (commands & S1_CMD_START)) && (VC_READY == g_vc.state))
+        {
+            vc_enter(VC_FOLLOW, "MQTT START");
+        }
+        else if ((0u != (commands & S1_CMD_RESET)) &&
+                 (VC_SAFE_STOP == g_vc.state) && safety_monitor_clear())
+        {
+            vc_enter(VC_INIT, "MQTT RESET"); /* READY once calibrated. */
         }
         else
         {

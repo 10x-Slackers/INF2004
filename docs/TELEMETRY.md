@@ -61,7 +61,7 @@ Fields of `ultrasonic_scan_t.profile` and `obstacle_avoidance_status_t`, same na
 
 ### `cmd`: 8 bits
 
-One bit per command, the same bits as the controller's event flag: 1 START, 2 STOP, 4 RESET. Other bits are ignored. START and RESET do what GP20 does ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#gp20)): START from READY, RESET from SAFE_STOP, and are ignored in any other state. STOP is accepted in every state except INIT: the controller calls `safety_monitor_stop()`, so the car brakes and the controller goes to SAFE_STOP. In INIT nothing moves yet, and a stop there would let RESET skip the IMU calibration. No command steers or sets a speed.
+One bit per command, the same bits as the controller's event flag: 1 START, 2 STOP, 4 RESET. Other bits are ignored, and so is a payload that is not exactly one byte. START and RESET do what GP20 does ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#gp20)): START from READY, RESET from SAFE_STOP, and are ignored in any other state. STOP is accepted in every state except INIT: the controller calls `safety_monitor_stop()`, so the car brakes and the controller goes to SAFE_STOP. In INIT nothing moves yet, and a stop there would let RESET skip the IMU calibration. No command steers or sets a speed.
 
 ## Inside the car
 
@@ -72,8 +72,19 @@ Only the kernel's Wi-Fi service task may call MQTT (`TEAM.md` section 3), so the
 | Telemetry task → Wi-Fi service         | Message buffer | 1 byte topic number (0 `telemetry`, 1 `motion`, 2 `scan`, 3 `heartbeat`) + the payload: at most 13 bytes |
 | Wi-Fi service → Vehicle Controller     | Event flag     | The `cmd` byte as it is: `tk_set_flg(flag, cmd & 7u)`                |
 
-The Telemetry task (Subsystem 1, priority band 20–21 in `TEAM.md` section 4) sends with `TMO_POL` and drops a message when the buffer is full, so a slow network never blocks it. The service reads the buffer with `TMO_POL` too. Event flag set and clear calls are atomic, so the command bits need no lock.
+The Telemetry task (`s1_telemetry`, priority 20, in the band of `TEAM.md` section 4) sends with `TMO_POL` and drops a message when the buffer is full, so a slow network never blocks it. The service reads the buffer with `TMO_POL` too, on each of its 2 ms polls while the broker is connected, and publishes until the buffer is empty or lwIP has no room; a message lwIP refuses is kept and offered again on the next poll. The Vehicle Controller takes the command bits once per 10 ms cycle, also with `TMO_POL`, which clears them. Event flag set and clear calls are atomic, so the command bits need no lock.
 
+The task and the message buffer are built only with `NET=lwip MQTT=1` ([DEVELOPMENT.md](DEVELOPMENT.md#building-with-mqtt)); the event flag exists in every build, and without MQTT nothing sets it.
+
+| Code | Contents |
+| ---- | -------- |
+| `app_program/subsystem1/subsystem1.c/.h` | Telemetry task, the two kernel objects, and the three functions the service calls: next message, command received, broker up or down |
+| `app_program/subsystem1/payload.c/.h` | Packs `telemetry` and `scan`; no kernel headers, so the host test builds it |
+| `lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c/.h` | The service's side: connects to the broker in `config/wifi_secrets.h`, publishes, subscribes to `cmd` |
+
+### Connection
+
+The service connects once the Wi-Fi link is up. When an attempt fails or the connection drops it tries again 3 s later, from one timer. `APP_FAULT_WIFI` is set from start-up until the broker accepts the connection, and again while it is lost. A connection the broker closes is noticed at once; one that goes silent, such as the car leaving Wi-Fi range, is noticed by the MQTT keep-alive after about 90 s. Nothing in the car reacts to the fault: the car drives the same with or without the supervisor. Messages queued while the broker is away are not kept beyond the buffer, so at most about three cycles of old messages are published after a reconnect.
 
 ## Size
 

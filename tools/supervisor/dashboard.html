@@ -183,7 +183,7 @@
       ['Roll', 'telemetry', t => deg(t.roll)],
       ['Motion', 'telemetry', t => t.motion_class],
       ['Highest hump this run', 'telemetry', t => `${t.hump_max} mm`],
-      ['Humps', 'telemetry', t => t.humps],
+      ['Humps since power-on', 'telemetry', t => t.humps],
       ['On a hump', 'telemetry', t => yes(t.on_hump)],
     ],
     'obstacle-values': [

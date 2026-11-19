@@ -38,7 +38,9 @@ def decode(topic, payload):
     # unpack() fills its dict from the last field back: show payload order.
     values = dict(reversed(payloads.unpack(name, payload).items()))
     if name == "telemetry":
-        values["state"] = payloads.STATES[values["state"]]
+        state = values["state"]
+        values["state"] = (payloads.STATES[state]
+                           if state < len(payloads.STATES) else state)
         values["faults"] = [fault for bit, fault in enumerate(FAULTS)
                             if values["faults"] >> bit & 1]
     return name, values
@@ -100,7 +102,7 @@ def main():
 
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect(args.broker, args.broker_port)
+    client.connect_async(args.broker, args.broker_port)  # Broker may be late.
     client.loop_start()  # Its own thread; it reconnects by itself.
     print(f"Broker {args.broker}:{args.broker_port}, "
           f"page http://127.0.0.1:{args.port}", flush=True)

@@ -10,7 +10,7 @@ All topics start with `csc13/`. Every message is QoS 0, not retained.
 | ----------- | ---------------- | ------------------------------------------------------ | ------------------------------------------------ |
 | `telemetry` | car → supervisor | Every 200 ms                                           | 11 bytes, below                                  |
 | `motion`    | car → supervisor | With every `telemetry`                                 | 12 bytes, `motion_control_pack()` ([MOTION_CONTROL.md](MOTION_CONTROL.md#telemetry-payload)) |
-| `scan`      | car → supervisor | Once per obstacle profile, when avoidance leaves `PROFILE` | 9 bytes, below                               |
+| `scan`      | car → supervisor | Once per obstacle profile, when avoidance moves on to a bypass or stops with both sides blocked | 9 bytes, below                               |
 | `heartbeat` | car → supervisor | Every 1 s                                              | 2 bytes: a count, wraps                          |
 | `cmd`       | supervisor → car | On demand                                              | 1 byte, below                                    |
 
@@ -61,7 +61,7 @@ Fields of `ultrasonic_scan_t.profile` and `obstacle_avoidance_status_t`, same na
 
 ### `cmd`: 8 bits
 
-One bit per command, the same bits as the controller's event flag: 1 START, 2 STOP, 4 RESET. Other bits are ignored, and so is a payload that is not exactly one byte. START and RESET do what GP20 does ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#gp20)): START from READY, RESET from SAFE_STOP, and are ignored in any other state. STOP is accepted in every state except INIT: the controller calls `safety_monitor_stop()`, so the car brakes and the controller goes to SAFE_STOP. In INIT nothing moves yet, and a stop there would let RESET skip the IMU calibration. No command steers or sets a speed.
+One bit per command, the same bits as the controller's event flag: 1 START, 2 STOP, 4 RESET. Other bits are ignored, and so is a payload that is not exactly one byte. START and RESET do what GP20 does ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#gp20)): START from READY, RESET from SAFE_STOP, and are ignored in any other state. STOP is accepted in READY, FOLLOW, AVOID and TURN: the controller calls `safety_monitor_stop()`, so the car brakes and the controller goes to SAFE_STOP. In INIT nothing moves yet, and a stop there would let RESET skip the IMU calibration ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#mqtt-commands)). No command steers or sets a speed.
 
 ## Inside the car
 
@@ -84,7 +84,7 @@ The task and the message buffer are built only with `NET=lwip MQTT=1` ([DEVELOPM
 
 ### Connection
 
-The service connects once the Wi-Fi link is up. When an attempt fails or the connection drops it tries again 3 s later, from one timer. `APP_FAULT_WIFI` is set from start-up until the broker accepts the connection, and again while it is lost. A connection the broker closes is noticed at once; one that goes silent, such as the car leaving Wi-Fi range, is noticed by the MQTT keep-alive after about 90 s. Nothing in the car reacts to the fault: the car drives the same with or without the supervisor. Messages queued while the broker is away are not kept beyond the buffer, so at most about three cycles of old messages are published after a reconnect.
+The service connects once the Wi-Fi link is up. When an attempt fails or the connection drops it tries again 3 s later, from one timer. `APP_FAULT_WIFI` is set from start-up until the broker accepts the connection, and again while it is lost. A connection the broker closes is noticed at once; one that goes silent, such as the car leaving Wi-Fi range, is noticed by the MQTT keep-alive after about 90 s. Nothing in the car reacts to the fault: the car drives the same with or without the supervisor. While the broker is away the buffer fills within about three cycles and then drops new messages, so the first few published after a reconnect are the old ones from when the link was lost, with `WIFI` set in their faults. Live telemetry never shows `WIFI`; the supervisor sees a lost link as the heartbeat stopping.
 
 ## Supervisor dashboard
 

@@ -113,7 +113,10 @@ static void s1_telemetry_task(INT stacd, void * p_exinf)
         motion_control_pack(&motion, &message[1]);
         s1_send(message, S1_TOPIC_MOTION, MOTION_CONTROL_PACKET_BYTES);
 
-        if (b_profiling && (OBSTACLE_AVOIDANCE_PROFILE != avoid.state))
+        /* A profile was taken if avoidance went on to bypass, or stopped
+         * with both sides blocked; not if it was cancelled or failed. */
+        if (b_profiling && ((OBSTACLE_AVOIDANCE_BYPASS == avoid.state) ||
+                            (0u != (app_faults() & APP_FAULT_AVOID_BLOCKED))))
         {
             payload_pack_scan(&scan.profile, &message[1]);
             s1_send(message, S1_TOPIC_SCAN, PAYLOAD_SCAN_BYTES);

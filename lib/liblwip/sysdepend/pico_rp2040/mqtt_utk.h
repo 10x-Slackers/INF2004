@@ -30,8 +30,8 @@ void mqtt_utk_poll(void);
  */
 
 /* Copies the next queued message to msg (MQTT_UTK_MSG_MAX bytes) and returns
- * its length; negative when nothing is queued. msg[0] is the topic number:
- * 0 telemetry, 1 motion, 2 scan, 3 heartbeat. */
+ * its length; negative when nothing is queued. msg[0] is the topic number,
+ * an index into topics[] in mqtt_utk.c. */
 int32_t mqtt_utk_app_take(uint8_t *msg);
 
 /* The one-byte payload of a message on csc13/cmd. */

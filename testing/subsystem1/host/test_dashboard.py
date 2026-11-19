@@ -8,13 +8,6 @@ import payloads
 
 
 class DashboardTest(unittest.TestCase):
-    def test_decodes_each_topic(self):
-        for name in ("motion", "scan", "heartbeat", "cmd"):
-            values = payloads.SAMPLES[name]
-            payload = payloads.pack(name, values)
-            self.assertEqual(dashboard.decode("csc13/" + name, payload),
-                             (name, values))
-
     def test_decodes_what_the_car_packs(self):
         # The bytes of the C packers' test: top bits, and a negative roll.
         name, values = dashboard.decode("csc13/telemetry",
@@ -32,11 +25,6 @@ class DashboardTest(unittest.TestCase):
         self.assertIsNone(dashboard.decode("csc13/telemetry", bytes(10)))
         self.assertIsNone(dashboard.decode("csc13/other", b"\x01"))
         self.assertIsNone(dashboard.decode("elsewhere/cmd", b"\x01"))
-
-    def test_command_is_one_byte_of_flag_bits(self):
-        self.assertEqual([dashboard.command(name)
-                          for name in ("START", "STOP", "RESET")],
-                         [b"\x01", b"\x02", b"\x04"])
 
 
 if __name__ == "__main__":

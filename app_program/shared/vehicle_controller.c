@@ -34,11 +34,11 @@
 typedef enum
 {
     VC_INIT,     /* Waiting for the IMU calibration. */
-    VC_READY,    /* Stopped, waiting for GP20. */
+    VC_READY,    /* Stopped, waiting for GP20 or MQTT START. */
     VC_FOLLOW,   /* Line following, avoidance watching ahead. */
     VC_AVOID,    /* Avoidance drives the car. */
     VC_TURN,     /* Executing a barcode at a junction. */
-    VC_SAFE_STOP /* Until GP20 clears the Safety Monitor. */
+    VC_SAFE_STOP /* Until GP20 or MQTT RESET clears the Safety Monitor. */
 } vc_state_t;
 
 static const char * const g_names[] = {"INIT",  "READY", "FOLLOW",
@@ -153,8 +153,9 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
             vc_enter(VC_SAFE_STOP, "line lost");
         }
         /* The supervisor's commands. STOP first, so it wins over a START
-         * or RESET sent with it; in SAFE_STOP it stops again, harmlessly. */
-        else if ((0u != (commands & S1_CMD_STOP)) && (VC_INIT != g_vc.state))
+         * sent with it. */
+        else if ((0u != (commands & S1_CMD_STOP)) &&
+                 ((VC_READY == g_vc.state) || b_moving))
         {
             vc_enter(VC_SAFE_STOP, "MQTT STOP");
         }

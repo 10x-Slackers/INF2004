@@ -21,6 +21,7 @@ import paho.mqtt.client as mqtt
 import payloads
 
 PREFIX = "csc13/"
+COUNTS = ("barcodes", "humps", "bypasses")  # Telemetry counters, which wrap.
 PAGE = Path(__file__).with_name("dashboard.html")
 
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
@@ -55,7 +56,8 @@ def telemetry_events(old, new):
     if new["state"] != old["state"]:
         found.append((f"{old['state']} → {new['state']}", "state"))
         if new["state"] == "SAFE_STOP":  # FR12: a run ends on Stop.
-            found.append((f"Run ended: highest hump {new['hump_max']} mm, "
+            found.append((f"Run ended: highest hump since power-on "
+                          f"{new['hump_max']} mm, "
                           f"faults: {', '.join(new['faults']) or 'none'}",
                           "summary"))
     if new["barcodes"] != old["barcodes"]:
@@ -78,7 +80,7 @@ def heartbeat_event(old_count, count):
     step = None if old_count is None else (count - old_count) % 65536
     if step is None or step == 1:
         return None
-    if step > 32768:
+    if step == 0 or step > 32768:
         return ("Car restarted", "state")
     return (f"{step - 1} heartbeats missed", "fault")
 
@@ -104,7 +106,11 @@ def on_message(client, userdata, message):
         return
     name, values = decoded
     with lock:
-        old = latest.get(name, (0, None))[1]
+        t, old = latest.get(name, (0, None))
+        if name == "telemetry" and old and time.time() - t > 2:
+            # A gap, maybe a reboot: counts that start again from 0 are not
+            # new events, but the state and faults still compare.
+            old = dict(old, **{k: values[k] for k in COUNTS})
         latest[name] = (time.time(), values)
     if name == "telemetry":
         found = (telemetry_events(old, values) if old else

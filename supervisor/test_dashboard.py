@@ -33,7 +33,8 @@ class DashboardTest(unittest.TestCase):
                    faults=["TILT"])  # The barcode count wrapped.
         self.assertEqual(dashboard.telemetry_events(old, new), [
             ("FOLLOW → SAFE_STOP", "state"),
-            ("Run ended: highest hump 12 mm, faults: TILT", "summary"),
+            ("Run ended: highest hump since power-on 12 mm, faults: TILT",
+             "summary"),
             ("Barcode read: right", "info"),
             ("Fault: TILT", "fault"),
             ("Fault cleared: NO_ECHO", "info")])

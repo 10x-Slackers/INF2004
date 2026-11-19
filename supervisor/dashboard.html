@@ -181,7 +181,7 @@
       ['Pitch', 'telemetry', t => deg(t.pitch)],
       ['Roll', 'telemetry', t => deg(t.roll)],
       ['Motion', 'telemetry', t => t.motion_class],
-      ['Highest hump', 'telemetry', t => t.hump_max + ' mm'],
+      ['Highest hump since boot', 'telemetry', t => t.hump_max + ' mm'],
       ['Humps', 'telemetry', t => t.humps],
       ['On a hump', 'telemetry', t => yes(t.on_hump)],
     ],
@@ -311,14 +311,16 @@
     const response = await fetch('/cmd/' + name, {method: 'POST'}).catch(() => null);
     $('notice').textContent = !response ? 'Not sent: the dashboard server stopped'
       : response.ok ? `Sent ${name[0] + name.slice(1).toLowerCase()}` : await response.text();
-    refresh();
   }
 
   for (const id of ['START', 'STOP', 'RESET']) $(id).onclick = () => send(id);
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && !$('STOP').disabled) send('STOP');
   });
-  setInterval(refresh, 250);
-  refresh();
+  // One request at a time, so two never fetch the same new events.
+  (async function poll() {
+    await refresh();
+    setTimeout(poll, 250);
+  })();
 </script>
 </html>

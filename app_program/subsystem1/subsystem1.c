@@ -108,8 +108,9 @@ static void s1_telemetry_task(INT stacd, void * p_exinf)
 
         /* A profile was taken if avoidance went on to bypass, or stopped
          * with both sides blocked; not if it was cancelled or failed. */
-        if (b_profiling && ((OBSTACLE_AVOIDANCE_BYPASS == avoid.state) ||
-                            (0u != (app_faults() & APP_FAULT_AVOID_BLOCKED))))
+        if (b_profiling && (OBSTACLE_AVOIDANCE_PROFILE != avoid.state) &&
+            ((OBSTACLE_AVOIDANCE_BYPASS == avoid.state) ||
+             (0u != (app_faults() & APP_FAULT_AVOID_BLOCKED))))
         {
             payload_pack_scan(&scan.profile, &message[1]);
             s1_send(message, MQTT_UTK_TOPIC_SCAN, PAYLOAD_SCAN_BYTES);

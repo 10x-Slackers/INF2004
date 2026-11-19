@@ -70,14 +70,12 @@ static void vc_turn_step(const motion_control_status_t * p_motion);
  */
 ER vehicle_controller_start(void)
 {
-    ID h_task = 0;
-
     app_pull_up(VC_BUTTON);
 
     /* FP is the kernel's generic task pointer type. */
-    h_task = app_start_task((FP)vehicle_controller_task, VC_PRI, 0u, "vc");
-
-    return (h_task < E_OK) ? h_task : E_OK;
+    return app_start_cyclic(
+        app_start_task((FP)vehicle_controller_task, VC_PRI, 0u, "vc"),
+        VC_PERIOD_MS);
 }
 
 /*!
@@ -112,7 +110,7 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
     (void)p_exinf;
     for (;;)
     {
-        (void)tk_dly_tsk(VC_PERIOD_MS);
+        (void)tk_slp_tsk(TMO_FEVR); /* Woken every VC_PERIOD_MS. */
         g_vc.cycles++;
         b_press = vc_pressed();
         commands = 0u; /* tk_wai_flg() leaves it alone with no bit set. */

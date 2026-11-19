@@ -63,10 +63,10 @@ ER subsystem1_init(void)
 ER subsystem1_start(void)
 {
 #if TM_MQTT
-    ID const h_task = app_start_task((FP)s1_telemetry_task, S1_PRI_TELEMETRY,
-                                     0u, "s1_telemetry");
-
-    return (h_task < E_OK) ? h_task : E_OK;
+    return app_start_cyclic(app_start_task((FP)s1_telemetry_task,
+                                           S1_PRI_TELEMETRY, 0u,
+                                           "s1_telemetry"),
+                            S1_PERIOD_MS);
 #else
     return E_OK;
 #endif
@@ -91,7 +91,7 @@ static void s1_telemetry_task(INT stacd, void * p_exinf)
     (void)p_exinf;
     for (;;)
     {
-        (void)tk_dly_tsk(S1_PERIOD_MS);
+        (void)tk_slp_tsk(TMO_FEVR); /* Woken every S1_PERIOD_MS. */
         motion_control_get_status(&motion);
         obstacle_avoidance_get_status(&avoid);
         ultrasonic_scan_get(&scan);

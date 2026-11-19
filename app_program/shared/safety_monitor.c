@@ -19,10 +19,9 @@ static void safety_monitor_task(INT stacd, void * p_exinf);
 ER safety_monitor_start(void)
 {
     /* FP is the kernel's generic task pointer type. */
-    ID const h_task = app_start_task((FP)safety_monitor_task,
-                                     SAFETY_MONITOR_PRI, 0u, "safety");
-
-    return (h_task < E_OK) ? h_task : E_OK;
+    return app_start_cyclic(app_start_task((FP)safety_monitor_task,
+                                           SAFETY_MONITOR_PRI, 0u, "safety"),
+                            SAFETY_MONITOR_PERIOD_MS);
 }
 
 /*!
@@ -72,7 +71,7 @@ static void safety_monitor_task(INT stacd, void * p_exinf)
     (void)p_exinf;
     for (;;)
     {
-        (void)tk_dly_tsk(SAFETY_MONITOR_PERIOD_MS);
+        (void)tk_slp_tsk(TMO_FEVR); /* Woken every period. */
         motion_control_get_status(&motion);
         cause =
             (0u != (app_faults() & APP_FAULT_IMU)) ? SAFETY_MONITOR_IMU : 0u;

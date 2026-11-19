@@ -27,7 +27,7 @@ Optimize for **low line count, readability, and simplicity** — not for product
 
 ## Conventions
 
-- The repository is based on the course template (`upstream` remote, https://github.com/sirfonzie/INF2004_ProjectTemplate). Its `README.md` explains the build options and the `app_program/` layout.
+- The repository is based on the course template (`upstream` remote, https://github.com/sirfonzie/INF2004_ProjectTemplate). Its `README.md` explains the set-up and build options; `docs/DEVELOPMENT.md` explains the `app_program/` layout and how to add code.
 - Application code lives in `app_program/`, one folder per subsystem (`subsystemN/`), with drivers as `drv_<name>.c/.h` inside the owning subsystem's folder. It follows the Barr C Coding Standard. Layout is enforced by `.clang-format` through pre-commit.
 - Kernel sources (`kernel/`, `lib/`, `device/`, `include/`) keep their upstream style. Do not reformat them.
 - Follow the task priorities, hardware ownership and pin map in `docs/ARCHITECTURE.md` and `docs/HARDWARE.md`, and record pins, priorities and interfaces in `TEAM.md`. Update those files when a change alters them.

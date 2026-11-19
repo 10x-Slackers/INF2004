@@ -4,7 +4,7 @@ How to build, flash and add code. Environment setup is in the [root README](../R
 
 ## Build, flash, console
 
-Run from the repository root, inside the Dev Container.
+Run from the repository root, inside the Dev Container or with the SDK and compiler set up as in the root README, section 1.
 
 | Step       | Command                                                                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------------ |
@@ -39,7 +39,6 @@ The broker set-up and the supervisor dashboard are in [TELEMETRY.md](TELEMETRY.m
 | `app_program/`                   | **Application code.** `app_main.c`, `app.h`, one folder per subsystem, and `shared/` (Safety Monitor, Vehicle Controller) |
 | `TEAM.md`                        | Owners, pins, peripherals, task priorities, interfaces, object budget    |
 | `testing/`                       | Test logs per subsystem and for integration, host tests                  |
-| `videos/`                        | Links to test and demo videos                                            |
 | `config/`                        | Kernel configuration (`config.h`, `config_device.h`) and `wifi_secrets`  |
 | `build_make/`                    | Makefiles and build output                                               |
 | `device/`                        | Kernel device drivers: serial, I2C, ADC                                  |
@@ -100,7 +99,7 @@ The upstream template (`upstream` remote) has a worked example in subsystems 1â€
 
 ### Passing data between tasks
 
-Use a kernel object for every interface in the architecture and record it in `TEAM.md` section 5; do not share globals unguarded.
+Most interfaces are functions in the provider's header that copy a record under the provider's mutex, so they are safe from any task on either core; record each in `TEAM.md` section 5. Do not share globals unguarded. The kernel objects available:
 
 | Need                                 | Object            | Calls                      |
 | ------------------------------------ | ----------------- | -------------------------- |
@@ -180,7 +179,7 @@ The hook covers `app_program/` only. The kernel sources in `kernel/`, `lib/`, `d
 ### Design discipline
 
 - Respect [hardware ownership](ARCHITECTURE.md#hardware-ownership). If your task needs another task's device, ask for the data through an interface.
-- Only Wheel Motion Control writes motor pins.
+- Drive the motors only through the motion API ([design rule 1](ARCHITECTURE.md#design-rules)).
 - Claim pins, peripherals, priorities and interfaces in `TEAM.md` before coding them.
 - Size application data to its range and record each field in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md).
 - Automate unit tests in `subsystemN_test.c` with `TEST_CHECK` and record every test in `testing/` (see `testing/README.md`). Measurements and calibration values are assessed evidence (NFR8).

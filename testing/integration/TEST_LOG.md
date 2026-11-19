@@ -10,7 +10,7 @@ Define a test here before running it. Test IDs never change.
 
 | ID | What is tested | Requirement / interface | Method | Steps / how | Expected result |
 |---|---|---|---|---|---|
-| INT-01 | | | | | |
+| INT-01 | Not used | – | – | – | – |
 | INT-02 | Barcode and controller commands drive the robot | I3, I4 | manual | Controller calls `motion_control_turn_left(90)`, `_turn_right(90)`, `_move_forward(200)`, `_turn_left(180)`; polls `motion_control_get_status()` | Each ends `COMPLETE`; turns within ±3°; controller waits for completion |
 | INT-03 | Line follower and bypass use continuous drive | I3, I5 | manual | Buddy 3 calls `motion_control_drive()` every cycle; Buddy 5 uses `distance_mm` / `heading_deg` deltas during a bypass; `motion_control_stop()` at the end | Smooth tracking; stop brakes at once |
 | INT-04 | Motion telemetry over MQTT | Motion telemetry | manual | Buddy 1 publishes `motion_control_pack()` every 200 ms; the dashboard decodes it as in `docs/MOTION_CONTROL.md` | 12-byte payload; decoded state, speeds and distance match the console `status` |
@@ -36,7 +36,6 @@ Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
-| YYYY-MM-DD | INT-01 | `abc1234` | | PASS / FAIL | `logs/YYYY-MM-DD_….txt` | |
 | 2026-10-31 | INT-05 | `644e2e8` | commit2main | PASS (partial) | `logs/2026-10-31_safety_car.txt` | Wheels lifted, no line. Three start/stop/reset cycles: each GP20 stop gave `[safety] stop, cause 0x8`, the next press `[safety] cleared` and `READY`, the next `FOLLOW`. Not yet run on the track |
 | 2026-10-31 | INT-10 | `644e2e8` | commit2main | PASS (partial) | `logs/2026-10-31_safety_car.txt` | Wheels lifted, one wheel held: `[safety] stop, cause 0x4`, `FOLLOW -> SAFE_STOP: safety latched`; GP20 cleared it to `READY` |
 | 2026-10-31 | INT-09 | `644e2e8` | commit2main | FAIL | `logs/2026-10-31_safety_car.txt` | Wheels lifted, book swung in to about 100 mm: avoidance reacted first (`FOLLOW -> AVOID: obstacle`, then `AVOID -> FOLLOW: obstacle passed` once the book was gone). The 150 mm backstop never latched: avoidance stops line following on the first reading within 350 mm, so the car is no longer driving forward when the monitor looks. The test cannot isolate the backstop as written |

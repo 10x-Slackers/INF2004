@@ -25,7 +25,6 @@ Add a new row for every run. Never edit or delete old rows.
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
-| YYYY-MM-DD | S1-U01 | `abc1234` | | PASS / FAIL | `logs/YYYY-MM-DD_….txt` | |
 | 2026-10-31 | S1-U01 | `95d94ec` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Binary 10/12/8/2/1 B against JSON 275/182/141/50/101 B; periodic topics 172 B/s instead of 3245 B/s |
 | 2026-10-31 | S1-U01 | `615a548` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Re-run after the scan sample angles changed to 85/95°; sizes unchanged |
 | 2026-10-31 | S1-U01 | `42a79fa` | commit2main | PASS | `logs/2026-10-31_payloads.txt` | Adds the check against `motion_control_pack()`'s S2-U21 vector; sizes unchanged |

@@ -55,8 +55,7 @@ The rest of this file is the template's own guide.
 
 ## micro T-Kernel 3.0 project for Raspberry Pi Pico W
 
-A starting point for your project: micro T-Kernel 3.0 running on **both cores**
-of the Pico W's RP2040, with a USB serial console and the WiFi driver built in.
+micro T-Kernel 3.0 running on **both cores** of the Pico W's RP2040, with a USB serial console and the WiFi driver built in.
 
 You need a **Raspberry Pi Pico W**, a USB cable, and a computer running
 macOS, Linux, or Windows with **WSL (Ubuntu)**. On Windows, run every
@@ -135,12 +134,12 @@ toolchain's `bin` folder. Fix that before going further.
 
 ## 2. Clone this repo and build the `.uf2` file
 
-**2.1 Clone your project**
+**2.1 Clone the repository**
 
 ```sh
 cd ~/pico
-git clone <URL-of-this-repo> my-project
-cd my-project
+git clone git@github.com:10x-Slackers/INF2004.git
+cd INF2004
 ```
 
 **2.2 Build**
@@ -181,36 +180,10 @@ You should see the kernel banner and "all subsystems started".
 
 **2.5 Write your own code**
 
-Your code lives in **`app_program/`**. Every `.c` file there, and in its
-direct subfolders, is compiled automatically.
-
-- **`app_main.c` → `usermain()` is where the program starts.** It first calls
-  every subsystem's `subsystemN_init()` (create kernel objects), then every
-  `subsystemN_start()` (start tasks). Read its comments first.
-- **One folder per student:** `app_program/subsystem1/` … `subsystem5/`,
-  plus `app_program/shared/` for the Safety Monitor and Vehicle
-  Controller. The upstream template repository
-  (`upstream` remote) has a worked example in subsystems 1–4 that uses the
-  main micro T-Kernel APIs and passes data between subsystems.
-- `subsystemN.h` is that subsystem's public interface: the object IDs and
-  data formats the other subsystems may use.
-- `app.h` holds the definitions shared by the whole team.
-- **Drivers go in your subsystem folder too**, as a `drv_<name>.c` /
-  `drv_<name>.h` pair, e.g. `subsystem2/drv_ultrasonic.c`. They are compiled
-  automatically. Do not add drivers under `device/`: that folder holds the
-  kernel's own serial, I2C and ADC drivers, and adding to it means editing
-  kernel and makefile files shared by the whole team.
-
-**Working as a team:** record owners, pins, priorities and the interfaces
-between subsystems in **`TEAM.md`**, and record every test in **`testing/`**
-(see `testing/README.md`). `make TEST=1` builds a test image that runs all
-the subsystem tests at power-up. Short videos of tests and demos are shared
-as unlisted YouTube links, listed in **`videos/`**.
-
-Pins: use **GP0–GP22 and GP26–GP28**. GP0/GP1 are free unless your team
-builds with `CRASH_REPORT=1` (section 3), which needs them. Never use
-GP23/GP24/GP25/GP29: they are wired to the Pico W radio. The Pico W's
-on-board LED is also on the radio, so use an external LED instead.
+Application code lives in **`app_program/`**. How it is laid out, how to add
+a task and the conventions it follows are in
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md); pins are in
+[docs/HARDWARE.md](docs/HARDWARE.md) and [TEAM.md](TEAM.md).
 
 After editing, run `make -j8` again in `build_make` and copy the new `.uf2`.
 
@@ -257,53 +230,19 @@ UART output *is* sent at once, even inside the crash handler. So when you
 need to know why the Pico crashed or froze, build with `CRASH_REPORT=1`,
 connect a USB-serial adapter (adapter RX → GP0, adapter GND → GND), and read
 it at 115200 baud. Normal `tm_printf` output on USB works the same with
-either setting. If a subsystem has claimed GP0/GP1 in `TEAM.md`, unplug that
-hardware before using `CRASH_REPORT=1`.
+either setting. GP0/GP1 carry the HC-SR04 on this car: unplug it before
+using `CRASH_REPORT=1`.
 
 The options are part of the image name, e.g.
 `mtk3pico_smp1_usb_cdc_wifi_test.uf2`, so you can always tell which build
 you are flashing. Switching options needs no `make clean`: the makefile
 notices and recompiles everything.
 
-Using an option in C code:
-
-```c
-#if TK_SUPPORT_SMP
-    ctsk.tskatr |= TA_ASSPRC;   /* core affinity only exists on the dual-core build */
-#endif
-
-#if APP_TEST
-    /* code that only exists in the test build */
-#endif
-```
-
-### Where the options live in the makefile
-
-All five are handled in **`build_make/pico_rp2040.mk`**. To find each piece, search the file for the
-names in the left column (e.g. `grep -n "TEST" build_make/pico_rp2040.mk`).
-Each option goes through the same steps:
-
-| Step | What to look for | Example for `TEST` |
-|---|---|---|
-| 1. Default value | `NAME ?= value` near the top of the file | `TEST ?= 0` |
-| 2. Allowed values | an `$(error Unknown ...)` check just below it | `$(error Unknown TEST '$(TEST)'; use 0 or 1)` |
-| 3. Image-name suffix | `NAME_SUFFIX :=` and the `EXE_FILE :=` line | `TEST_SUFFIX := _test` |
-| 4. C macro for the code | a `CFLAGS += -D...` line | `CFLAGS += -DAPP_TEST=$(TEST)` |
-| 5. Rebuild on change | the `PROFILE_ID :=` line | `...-test$(TEST)` |
-| 6. Extra source files (`CONSOLE`, `WIFI` only) | an `ifeq ($(CONSOLE),usb_cdc)` or `ifeq ($(WIFI),cyw43)` block that adds the USB/radio files and SDK include paths | — |
-
-- **Changing a default:** edit the `?=` line from step 1, e.g.
-  `CONSOLE ?= uart`. Every `make` without that option then uses the new value.
-- **Adding your own option** (say `DEBUG=1` to turn on extra prints): copy
-  how `TEST` is done. Add steps 1 to 5 next to the `TEST` lines, then
-  use `#if APP_DEBUG` in your code. **Step 5 matters:** without it, switching
-  the option can quietly link files that were compiled with the old setting.
-- **Kernel settings** such as the maximum number of tasks, semaphores or
-  mailboxes are not make options. They are in `config/config.h` (`CNF_MAX_...`).
-
-The makefile also has `NET=lwip` and `MQTT=1` (TCP/IP and MQTT over WiFi).
-They need the SDK's `lib/lwip` submodule and a `config/wifi_secrets.h`
-(copy `config/wifi_secrets.example.h`). This guide does not cover them.
+All the options are handled in `build_make/pico_rp2040.mk`, and each sets a C
+macro (last column) that code can test with `#if`. Kernel limits such as the
+maximum number of tasks are not make options: they are `CNF_MAX_...` in
+`config/config.h`. `NET=lwip` and `MQTT=1` (TCP/IP and MQTT over Wi-Fi) are in
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#building-with-mqtt).
 
 ---
 

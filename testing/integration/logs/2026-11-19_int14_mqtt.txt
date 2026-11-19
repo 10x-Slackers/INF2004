@@ -1,0 +1,182 @@
+INT-14, 2026-11-19. Car firmware: NET=lwip MQTT=1 build of c1d4511, broker 10.0.80.119 (Mosquitto 2.1.4 in Podman via tools/supervisor/compose.yaml). Bench run, Start/Stop over about 10 cm.
+
+== Dashboard event log (Download log), steps 2-6 ==
+09:15:20 Sent Start
+09:15:20 READY → FOLLOW
+09:15:20 Sent Start
+09:15:21 Sent Stop
+09:15:21 FOLLOW → SAFE_STOP
+09:15:21 Run ended: highest hump since power-on 0 mm, faults: none
+09:15:23 Sent Reset
+09:15:23 SAFE_STOP → READY
+09:15:24 Sent Start
+09:15:24 READY → FOLLOW
+09:15:25 Sent Stop
+09:15:25 FOLLOW → SAFE_STOP
+09:15:25 Run ended: highest hump since power-on 0 mm, faults: none
+09:15:52 Sent Reset
+09:15:53 SAFE_STOP → READY
+09:15:53 Sent Start
+09:15:54 READY → FOLLOW
+09:15:55 Fault: ENCODER
+09:15:55 FOLLOW → AVOID
+09:16:02 AVOID → SAFE_STOP
+09:16:02 Run ended: highest hump since power-on 0 mm, faults: ENCODER, AVOID_BLOCKED
+09:16:02 Fault: AVOID_BLOCKED
+09:16:02 Obstacle profiled: closest 78 mm at 85°, width 88 mm
+09:16:16 Hump measured, highest so far 3 mm
+09:16:25 Sent Reset
+09:16:25 SAFE_STOP → INIT
+09:16:25 INIT → READY
+09:16:26 Sent Start
+09:16:26 READY → FOLLOW
+09:16:26 Fault cleared: ENCODER
+09:16:26 Fault cleared: AVOID_BLOCKED
+09:16:27 Dashboard lost the broker; reconnecting
+
+== Car serial console, from the last boot (board reset) to the reconnect ==
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+wifi: joining "JBL Flip 4" ...
+wifi: link status -> joined AP, waiting for IP (1)
+[imu] calibrated: offsets x=29 y=66 z=-187 mg
+[vc] INIT -> READY: IMU calibrated
+wifi: link status -> FAILED (association failure) (-1)
+wifi: joining "JBL Flip 4" ...
+wifi: link status -> joined AP, waiting for IP (1)
+wifi: link status -> joined AP, no IP yet (2)
+wifi: link up, ip=10.0.80.116
+mqtt: connected to 10.0.80.119
+mqtt: subscribe to csc13/cmd, err=0
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connected to 10.0.80.119
+mqtt: subscribe to csc13/cmd, err=0
+[vc] READY -> SAFE_STOP: MQTT STOP
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[safety] cleared
+[vc] SAFE_STOP -> INIT: MQTT RESET
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: MQTT START
+[imu] motion: accelerating
+[imu] motion: steady
+[vc] FOLLOW -> SAFE_STOP: MQTT STOP
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+[safety] cleared
+[vc] SAFE_STOP -> INIT: MQTT RESET
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: MQTT START
+[imu] motion: accelerating
+[imu] motion: steady
+[vc] FOLLOW -> SAFE_STOP: MQTT STOP
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+[safety] cleared
+[vc] SAFE_STOP -> INIT: MQTT RESET
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: MQTT START
+[imu] motion: accelerating
+[imu] motion: steady
+[vc] FOLLOW -> AVOID: obstacle
+[imu] motion: braking
+[imu] motion: steady
+[vc] AVOID -> SAFE_STOP: avoidance stopped
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: steady
+[imu] hump: peak 3 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[safety] cleared
+[vc] SAFE_STOP -> INIT: MQTT RESET
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: MQTT START
+[imu] motion: accelerating
+[imu] motion: steady
+mqtt: connection status 256, retrying in 3s
+[vc] FOLLOW -> AVOID: obstacle
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+[vc] AVOID -> SAFE_STOP: avoidance stopped
+[safety] stop, cause 0x8
+[vc] max hump 3 mm
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connection status 256, retrying in 3s
+mqtt: connected to 10.0.80.119
+mqtt: subscribe to csc13/cmd, err=0

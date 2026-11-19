@@ -132,14 +132,14 @@ What students *can* do:
   T_CYW43_UTK_STATUS st;
   cyw43_utk_get_status(&st);   /* st.ready, st.link_status, st.ip_addr, ... */
   ```
-- **Send or receive data over the network** by adding code that *runs
+- **Send or receive data over the network** through code that *runs
   inside the service task*. The MQTT client is in
-  `lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c`. It publishes a heartbeat
-  today. A "cloud / reporting" subsystem would add a kernel object
-  (e.g. a message buffer) that application tasks fill. The MQTT code then
-  reads it with `TMO_POL` (never blocking) and publishes it.
-  Because this changes shared library code, **agree it with the team and
-  the instructor first**, and record it as an interface in section 5.
+  `lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c`. It publishes what
+  Subsystem 1's Telemetry task puts in a message buffer, which it reads
+  with `TMO_POL` (never blocking), and passes commands back through an
+  event flag (interface I12, `docs/TELEMETRY.md`).
+  Changing it changes shared library code, so **agree it with the team
+  and the instructor first**, and record it as an interface in section 5.
   It needs the `NET=lwip MQTT=1` build (`make help`).
 
 ## 4. Task priorities
@@ -155,7 +155,7 @@ agreement. Write down every task you create.
 | 3 | 8–9 | `s3_barcode` (P3) – 8 – any; `s3_line` (P4) – 9 – any; `s3_bench` – 9 – any (`TEST=1` only) |
 | 5 | 11–12 | `s5_avoid` (P6) – 11 – any; `s5_scan` (P7) – 12 – any; `s5_bench` – 12 – any (`TEST=1` only) |
 | 4 | 18–19 | `s4_imu` (P8) – 18 – any |
-| 1 | 20–21 | Wi-Fi and MQTT Telemetry (P10) |
+| 1 | 20–21 | `s1_telemetry` Wi-Fi and MQTT Telemetry (P10) – 20 – any (`MQTT=1` builds only) |
 
 Core: `TP_PRC1` = core 0, `TP_PRC2` = core 1, or "any".
 
@@ -175,7 +175,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | I1 | Line Following ↔ Controller, Avoidance | function calls; line state copy under the line mutex | `line_following_start()`, `_stop()`, `_get()` | follow at 1–500 mm/s until stopped, searching for a lost line; sensor bits, last side seen, junction flag, following, searching, line lost, sample count and time; `docs/LINE_FOLLOWING.md` | Buddy 3 contract |
 | I2 | Barcode Decoder → Controller | status copy under the barcode mutex | `barcode_decoder_get()` | last validated command (left, right, straight, U-turn, per letter in `g_actions`), validated and rejected counts, odometer at the barcode; `barcode_decoder.h` | Buddy 3 contract |
 | I9 | IMU → Safety, Controller | record copies under `gh_s4_mutex` | `s4_get_tilt()`, `_get_hump()` | calibration done, highest hump of the run | Buddy 4 contract |
-| I12 | Telemetry ↔ Wi-Fi service ↔ Controller | message buffer (`TMO_POL` both ends); event flag | | Topic number + binary payload, at most 13 bytes; START, STOP, RESET bits; `docs/TELEMETRY.md` | Proposed, Buddy 1 to agree |
+| I12 | Telemetry ↔ Wi-Fi service ↔ Controller | message buffer (`TMO_POL` both ends); event flag | `gh_s1_queue` (private to Subsystem 1, read through `mqtt_utk_app_take()`); `gh_s1_command_flag` | Topic number + binary payload, at most 13 bytes; START, STOP, RESET bits (`S1_CMD_...`); `docs/TELEMETRY.md` | Proposed, Buddy 1 to agree |
 | Faults | Every subsystem → any task | one kernel event flag (atomic set and clear) | `app_fault_set()`, `_clear()`, `app_faults()` (`app_fault.h`) | one bit per fault, each owner sets and clears only its own bits; `docs/DATA_REPRESENTATION.md` | shared |
 | Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
 
@@ -189,12 +189,12 @@ limit there. Fill in each subsystem's usage.
 
 | Object | Limit | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| Task | 32 | | 2 | 3 | 1 | 3 |
+| Task | 32 | 1 | 2 | 3 | 1 | 3 |
 | Semaphore | 16 | | | | | 1 |
-| Event flag | 16 | | | | | |
+| Event flag | 16 | 1 | | | | |
 | Mailbox | 12 | | | | | |
 | Mutex | 12 | | 1 | 2 | 1 | 2 |
-| Message buffer | 12 | | | | | |
+| Message buffer | 12 | 1 | | | | |
 | Fixed memory pool | 12 | | | | | |
 | Variable memory pool | 12 | | | | | |
 | Cyclic handler | 12 | | 1 | 1 | 1 | |

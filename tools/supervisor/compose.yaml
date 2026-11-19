@@ -1,0 +1,16 @@
+services:
+  broker:
+    image: docker.io/library/eclipse-mosquitto:2
+    network_mode: host
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:z,ro
+
+  dashboard:
+    image: docker.io/library/python:3-slim
+    network_mode: host
+    working_dir: /app
+    volumes:
+      - .:/app:z
+    command: sh -c "pip install -q -r requirements.txt && python -u dashboard.py"
+    depends_on:
+      - broker

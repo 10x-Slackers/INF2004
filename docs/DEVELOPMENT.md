@@ -28,6 +28,8 @@ Check that both the normal and the `TEST=1` build still succeed without new warn
 
 2. Build with `make -C build_make NET=lwip MQTT=1 -j$(nproc)`.
 
+The broker set-up and the supervisor dashboard are in [TELEMETRY.md](TELEMETRY.md#supervisor-dashboard).
+
 `config/wifi_secrets.h` is gitignored. Never commit it.
 
 ## Repository layout

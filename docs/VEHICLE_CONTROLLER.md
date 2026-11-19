@@ -1,6 +1,6 @@
 # Vehicle Controller (shared)
 
-The mission state machine and the arbiter of normal motion (FR1, FR8). It owns no hardware except the GP20 Start/Stop button, and drives the car only through the other subsystems' APIs.
+The mission state machine and the arbiter of normal motion (FR1, FR8). It owns no hardware except the GP20 Start/Stop button, and drives the car only through the other subsystems' APIs. The supervisor can also start, stop and reset it over MQTT.
 
 | File (`app_program/shared/`) | Contents                                            |
 | ---------------------------- | --------------------------------------------------- |
@@ -14,15 +14,16 @@ The mission state machine and the arbiter of normal motion (FR1, FR8). It owns n
 stateDiagram-v2
     [*] --> INIT
     INIT --> READY: IMU calibrated
-    READY --> FOLLOW: GP20
+    READY --> FOLLOW: GP20 / MQTT START
+    READY --> SAFE_STOP: MQTT STOP
     FOLLOW --> AVOID: avoidance PROFILE or BYPASS
     AVOID --> FOLLOW: avoidance back to MONITOR
     FOLLOW --> TURN: junction with a barcode pending
     TURN --> FOLLOW: turn complete
-    FOLLOW --> SAFE_STOP: GP20 / safety latched / avoidance STOPPED / line lost
-    AVOID --> SAFE_STOP: GP20 / safety latched / avoidance STOPPED
-    TURN --> SAFE_STOP: GP20 / safety latched / move failed or over 5 s
-    SAFE_STOP --> INIT: GP20, safety latch cleared
+    FOLLOW --> SAFE_STOP: GP20 / MQTT STOP / safety latched / avoidance STOPPED / line lost
+    AVOID --> SAFE_STOP: GP20 / MQTT STOP / safety latched / avoidance STOPPED
+    TURN --> SAFE_STOP: GP20 / MQTT STOP / safety latched / move failed or over 5 s
+    SAFE_STOP --> INIT: GP20 / MQTT RESET, safety latch cleared
 ```
 
 | State     | What happens                                                                                                                                                                                             |
@@ -40,7 +41,7 @@ These system states (ARCHITECTURE.md) have no state of their own here:
 
 - **Hump Monitoring:** Subsystem 4 tracks humps by itself while the car follows the line. The run's highest hump is printed on every safe stop.
 - **Line Recovery** and **Line Lost:** a bypass ends stopped on the original line, so FOLLOW simply restarts line following. The line follower searches for a lost line by itself ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works)); if its search fails it sets `b_lost` and the controller takes a safe stop (`line lost`).
-- **Mission Complete:** the courses have no finish marker, so a course ends with a GP20 Stop, and SAFE_STOP prints the run's highest hump (FR12). A junction with nothing pending is driven straight over.
+- **Mission Complete:** the courses have no finish marker, so a course ends with a GP20 Stop or the supervisor's STOP, and SAFE_STOP prints the run's highest hump (FR12). A junction with nothing pending is driven straight over.
 
 ## GP20
 
@@ -52,6 +53,18 @@ One button, low when pressed, sampled every 10 ms. A press counts after 50 ms re
 | FOLLOW, AVOID, TURN      | Stop: SAFE_STOP            |
 | SAFE_STOP                | Reset to INIT (READY once calibrated), if `safety_monitor_clear()` succeeds |
 | INIT                     | Nothing                    |
+
+## MQTT commands
+
+The supervisor's `cmd` byte ([TELEMETRY.md](TELEMETRY.md#cmd-8-bits)) reaches the controller as bits of the event flag `gh_s1_command_flag`, which it takes and clears once per cycle. The flag exists in every build; only a `NET=lwip MQTT=1` build sets it.
+
+| Command | Accepted in                 | Does                                                                         |
+| ------- | --------------------------- | ---------------------------------------------------------------------------- |
+| START   | READY                       | What a GP20 press does there: FOLLOW                                         |
+| STOP    | READY, FOLLOW, AVOID, TURN  | SAFE_STOP, latching the Safety Monitor like the controller's other stops     |
+| RESET   | SAFE_STOP                   | What a GP20 press does there: INIT (READY once calibrated), if `safety_monitor_clear()` succeeds |
+
+A command in any other state is dropped, not kept for later. STOP is refused in INIT because nothing moves yet, and a stop there would let RESET skip the IMU calibration. STOP is taken first, so a byte or a cycle that carries STOP with START only stops. A stop the controller has already decided on in that cycle (safety latched, GP20, avoidance stopped, line lost) is taken before any command. No command steers or sets a speed.
 
 ## Calibration
 
@@ -76,6 +89,8 @@ Every state change prints its cause, for example:
 [safety] stop, cause 0x8
 [vc] max hump 12 mm
 ```
+
+A supervisor command that is acted on is its own cause: `MQTT START`, `MQTT STOP` or `MQTT RESET` in place of `GP20`.
 
 ## Hand-over to avoidance
 

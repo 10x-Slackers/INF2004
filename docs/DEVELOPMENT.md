@@ -4,7 +4,7 @@ How to build, flash and add code. The rules for working in the repository (owner
 
 ## Build, flash, console
 
-Run from the repository root, inside the Dev Container or with the SDK and compiler set up as in the [root README](../README.md#without-the-dev-container).
+Run from the repository root, inside the Dev Container or with the SDK and compiler set up as in section 1 of the [root README](../README.md).
 
 | Step       | Command                                                                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------------ |
@@ -151,4 +151,4 @@ The radio, lwIP and the MQTT client belong to the kernel's Wi-Fi service task. A
 | `PICO_SDK_PATH is not set`            | The Dev Container did not clone the SDK. Delete `.pico-sdk/` and rebuild the Dev Container                         |
 | Build succeeds but there is no `.uf2` | The host `elf2uf2` tool failed to compile. Look for a `g++` error earlier in the output                            |
 | Nothing on the console                | The port has not been open long enough for the host to enumerate. Wait a second or two                             |
-| Console stops mid-run                 | The firmware crashed or froze before the USB task could send the output. Rebuild with `CRASH_REPORT=1` ([build options](../README.md#build-options)) |
+| Console stops mid-run                 | The firmware crashed or froze before the USB task could send the output. Rebuild with `CRASH_REPORT=1` (root README, section 3) |

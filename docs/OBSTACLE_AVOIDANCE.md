@@ -30,7 +30,7 @@ motion_control_drive(left, right);          /* every 10 ms, while... */
 obstacle_avoidance_get_status(&s);          /* ...s.state is MONITOR */
 ```
 
-While avoidance is profiling or bypassing it drives the car itself through the motion API (I3). On seeing the obstacle it calls `line_following_stop()` (I1), so the line follower stops steering, and the controller must send no motion commands until the state is back to `MONITOR` (the car is then stopped on the original line and heading) or `STOPPED`.
+While avoidance is profiling or bypassing it drives the car itself through the motion API (I3). On seeing the obstacle it calls `line_following_stop()` (I1), so the line follower stops steering, and the controller must send no motion commands until the state is back to `MONITOR` (the car is then stopped on the original line and heading) or `STOPPED`. The Vehicle Controller cancels avoidance while the line follower pivots to find a lost line (the sweep would look like an obstacle ahead) and starts it again once the line is found; it also cancels it for a junction turn and on a safe stop ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#states)).
 
 ### Avoidance status (`obstacle_avoidance_status_t`, 8 bytes)
 
@@ -83,8 +83,8 @@ Constants are in the `.c` files; change one, rebuild and rerun the bench sequenc
 
 The `make -C build_make TEST=1` image starts task `s5_bench` after the checks. It waits for the GP20 button, so other subsystems' `TEST=1` runs never move the robot:
 
-1. **Short press (any number of times):** the last run's log again (`[avoid] last run: N records`, then its lines; for a run made with USB unplugged), then one servo profile scan with the car still, then `[scan] …` with the forward range, closest point, edges, width and the clearances right/left. The car does not move.
-2. **Press held for 1 s:** after 5 s, `obstacle_avoidance_start()` and `motion_control_move_forward(1500)`. It prints `[scan] …` and `[avoid] t=… ms state=… faults=… side=… step=… bypasses=… right_mm=… left_mm=… motion=state` whenever the state or step changes, and stops after one bypass, a safe stop, or the 1.5 m drive ending with no obstacle. Then `[avoid] bench done`, and it waits for GP20 again (no reset needed).
+1. **Short press (any number of times):** the last run's log again (`[avoid] last run: N records`, then its lines; for a run made with USB unplugged), then one servo profile scan with the car still, then `[scan] forward_mm= fault= closest=…@… edges=… width= obstacle= clear=right/left` and an `[avoid] …` line as below. The car does not move.
+2. **Press held for 1 s:** after 5 s, `obstacle_avoidance_start()` and `motion_control_move_forward(1500)`. It prints `[scan] …` and `[avoid] t=… ms state=… faults=… side=… step=… bypasses=… right_mm=… left_mm=… motion=state` whenever the state or step changes, and stops after one bypass, a safe stop, or the car standing still while watching (the 1.5 m drive ended, or a profile found nothing straight ahead). It prints one last record, then `[avoid] bench done`, and it waits for GP20 again (no reset needed).
 
 ## Resources
 

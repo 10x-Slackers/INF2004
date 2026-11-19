@@ -1,6 +1,6 @@
 # Development Guide
 
-How to build, flash and add code. Environment setup is in the [root README](../README.md#getting-started-dev-container). Every build option (`SMP`, `CONSOLE`, `WIFI`, `TEST`, `CRASH_REPORT`, `NET`, `MQTT`) is explained in section 3 of the same README.
+How to build, flash and add code. Environment setup is in the [root README](../README.md#getting-started-dev-container). The build options `SMP`, `CONSOLE`, `WIFI`, `TEST` and `CRASH_REPORT` are explained in section 3 of the same README; `NET` and `MQTT` are in [Building with MQTT](#building-with-mqtt) below.
 
 ## Build, flash, console
 
@@ -36,9 +36,9 @@ The broker set-up and the supervisor dashboard are in [TELEMETRY.md](TELEMETRY.m
 
 | Path                             | Contents                                                                 |
 | -------------------------------- | ------------------------------------------------------------------------ |
-| `app_program/`                   | **Application code.** `app_main.c`, `app.h` and one folder per subsystem |
+| `app_program/`                   | **Application code.** `app_main.c`, `app.h`, one folder per subsystem, and `shared/` (Safety Monitor, Vehicle Controller) |
 | `TEAM.md`                        | Owners, pins, peripherals, task priorities, interfaces, object budget    |
-| `testing/`                       | Test logs per subsystem, integration and system level                    |
+| `testing/`                       | Test logs per subsystem and for integration, host tests                  |
 | `videos/`                        | Links to test and demo videos                                            |
 | `config/`                        | Kernel configuration (`config.h`, `config_device.h`) and `wifi_secrets`  |
 | `build_make/`                    | Makefiles and build output                                               |
@@ -49,8 +49,9 @@ The broker set-up and the supervisor dashboard are in [TELEMETRY.md](TELEMETRY.m
 | `lib/libtm/`                     | Console (`tm_printf`)                                                    |
 | `lib/libwifi/`, `lib/liblwip/`   | CYW43439 radio service, lwIP port and MQTT client                        |
 | `docs/`                          | This documentation                                                       |
+| `tools/`                         | `elf2uf2` (built by make), the MQTT supervisor dashboard (`supervisor/`) and helper scripts |
 
-Every `.c` file in `app_program/` and in its subfolders is compiled automatically. No makefile edit is needed.
+Every `.c` file in `app_program/` and in its direct subfolders (one level down) is compiled automatically. No makefile edit is needed.
 
 ## Writing a task
 
@@ -84,15 +85,15 @@ ER subsystem5_start(void)
 }
 ```
 
-The third argument pins the task to a core: `TP_PRC1` (core 0), `TP_PRC2` (core 1) or `0` for any. Take each task's priority from the table in [ARCHITECTURE.md](ARCHITECTURE.md#tasks), inside the subsystem's band in `TEAM.md`. A lower number is a higher priority.
+The third argument pins the task to a core: `TP_PRC1` (core 0), `TP_PRC2` (core 1) or `0` for any. Take each task's priority from the subsystem's band in `TEAM.md` section 4, keeping the task order of [ARCHITECTURE.md](ARCHITECTURE.md#tasks). A lower number is a higher priority.
 
 The upstream template (`upstream` remote) has a worked example in subsystems 1–4 that uses every kernel object below.
 
 ### Things to know
 
 - **Stacks are `APP_TASK_STACK_SIZE` bytes** (`app.h`). Raise it for a task with deep call chains or large locals.
-- **`tk_dly_tsk` is a relative delay.** The period becomes the delay plus the work time, so it drifts. For a fixed rate, sleep until the next absolute deadline or use a cyclic handler.
-- **The tick is 10 ms** (`CNF_TIMER_PERIOD` in `config/config.h`). Delays are rounded to it.
+- **`tk_dly_tsk` is a relative delay.** The period becomes the delay plus the work time, so it drifts. For a fixed rate, use a cyclic handler: `app_start_cyclic()` in `app.h` wakes a task every period.
+- **The tick is 10 ms** (`CNF_TIMER_PERIOD` in `config/config.h`). A relative wait also gets one extra tick, so `tk_dly_tsk(10)` waits 10 to 20 ms, about 20 ms in a periodic loop.
 - **There is no FPU.** Floating point is software-emulated; keep it out of fast loops.
 - **Processor 1 is physical core 0** and runs the kernel's USB console and Wi-Fi service tasks.
 - **Kernel object counts are capped** in `config/config.h`. The budget is tracked in `TEAM.md` section 6.

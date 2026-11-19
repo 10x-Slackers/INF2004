@@ -1,6 +1,6 @@
 # Subsystem 1 — test log
 
-**Subsystem:** Wi-Fi, command and telemetry  ·  **Student ID:** <student ID>  ·  **Code:** `app_program/subsystem1/`
+**Subsystem:** Wi-Fi, command and telemetry  ·  **Student ID:** 2503014  ·  **Code:** `app_program/subsystem1/`
 
 See `testing/README.md` for how to run tests and record results.
 

@@ -8,7 +8,8 @@ testing/
 ├── README.md              this guide
 ├── subsystem1/            one folder per subsystem, kept by its owner
 │   ├── TEST_LOG.md        test cases + results
-│   └── logs/              saved console output, photos, scope captures
+│   ├── logs/              saved console output, photos, scope captures
+│   └── host/              host tests: plain C programs run on a laptop
 ├── ...
 ├── subsystem5/
 └── integration/           tests across two or more subsystems (shared)
@@ -31,6 +32,10 @@ Test IDs never change and are never reused, even if a test is dropped.
    `app_program/subsystemN/subsystemN_test.c` (see `app_program/test_report.h`).
    A test that needs eyes or instruments (an LED blinks, a motor turns, a
    scope shows 1 kHz) is a *manual* test. Write its steps in the table instead.
+   Logic with no hardware calls (packing, decoding, profiles, control maths)
+   can also be a *host* test: a C program in `subsystemN/host/` that compiles
+   the module with the laptop's `cc` and prints `ALL PASS`. Put the exact
+   build-and-run command in the test case's *How* column.
 3. **Build the test image and flash it.**
    ```sh
    cd build_make
@@ -51,7 +56,10 @@ Test IDs never change and are never reused, even if a test is dropped.
    (keep each file under a few MB). Videos go in `videos/` instead (see below).
 5. **Record the result.** Add a row to the *Results* table: date, test ID,
    the commit you tested (`git rev-parse --short HEAD`), who ran it,
-   PASS/FAIL, and the log file. Commit the log and the table together.
+   PASS, FAIL or PARTIAL (with a note on what was not covered), and the log
+   file. Commit the log and the table together. Pull requests are
+   squash-merged, so a branch commit disappears once merged: add the pull
+   request number after the commit, for example `1a2b3c4 (#42)`.
 
 ## Videos of tests and demos
 

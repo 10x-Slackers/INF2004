@@ -36,7 +36,7 @@ Each field's range is in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#fields)
 | 15–17 | `motion_class` | `s4_motion_t.cls` |
 | 18–28 | `pitch` | `s4_tilt_t.pitch` + 1024 |
 | 29–39 | `roll` | `s4_tilt_t.roll` + 1024 |
-| 40–45 | `hump_max` | `s4_hump_t.max`: the highest hump since power-on |
+| 40–45 | `hump_max` | `s4_hump_t.max`: the highest hump of the run, reset at each Start |
 | 46–49 | `humps` | `s4_hump_t.count` |
 | 50 | `on_hump` | `s4_hump_t.on` |
 | 51–53 | `avoid_state` | `obstacle_avoidance_status_t.state` |
@@ -47,7 +47,7 @@ Each field's range is in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#fields)
 
 ### `scan`: 68 bits
 
-Fields of `ultrasonic_scan_t.profile` and `obstacle_avoidance_status_t`, same names.
+Fields of `ultrasonic_scan_t.profile`, same names.
 
 | Bits  | Field         |
 | ----- | ------------- |

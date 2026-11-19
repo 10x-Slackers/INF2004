@@ -1,6 +1,6 @@
 # Subsystem 4 — test log
 
-**Subsystem:** IMU and terrain  ·  **Student ID:** <student ID>  ·  **Code:** `app_program/subsystem4/`
+**Subsystem:** IMU and terrain  ·  **Student ID:** 2503999  ·  **Code:** `app_program/subsystem4/`
 
 See `testing/README.md` for how to run tests and record results.
 

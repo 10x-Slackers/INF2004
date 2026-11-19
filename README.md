@@ -1,8 +1,5 @@
 # INF2004 Embedded Systems Programming Project
 
-> [!NOTE]
-> WIP, remove this note when project is ready.
-
 Autonomous Robotic Car Challenge based on µT-Kernel 3.0 (RP2040 dual-core SMP Port).
 Project documentation is in [docs/](docs/README.md); who owns which subsystem, pin and priority is in [TEAM.md](TEAM.md).
 
@@ -185,13 +182,14 @@ You should see the kernel banner and "all subsystems started".
 **2.5 Write your own code**
 
 Your code lives in **`app_program/`**. Every `.c` file there, and in its
-subfolders, is compiled automatically.
+direct subfolders, is compiled automatically.
 
 - **`app_main.c` → `usermain()` is where the program starts.** It first calls
   every subsystem's `subsystemN_init()` (create kernel objects), then every
   `subsystemN_start()` (start tasks). Read its comments first.
-- **One folder per student:** `app_program/subsystem1/` … `subsystem5/`.
-  Each starts as an empty template. The upstream template repository
+- **One folder per student:** `app_program/subsystem1/` … `subsystem5/`,
+  plus `app_program/shared/` for the Safety Monitor and Vehicle
+  Controller. The upstream template repository
   (`upstream` remote) has a worked example in subsystems 1–4 that uses the
   main micro T-Kernel APIs and passes data between subsystems.
 - `subsystemN.h` is that subsystem's public interface: the object IDs and

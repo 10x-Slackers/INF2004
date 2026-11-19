@@ -45,7 +45,7 @@ The car shall:
 | C       | Go straight |
 | D       | U-turn      |
 
-The letters are the brief's example mapping. The course's letters are announced on the day, with time to reflash, so the mapping is one table (`g_actions` in `barcode_decoder.c`). Turns must be executed with encoder-based motion control.
+The letters are the brief's example mapping. The course's letters may differ, so the mapping is one table (`g_actions` in `barcode_decoder.c`). Turns must be executed with encoder-based motion control.
 
 ### Course markings
 
@@ -67,7 +67,7 @@ On the example course, the barcode beside the long straight between the two loop
 
 **Line following** must tolerate minor lighting changes, slight track imperfections and speed variation.
 
-**Hump detection** uses IMU data both to detect a hump and to estimate its height.
+**Hump detection** uses IMU data both to detect a hump and to estimate its height. The demonstration's hump is a ramp about the height of the smaller practice ramp; the instructor's intent is to use the IMU in a less conventional way to estimate the height the car reaches.
 
 **Obstacle avoidance** follows this sequence:
 
@@ -123,9 +123,9 @@ Objectives: reliable tracking, accurate barcode recognition, robust operation at
 
 IMU integration and calibration, tilt detection, hump detection, peak hump measurement, motion classification, collision detection, turn-rate monitoring, motion event reporting.
 
-The instructor later replaced collision detection, which conflicts with collision avoidance: the IMU must instead detect that the car has been picked up and stop the motors at once. At the demonstration the car is lifted, in any manner, and turned upside down to end the run. No finer lift or overturn classification is needed.
+The instructor replaced collision detection, as a simplification: the IMU must instead detect that the car has been picked up and stop the motors at once. At the demonstration the car is lifted, in any manner, and turned upside down to end the run. No finer lift or overturn classification is needed.
 
-Motion events to classify: stationary, accelerating, turning, climbing hump, descending hump, sudden impact.
+Motion events to classify: stationary, accelerating, turning, climbing hump, descending hump, sudden impact. Sudden impact went with collision detection.
 
 Objectives: reliable hump detection, accurate peak measurement, stable event classification.
 
@@ -151,7 +151,7 @@ Objectives: accurate detection, effective profiling, reliable avoidance, success
 | Robustness    | Recovery and stable operation                             |
 | Engineering   | Software design quality, resource efficiency              |
 | Integration   | Interfaces and teamwork                                   |
-| Demonstration | Clear evidence under test (Week 10)                       |
+| Demonstration | Clear evidence under test (Week 13 final run)             |
 
 The final demonstration scores one point for each of: detect a barcode, decode it, measure hump height, follow the line, follow the barcode's instruction, detect an obstacle, measure its width, navigate around it and rejoin the line, send telemetry over MQTT, and stop the motors when the car is picked up, which ends the run. Each team gets up to three runs and the last run counts, even if it scores lower.
 
@@ -163,9 +163,15 @@ The briefing's advice on how to get there:
 4. Integrate early through stable APIs.
 5. Practise the demonstration.
 
+Other assessed work:
+
+- **Tribunals 1 and 2:** at each, the team is given a change in requirements and records how it affects the requirements and design, with a submission before and after. The changes from Tribunal 1 must be implemented and shown at the Week 13 demonstration, with evidence for the final implementation.
+- **Change Requirement 1, Minimum-Bit Data Representation** (Tribunal 1): NFR9 below, evidence in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#evidence).
+- **Peer review** of the group project.
+
 ## Team requirements
 
-These IDs come from the Week 6 design review. Use them in commits, tests and reports.
+These IDs come from the Week 6 design review, with the Tribunal 1 change added as NFR9. Use them in commits, tests and reports.
 
 ### Functional
 
@@ -173,14 +179,14 @@ These IDs come from the Week 6 design review. Use them in commits, tests and rep
 | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
 | FR1  | Navigate autonomously with onboard sensing and software, without remote steering or speed control                                                                            | Vehicle Controller                |
 | FR2  | Follow the black line with two IR sensors, estimate a discrete line position and detect junction candidates                                                                  | Line Following                    |
-| FR3  | Detect and validate barcodes; execute left, right, straight and U-turn with encoder-based motion; reacquire the commanded outgoing branch                                    | Barcode Decoder, Line Following   |
+| FR3  | Detect and validate barcodes; execute left, right, straight and U-turn with encoder-based motion; reacquire the commanded outgoing branch                                    | Barcode Decoder, Line Following, Vehicle Controller |
 | FR4  | Use encoder feedback and PID for independent wheel speeds, speed and distance estimation, straight-travel correction, and repeatable forward, reverse and turning manoeuvres | Wheel Motion Control, Encoder ISR |
 | FR5  | Detect humps from calibrated GY-511 accelerometer data; estimate height from roll and track width (humps pass under the right wheel only); report the highest valid peak of the run                              | IMU and Terrain Monitor           |
-| FR6  | Detect obstacles on or near the line; coarse scan, then fine scan around detected sectors; estimate location, width, closest point and left/right clearance                  | Ultrasonic Scan                   |
-| FR7  | Stop for profiling; choose and execute the bypass with least route deviation; reacquire the line. Reverse is disabled (no rear-clearance sensing); replanning is bounded; no safe route means Safe Stop | Obstacle Avoidance and Recovery   |
+| FR6  | Detect obstacles on or near the line; coarse scan, then fine scan outward from straight ahead; estimate location, width, closest point and left/right clearance                  | Ultrasonic Scan                   |
+| FR7  | Stop for profiling; bypass on the more open side, checking the path before committing and trying the other side once if the scan found it open; end back on the original line. Reverse is disabled (no rear-clearance sensing); no safe route means Safe Stop | Obstacle Avoidance                |
 | FR8  | Coordinate navigation, line following, barcodes, wheel control, terrain monitoring, avoidance and recovery through one mission controller                                    | Vehicle Controller                |
 | FR9  | Establish Wi-Fi/MQTT, publish telemetry and heartbeat, accept permitted supervisory commands, and recover connectivity without blocking local control                        | Wi-Fi and MQTT Telemetry          |
-| FR10 | Classify stationary, accelerating, turning, climbing and descending; report odometry-derived turn rate and calibrated tilt; latch a stop within 0.5 s of the car being turned upside down (lifted at the end of a run), and at once on a quick lift | IMU and Terrain Monitor           |
+| FR10 | Classify steady, accelerating, braking, climbing and descending (turning is measured by the encoders, FR4); report calibrated tilt; latch a stop within 0.5 s of the car being turned upside down (lifted at the end of a run), and at once on a quick lift | IMU and Terrain Monitor           |
 | FR11 | Latch a stop on critical faults or explicit Stop: invalidate pending motion, brake the motors, and require reset/revalidation plus a new Start before moving                 | Safety Monitor                    |
 | FR12 | End a course on Stop: brake the motors and report final status and the run's maximum valid hump estimate. Courses run back to back, so there is no finish event              | Vehicle Controller                |
 
@@ -196,6 +202,7 @@ These IDs come from the Week 6 design review. Use them in commits, tests and rep
 | NFR6 | Meet control deadlines and maximum data-age limits; measure end-to-end stop latency under network and sensing load                 |
 | NFR7 | Measure CPU, stack/memory, telemetry bandwidth and power demand; no unbounded queues or runtime allocation in control paths        |
 | NFR8 | Keep APIs stable and subsystem/integration tests repeatable, with owners, calibration data and recorded evidence                   |
+| NFR9 | Store and send application data in only the bits its range needs, with faults as single bits, and show RAM and message sizes for the final code (Change Requirement 1) |
 
 ### Assumptions to validate
 

@@ -20,7 +20,7 @@ subsystem, ask its owner or open a pull request for them to review.
 | 4 | IMU and terrain | 2503999 | commit2main | `app_program/subsystem4/` | `testing/subsystem4/` |
 | 5 | Ultrasonic scanning and obstacle avoidance | 2503992 | CalebWee | `app_program/subsystem5/` | `testing/subsystem5/` |
 
-Shared files (`app_program/app_main.c`, `app_program/app.h`, `app_program/app_fault.h`, this file)
+Shared files (`app_program/app_main.c`, `app_program/app.h`, `app_program/app_fault.h`, `app_program/shared/`, this file)
 are changed only by agreement of the team. The exception is claiming an empty
 row in this file (a pin, a peripheral, an interface ID), which anyone may do
 (section 2).
@@ -174,7 +174,7 @@ sends to it or waits on it. Agree on the data format before coding.
 | I7/I8 | Any task ↔ Ultrasonic scan | function calls; result copy under the scan mutex | `ultrasonic_scan_request()`, `ultrasonic_scan_get()` | forward range and its time, obstacle profile; `docs/OBSTACLE_AVOIDANCE.md` | Buddy 5 contract |
 | I1 | Line Following ↔ Controller, Avoidance | function calls; line state copy under the line mutex | `line_following_start()`, `_stop()`, `_get()` | follow at 1–500 mm/s until stopped, searching for a lost line; sensor bits, last side seen, junction flag, following, searching, line lost, sample count and time; `docs/LINE_FOLLOWING.md` | Buddy 3 contract |
 | I2 | Barcode Decoder → Controller | status copy under the barcode mutex | `barcode_decoder_get()` | last validated command (left, right, straight, U-turn, per letter in `g_actions`), validated and rejected counts, odometer at the barcode; `barcode_decoder.h` | Buddy 3 contract |
-| I9 | IMU → Safety, Controller | record copies under `gh_s4_mutex` | `s4_get_tilt()`, `_get_hump()` | calibration done, highest hump of the run | Buddy 4 contract |
+| I9 | IMU → Controller, Telemetry | record copies under `gh_s4_mutex` | `s4_get_tilt()`, `_get_hump()`, `_get_motion()`; `s4_reset_hump_max()` | calibration done, tilt, highest hump of the run (the controller resets it at each Start), motion class. The Safety Monitor reads only the IMU fault bits | Buddy 4 contract |
 | I12 | Telemetry ↔ Wi-Fi service ↔ Controller | message buffer (`TMO_POL` both ends); event flag | `gh_s1_queue` (private to Subsystem 1, read through `mqtt_utk_app_take()`); `gh_s1_command_flag` | Topic number + binary payload, at most 13 bytes; START, STOP, RESET bits (`S1_CMD_...`); `docs/TELEMETRY.md` | Proposed, Buddy 1 to agree |
 | Faults | Every subsystem → any task | one kernel event flag (atomic set and clear) | `app_fault_set()`, `_clear()`, `app_faults()` (`app_fault.h`) | one bit per fault, each owner sets and clears only its own bits; `docs/DATA_REPRESENTATION.md` | shared |
 | Motion telemetry | Motion → Buddy 1 | explicit bit packing | `motion_control_pack()` | 12 bytes; `docs/MOTION_CONTROL.md` | Buddy 2 contract |
@@ -187,17 +187,17 @@ Each interface is tested by at least one integration test
 Limits are set in `config/config.h`. If the team needs more, raise the
 limit there. Fill in each subsystem's usage.
 
-| Object | Limit | S1 | S2 | S3 | S4 | S5 |
-|---|---|---|---|---|---|---|
-| Task | 32 | 1 | 2 | 3 | 1 | 3 |
-| Semaphore | 16 | | | | | 1 |
-| Event flag | 16 | 1 | | | | |
-| Mailbox | 12 | | | | | |
-| Mutex | 12 | | 1 | 2 | 1 | 2 |
-| Message buffer | 12 | 1 | | | | |
-| Fixed memory pool | 12 | | | | | |
-| Variable memory pool | 12 | | | | | |
-| Cyclic handler | 12 | | 1 | 1 | 1 | |
-| Alarm handler | 12 | | | | | |
+| Object | Limit | Shared | S1 | S2 | S3 | S4 | S5 |
+|---|---|---|---|---|---|---|---|
+| Task | 32 | 2 | 1 | 2 | 3 | 1 | 3 |
+| Semaphore | 16 | | | | | | 1 |
+| Event flag | 16 | 1 | 1 | | | | |
+| Mailbox | 12 | | | | | | |
+| Mutex | 12 | | | 1 | 2 | 1 | 2 |
+| Message buffer | 12 | | 1 | | | | |
+| Fixed memory pool | 12 | | | | | | |
+| Variable memory pool | 12 | | | | | | |
+| Cyclic handler | 12 | 2 | 1 | 1 | 2 | 1 | |
+| Alarm handler | 12 | | | | | | |
 
-The shared fault bitmask (`app_main.c`) uses 1 event flag. (The kernel's USB and WiFi service tasks also use a few of these.)
+Shared is the Safety Monitor and Vehicle Controller (normal builds only) and the fault bitmask's event flag (`app_main.c`). (The kernel's USB and WiFi service tasks also use a few of these.)

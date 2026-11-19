@@ -196,40 +196,9 @@ You should see the kernel banner and "all subsystems started", then
 READY`. Press GP20 on the Robo Pico to start a run and again to stop it
 ([docs/VEHICLE_CONTROLLER.md](docs/VEHICLE_CONTROLLER.md)).
 
-**2.5 Write your own code**
-
-The code lives in **`app_program/`**. Every `.c` file there, and in its
-direct subfolders, is compiled automatically. Read [AGENTS.md](AGENTS.md)
-first: it has the rules on ownership, the coding standard and tests.
-
-- **`app_main.c` → `usermain()` is where the program starts.** It first calls
-  every subsystem's `subsystemN_init()` (create kernel objects), then every
-  `subsystemN_start()` (start tasks).
-- **One folder per student:** `app_program/subsystem1/` … `subsystem5/`
-  (telemetry, motion, line following and barcodes, IMU, obstacle
-  avoidance), plus `app_program/shared/` for the Safety Monitor and the
-  Vehicle Controller (the mission state machine).
-- `subsystemN.h` is that subsystem's public interface; `app.h` and
-  `app_fault.h` hold what the whole team shares.
-- **Drivers go in the owning subsystem's folder**, as a `drv_<name>.c` /
-  `drv_<name>.h` pair, e.g. `subsystem5/drv_hcsr04.c`. Do not add drivers
-  under `device/`: that folder holds the kernel's own serial, I2C and ADC
-  drivers.
-- How to add a task, pass data between tasks and use the hardware is in
-  [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
-
-**Working as a team:** owners, pins, priorities and the interfaces between
-subsystems are in **`TEAM.md`**; tests are recorded in **`testing/`** (see
-`testing/README.md`). `make TEST=1` builds a test image that runs all the
-subsystem tests at power-up, and each subsystem's bench sequence.
-
-Pins: the pin map is in [docs/HARDWARE.md](docs/HARDWARE.md#pin-map); claim
-a free pin in `TEAM.md` before using it. GP0/GP1 carry the HC-SR04, so
-unplug it for `CRASH_REPORT=1` builds (section 3). Never use
-GP23/GP24/GP25/GP29: they are wired to the Pico W radio. The Pico W's
-on-board LED is also on the radio.
-
-After editing, run `make -j8` again in `build_make` and copy the new `.uf2`.
+After a change, run `make -j8` again in `build_make` and flash the new
+`.uf2`. Working on the code itself is covered in [AGENTS.md](AGENTS.md) and
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 ---
 
@@ -282,41 +251,8 @@ The options are part of the image name, e.g.
 you are flashing. Switching options needs no `make clean`: the makefile
 notices and recompiles everything.
 
-Using an option in C code:
-
-```c
-#if TK_SUPPORT_SMP
-    ctsk.tskatr |= TA_ASSPRC;   /* core affinity only exists on the dual-core build */
-#endif
-
-#if APP_TEST
-    /* code that only exists in the test build */
-#endif
-```
-
-### Where the options live in the makefile
-
-All five are handled in **`build_make/pico_rp2040.mk`**. To find each piece, search the file for the
-names in the left column (e.g. `grep -n "TEST" build_make/pico_rp2040.mk`).
-Each option goes through the same steps:
-
-| Step | What to look for | Example for `TEST` |
-|---|---|---|
-| 1. Default value | `NAME ?= value` near the top of the file | `TEST ?= 0` |
-| 2. Allowed values | an `$(error Unknown ...)` check just below it | `$(error Unknown TEST '$(TEST)'; use 0 or 1)` |
-| 3. Image-name suffix | `NAME_SUFFIX :=` and the `EXE_FILE :=` line | `TEST_SUFFIX := _test` |
-| 4. C macro for the code | a `CFLAGS += -D...` line | `CFLAGS += -DAPP_TEST=$(TEST)` |
-| 5. Rebuild on change | the `PROFILE_ID :=` line | `...-test$(TEST)` |
-| 6. Extra source files (`CONSOLE`, `WIFI` only) | an `ifeq ($(CONSOLE),usb_cdc)` or `ifeq ($(WIFI),cyw43)` block that adds the USB/radio files and SDK include paths | — |
-
-- **Changing a default:** edit the `?=` line from step 1, e.g.
-  `CONSOLE ?= uart`. Every `make` without that option then uses the new value.
-- **Adding your own option** (say `DEBUG=1` to turn on extra prints): copy
-  how `TEST` is done. Add steps 1 to 5 next to the `TEST` lines, then
-  use `#if APP_DEBUG` in your code. **Step 5 matters:** without it, switching
-  the option can quietly link files that were compiled with the old setting.
-- **Kernel settings** such as the maximum number of tasks, semaphores or
-  mailboxes are not make options. They are in `config/config.h` (`CNF_MAX_...`).
+Kernel settings such as the maximum number of tasks are not make options:
+they are `CNF_MAX_...` in `config/config.h`.
 
 ### Network and MQTT: `NET`, `MQTT`
 

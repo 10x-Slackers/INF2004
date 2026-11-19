@@ -40,3 +40,6 @@ Add a new row for every run. Never edit or delete old rows.
 | 2026-11-19 | S1-U04 | `94c5bc4` | commit2main | PASS | `logs/2026-11-19_host_mqtt.txt` | Mosquitto 2.1.2 on port 18830. A telemetry message of the wrong size was ignored. The page was also opened in a browser: it showed the values, and a click on STOP published `02` |
 | 2026-11-19 | S1-U01 | `35c3cca` | commit2main | PASS | `logs/2026-11-19_supervisor.txt` | `payloads.py` moved to `supervisor/`, unchanged |
 | 2026-11-19 | S1-U03 | `35c3cca` | commit2main | PASS | `logs/2026-11-19_supervisor.txt` | 4 tests, with the event log. The page was also viewed in a browser against Mosquitto and a scripted stand-in for the car: READY, FOLLOW, SAFE_STOP and the car going silent each showed as expected, and Start and Esc (Stop) changed the stand-in's state |
+| 2026-11-19 | S1-U01 | `229ead5` | commit2main | PASS | `logs/2026-11-19_final_host.txt` | Final run on PR #43; payload layouts unchanged |
+| 2026-11-19 | S1-U02 | `229ead5` | commit2main | PASS | `logs/2026-11-19_final_host.txt` | Final run on PR #43 |
+| 2026-11-19 | S1-U03 | `229ead5` | commit2main | PASS | `logs/2026-11-19_final_host.txt` | Final run on PR #43: event log across gaps, reboots and the heartbeat wrap |

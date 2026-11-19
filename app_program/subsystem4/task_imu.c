@@ -64,10 +64,9 @@ static struct
     int32_t peak_mm;      /* Highest point of the current hump. */
     int32_t print_count;
     int32_t beep_left; /* Samples until the buzzer stops. */
-    uint32_t faults;   /* APP_FAULT_IMU bits latched. */
+    uint32_t faults;   /* Latched APP_FAULT_IMU bits (all but lifted). */
     s4_motion_class_t push_class;
     bool b_descending; /* Past the top of the current hump. */
-    bool b_lifted;     /* APP_FAULT_LIFTED is set. */
 } g_imu;
 
 /* One calibrated sample, passed from imu_sample() to imu_publish(). */
@@ -253,11 +252,12 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
     sample.height_mm =
         (-S4_TRACK_MM * g_imu.smooth_x) / (IMU_SMOOTH * IMU_MG_PER_G);
     g_imu.high_count =
-        (sample.height_mm >= S4_HUMP_ON_MM) ? (g_imu.high_count + 1) : 0;
+        ((sample.height_mm >= S4_HUMP_ON_MM) && (sample.z_mg >= 0))
+            ? (g_imu.high_count + 1)
+            : 0;
     if (sample.z_mg < 0)
     {
-        g_imu.high_count = 0; /* Rolled over, not on a hump: drop it. */
-        g_imu.peak_mm = 0;
+        g_imu.peak_mm = 0; /* Rolled over, not on a hump: drop it. */
     }
     if (((g_imu.high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||
          (g_imu.peak_mm > 0)) &&
@@ -309,8 +309,6 @@ static void imu_publish(const imu_sample_t * p_sample)
     s4_motion_class_t motion_class = g_imu.push_class;
     bool b_new_upside = false;
     bool b_new_tilt = false;
-    bool const b_lifted = (g_imu.lift_count >= (S4_LIFT_MS / S4_IMU_MS));
-    bool const b_new_lift = b_lifted && (!g_imu.b_lifted);
     bool b_changed = false;
 
     (void)tk_loc_mtx(gh_s4_mutex, TMO_FEVR);
@@ -358,20 +356,24 @@ static void imu_publish(const imu_sample_t * p_sample)
     {
         tm_printf((UB *)"[imu] motion: %s\n", g_motion_name[motion_class]);
     }
-    if (b_new_upside || b_new_tilt || b_new_lift)
+    if (g_imu.lift_count >= (S4_LIFT_MS / S4_IMU_MS))
     {
-        app_fault_set(g_imu.faults | (b_lifted ? APP_FAULT_LIFTED : 0u));
+        app_fault_set(APP_FAULT_LIFTED);
+    }
+    else
+    {
+        app_fault_clear(APP_FAULT_LIFTED); /* Settled: GP20 can clear. */
+    }
+    if (b_new_upside || b_new_tilt ||
+        ((S4_LIFT_MS / S4_IMU_MS) == g_imu.lift_count))
+    {
+        app_fault_set(g_imu.faults);
         tm_printf((UB *)"[imu] FAULT: %s\n",
                   b_new_upside ? "upside down"
                                : (b_new_tilt ? "tilt" : "lifted"));
         imu_beep_on();
         g_imu.beep_left = S4_ALARM_MS / S4_IMU_MS;
     }
-    if ((!b_lifted) && (g_imu.b_lifted))
-    {
-        app_fault_clear(APP_FAULT_LIFTED); /* Settled: GP20 can clear. */
-    }
-    g_imu.b_lifted = b_lifted;
     if (p_sample->b_hump_over)
     {
         tm_printf((UB *)"[imu] hump: peak %d mm\n", g_imu.peak_mm);

@@ -10,7 +10,7 @@ Reference and guides for the INF2004 autonomous robotic car (µT-Kernel 3.0 on R
 | [MOTION_CONTROL.md](MOTION_CONTROL.md) | Buddy 2 APIs, calibration, bench commands and binary contract |
 | [OBSTACLE_AVOIDANCE.md](OBSTACLE_AVOIDANCE.md) | Buddy 5 APIs, scan and bypass, calibration and bench sequence |
 | [LINE_FOLLOWING.md](LINE_FOLLOWING.md) | Buddy 3 APIs, line following, lost-line search, barcodes and calibration |
-| [TELEMETRY.md](TELEMETRY.md) | Buddy 1 MQTT topics, binary payloads and commands |
+| [TELEMETRY.md](TELEMETRY.md) | Buddy 1 MQTT topics, binary payloads, commands and the supervisor dashboard |
 | [VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md) | The mission state machine: states, GP20 Start/Stop, calibration and console output |
 | [SAFETY_MONITOR.md](SAFETY_MONITOR.md) | The latched safety stop: checks, causes, API and the motion latch |
 | [DEVELOPMENT.md](DEVELOPMENT.md)                 | How to build, flash, add a task, and the conventions application code follows                    |

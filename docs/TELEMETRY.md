@@ -86,6 +86,24 @@ The task and the message buffer are built only with `NET=lwip MQTT=1` ([DEVELOPM
 
 The service connects once the Wi-Fi link is up. When an attempt fails or the connection drops it tries again 3 s later, from one timer. `APP_FAULT_WIFI` is set from start-up until the broker accepts the connection, and again while it is lost. A connection the broker closes is noticed at once; one that goes silent, such as the car leaving Wi-Fi range, is noticed by the MQTT keep-alive after about 90 s. Nothing in the car reacts to the fault: the car drives the same with or without the supervisor. Messages queued while the broker is away are not kept beyond the buffer, so at most about three cycles of old messages are published after a reconnect.
 
+## Supervisor dashboard
+
+`testing/subsystem1/host/dashboard.py` subscribes to `csc13/#`, decodes each payload with `payloads.py`, and serves a local page (`dashboard.html`) with the latest values of each topic, their age, and START, STOP and RESET buttons that publish the `cmd` byte. It needs Python 3.9 or later and a broker both it and the car can reach, such as Mosquitto on the laptop:
+
+```sh
+pip install -r testing/subsystem1/host/requirements.txt
+python3 testing/subsystem1/host/dashboard.py --broker <broker IP>
+```
+
+Mosquitto 2 accepts only clients on its own machine unless its configuration file names a listener. For the car, start it as `mosquitto -c <file>` with these two lines in the file, and put the laptop's address in `MQTT_BROKER_IP` of `config/wifi_secrets.h`:
+
+```
+listener 1883
+allow_anonymous true
+```
+
+Then open <http://127.0.0.1:8000>. `--broker` defaults to `127.0.0.1`, `--broker-port` to 1883 and `--port` (the page) to 8000. The telemetry state and faults are shown by name; every other field is the number sent. A periodic topic is greyed out once it is 2 s old.
+
 ## Size
 
 S1-U01 (`testing/subsystem1/`) measures every payload against the same data as Week 6 JSON.

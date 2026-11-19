@@ -25,5 +25,8 @@ config/wifi_secrets.h
 # macOS
 .DS_Store
 
+# Python bytecode from the host tools
+__pycache__/
+
 # Pico SDK (cloned by the Dev Container)
 .pico-sdk/

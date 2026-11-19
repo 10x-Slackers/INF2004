@@ -11,7 +11,7 @@
 #include "../subsystem2/motion_control.h"
 #include "../subsystem3/line_following.h"
 
-#define OBSTACLE_AVOIDANCE_POLL_MS  20u    /* Two kernel ticks. */
+#define OBSTACLE_AVOIDANCE_POLL_MS  20u    /* Plus a tick: tk_dly_tsk(). */
 #define OBSTACLE_AVOIDANCE_STILL_MS 1000u  /* Braking to standstill. */
 #define OBSTACLE_AVOIDANCE_SCAN_MS  12000u /* Longest profile scan. */
 #define OBSTACLE_AVOIDANCE_MOVE_MS  10000u
@@ -46,6 +46,7 @@ static bool obstacle_avoidance_running(uint32_t state);
 static void obstacle_avoidance_set(uint32_t state, uint32_t step);
 static void obstacle_avoidance_stop(uint32_t fault);
 static bool obstacle_avoidance_active(void);
+static uint32_t obstacle_avoidance_ms(void);
 static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan);
 static bool obstacle_avoidance_still(void);
 static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm);
@@ -220,6 +221,18 @@ static bool obstacle_avoidance_active(void)
 }
 
 /*!
+ * @brief Milliseconds on the kernel clock, for timeouts: counting polls
+ * would add a tick to each, as tk_dly_tsk() does.
+ */
+static uint32_t obstacle_avoidance_ms(void)
+{
+    SYSTIM now = {0};
+
+    (void)tk_get_otm(&now);
+    return now.lo; /* Wraps; compare differences. */
+}
+
+/*!
  * @brief Request a scan and wait for its result. A missing echo or result
  * is a safe stop.
  *
@@ -228,15 +241,14 @@ static bool obstacle_avoidance_active(void)
 static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan)
 {
     uint32_t const request = ultrasonic_scan_request(mode);
-    uint32_t waited = 0u;
+    uint32_t const start_ms = obstacle_avoidance_ms();
 
     ultrasonic_scan_get(p_scan);
     /* An older scan may finish first; only the one for this request counts. */
     while ((obstacle_avoidance_active()) && (request != p_scan->request) &&
-           (waited < OBSTACLE_AVOIDANCE_SCAN_MS))
+           ((obstacle_avoidance_ms() - start_ms) < OBSTACLE_AVOIDANCE_SCAN_MS))
     {
         tk_dly_tsk(OBSTACLE_AVOIDANCE_POLL_MS);
-        waited += OBSTACLE_AVOIDANCE_POLL_MS;
         ultrasonic_scan_get(p_scan);
     }
     if ((obstacle_avoidance_active()) &&
@@ -256,15 +268,15 @@ static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan)
 static bool obstacle_avoidance_still(void)
 {
     motion_control_status_t status = {0};
-    uint32_t waited = 0u;
+    uint32_t const start_ms = obstacle_avoidance_ms();
 
     do
     {
         tk_dly_tsk(OBSTACLE_AVOIDANCE_POLL_MS);
-        waited += OBSTACLE_AVOIDANCE_POLL_MS;
         motion_control_get_status(&status);
-    } while (((0 != status.left_speed) || (0 != status.right_speed)) &&
-             (waited < OBSTACLE_AVOIDANCE_STILL_MS));
+    } while (
+        ((0 != status.left_speed) || (0 != status.right_speed)) &&
+        ((obstacle_avoidance_ms() - start_ms) < OBSTACLE_AVOIDANCE_STILL_MS));
     return (0 == status.left_speed) && (0 == status.right_speed);
 }
 
@@ -279,8 +291,7 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
 {
     motion_control_status_t status = {0};
     ultrasonic_scan_t scan = {0};
-    SYSTIM start = {0};
-    SYSTIM now = {0};
+    uint32_t start_ms = 0u;
 
     /* Under the lock, so a cancel cannot slip in before the command. */
     (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
@@ -303,7 +314,7 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
     }
     (void)tk_unl_mtx(gh_mutex);
 
-    (void)tk_get_otm(&start);
+    start_ms = obstacle_avoidance_ms();
     do
     {
         if (0 != turn_deg)
@@ -320,10 +331,10 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
             /* Clear ahead, or already stopped by the scan. */
         }
         motion_control_get_status(&status);
-        (void)tk_get_otm(&now);
-    } while ((obstacle_avoidance_active()) &&
-             (MOTION_CONTROL_RUNNING == status.state) &&
-             ((now.lo - start.lo) < OBSTACLE_AVOIDANCE_MOVE_MS));
+    } while (
+        (obstacle_avoidance_active()) &&
+        (MOTION_CONTROL_RUNNING == status.state) &&
+        ((obstacle_avoidance_ms() - start_ms) < OBSTACLE_AVOIDANCE_MOVE_MS));
     if ((obstacle_avoidance_active()) &&
         (MOTION_CONTROL_COMPLETE != status.state))
     {

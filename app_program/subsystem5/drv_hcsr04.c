@@ -17,7 +17,7 @@
 #define DRV_HCSR04_CYCLE_US 60000u /* Datasheet: 60 ms between triggers. */
 #define DRV_HCSR04_ECHO_MS  50     /* With no target ECHO is high ~38 ms, */
 #define DRV_HCSR04_BUSY_MS  250u   /* ...on some modules much longer. */
-#define DRV_HCSR04_POLL_MS  10u    /* One kernel tick. */
+#define DRV_HCSR04_POLL_MS  10u    /* Plus a tick: tk_dly_tsk(). */
 
 /* Written by the edge callback, read after it wakes the task. */
 static volatile uint32_t g_rise_us;
@@ -54,15 +54,14 @@ bool drv_hcsr04_init(void)
  */
 bool drv_hcsr04_measure(uint32_t * p_mm)
 {
-    uint32_t start_us = 0u;
-    uint32_t waited = 0u;
+    uint32_t start_us = in_w(TIMER_TIMERAWL);
 
+    /* Timed on TIMER: counting polls would add a tick to each. */
     while (((in_w(TIMER_TIMERAWL) - g_trigger_us) < DRV_HCSR04_CYCLE_US) ||
            ((0u != gpio_get_val(DRV_HCSR04_ECHO)) &&
-            (waited < DRV_HCSR04_BUSY_MS)))
+            ((in_w(TIMER_TIMERAWL) - start_us) < (DRV_HCSR04_BUSY_MS * 1000u))))
     {
         tk_dly_tsk(DRV_HCSR04_POLL_MS);
-        waited += DRV_HCSR04_POLL_MS;
     }
     gb_rose = false;
     gb_fell = false;

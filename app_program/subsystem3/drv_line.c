@@ -10,9 +10,7 @@
 
 #define DRV_LINE_LEFT_PIN  7u
 #define DRV_LINE_RIGHT_PIN 6u
-#define DRV_LINE_BLACK                                                         \
-    1u /* DO level over black. TODO: confirm on the track.                     \
-        */
+#define DRV_LINE_BLACK     1u /* DO level over black. */
 
 /*!
  * @brief Set both DO pins as inputs.

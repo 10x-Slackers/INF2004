@@ -30,11 +30,17 @@
 #define APP_FAULT_WIFI (1u << 9) /* Wi-Fi or MQTT lost. */
 /* S4, cleared once Z settles. */
 #define APP_FAULT_LIFTED (1u << 10) /* Lifted quickly. */
+/* Sensor failures: S4, S3, reserved, S3. */
+#define APP_FAULT_IMU_SENSOR     (1u << 11) /* GY-511 not reading. */
+#define APP_FAULT_LINE_SENSOR    (1u << 12) /* A line sensor stuck on black. */
+#define APP_FAULT_DIRECTION      (1u << 13) /* Reserved. */
+#define APP_FAULT_BARCODE_SENSOR (1u << 14) /* Barcode ADC samples stopped. */
 
 #define APP_FAULT_MOTION                                                       \
     (APP_FAULT_STALL_LEFT | APP_FAULT_STALL_RIGHT | APP_FAULT_ENCODER)
 #define APP_FAULT_IMU                                                          \
-    (APP_FAULT_UPSIDE_DOWN | APP_FAULT_TILT | APP_FAULT_LIFTED)
+    (APP_FAULT_UPSIDE_DOWN | APP_FAULT_TILT | APP_FAULT_LIFTED |               \
+     APP_FAULT_IMU_SENSOR)
 #define APP_FAULT_AVOID                                                        \
     (APP_FAULT_AVOID_SENSOR | APP_FAULT_AVOID_BLOCKED | APP_FAULT_AVOID_MOTION)
 

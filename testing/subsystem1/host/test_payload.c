@@ -32,7 +32,7 @@ int main(void)
 {
     static const uint8_t telemetry_bytes[PAYLOAD_TELEMETRY_BYTES] = {
         0xbbu, 0x93u, 0x3cu, 0x20u, 0x7cu, 0xaau,
-        0xb2u, 0x9fu, 0xa0u, 0xc0u, 0x00u};
+        0xb2u, 0x9fu, 0xa0u, 0x90u, 0x02u};
     static const uint8_t scan_bytes[PAYLOAD_SCAN_BYTES] = {
         0x83u, 0x48u, 0x78u, 0x28u, 0x7cu, 0x8fu, 0xa0u, 0x80u, 0x20u};
     const payload_telemetry_t telemetry = {.state = 5u,
@@ -52,7 +52,7 @@ int main(void)
                                            .avoid_side = 2u,
                                            .bypasses = 9u,
                                            .forward_mm = 4000u,
-                                           .faults = 0x600u};
+                                           .faults = 0x4801u};
     const scan_profile_t profile = {.closest_mm = 2100u,
                                     .closest_deg = 135u,
                                     .right_deg = 130u,

@@ -15,11 +15,11 @@ Application data uses only the bits its valid range needs (change requirement "M
 
 | Subsystem | Field | Valid range | Bits | Representation | Shared with |
 | --- | --- | --- | --- | --- | --- |
-| Shared | Fault bitmask: one bit per fault of S1, S2, S4 and S5 (`APP_FAULT_...` in `app_fault.h`) | One bit each | 11 | Kernel event flag pattern, read with `app_faults()` | Every task and ISR: `tk_set_flg` and `tk_clr_flg` are atomic across both cores, and each owner changes only its own bits |
+| Shared | Fault bitmask: one bit per fault of S1 to S5 (`APP_FAULT_...` in `app_fault.h`) | One bit each | 15 | Kernel event flag pattern, read with `app_faults()` | Every task and ISR: `tk_set_flg` and `tk_clr_flg` are atomic across both cores, and each owner changes only its own bits |
 | 4 | `s4_accel_t.x`, `.y`, `.z`: latest acceleration per axis | −2048 to 2047 mg (sensor's 12-bit output at ±2 g) | 12 each | `signed int` bit-field | Readers copy it with `s4_get_accel()`, under mutex `gh_s4_mutex` |
 | 4 | `s4_accel_t.count`: readings taken | 0 to 255, wraps | 8 | `unsigned int` bit-field | As above |
 | 4 | `s4_tilt_t.pitch`, `.roll`: tilt from the start surface | −900 to 900 (0.1 degree) | 11 each | `signed int` bit-field | Readers copy it with `s4_get_tilt()`, under mutex `gh_s4_mutex` |
-| 4 | `s4_tilt_t.cal`: start-up calibration done | 0 or 1 | 1 | `unsigned int` bit-field | As above |
+| 4 | `s4_tilt_t.cal`: calibration done | 0 or 1 | 1 | `unsigned int` bit-field | As above |
 | 4 | `s4_hump_t.peak`, `.max`: last hump peak and highest of the run | 0 to 63 mm | 6 each | `unsigned int` bit-field | Readers copy it with `s4_get_hump()`, under mutex `gh_s4_mutex` |
 | 4 | `s4_hump_t.count`: humps seen | 0 to 15, wraps | 4 | `unsigned int` bit-field | As above |
 | 4 | `s4_hump_t.on`: right wheel on a hump now | 0 or 1 | 1 | `unsigned int` bit-field | As above |
@@ -93,17 +93,19 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 4 | `g_imu.sum_x`, `.sum_y`, `.sum_z`: calibration sums | ±409 600 mg (200 readings) | 20 each | `signed int` bit-field | IMU task only |
 | 4 | `g_imu.offset_x`, `.offset_y`, `.offset_z`: calibration offsets | −2048 to 2047 mg; z less 1 g: −3048 to 1047 mg | 12, 12, 13 | `signed int` bit-field | IMU task only |
 | 4 | `g_imu.smooth_x`, `.smooth_y`, `.avg_y`: low-pass filters (8 × mg) and slow average of y (256 × mg) | ±32 767; ±1 048 575 | 17 each; 22 | `signed int` bit-field | IMU task only |
-| 4 | `g_imu.pushed_count`, `.tilted_count`, `.upside_count`, `.lift_count`, `.high_count`: samples in a row | 0 to 63, stops at 63 (longest threshold 50) | 6 each | `unsigned int` bit-field | IMU task only |
+| 4 | `g_imu.pushed_count`, `.tilted_count`, `.upside_count`, `.lift_count`, `.high_count`, `.fail_count`, `.same_count`: samples in a row | 0 to 63, stops at 63 (longest threshold 50) | 6 each | `unsigned int` bit-field | IMU task only |
 | 4 | `g_imu.peak_mm`, `.print_count`, `.beep_left`: top of the current hump, print divider, samples until the buzzer stops | 0 to 466 mm; 0 to 9; 0 to 100 | 9; 4; 7 | `unsigned int` bit-field | IMU task only |
-| 4 | `g_imu.faults`, `.push_class`, `.b_descending`: latched IMU fault bits, motion class from the forward push, past the hump's top | Fault bitmask; 0 to 4; 0 or 1 | 11; 3; 1 | `unsigned int` bit-field | IMU task only |
+| 4 | `g_imu.faults`, `.push_class`, `.b_descending`: latched IMU fault bits, motion class from the forward push, past the hump's top | Fault bitmask up to bit 11; 0 to 4; 0 or 1 | 12; 3; 1 | `unsigned int` bit-field | IMU task only |
+| 4 | `g_imu.last_x`, `.last_y`, `.last_z`: the reading before, to tell a frozen sensor | −2048 to 2047 mg | 12 each | `signed int` bit-field | IMU task only |
+| 4 | `gb_reset`: a Reset asked the IMU task to start again | 0 or 1 | 1 | `volatile bool`, the smallest type; these loads and stores are atomic | `s4_reset_sensor()` sets it on the caller's task, the IMU task clears it, no lock |
 | Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `volatile unsigned int` bit-field | Controller task writes; telemetry reads it with `vehicle_controller_state()`, one load, no lock |
 | Shared | `g_vc.cycles`: 10 ms cycles since the state or junction move began | 0 to 1023, wraps (only TURN reads it, below 502) | 10 | As above | Controller task only |
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
 | Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | Controller task only |
 | Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | `bool` bit-field | Controller task only |
-| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 83, 92, 68, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
+| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 87, 92, 68, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
 | 1 | Message buffer entry (topic number + payload) and command event flag: [TELEMETRY.md](TELEMETRY.md#inside-the-car) | Topic 0 to 3; commands one bit each | 8 + payload; 3 | `uint8_t` topic, the smallest unit of a message; event flag bits, set and clear atomic | Telemetry task → Wi-Fi service, both `TMO_POL`; Wi-Fi service → Vehicle Controller |
-| 1 | `payload_telemetry_t`: the telemetry fields gathered for packing | Per field, as sent | 83 | `unsigned int` and `signed int` bit-fields | Telemetry task only |
+| 1 | `payload_telemetry_t`: the telemetry fields gathered for packing | Per field, as sent | 87 | `unsigned int` and `signed int` bit-fields | Telemetry task only |
 | 1 | Telemetry task: heartbeat count; cycles since the last heartbeat | 0 to 65535, wraps; 0 to 4 | 16; 3 | `uint16_t`, the payload's own width; `uint8_t`, the smallest standard type | Telemetry task only |
 
 ## Evidence

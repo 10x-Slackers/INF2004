@@ -20,7 +20,7 @@ Events (barcode read, hump measured, bypass done, state change) need no topic of
 
 Each payload is one bit stream, most significant bit first, padded with zero bits to whole bytes, as in `motion_control_pack()`. A signed field is sent as value + offset so it is never negative. `tools/supervisor/payloads.py` packs and unpacks every payload and is the reference decoder.
 
-### `telemetry`: 83 bits
+### `telemetry`: 87 bits
 
 Each field's range is in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#fields).
 
@@ -43,7 +43,7 @@ Each field's range is in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#fields)
 | 54–55 | `avoid_side` | `obstacle_avoidance_status_t.side`: 0 none, 1 left, 2 right |
 | 56–59 | `bypasses` | `obstacle_avoidance_status_t.bypasses` |
 | 60–71 | `forward_mm` | `ultrasonic_scan_t.forward_mm` |
-| 72–82 | `faults` | `app_faults()`: the shared fault bitmask, `APP_FAULT_...` in `app_fault.h` |
+| 72–86 | `faults` | `app_faults()`: the shared fault bitmask, `APP_FAULT_...` in `app_fault.h` |
 
 ### `scan`: 68 bits
 

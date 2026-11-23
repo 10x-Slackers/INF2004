@@ -66,6 +66,10 @@ static struct
     unsigned int odometer : 30; /* |left| + |right| edges, wraps. */
 } g_run;
 
+#if (MOTION_STALL_TICKS > 63u)
+#error "g_run.left_stall and .right_stall are too narrow"
+#endif
+
 static struct
 {
     signed int integral : 16;

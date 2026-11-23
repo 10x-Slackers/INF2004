@@ -17,7 +17,6 @@ typedef int32_t TMO;
 typedef uint32_t UW;
 typedef uint32_t RELTIM;
 typedef int32_t PRI;
-typedef uint8_t UB;
 typedef void (*FP)(void);
 
 typedef struct

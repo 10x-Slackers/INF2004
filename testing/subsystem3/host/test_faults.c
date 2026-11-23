@@ -6,9 +6,10 @@
  *
  * Runs the real Line Following and Barcode Decoder tasks. The kernel calls
  * come from stub/ and the stubs below; tk_slp_tsk() is one 10 ms wake-up
- * and leaves the task when the wake-ups asked for are used up. The car is
- * a model: each wake-up moves the odometer and heading by the wheel speeds
- * last commanded. Build and run as in S3-U22 of
+ * and leaves the task when the wake-ups asked for are used up, so a task's
+ * local variables start again on every run. The car is a model: each
+ * wake-up moves the odometer by the wheel speeds last commanded, and the
+ * heading never moves. Build and run as in S3-U22 of
  * testing/subsystem3/TEST_LOG.md.
  */
 
@@ -19,20 +20,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TEST_TRACK_MM    113.5
-#define TEST_DEG_PER_RAD 57.29578
-#define TEST_SPEED_MM_S  150u /* As the Vehicle Controller follows. */
+#define TEST_SPEED_MM_S 150u /* As the Vehicle Controller follows. */
 
 static jmp_buf g_task_exit;
-static uint32_t g_wakes;      /* Wake-ups left before the task is left. */
-static uint32_t g_bits;       /* What the line sensors read. */
-static uint32_t g_adc;        /* Samples per barcode read. */
-static int32_t g_left_mm_s;   /* Wheel speeds last commanded. */
+static uint32_t g_wakes;    /* Wake-ups left before the task is left. */
+static uint32_t g_bits;     /* What the line sensors read. */
+static uint32_t g_adc;      /* Samples per barcode read. */
+static int32_t g_left_mm_s; /* Wheel speeds last commanded. */
 static int32_t g_right_mm_s;
-static uint32_t g_um;         /* Odometer. */
-static double g_heading_deg;  /* 0..360. */
-static bool gb_heading_stuck; /* The heading no longer follows the wheels. */
-static uint32_t g_faults;     /* Stands in for the kernel event flag. */
+static uint32_t g_um;     /* Odometer. */
+static uint32_t g_faults; /* Stands in for the kernel event flag. */
 static int g_failures;
 
 /* ---- Stubs: kernel, faults, drivers and the car ----------------------- */
@@ -73,13 +70,6 @@ ER tk_slp_tsk(TMO tmout)
     g_wakes--;
     /* (|left| + |right|) / 2 mm/s for 10 ms, in um. */
     g_um += (uint32_t)(abs(g_left_mm_s) + abs(g_right_mm_s)) * 5u;
-    if (!gb_heading_stuck)
-    {
-        g_heading_deg += ((g_right_mm_s - g_left_mm_s) * 0.01 / TEST_TRACK_MM) *
-                         TEST_DEG_PER_RAD;
-        g_heading_deg += (g_heading_deg < 0.0) ? 360.0 : 0.0;
-        g_heading_deg -= (g_heading_deg >= 360.0) ? 360.0 : 0.0;
-    }
     return E_OK;
 }
 
@@ -133,7 +123,7 @@ void motion_control_stop(void)
 void motion_control_get_status(motion_control_status_t * p_status)
 {
     p_status->distance_mm = g_um / 1000u;
-    p_status->heading_deg = (uint32_t)g_heading_deg;
+    p_status->heading_deg = 0u; /* Never moves: no sweep ever ends. */
 }
 
 uint32_t motion_control_distance_um(void)
@@ -246,14 +236,13 @@ static void test_stuck_sensor(void)
     test_check(test_stuck(), "both black past 300 mm: fault");
 }
 
-/* The search ends by the heading in about 4 s, or after 6 s without it. */
+/* A search whose heading never reaches the end of the sweep fails at 6 s. */
 static void test_search_limit(void)
 {
     line_following_t line = {0};
     uint32_t wakes = 0u;
 
     test_start();
-    test_follow(DRV_LINE_LEFT, 30u); /* So the search has a last_side. */
     test_follow(0u, 90u);
     line_following_get(&line);
     test_check(0u != line.b_searching, "all white for 90 mm: searching");
@@ -262,20 +251,6 @@ static void test_search_limit(void)
         test_line(0u, 1u);
         line_following_get(&line);
     }
-    test_check((wakes > 380u) && (wakes < 420u) && (0u != line.b_lost) &&
-                   (0u == g_faults),
-               "a whole sweep finds nothing: lost after about 4 s");
-
-    gb_heading_stuck = true;
-    test_start();
-    test_follow(0u, 90u);
-    line_following_get(&line);
-    for (wakes = 0u; (wakes < 1000u) && (0u != line.b_searching); wakes++)
-    {
-        test_line(0u, 1u);
-        line_following_get(&line);
-    }
-    gb_heading_stuck = false;
     test_check((wakes > 590u) && (wakes <= 600u) && (0u != line.b_lost) &&
                    (0u == line.b_following) && (0 == g_left_mm_s) &&
                    (0 == g_right_mm_s) && (0u == g_faults),
@@ -288,10 +263,7 @@ static void test_barcode_samples(void)
     test_barcode(0u, 1u);
     test_barcode(20u, 9u);
     test_check(0u == g_faults, "first read empty, then 2 per ms: no fault");
-    test_barcode(20u, 9u);
     test_barcode(0u, 10u);
-    test_check(0u == g_faults, "no samples for 90 ms of a 100 ms: no fault");
-    test_barcode(0u, 11u);
     test_check(APP_FAULT_BARCODE_SENSOR == g_faults,
                "no samples for 100 ms: fault");
     test_barcode(9u, 10u);

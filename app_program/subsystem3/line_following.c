@@ -154,24 +154,21 @@ void line_following_task(INT stacd, void * p_exinf)
 
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_line.bits = bits;
-        /* All white, or the other sensor alone: no sensor has stayed black.
-         * Both black (a junction) keeps the run of the one black before. */
+        /* All white, or the other sensor alone (last_side is still the
+         * sample before's): no sensor has stayed black. Both black (a
+         * junction) keeps the run of the one black before. */
         if ((!g_line.b_following) || (0u == bits) ||
             ((LINE_FOLLOWING_BOTH != bits) && (bits != g_line.last_side)))
         {
             g_search.black_mm = motion.distance_mm;
         }
-        else if (((motion.distance_mm - g_search.black_mm) &
-                  MOTION_CONTROL_DISTANCE_MASK) > LINE_FOLLOWING_STUCK_MM)
+        if (((motion.distance_mm - g_search.black_mm) &
+             MOTION_CONTROL_DISTANCE_MASK) > LINE_FOLLOWING_STUCK_MM)
         {
             g_line.b_following = false; /* Stuck: stop as for a lost line. */
             g_line.b_lost = true;
             motion_control_stop();
             app_fault_set(APP_FAULT_LINE_SENSOR);
-        }
-        else
-        {
-            /* A sensor on the line. */
         }
         if ((DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits))
         {

@@ -57,9 +57,8 @@ static struct
     unsigned int wakes : 4;    /* Wake-ups so far, 0..BARCODE_CHECK_WAKES. */
     unsigned int samples : 12; /* Samples in them, up to 10 rings (2550). */
 } g_check;
-#if (BARCODE_CHECK_WAKES > 15u) ||                                             \
-    ((BARCODE_CHECK_WAKES * (DRV_BARCODE_RING - 1u)) > 4095u)
-#error "g_check.wakes or g_check.samples is too narrow"
+#if BARCODE_CHECK_WAKES > 15u /* 15 reads of under a ring also fit samples. */
+#error "g_check.wakes is too narrow"
 #endif
 
 static void barcode_decoder_sample(uint32_t level, uint32_t pos,

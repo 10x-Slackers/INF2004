@@ -1,7 +1,8 @@
 /** @file test_imu.c
  *
- * @brief Host test of task_imu.c: calibration, humps, tilt and the
- * upside-down fault that ends a demo run, fed with synthetic samples.
+ * @brief Host test of task_imu.c: calibration, humps, tilt, the
+ * upside-down fault that ends a demo run and the sensor fault, fed with
+ * synthetic samples.
  *
  * Includes task_imu.c itself to reach its private sample functions. The
  * kernel, console and board calls come from stub/ and the stubs below.
@@ -17,6 +18,8 @@
 #define TEST_PI       3.14159265358979
 #define TEST_G_MG     1000
 #define TEST_UPSIDE_N (S4_UPSIDE_MS / S4_IMU_MS) /* Samples to latch. */
+#define TEST_FAIL_N   (S4_FAIL_MS / S4_IMU_MS)
+#define TEST_FROZEN_N (S4_FROZEN_MS / S4_IMU_MS)
 
 ID gh_s4_mutex;
 static uint32_t g_faults; /* Stands in for the kernel event flag. */
@@ -148,14 +151,26 @@ static void test_reset(void)
     }
 }
 
-/* Feed n identical samples. */
+/* Feed n samples as good reads, every other one 1 mg lower on Z: a real
+ * sensor's noise, without which the reading would count as frozen. */
 static void test_feed(int32_t x_mg, int32_t y_mg, int32_t z_mg, int n)
 {
     int i;
 
     for (i = 0; i < n; i++)
     {
-        imu_sample(x_mg, y_mg, z_mg);
+        imu_step(true, x_mg, y_mg, z_mg - (i & 1));
+    }
+}
+
+/* n wake-ups in a row: failed reads, or the same good reading. */
+static void test_steps(bool b_ready, int n)
+{
+    int i;
+
+    for (i = 0; i < n; i++)
+    {
+        imu_step(b_ready, 0, 0, TEST_G_MG);
     }
 }
 
@@ -306,6 +321,42 @@ int main(void)
     test_feed(0, 0, TEST_G_MG, 100);
     test_check((0u == g_hump.count) && (0u == g_hump.max),
                "lifted mid-tilt, then righted: no hump recorded");
+
+    /* Sensor unplugged: 4 failed reads, a good one, 4 more, then a 5th in
+     * a row (50 ms). The fault stays when the reads work again, and the
+     * beep ends though no sample arrives to time it. */
+    test_reset();
+    test_steps(false, TEST_FAIL_N - 1);
+    test_feed(0, 0, TEST_G_MG, 1);
+    test_steps(false, TEST_FAIL_N - 1);
+    b_early = (0u != g_faults);
+    test_steps(false, 1);
+    test_check((!b_early) && (APP_FAULT_IMU_SENSOR == g_faults),
+               "5 failed reads in a row: sensor fault, not at 4 + 4");
+    test_steps(false, S4_ALARM_MS / S4_IMU_MS);
+    test_check(0 == g_imu.beep_left, "reads still failing: the beep ends");
+    test_feed(0, 0, TEST_G_MG, 100);
+    test_check(APP_FAULT_IMU_SENSOR == g_faults,
+               "sensor fault stays latched once the reads work again");
+
+    /* Reset with the sensor still out: faults again, never calibrates. */
+    memset(&g_imu, 0, sizeof(g_imu));
+    g_faults = 0u;
+    test_steps(false, TEST_FAIL_N);
+    test_check((APP_FAULT_IMU_SENSOR == g_faults) && (0 == g_imu.cal_count),
+               "no sensor at power-on: sensor fault, not calibrated");
+
+    /* Frozen: the first reading, 49 unchanged, 1 mg on one axis, then 49
+     * unchanged again and a 50th (500 ms). */
+    test_reset();
+    test_steps(true, TEST_FROZEN_N);
+    imu_step(true, 1, 0, TEST_G_MG);
+    imu_step(true, 0, 0, TEST_G_MG);
+    test_steps(true, TEST_FROZEN_N - 1);
+    b_early = (0u != g_faults);
+    test_steps(true, 1);
+    test_check((!b_early) && (APP_FAULT_IMU_SENSOR == g_faults),
+               "50 unchanged readings in a row: sensor fault, not at 49 + 49");
 
     printf("%s: %d failure(s)\n", (0 == g_failures) ? "ALL PASS" : "FAILED",
            g_failures);

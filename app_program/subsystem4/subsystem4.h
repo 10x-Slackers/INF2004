@@ -46,6 +46,8 @@
 #define S4_UPSIDE_MS 200 /* Z below 0 mg this long: upside down. */
 #define S4_LIFT_MG   300 /* Z this far above 1 g... */
 #define S4_LIFT_MS   50  /* ...this long: lifted (quick lifts only). */
+#define S4_FAIL_MS   50  /* Reads failing this long: sensor fault... */
+#define S4_FROZEN_MS 500 /* ...or no axis changing for this long. */
 
 /* Largest values the packed fields below hold. */
 #define S4_AXIS_MAX_MG 2047

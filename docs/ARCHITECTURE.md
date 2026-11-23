@@ -36,7 +36,7 @@ Changing one means updating this document.
 | P5  | 10       | Vehicle Controller              | Mission state machine, GP20 button, junction turns                          | Every 10 ms                          | All   |
 | P6  | 11       | Obstacle Avoidance              | Watch the range ahead, profile the obstacle, drive the bypass               | While started, ≥ 20 ms between steps | 5     |
 | P7  | 12       | Ultrasonic Scan                 | Drive the servo and HC-SR04 through a forward reading or a profile scan     | On request                           | 5     |
-| P8  | 18       | IMU and Terrain Monitor         | Pitch, roll, motion class, hump height, tilt / upside-down / lifted faults  | Every 10 ms                          | 4     |
+| P8  | 18       | IMU and Terrain Monitor         | Pitch, roll, motion class, hump height, tilt / upside-down / lifted / sensor faults | Every 10 ms                          | 4     |
 | P10 | 20       | Wi-Fi and MQTT Telemetry        | Telemetry and heartbeat                                                     | Every 200 ms                         | 1     |
 | ISR | –        | GPIO interrupt (`app_main.c`)   | Count encoder edges; time the HC-SR04 echo                                  | GPIO edge                            | 2, 5  |
 
@@ -118,7 +118,7 @@ Not drawn: the Telemetry task reads every task's status for its payloads ([Telem
 | I6  | Vehicle Controller ↔ Obstacle Avoidance                           | Start / cancel one way; state, bypass side and step, clearances the other                  |
 | I7  | Obstacle Avoidance → Ultrasonic Scan                              | Scan request: `FORWARD` (one reading ahead) or `PROFILE` (coarse then fine sweep)          |
 | I8  | Ultrasonic Scan → Obstacle Avoidance                              | Forward range and its time, obstacle profile                                               |
-| I9  | IMU and Terrain Monitor → Vehicle Controller                      | Calibration done, highest hump of the run; tilt, upside-down and lifted faults as fault bits |
+| I9  | IMU and Terrain Monitor → Vehicle Controller                      | Calibration done, highest hump of the run; tilt, upside-down, lifted and sensor faults as fault bits |
 | I11 | Vehicle Controller → Safety Monitor → Wheel Motion Control        | Stop with a cause, clear; the motion latch, which refuses every command while set          |
 | I12 | Wi-Fi service → Vehicle Controller; Telemetry → Wi-Fi service     | `START` / `STOP` / `RESET` from the supervisor; telemetry, scan, motion and heartbeat to it |
 
@@ -223,20 +223,21 @@ stateDiagram-v2
     LevelMonitoring --> OnHump: right wheel height reaches the start threshold
     OnHump --> LogAndReport: height back below the end threshold
     LogAndReport --> LevelMonitoring: peak logged
-    OnHump --> TiltUpsideDownFault: excessive tilt / upside down / lifted
+    OnHump --> TiltUpsideDownFault: excessive tilt / upside down / lifted / sensor fault
     TiltUpsideDownFault --> SafeStop: emergency event
     SafeStop --> LevelMonitoring: fault cleared / reset
 ```
 
-Excessive tilt, being upside down and being lifted are checked in every monitoring state, not only the one drawn.
+Excessive tilt, being upside down, being lifted and the sensor fault are checked in every monitoring state, not only the one drawn.
 
 - **Level Monitoring** calibrates the start-surface baseline, then tracks filtered pitch, roll and acceleration.
 - Humps pass under the right wheel only; the left side carries the barcode sensors. The car rests on three points (two drive wheels and a caster), so it tips about the line from the left wheel to the caster, and the right wheel's height is the track width × sin(roll). No encoder travel is needed (FR5).
 - **On Hump** tracks the highest height until the wheel is back on flat ground.
 - **Log and Report** raises the highest hump of the run if this one was higher. Telemetry and the Vehicle Controller's safe stop read it; it resets at each Start.
 - The task also publishes one current motion class, highest first: climbing or descending a hump, accelerating or braking, steady. Steady covers both parked and cruising: the accelerometer cannot tell them apart.
-- Excessive tilt is pitch or roll beyond 25° for 500 ms. Upside down is calibrated Z below 0 mg (over 90° from the start surface) for 200 ms: lifting the car and turning it over ends a demo run, however fast it is lifted. Tilt alone cannot see this, as pitch and roll come from X and Y and read near 0 again once the car is fully inverted. Driving never takes Z below 0: that needs a 1 g downward push held for 200 ms. While any IMU fault (tilt, upside down or lifted) is set, a hump in progress is dropped and none are tracked, so picking the car up and turning it over at the end of a run is not measured as a hump. Both latch, and the Safety Monitor stops the motors.
+- Excessive tilt is pitch or roll beyond 25° for 500 ms. Upside down is calibrated Z below 0 mg (over 90° from the start surface) for 200 ms: lifting the car and turning it over ends a demo run, however fast it is lifted. Tilt alone cannot see this, as pitch and roll come from X and Y and read near 0 again once the car is fully inverted. Driving never takes Z below 0: that needs a 1 g downward push held for 200 ms. While any IMU fault (tilt, upside down, lifted or sensor) is set, a hump in progress is dropped and none are tracked, so picking the car up and turning it over at the end of a run is not measured as a hump. Both latch, and the Safety Monitor stops the motors.
 - Lifted is Z over 1.3 g for 50 ms, the push of a quick lift; knocks from humps and the ramp edge must stay shorter (S4-U24), and a slow lift is left to the upside-down check. It stops the motors too, but is not latched: it clears when Z has settled and its 1 s beep has ended, so a car picked up after calibration needs one Start/Stop press, not a reset. There is no impact detection: the course replaced collision detection with this lift stop.
+- The sensor fault is 5 failed reads in a row (50 ms: the GY-511 is unplugged, and without it none of the checks above can stop the car), or all three axes unchanged for 50 readings in a row (500 ms: it answers but has stopped sampling, as after a dip in its supply; a working one moves by a few mg even at rest). It latches until reset like tilt and upside down, and is checked from power-on, so a car reset with the sensor still out faults again and never calibrates.
 - A start threshold that must hold for a minimum time, above a lower end threshold, on low-pass filtered data, rejects vibration and jolts. Turning pushes sideways on the sensor and looks like roll, so cornering is the main source of false humps (A4).
 
 The GY-511 has no gyroscope, so everything here comes from the accelerometer.

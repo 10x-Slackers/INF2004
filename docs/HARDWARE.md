@@ -230,6 +230,8 @@ The design review asked for ±4 g. The firmware uses ±2 g (1 mg per LSB), so an
 
 On the car the module lies flat, chips up, with −Y pointing forward, +X to the left and +Z up (found by tilting the car). If Z sits at full scale (about 2040 mg) whatever the orientation while X and Y still work, the module is faulty: replace it. The firmware does not check for this, and start-up calibration accepts the stuck value.
 
+A dip in the module's supply resets `CTRL_REG1_A` to power-down while the module still answers on I2C, so its outputs stop changing. The IMU task flags that, and a module that does not answer, as a sensor fault ([ARCHITECTURE.md](ARCHITECTURE.md#imu-terrain-monitoring)).
+
 ### Magnetometer registers
 
 | Register                   | Address          | Purpose                                                       |

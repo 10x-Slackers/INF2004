@@ -21,11 +21,18 @@
  * fault prints a line and sounds the buzzer; the Safety Monitor then stops
  * the motors.
  *
+ * Sensor fault, latched until reset too: S4_FAIL_MS of failed reads in a
+ * row (the GY-511 is unplugged), or S4_FROZEN_MS of readings with no axis
+ * changed (it answers but has stopped sampling, as after a brown-out; a
+ * working one moves by a few mg even at rest). Checked from power-on, so a
+ * car reset with the sensor still out faults again before it calibrates.
+ *
  * Humps pass under the right wheel only, so its height is
  * track width x sin(roll). A hump starts when that height stays at
  * S4_HUMP_ON_MM or more for S4_HUMP_MIN_MS, which ignores jolts, and ends,
  * with its peak logged, when it falls below S4_HUMP_OFF_MM. None are tracked
- * while an IMU fault is set: the car is being handled, not driven.
+ * while an IMU fault is set: the car is being handled, not driven, or the
+ * readings cannot be trusted.
  */
 
 #include "subsystem4.h"
@@ -44,7 +51,9 @@
     ((S4_UPSIDE_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                           \
     ((S4_HUMP_MIN_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                         \
     ((S4_ACCEL_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                            \
-    ((S4_LIFT_MS / S4_IMU_MS) >= IMU_COUNT_MAX)
+    ((S4_LIFT_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                             \
+    ((S4_FAIL_MS / S4_IMU_MS) >= IMU_COUNT_MAX) ||                             \
+    ((S4_FROZEN_MS / S4_IMU_MS) >= IMU_COUNT_MAX)
 #error "A samples-in-a-row threshold needs more than 6 bits"
 #endif
 
@@ -77,9 +86,14 @@ static struct
     unsigned int peak_mm : 9;      /* Top of the current hump, 0..466 mm. */
     unsigned int print_count : 4;  /* 0..9. */
     unsigned int beep_left : 7;    /* Samples until the buzzer stops. */
-    unsigned int faults : 11;    /* Latched APP_FAULT_IMU bits (not lifted). */
+    unsigned int faults : 12;    /* Latched APP_FAULT_IMU bits (not lifted). */
     unsigned int push_class : 3; /* s4_motion_class_t. */
     unsigned int b_descending : 1; /* Past the top of the current hump. */
+    unsigned int fail_count : 6;   /* Reads in a row that failed, */
+    unsigned int same_count : 6;   /* that matched the one before. */
+    signed int last_x : 12;        /* The reading before: -2048..2047 mg. */
+    signed int last_y : 12;
+    signed int last_z : 12;
 } g_imu;
 
 /* One calibrated sample, passed from imu_sample() to imu_publish(). */
@@ -97,6 +111,7 @@ typedef struct
 static const char * const g_motion_name[] = {
     "steady", "accelerating", "braking", "climbing", "descending"};
 
+static void imu_step(bool b_ready, int32_t x_mg, int32_t y_mg, int32_t z_mg);
 static void imu_calibrate(int32_t x_mg, int32_t y_mg, int32_t z_mg);
 static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg);
 static void imu_push(int32_t y_mg);
@@ -158,7 +173,7 @@ void s4_get_motion(s4_motion_t * p_motion)
 }
 
 /*!
- * @brief IMU task: calibrate, then one sample per wake-up.
+ * @brief IMU task: one read per wake-up.
  */
 void s4_imu_task(INT stacd, void * p_exinf)
 {
@@ -184,18 +199,61 @@ void s4_imu_task(INT stacd, void * p_exinf)
             app_check(result, "drv_gy511_read"); /* Not 100 a second. */
         }
         b_ready = (result >= E_OK);
+        imu_step(b_ready, x_mg, y_mg, z_mg);
+    }
+}
 
-        if (b_ready && (g_imu.cal_count < S4_CAL_N))
+/*!
+ * @brief One wake-up: time the beep, latch a sensor fault if the reads keep
+ * failing or the reading has stopped changing, then calibrate or sample.
+ *
+ * @param[in] b_ready The read worked; if not, x, y and z are ignored.
+ */
+static void imu_step(bool b_ready, int32_t x_mg, int32_t y_mg, int32_t z_mg)
+{
+    bool const b_same = b_ready && (x_mg == g_imu.last_x) &&
+                        (y_mg == g_imu.last_y) && (z_mg == g_imu.last_z);
+
+    if (1 == g_imu.beep_left)
+    {
+        (void)pwm_set_enabled(S4_BUZZER_PIN, FALSE);
+    }
+    if (g_imu.beep_left > 0)
+    {
+        g_imu.beep_left--;
+    }
+
+    g_imu.fail_count = imu_count(g_imu.fail_count, !b_ready);
+    g_imu.same_count = imu_count(g_imu.same_count, b_same);
+    if (((g_imu.fail_count >= (S4_FAIL_MS / S4_IMU_MS)) ||
+         (g_imu.same_count >= (S4_FROZEN_MS / S4_IMU_MS))) &&
+        (0u == (g_imu.faults & APP_FAULT_IMU_SENSOR)))
+    {
+        g_imu.faults |= APP_FAULT_IMU_SENSOR; /* Latched. */
+        app_fault_set(APP_FAULT_IMU_SENSOR);
+        /* (UB *): tm_printf() takes unsigned chars. */
+        tm_printf((UB *)"[imu] FAULT: sensor %s\n",
+                  b_ready ? "frozen" : "not answering");
+        imu_beep_on();
+        g_imu.beep_left = S4_ALARM_MS / S4_IMU_MS;
+    }
+
+    if (!b_ready)
+    {
+        /* The read failed: skip this sample. */
+    }
+    else
+    {
+        g_imu.last_x = x_mg;
+        g_imu.last_y = y_mg;
+        g_imu.last_z = z_mg;
+        if (g_imu.cal_count < S4_CAL_N)
         {
             imu_calibrate(x_mg, y_mg, z_mg);
         }
-        else if (b_ready)
-        {
-            imu_sample(x_mg, y_mg, z_mg);
-        }
         else
         {
-            /* The read failed: skip this sample. */
+            imu_sample(x_mg, y_mg, z_mg);
         }
     }
 }
@@ -240,15 +298,6 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
 {
     imu_sample_t sample = {0};
 
-    if (1 == g_imu.beep_left)
-    {
-        (void)pwm_set_enabled(S4_BUZZER_PIN, FALSE);
-    }
-    if (g_imu.beep_left > 0)
-    {
-        g_imu.beep_left--;
-    }
-
     sample.x_mg = x_mg - g_imu.offset_x;
     sample.y_mg = y_mg - g_imu.offset_y;
     sample.z_mg = z_mg - g_imu.offset_z;
@@ -277,7 +326,7 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
         imu_count(g_imu.high_count, (sample.height_mm >= S4_HUMP_ON_MM));
     if (0u != (app_faults() & APP_FAULT_IMU))
     {
-        g_imu.high_count = 0; /* Picked up or turned over: not a hump. */
+        g_imu.high_count = 0; /* Handled, or no sensor: not a hump. */
         g_imu.peak_mm = 0;
     }
     if (((g_imu.high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||

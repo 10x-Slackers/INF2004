@@ -41,8 +41,9 @@ void safety_monitor_stop(uint32_t cause)
 }
 
 /*!
- * @brief Release the latch, unless the IMU still reports a fault (tilt and
- * upside down stay latched until reset; lifted clears 1 s after a lift).
+ * @brief Release the latch, unless the IMU still reports a fault (tilt,
+ * upside down and the sensor fault stay latched until reset; lifted clears
+ * 1 s after a lift).
  *
  * @return True if released.
  */

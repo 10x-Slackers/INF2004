@@ -33,7 +33,7 @@
 #define LINE_FOLLOWING_LOST_MM    80u /* All white this far: lost. */
 #define LINE_FOLLOWING_SEARCH_DEG 135 /* Pivot each side of the heading. */
 #define LINE_FOLLOWING_PIVOT_MM_S 100 /* Wheel speed while pivoting. */
-/* Samples: 6 s. A whole search is 4 s; a wrong heading never ends one. */
+/* Samples: 6 s. A whole search is under 5 s; a wrong heading never ends. */
 #define LINE_FOLLOWING_SEARCH_MAX 600u
 #define LINE_FOLLOWING_STUCK_MM   300u /* One sensor black this far: stuck. */
 

@@ -88,6 +88,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `.distance_mm`: odometer at the end of the barcode | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
 | 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in µm (0 to 30000) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
 | 3 | `g_code.elements`, `.b_black`, `.b_in_code` (barcode decoder): elements in the barcode so far, black now, inside a barcode | 0 to 31, stops at 31 (29 are decoded); 0 or 1 each | 5; 1 each | `unsigned int` bit-field | Barcode Decoder task only |
+| 3 | `g_check.wakes`, `.samples` (barcode decoder): wake-ups in the current 100 ms check of the ADC, and the samples read in them | 0 to 10; 0 to 2550 (10 reads of up to 255) | 4; 12 | `unsigned int` bit-field | Barcode Decoder task only |
 | 3 | `g_run_start` (barcode decoder): where the current bar or space began | 0 to 2³²−1 µm, wraps (`motion_control_distance_um()`) | 32 | `uint32_t`, the odometer's own width | Barcode Decoder task only |
 | 3 | `g_read` (driver): next ring index to hand out | 0 to 255 | 8 | `uint8_t` | Barcode Decoder task only |
 | 4 | `g_imu.cal_count` (IMU task): calibration samples so far | 0 to 200 | 8 | `unsigned int` bit-field | IMU task only |

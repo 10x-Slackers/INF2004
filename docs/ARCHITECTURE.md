@@ -182,7 +182,7 @@ stateDiagram-v2
 
 - **Follow** reads the left and right IR sensors every 10 ms and steers towards the sensor that sees black. Both black for 6 samples is a junction, driven straight over.
 - **Search** pivots towards the side the line was last seen, then the other way. **Lost** brakes and sets `b_lost`; the Vehicle Controller takes a safe stop. A sensor black for 300 mm is stuck, and also sets `APP_FAULT_LINE_SENSOR`.
-- The **Barcode Decoder** samples all the time. A barcode ends at a white run over 30 mm; it is decoded as Code 39 in either direction and validated, or rejected and counted. An unvalidated barcode is never acted on.
+- The **Barcode Decoder** samples all the time. A barcode ends at a white run over 30 mm; it is decoded as Code 39 in either direction and validated, or rejected and counted. An unvalidated barcode is never acted on. Under 100 samples in 100 ms sets `APP_FAULT_BARCODE_SENSOR` and changes nothing else.
 - The Vehicle Controller acts on the latest validated barcode at the next junction (TURN), with encoder-based motion, then starts line following again.
 
 Details: [LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works).

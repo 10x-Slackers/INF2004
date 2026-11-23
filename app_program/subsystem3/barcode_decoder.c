@@ -6,6 +6,10 @@
  * rolled across its 10 ms block, in um. A barcode starts at the first black
  * after white and ends at a white run longer than BARCODE_END; its bars
  * and spaces then go to code39_decode().
+ *
+ * If the ADC or DMA stops, no barcode is ever seen, so the task counts the
+ * samples of every BARCODE_CHECK_WAKES wake-ups: APP_FAULT_BARCODE_SENSOR is
+ * set while they are under BARCODE_CHECK_MIN.
  */
 
 #include "barcode_decoder.h"
@@ -16,9 +20,11 @@
 
 /* ADC counts: white reads ~170, black ~4080 (S3-U10). Low, so narrow bars
  * count (S3-U14), with hysteresis between. */
-#define BARCODE_BLACK 1000u
-#define BARCODE_WHITE 600u
-#define BARCODE_END   30000u /* um: 30 mm, over 3 wide bars. */
+#define BARCODE_BLACK       1000u
+#define BARCODE_WHITE       600u
+#define BARCODE_END         30000u /* um: 30 mm, over 3 wide bars. */
+#define BARCODE_CHECK_WAKES 10u    /* 100 ms: 200 samples are due. */
+#define BARCODE_CHECK_MIN   100u   /* Fewer samples in that time: a fault. */
 
 /* The course's barcodes: change these lines when the letters are announced
  * (any number of letters per command). Other valid letters are rejected. Z is
@@ -37,7 +43,7 @@ static ID gh_mutex;
 static barcode_decoder_t g_barcode;
 static barcode_decoder_raw_t g_raw;
 
-/* Barcode Decoder task only. */
+/* Barcode Decoder task only: the barcode being read, and the ADC check. */
 static uint16_t g_widths[CODE39_ELEMENTS];
 static uint32_t g_run_start; /* um, as motion_control_distance_um(). */
 static struct
@@ -46,6 +52,15 @@ static struct
     unsigned int b_black : 1;
     unsigned int b_in_code : 1;
 } g_code;
+static struct
+{
+    unsigned int wakes : 4;    /* Wake-ups so far, 0..BARCODE_CHECK_WAKES. */
+    unsigned int samples : 12; /* Samples in them, up to 10 rings (2550). */
+} g_check;
+#if (BARCODE_CHECK_WAKES > 15u) ||                                             \
+    ((BARCODE_CHECK_WAKES * (DRV_BARCODE_RING - 1u)) > 4095u)
+#error "g_check.wakes or g_check.samples is too narrow"
+#endif
 
 static void barcode_decoder_sample(uint32_t level, uint32_t pos,
                                    uint32_t odometer_mm);
@@ -121,6 +136,21 @@ void barcode_decoder_task(INT stacd, void * p_exinf)
                                    motion.distance_mm);
         }
         last_um += moved;
+        g_check.samples += count; /* 10 reads of under a ring each: fits. */
+        g_check.wakes++;
+        if (g_check.wakes >= BARCODE_CHECK_WAKES)
+        {
+            if (g_check.samples < BARCODE_CHECK_MIN)
+            {
+                app_fault_set(APP_FAULT_BARCODE_SENSOR);
+            }
+            else
+            {
+                app_fault_clear(APP_FAULT_BARCODE_SENSOR);
+            }
+            g_check.samples = 0u;
+            g_check.wakes = 0u;
+        }
 
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_raw.min = min;

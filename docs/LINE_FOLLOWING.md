@@ -79,7 +79,7 @@ Constants are at the top of each `.c` file; change one, rebuild and rerun the be
 
 ## Bench sequence
 
-The `make -C build_make TEST=1` image starts task `s3_bench` after the checks. It prints the line state (`[line] left= right= junction= last= following= searching= lost= mm= deg=`) whenever a sensor, the junction, searching or lost flag changes, the barcode level (`[bar] min= max=`) every 0.5 s while no run is going, and every barcode read (`[barcode] command= count= rejects= at_mm=`, with the measured widths).
+The `make -C build_make TEST=1` image starts task `s3_bench` after the checks. It prints the line state (`[line] left= right= junction= last= following= searching= lost= stuck= mm= deg=`, `stuck` being `APP_FAULT_LINE_SENSOR`) whenever a sensor, the junction, searching or lost flag changes, the barcode level (`[bar] min= max= fault=`, `fault` being `APP_FAULT_BARCODE_SENSOR`) every 0.5 s while no run is going, and every barcode read (`[barcode] command= count= rejects= at_mm=`, with the measured widths).
 
 - **GP21 held for 1 s or more:** after 5 s the car follows the line at 150 mm/s until a lost line or 15 s. At the first junction (printed as `junction=1`) after a barcode with a command, it does what the Vehicle Controller does: prints `[line] junction: command N`, stops following, rolls 115 mm so the axle is on the junction, turns 90° left or right (180° for a U-turn, none for straight on) and follows the line again. It drives straight over other junctions. At the end it stops and prints `[line] bench done after … ms`. Taps under 0.5 s start subsystem 2's bench instead; a press in between starts neither.
 

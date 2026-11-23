@@ -90,8 +90,7 @@ static void motion_control_put(uint8_t * p_packet, uint32_t * p_bit,
 
 /*!
  * @brief Load the defaults, brake and release the start-up latch. Call
- * once, after drv_motion_init() succeeds: until then the latch stays set,
- * so a failed start-up refuses every command for good.
+ * once, after drv_motion_init() succeeds.
  */
 void motion_control_init(void)
 {

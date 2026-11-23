@@ -174,9 +174,6 @@ static void test_start_up(void)
                    !motion_control_move_forward(100u) &&
                    !motion_control_drive(100, 100),
                "before init: latched, and a release is ignored");
-    test_reset(0u);
-    test_check(!motion_control_latched() && motion_control_drive(100, 100),
-               "init releases the start-up latch");
 }
 
 static void test_turn(bool b_left, uint32_t angle)

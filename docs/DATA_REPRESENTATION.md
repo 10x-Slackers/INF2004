@@ -37,7 +37,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 2 | `g_run.left_progress`, `.right_progress`: edges rolled | 0 to 131 071, clamped | 17 each | `unsigned int` bit-field | Motion task only |
 | 2 | `g_run.profile_speed`: current ramp speed | 0 to 1000 mm/s | 10 | `unsigned int` bit-field | Motion task only |
 | 2 | `g_run.left_raw`, `.right_raw`, `.skipped`: driver values at the last step | 0 to 65535; 0 to 255 | 16 each; 8 | `unsigned int` bit-field | Motion task only |
-| 2 | `g_run.left_stall`, `.right_stall`: periods driven without an edge | 0 to 100 (1 s) | 7 each | `unsigned int` bit-field | Motion task only |
+| 2 | `g_run.left_stall`, `.right_stall`: periods driven without an edge | 0 to 50 (0.5 s) | 6 each | `unsigned int` bit-field | Motion task only |
 | 2 | `g_run.heading`: edge difference × wheel diameter, modulo one turn | 0 to 2 × track × 2537 (< 2^30) | 30 | `unsigned int` bit-field | Motion task only |
 | 2 | `g_run.odometer`: edges rolled by both wheels | 0 to 2^30 − 1, wraps | 30 | `unsigned int` bit-field | Motion task only |
 | 2 | `g_pid[n].integral`, `.last_error`: PID state per wheel | −32767 to 32767; −2047 to 2047 mm/s | 16; 12 | `signed int` bit-field | Motion task only |
@@ -45,6 +45,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 2 | `drv_motion_wheel_t.phase`, `.b_backward` (driver) | 0 to 3; 0 or 1 | 2; 1 | `volatile unsigned int` bit-field | Encoder ISR only |
 | 2 | `g_max_tick_us`: longest control step | 0 to 65535 µs, saturates | 16 | `volatile uint16_t`, for an atomic load | Motion task writes; tests read it with `subsystem2_max_tick_us()` |
 | 2 | `gb_latched`: safety stop latched | 0 or 1 | 1 | `bool`, the smallest type | Safety Monitor and Controller write it with `motion_control_latch()`, any task reads it with `motion_control_latched()`, under the motion mutex |
+| 2 | `gb_ready`: motion start-up succeeded, so the latch may be released | 0 or 1 | 1 | `bool`, the smallest type | Set once by `motion_control_init()`, read by `motion_control_latch()` |
 | Shared | `g_gpio[].pins` (`app_main.c`): GPIO pins of each registered edge callback, 0 in a free slot | Bank 0 pin mask | 32 each | `volatile uint32_t` in the hardware register's format (out of scope) | Set once at init, read by the GPIO ISR |
 | 5 | `ultrasonic_scan_t.forward_mm`: latest range straight ahead | 20 to 4000 mm (4000: nothing in range) | 12 | `unsigned int` bit-field | Readers copy it with `ultrasonic_scan_get()`, under the scan mutex |
 | 5 | `.request`: request number the latest scan served | 0 to 15, wraps | 4 | As above | As above |

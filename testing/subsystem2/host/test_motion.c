@@ -167,6 +167,18 @@ static double test_true_distance(void)
 
 /* ---- Tests ------------------------------------------------------------- */
 
+/* Must run before the first motion_control_init(). */
+static void test_start_up(void)
+{
+    test_check(motion_control_latch(false) && motion_control_latched() &&
+                   !motion_control_move_forward(100u) &&
+                   !motion_control_drive(100, 100),
+               "before init: latched, and a release is ignored");
+    test_reset(0u);
+    test_check(!motion_control_latched() && motion_control_drive(100, 100),
+               "init releases the start-up latch");
+}
+
 static void test_turn(bool b_left, uint32_t angle)
 {
     motion_control_status_t status = {0};
@@ -287,9 +299,9 @@ static void test_faults(void)
     ticks = test_run(&status);
     test_check((MOTION_CONTROL_FAILED == status.state) &&
                    (APP_FAULT_STALL_RIGHT == app_faults()) &&
-                   (ticks >= 100u) && (ticks <= 110u) &&
+                   (ticks >= 50u) && (ticks <= 55u) &&
                    (0 == g_wheel[0].duty) && (0 == g_wheel[1].duty),
-               "blocked right wheel: stall fault after 1 s, both braked");
+               "blocked right wheel: stall fault after 0.5 s, both braked");
 
     /* A follower keeps renewing drive(): the stall must still latch. */
     test_reset(0u);
@@ -397,6 +409,7 @@ static void test_timing(void)
 
 int main(void)
 {
+    test_start_up();
     test_turn(true, 90u);
     test_turn(false, 90u);
     test_turn(true, 180u);

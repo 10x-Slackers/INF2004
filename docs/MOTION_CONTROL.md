@@ -21,7 +21,7 @@ Tests and results: [testing/subsystem2](../testing/subsystem2/TEST_LOG.md).
 | `motion_control_turn_right(deg)`     | Turn clockwise on the spot, 1–360°                                                               |
 | `motion_control_drive(left, right)`  | Hold wheel speeds, −1000 to 1000 mm/s. Lasts 200 ms, so call it every cycle; otherwise both wheels brake. After a stall it returns false until `stop()` or another command |
 | `motion_control_stop()`              | Brake both wheels now and cancel the command                                                     |
-| `motion_control_latch(latched)`      | Safety latch ([SAFETY_MONITOR.md](SAFETY_MONITOR.md)): `true` brakes like `stop()` and makes every move, turn and drive return false until `false`. Returns true if it was already latched. `motion_control_latched()` reads it |
+| `motion_control_latch(latched)`      | Safety latch ([SAFETY_MONITOR.md](SAFETY_MONITOR.md)): `true` brakes like `stop()` and makes every move, turn and drive return false until `false`. Returns true if it was already latched. `motion_control_latched()` reads it. If start-up fails (`subsystem2_init()`), the latch is set from power-up and cannot be released |
 | `motion_control_get_status(&status)` | Copy the status (below)                                                                          |
 | `motion_control_distance_um()`       | Distance rolled up to now in µm, wraps. Counts the edges since the last step too, so it is finer and fresher than `distance_mm` |
 | `motion_control_set_speed(mm_s)`     | Speed of later moves and turns, 10–1000 mm/s (default 100)                                       |
@@ -53,7 +53,7 @@ motion_control_drive(base - correction, base + correction); /* every 10 ms */
 
 To measure part of a route, save `distance_mm` or `heading_deg` at the start and subtract.
 
-Faults are bits in the shared fault bitmask (`app_faults()`, `app_fault.h`), cleared by the next command: `APP_FAULT_STALL_LEFT` and `_RIGHT` (no encoder edge for 1 s: the move fails and both wheels brake), `APP_FAULT_ENCODER` (a missed phase: counted, the move continues).
+Faults are bits in the shared fault bitmask (`app_faults()`, `app_fault.h`), cleared by the next command: `APP_FAULT_STALL_LEFT` and `_RIGHT` (no encoder edge for 0.5 s: the move fails and both wheels brake), `APP_FAULT_ENCODER` (a missed phase: counted, the move continues).
 
 ## How it works
 

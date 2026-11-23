@@ -28,14 +28,14 @@
 #define MOTION_MIN_SPEED_MM_S     10u
 
 /* Controller tuning. */
-#define MOTION_DUTY_LIMIT     800  /* Permille. */
-#define MOTION_DUTY_OFFSET    100  /* Feedforward for static friction. */
-#define MOTION_APPROACH_MM_S  30   /* Speed at the end of a move. */
-#define MOTION_ACCEL_MM_S     5    /* Speed increase per tick (500 mm/s^2). */
-#define MOTION_DECEL_PER_S    3    /* Approach mm/s per mm still to go. */
-#define MOTION_SYNC_DIVISOR   4    /* Edges of mismatch per 1 mm/s fix. */
-#define MOTION_STALL_TICKS    100u /* 1 s driven without an edge. */
-#define MOTION_DRIVE_TICKS    20u  /* Drive target expires after 200 ms. */
+#define MOTION_DUTY_LIMIT     800 /* Permille. */
+#define MOTION_DUTY_OFFSET    100 /* Feedforward for static friction. */
+#define MOTION_APPROACH_MM_S  30  /* Speed at the end of a move. */
+#define MOTION_ACCEL_MM_S     5   /* Speed increase per tick (500 mm/s^2). */
+#define MOTION_DECEL_PER_S    3   /* Approach mm/s per mm still to go. */
+#define MOTION_SYNC_DIVISOR   4   /* Edges of mismatch per 1 mm/s fix. */
+#define MOTION_STALL_TICKS    50u /* 0.5 s driven without an edge. */
+#define MOTION_DRIVE_TICKS    20u /* Drive target expires after 200 ms. */
 #define MOTION_PROGRESS_MAX   131071
 #define MOTION_SPEED_LIMIT    1023
 #define MOTION_INTEGRAL_LIMIT 32767
@@ -44,7 +44,8 @@
 #define MOTION_Q8             256
 
 static motion_control_status_t g_status;
-static bool gb_latched; /* Safety stop: every command refused. */
+static bool gb_latched = true; /* Safety stop: every command refused. */
+static bool gb_ready;          /* Init ran: the latch can be released. */
 
 static struct
 {
@@ -58,8 +59,8 @@ static struct
     unsigned int left_raw : 16; /* Driver counts at the last tick. */
     unsigned int right_raw : 16;
     unsigned int skipped : 8;
-    unsigned int left_stall : 7; /* Ticks driven without an edge. */
-    unsigned int right_stall : 7;
+    unsigned int left_stall : 6; /* Ticks driven without an edge. */
+    unsigned int right_stall : 6;
     unsigned int drive_age : 5; /* Ticks since the last drive call. */
     unsigned int heading : 30;  /* (right - left) * D, mod one turn. */
     unsigned int odometer : 30; /* |left| + |right| edges, wraps. */
@@ -88,7 +89,9 @@ static void motion_control_put(uint8_t * p_packet, uint32_t * p_bit,
                                uint32_t value, uint32_t width);
 
 /*!
- * @brief Load the defaults and brake. Call once, after drv_motion_init().
+ * @brief Load the defaults, brake and release the start-up latch. Call
+ * once, after drv_motion_init() succeeds: until then the latch stays set,
+ * so a failed start-up refuses every command for good.
  */
 void motion_control_init(void)
 {
@@ -102,6 +105,8 @@ void motion_control_init(void)
     g_run.left_raw = counts.left;
     g_run.right_raw = counts.right;
     g_run.skipped = counts.skipped;
+    gb_ready = true;
+    gb_latched = false;
     drv_motion_write(0, 0);
 }
 
@@ -201,7 +206,7 @@ void motion_control_stop(void)
 /*!
  * @brief Latch or release a safety stop. Latching brakes like
  * motion_control_stop(); while latched every move, turn and drive is
- * refused.
+ * refused. A release is ignored until motion_control_init() has run.
  *
  * @return True if it was already latched.
  */
@@ -211,7 +216,7 @@ bool motion_control_latch(bool b_latched)
 
     drv_motion_lock();
     b_was_latched = gb_latched;
-    gb_latched = b_latched;
+    gb_latched = b_latched || (!gb_ready);
     if (b_latched && (!b_was_latched))
     {
         g_status.state = MOTION_CONTROL_IDLE;

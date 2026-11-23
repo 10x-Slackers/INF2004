@@ -26,7 +26,7 @@ Collision risk is not checked here: obstacle avoidance stops on the second forwa
 | ----------------------------- | -------------------------------------------------------------------------------------------- |
 | `safety_monitor_stop(cause)`  | `motion_control_latch(true)` (brake and refuse every command); if it was not latched yet, print the cause |
 | `motion_control_latched()`    | True while a stop is latched                                                                  |
-| `safety_monitor_clear()`      | Release the latch. Returns false, and stays latched, while an IMU fault is set (tilt and upside down latch until reset; lifted clears about 1 s after the lift) |
+| `safety_monitor_clear()`      | Release the latch. Returns false, and stays latched, while an IMU fault is set (tilt and upside down latch until reset; lifted clears about 1 s after the lift), or if motion control failed to start and so keeps its latch |
 
 The controller enters SAFE_STOP whenever the latch is set, and a GP20 press there calls `safety_monitor_clear()`. Moving again then needs a second press (FR11).
 

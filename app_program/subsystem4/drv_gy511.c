@@ -27,15 +27,19 @@ static int32_t drv_gy511_axis(const uint8_t * p_raw);
  */
 ER drv_gy511_init(void)
 {
-    ER result = E_OK;
-
     gh_i2c = tk_opn_dev((UB *)"iica", TD_UPDATE); /* Kernel takes UB names. */
-    result = gh_i2c;
-    if (result >= E_OK)
-    {
-        result = i2c_write_reg(gh_i2c, DRV_GY511_ADDR, DRV_GY511_CTRL_REG1,
-                               DRV_GY511_RATE_100HZ);
-    }
+    return (gh_i2c < E_OK) ? gh_i2c : drv_gy511_start();
+}
+
+/*!
+ * @brief Start the accelerometer: its data rate and range. Also needed
+ * after it lost power, which leaves it in power-down.
+ */
+ER drv_gy511_start(void)
+{
+    ER result = i2c_write_reg(gh_i2c, DRV_GY511_ADDR, DRV_GY511_CTRL_REG1,
+                              DRV_GY511_RATE_100HZ);
+
     if (result >= E_OK)
     {
         result = i2c_write_reg(gh_i2c, DRV_GY511_ADDR, DRV_GY511_CTRL_REG4,

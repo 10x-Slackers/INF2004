@@ -21,6 +21,8 @@ typedef int32_t BOOL;
 typedef void (*FP)(void);
 
 #define E_OK     0
+#define E_TMOUT  (-50)
+#define E_IO     (-57)
 #define TMO_FEVR (-1)
 #define TRUE     1
 #define FALSE    0

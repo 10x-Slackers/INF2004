@@ -19,7 +19,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 4 | `s4_accel_t.x`, `.y`, `.z`: latest acceleration per axis | −2048 to 2047 mg (sensor's 12-bit output at ±2 g) | 12 each | `signed int` bit-field | Readers copy it with `s4_get_accel()`, under mutex `gh_s4_mutex` |
 | 4 | `s4_accel_t.count`: readings taken | 0 to 255, wraps | 8 | `unsigned int` bit-field | As above |
 | 4 | `s4_tilt_t.pitch`, `.roll`: tilt from the start surface | −900 to 900 (0.1 degree) | 11 each | `signed int` bit-field | Readers copy it with `s4_get_tilt()`, under mutex `gh_s4_mutex` |
-| 4 | `s4_tilt_t.cal`: start-up calibration done | 0 or 1 | 1 | `unsigned int` bit-field | As above |
+| 4 | `s4_tilt_t.cal`: calibration done | 0 or 1 | 1 | `unsigned int` bit-field | As above |
 | 4 | `s4_hump_t.peak`, `.max`: last hump peak and highest of the run | 0 to 63 mm | 6 each | `unsigned int` bit-field | Readers copy it with `s4_get_hump()`, under mutex `gh_s4_mutex` |
 | 4 | `s4_hump_t.count`: humps seen | 0 to 15, wraps | 4 | `unsigned int` bit-field | As above |
 | 4 | `s4_hump_t.on`: right wheel on a hump now | 0 or 1 | 1 | `unsigned int` bit-field | As above |
@@ -96,6 +96,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 4 | `g_imu.peak_mm`, `.print_count`, `.beep_left`: top of the current hump, print divider, samples until the buzzer stops | 0 to 466 mm; 0 to 9; 0 to 100 | 9; 4; 7 | `unsigned int` bit-field | IMU task only |
 | 4 | `g_imu.faults`, `.push_class`, `.b_descending`: latched IMU fault bits, motion class from the forward push, past the hump's top | Fault bitmask up to bit 11; 0 to 4; 0 or 1 | 12; 3; 1 | `unsigned int` bit-field | IMU task only |
 | 4 | `g_imu.last_x`, `.last_y`, `.last_z`: the reading before, to tell a frozen sensor | −2048 to 2047 mg | 12 each | `signed int` bit-field | IMU task only |
+| 4 | `gb_reset`: a Reset asked the IMU task to start again | 0 or 1 | 1 | `volatile bool`, the smallest type; these loads and stores are atomic | `s4_reset_sensor()` sets it on the caller's task, the IMU task clears it, no lock |
 | Shared | `g_vc.state`: Vehicle Controller state (INIT, READY, FOLLOW, AVOID, TURN, SAFE_STOP) | 0 to 5 | 3 | `volatile unsigned int` bit-field | Controller task writes; telemetry reads it with `vehicle_controller_state()`, one load, no lock |
 | Shared | `g_vc.cycles`: 10 ms cycles since the state or junction move began | 0 to 1023, wraps (only TURN reads it, below 502) | 10 | As above | Controller task only |
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |

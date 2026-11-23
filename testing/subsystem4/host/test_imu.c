@@ -1,7 +1,8 @@
 /** @file test_imu.c
  *
- * @brief Host test of task_imu.c: calibration, humps, tilt and the
- * upside-down fault that ends a demo run, fed with synthetic samples.
+ * @brief Host test of task_imu.c: calibration, humps, tilt, the
+ * upside-down fault that ends a demo run and the sensor fault, fed with
+ * synthetic samples.
  *
  * Includes task_imu.c itself to reach its private sample functions. The
  * kernel, console and board calls come from stub/ and the stubs below.
@@ -17,9 +18,17 @@
 #define TEST_PI       3.14159265358979
 #define TEST_G_MG     1000
 #define TEST_UPSIDE_N (S4_UPSIDE_MS / S4_IMU_MS) /* Samples to latch. */
+#define TEST_FAIL_N   (S4_FAIL_MS / S4_IMU_MS)
+#define TEST_FROZEN_N (S4_FROZEN_MS / S4_IMU_MS)
 
 ID gh_s4_mutex;
 static uint32_t g_faults; /* Stands in for the kernel event flag. */
+static int g_starts;      /* drv_gy511_start() calls. */
+static int g_reads;       /* drv_gy511_read() calls. */
+static ER g_result;       /* What the next drv_gy511_read() gives. */
+static int32_t g_x_mg;
+static int32_t g_y_mg;
+static int32_t g_z_mg;
 static int g_failures;
 
 /* Stubs: the IMU task's kernel, console, board and driver calls. */
@@ -45,6 +54,12 @@ ER tk_slp_tsk(TMO tmout)
 ID tk_get_tid(void)
 {
     return 1;
+}
+
+INT tk_can_wup(ID tskid)
+{
+    (void)tskid;
+    return 0;
 }
 
 INT tm_printf(UB const * p_format, ...)
@@ -98,12 +113,19 @@ ER drv_gy511_init(void)
     return E_OK;
 }
 
+ER drv_gy511_start(void)
+{
+    g_starts++;
+    return E_OK;
+}
+
 ER drv_gy511_read(int32_t * p_x_mg, int32_t * p_y_mg, int32_t * p_z_mg)
 {
-    *p_x_mg = 0;
-    *p_y_mg = 0;
-    *p_z_mg = TEST_G_MG;
-    return E_OK;
+    *p_x_mg = g_x_mg;
+    *p_y_mg = g_y_mg;
+    *p_z_mg = g_z_mg;
+    g_reads++;
+    return g_result;
 }
 
 void app_fault_set(uint32_t bits)
@@ -142,20 +164,43 @@ static void test_reset(void)
     memset(&g_hump, 0, sizeof(g_hump));
     memset(&g_motion, 0, sizeof(g_motion));
     g_faults = 0u;
+    gb_reset = false;
     for (i = 0; i < S4_CAL_N; i++)
     {
         imu_calibrate(0, 0, TEST_G_MG);
     }
 }
 
-/* Feed n identical samples. */
+/* One wake-up whose read gives this result and reading. */
+static void test_step(ER result, int32_t x_mg, int32_t y_mg, int32_t z_mg)
+{
+    g_result = result;
+    g_x_mg = x_mg;
+    g_y_mg = y_mg;
+    g_z_mg = z_mg;
+    imu_step();
+}
+
+/* Feed n samples as good reads, every other one 1 mg lower on Y: a real
+ * sensor's noise, without which the reading would count as frozen. */
 static void test_feed(int32_t x_mg, int32_t y_mg, int32_t z_mg, int n)
 {
     int i;
 
     for (i = 0; i < n; i++)
     {
-        imu_sample(x_mg, y_mg, z_mg);
+        test_step(E_OK, x_mg, y_mg - (i & 1), z_mg);
+    }
+}
+
+/* n wake-ups in a row: failed reads, or the same good reading. */
+static void test_steps(ER result, int n)
+{
+    int i;
+
+    for (i = 0; i < n; i++)
+    {
+        test_step(result, 0, 0, TEST_G_MG);
     }
 }
 
@@ -174,6 +219,7 @@ int main(void)
     int i;
     int first = -1;
     bool b_early = false;
+    bool b_beeping = false;
 
     /* The motion class lost "impact": five classes, still 3 bits. */
     test_check(((sizeof(g_motion_name) / sizeof(g_motion_name[0])) ==
@@ -306,6 +352,91 @@ int main(void)
     test_feed(0, 0, TEST_G_MG, 100);
     test_check((0u == g_hump.count) && (0u == g_hump.max),
                "lifted mid-tilt, then righted: no hump recorded");
+
+    /* Sensor unplugged: 4 failed reads, a good one, 4 more, then a 5th in
+     * a row (50 ms). The beep ends though no sample arrives to time it,
+     * and the fault stays whatever the sensor would read. */
+    test_reset();
+    test_steps(E_IO, TEST_FAIL_N - 1);
+    test_feed(0, 0, TEST_G_MG, 1);
+    test_steps(E_IO, TEST_FAIL_N - 1);
+    b_early = (0u != g_faults);
+    test_steps(E_IO, 1);
+    test_check((!b_early) && (APP_FAULT_IMU_SENSOR == g_faults),
+               "5 failed reads in a row: sensor fault, not at 4 + 4");
+    test_steps(E_IO, S4_ALARM_MS / S4_IMU_MS);
+    b_beeping = (0 != g_imu.beep_left);
+    test_feed(0, 0, TEST_G_MG, 100);
+    test_check((!b_beeping) && (APP_FAULT_IMU_SENSOR == g_faults),
+               "sensor fault: its beep ends, and it stays with good reads");
+
+    /* No sensor at power-on: faults, never calibrates. */
+    memset(&g_imu, 0, sizeof(g_imu));
+    g_faults = 0u;
+    test_steps(E_IO, TEST_FAIL_N);
+    test_check((APP_FAULT_IMU_SENSOR == g_faults) && (0 == g_imu.cal_count),
+               "no sensor at power-on: sensor fault, not calibrated");
+
+    /* Frozen: the first reading, 49 unchanged, 1 mg on one axis, then 49
+     * unchanged again and a 50th (500 ms). */
+    test_reset();
+    test_steps(E_OK, TEST_FROZEN_N);
+    test_step(E_OK, 1, 0, TEST_G_MG);
+    test_step(E_OK, 0, 0, TEST_G_MG);
+    test_steps(E_OK, TEST_FROZEN_N - 1);
+    b_early = (0u != g_faults);
+    test_steps(E_OK, 1);
+    test_check((!b_early) && (APP_FAULT_IMU_SENSOR == g_faults),
+               "50 unchanged readings in a row: sensor fault, not at 49 + 49");
+
+    /* Frozen from power-on: faults, and its readings never calibrate. */
+    memset(&g_imu, 0, sizeof(g_imu));
+    g_faults = 0u;
+    test_steps(E_OK, S4_CAL_N + 1);
+    test_check((APP_FAULT_IMU_SENSOR == g_faults) &&
+                   (g_imu.cal_count < S4_CAL_N),
+               "frozen at power-on: sensor fault, not calibrated");
+
+    /* A read that timed out (hung bus, 1 s) faults at once, and is the
+     * last one made. A quick lift just before leaves lifted set too. */
+    test_reset();
+    test_feed(0, 0, TEST_G_MG + 500, S4_LIFT_MS / S4_IMU_MS);
+    g_reads = 0;
+    test_steps(E_TMOUT, TEST_FAIL_N);
+    test_check(((APP_FAULT_LIFTED | APP_FAULT_IMU_SENSOR) == g_faults) &&
+                   (1 == g_reads),
+               "one timed-out read: sensor fault, no more reads");
+
+    /* Reset with the sensor back: the fault clears, lifted with it, and
+     * the car reads not calibrated at once; the sensor is started and
+     * calibrated again. */
+    g_starts = 0;
+    s4_reset_sensor();
+    b_early = (0u != g_faults) || (0u != g_tilt.cal);
+    test_feed(0, 0, TEST_G_MG, S4_CAL_N);
+    b_early = b_early || (0u != g_tilt.cal);
+    test_feed(0, 0, TEST_G_MG, 1);
+    test_check((!b_early) && (0u == g_faults) && (1 == g_starts) &&
+                   (0u != g_tilt.cal),
+               "Reset: fault cleared, sensor started, calibrated again");
+
+    /* Reset with the sensor still out: faults again, not calibrated. */
+    test_steps(E_IO, TEST_FAIL_N);
+    s4_reset_sensor();
+    test_steps(E_IO, TEST_FAIL_N);
+    test_check((APP_FAULT_IMU_SENSOR == g_faults) && (0u == g_tilt.cal) &&
+                   (0 == g_imu.cal_count),
+               "Reset, sensor still out: sensor fault, not calibrated");
+
+    /* Reset with no sensor fault (tilt is latched): nothing changes. */
+    test_reset();
+    test_roll(60.0, 100);
+    g_starts = 0;
+    s4_reset_sensor();
+    test_roll(60.0, 1);
+    test_check((APP_FAULT_TILT == g_faults) && (0u != g_tilt.cal) &&
+                   (0 == g_starts) && (S4_CAL_N == g_imu.cal_count),
+               "Reset with no sensor fault: tilt stays, no recalibration");
 
     printf("%s: %d failure(s)\n", (0 == g_failures) ? "ALL PASS" : "FAILED",
            g_failures);

@@ -77,9 +77,9 @@ void subsystem4_test(void)
                    (0u == packed.count),
                "packed reading keeps -2048..2047 per axis in 8 bytes");
 
-    /* Board still since power-on: no fault latched. */
+    /* Board still since power-on: no fault, and its noise is not frozen. */
     TEST_CHECK("S4-U13", 0u == (app_faults() & APP_FAULT_IMU),
-               "no upside-down or tilt fault on a still board");
+               "no IMU fault on a still board");
     hump.peak = S4_HUMP_MAX_MM;
     hump.count = S4_TEST_HUMPS_MAX;
     hump.count++;

@@ -1,0 +1,54 @@
+S4-U27 (with S4-U21..S4-U23, S4-U25, S4-U26 in the same program) at 00af469, 2026-11-23
+$ cc ... test_imu.c && /tmp/test_imu
+PASS  five motion classes with names, fit the 3-bit field
+PASS  calibrated after S4_CAL_N
+PASS  flat for 1 s: no fault
+PASS  30 mm hump: measured 28..30 mm, no fault
+PASS  Z below 0 for 10 ms and 150 ms: no upside-down fault
+PASS  60 degrees for 1 s: tilt fault, no upside-down fault
+PASS  flipped at once: upside-down fault at 200 ms, not before
+PASS  fully inverted reads 0 pitch and roll (why tilt misses it)
+INFO  slow lift: upside down latched at sample 120
+PASS  turned over across 2 s: upside down within 200 ms of 90
+PASS  upside-down fault stays latched after righting the car
+PASS  rolled over sideways and back: no hump recorded
+PASS  10 ms jolt on a hump: still measured 28..30 mm
+PASS  quick lift: lifted fault at 50 ms, not before, alone
+PASS  Z settled: lifted fault held while it beeps
+PASS  beep over: lifted fault cleared
+PASS  40 ms knock, slow lift, 300 mg: no fault
+PASS  lifted mid-tilt, then righted: no hump recorded
+PASS  5 failed reads in a row: sensor fault, not at 4 + 4
+PASS  sensor fault: its beep ends, and it stays with good reads
+PASS  no sensor at power-on: sensor fault, not calibrated
+PASS  50 unchanged readings in a row: sensor fault, not at 49 + 49
+PASS  frozen at power-on: sensor fault, not calibrated
+PASS  one timed-out read: sensor fault, no more reads
+PASS  Reset: fault cleared, sensor started, calibrated again
+PASS  Reset, sensor still out: sensor fault, not calibrated
+PASS  Reset with no sensor fault: tilt stays, no recalibration
+ALL PASS: 0 failure(s)
+
+Same program with one change at a time to task_imu.c (each fails only the checks shown):
+Failed-read count not reset by a good read:
+FAIL  5 failed reads in a row: sensor fault, not at 4 + 4
+Unchanged count not reset by a changed reading:
+FAIL  50 unchanged readings in a row: sensor fault, not at 49 + 49
+A timed-out read counted as one of five:
+FAIL  one timed-out read: sensor fault, no more reads
+Reads still made while the fault is set:
+FAIL  sensor fault: its beep ends, and it stays with good reads
+FAIL  one timed-out read: sensor fault, no more reads
+s4_reset_sensor() leaves the tilt record calibrated:
+FAIL  Reset: fault cleared, sensor started, calibrated again
+FAIL  Reset, sensor still out: sensor fault, not calibrated
+s4_reset_sensor() does not ask the task to start again:
+FAIL  Reset: fault cleared, sensor started, calibrated again
+FAIL  Reset, sensor still out: sensor fault, not calibrated
+s4_reset_sensor() leaves a held lifted fault:
+FAIL  Reset: fault cleared, sensor started, calibrated again
+FAIL  Reset, sensor still out: sensor fault, not calibrated
+s4_reset_sensor() acts with no sensor fault set:
+FAIL  Reset with no sensor fault: tilt stays, no recalibration
+The restart does not call drv_gy511_start():
+FAIL  Reset: fault cleared, sensor started, calibrated again

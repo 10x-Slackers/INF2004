@@ -10,7 +10,8 @@
 #include <stdint.h>
 #include "../app.h"
 
-ER drv_gy511_init(void); /* 100 Hz, +-2 g, high resolution. */
+ER drv_gy511_init(void);  /* Open I2C0, then drv_gy511_start(). */
+ER drv_gy511_start(void); /* 100 Hz, +-2 g, high resolution. */
 ER drv_gy511_read(int32_t * p_x_mg, int32_t * p_y_mg, int32_t * p_z_mg);
 
 #endif /* DRV_GY511_H */

@@ -8,6 +8,7 @@
 
 #include "safety_monitor.h"
 #include "../subsystem2/motion_control.h"
+#include "../subsystem4/subsystem4.h"
 
 #define SAFETY_MONITOR_PERIOD_MS 10u
 
@@ -42,14 +43,17 @@ void safety_monitor_stop(uint32_t cause)
 
 /*!
  * @brief Release the latch, unless the IMU still reports a fault (tilt and
- * upside down stay latched until reset; lifted clears 1 s after a lift).
+ * upside down stay latched until reset; lifted clears 1 s after a lift; the
+ * sensor fault is cleared here, and the IMU then calibrates again).
  *
  * @return True if released.
  */
 bool safety_monitor_clear(void)
 {
-    bool const b_clear = (0u == (app_faults() & APP_FAULT_IMU));
+    bool b_clear = false;
 
+    s4_reset_sensor();
+    b_clear = (0u == (app_faults() & APP_FAULT_IMU));
     if (b_clear)
     {
         (void)motion_control_latch(false);

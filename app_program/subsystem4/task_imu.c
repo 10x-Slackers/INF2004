@@ -22,10 +22,9 @@
  * the motors.
  *
  * Sensor fault, latched until reset too: S4_FAIL_MS of failed reads in a
- * row (the GY-511 is unplugged), or S4_FROZEN_MS of readings with no axis
- * changed (it answers but has stopped sampling, as after a brown-out; a
- * working one moves by a few mg even at rest). Checked from power-on, so a
- * car reset with the sensor still out faults again before it calibrates.
+ * row, or S4_FROZEN_MS of readings with no axis changed (a working GY-511
+ * moves by a few mg even at rest). Checked from power-on, so a car reset
+ * with the sensor still out faults again before it calibrates.
  *
  * Humps pass under the right wheel only, so its height is
  * track width x sin(roll). A hump starts when that height stays at
@@ -238,11 +237,7 @@ static void imu_step(bool b_ready, int32_t x_mg, int32_t y_mg, int32_t z_mg)
         g_imu.beep_left = S4_ALARM_MS / S4_IMU_MS;
     }
 
-    if (!b_ready)
-    {
-        /* The read failed: skip this sample. */
-    }
-    else
+    if (b_ready) /* A failed read skips the sample. */
     {
         g_imu.last_x = x_mg;
         g_imu.last_y = y_mg;

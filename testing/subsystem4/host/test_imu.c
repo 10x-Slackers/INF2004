@@ -189,6 +189,7 @@ int main(void)
     int i;
     int first = -1;
     bool b_early = false;
+    bool b_beeping = false;
 
     /* The motion class lost "impact": five classes, still 3 bits. */
     test_check(((sizeof(g_motion_name) / sizeof(g_motion_name[0])) ==
@@ -334,10 +335,10 @@ int main(void)
     test_check((!b_early) && (APP_FAULT_IMU_SENSOR == g_faults),
                "5 failed reads in a row: sensor fault, not at 4 + 4");
     test_steps(false, S4_ALARM_MS / S4_IMU_MS);
-    test_check(0 == g_imu.beep_left, "reads still failing: the beep ends");
+    b_beeping = (0 != g_imu.beep_left);
     test_feed(0, 0, TEST_G_MG, 100);
-    test_check(APP_FAULT_IMU_SENSOR == g_faults,
-               "sensor fault stays latched once the reads work again");
+    test_check((!b_beeping) && (APP_FAULT_IMU_SENSOR == g_faults),
+               "beep ends while reads fail; fault stays once they work");
 
     /* Reset with the sensor still out: faults again, never calibrates. */
     memset(&g_imu, 0, sizeof(g_imu));

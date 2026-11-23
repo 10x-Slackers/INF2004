@@ -54,3 +54,4 @@ Methods and how to record results: `testing/README.md`. Manual tests use the `TE
 | 2026-10-31 | S2-U14 | `af4be0d` | commit2main | PASS (partial) | `logs/2026-10-31_pr31_bench.txt` | Every move and turn ends `state=2`; turns read heading 90, 1, 180, 1. The `forward 300` at 200 mm/s ended `faults=4` (one missed encoder phase), as before PR #31; every other step `faults=0` |
 | 2026-10-31 | S2-U01 | `af4be0d` | commit2main | PASS | `logs/2026-10-31_pr31_bench.txt` | Left +25 353 for 10 turns; right +27 902 for 11 turns (expected 27 907) |
 | 2026-11-19 | S2-U10 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | `motion_control.c` unchanged |
+| 2026-11-23 | S2-U10 | `354bea5` | commit2main | PASS | `logs/2026-11-23_stall_latch_host.txt` | Blocked wheel: stall fault after 0.5 s. Before `motion_control_init()` the latch is set and a release is ignored |

@@ -23,8 +23,8 @@
 
 ID gh_s4_mutex;
 static uint32_t g_faults; /* Stands in for the kernel event flag. */
-static int g_starts;      /* Calls of drv_gy511_start(), */
-static int g_reads;       /* of drv_gy511_read(). */
+static int g_starts;      /* drv_gy511_start() calls. */
+static int g_reads;       /* drv_gy511_read() calls. */
 static ER g_result;       /* What the next drv_gy511_read() gives. */
 static int32_t g_x_mg;
 static int32_t g_y_mg;

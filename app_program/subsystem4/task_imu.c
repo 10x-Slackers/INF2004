@@ -22,9 +22,8 @@
  * the motors.
  *
  * Sensor fault: S4_FAIL_MS of failed reads in a row, one read that timed
- * out (a hung bus: it already took 1 s), or S4_FROZEN_MS of readings with
- * no axis changed (a working GY-511 moves by a few mg even at rest). No
- * read is made while it is set. It stays until a Reset calls
+ * out, or S4_FROZEN_MS of readings with no axis changed (a working GY-511
+ * moves by a few mg even at rest). It stays until a Reset calls
  * s4_reset_sensor(); the task then starts again as at power-on, so with
  * the sensor still out or frozen it faults again and never calibrates.
  *
@@ -223,8 +222,7 @@ static void imu_step(void)
 {
     if (gb_reset)
     {
-        /* As at power-on, but tilt and upside down stay latched. A sensor
-         * plugged back in is in power-down: start it again. */
+        /* As at power-on, but tilt and upside down stay latched. */
         gb_reset = false;
         g_imu = (imu_state_t){
             .faults = app_faults() & (APP_FAULT_UPSIDE_DOWN | APP_FAULT_TILT)};
@@ -249,9 +247,7 @@ static void imu_step(void)
 }
 
 /*!
- * @brief Read the sensor. Latch a sensor fault if the reads keep failing,
- * this one timed out or the reading has stopped changing; else calibrate
- * or sample, skipping a failed read.
+ * @brief Read the sensor, then latch a sensor fault, calibrate or sample.
  */
 static void imu_read(void)
 {

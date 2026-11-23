@@ -24,6 +24,7 @@ typedef void (*FP)(void);
 #define E_TMOUT  (-50)
 #define E_IO     (-57)
 #define TMO_FEVR (-1)
+#define TSK_SELF 0
 #define TRUE     1
 #define FALSE    0
 
@@ -31,5 +32,6 @@ ER tk_loc_mtx(ID mtxid, TMO tmout);
 ER tk_unl_mtx(ID mtxid);
 ER tk_slp_tsk(TMO tmout);
 ID tk_get_tid(void);
+INT tk_can_wup(ID tskid);
 
 #endif /* TKERNEL_H */

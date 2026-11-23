@@ -179,8 +179,9 @@ void s4_reset_sensor(void)
         g_tilt = (s4_tilt_t){0};
         (void)tk_unl_mtx(gh_s4_mutex);
         /* In this order: the task leaves the bit alone until it sees the
-         * request, so it cannot set it again between the two. */
-        app_fault_clear(APP_FAULT_IMU_SENSOR);
+         * request, so it cannot set it again between the two. Lifted too:
+         * no sample is taken to clear it while the sensor fault is set. */
+        app_fault_clear(APP_FAULT_IMU_SENSOR | APP_FAULT_LIFTED);
         gb_reset = true;
     }
 }
@@ -275,6 +276,9 @@ static void imu_read(void)
                   b_ready ? "frozen" : "not answering");
         imu_beep_on();
         g_imu.beep_left = S4_ALARM_MS / S4_IMU_MS;
+        /* A read that timed out let 1 s of wake-ups queue: drop them, or
+         * they would run the beep down at once. */
+        (void)tk_can_wup(TSK_SELF);
     }
     else if (b_ready)
     {

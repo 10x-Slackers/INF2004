@@ -56,6 +56,12 @@ ID tk_get_tid(void)
     return 1;
 }
 
+INT tk_can_wup(ID tskid)
+{
+    (void)tskid;
+    return 0;
+}
+
 INT tm_printf(UB const * p_format, ...)
 {
     (void)p_format;
@@ -364,7 +370,7 @@ int main(void)
     test_check((!b_beeping) && (APP_FAULT_IMU_SENSOR == g_faults),
                "sensor fault: its beep ends, and it stays with good reads");
 
-    /* Reset with the sensor still out: faults again, never calibrates. */
+    /* No sensor at power-on: faults, never calibrates. */
     memset(&g_imu, 0, sizeof(g_imu));
     g_faults = 0u;
     test_steps(E_IO, TEST_FAIL_N);
@@ -392,15 +398,18 @@ int main(void)
                "frozen at power-on: sensor fault, not calibrated");
 
     /* A read that timed out (hung bus, 1 s) faults at once, and is the
-     * last one made. */
+     * last one made. A quick lift just before leaves lifted set too. */
     test_reset();
+    test_feed(0, 0, TEST_G_MG + 500, S4_LIFT_MS / S4_IMU_MS);
     g_reads = 0;
     test_steps(E_TMOUT, TEST_FAIL_N);
-    test_check((APP_FAULT_IMU_SENSOR == g_faults) && (1 == g_reads),
+    test_check(((APP_FAULT_LIFTED | APP_FAULT_IMU_SENSOR) == g_faults) &&
+                   (1 == g_reads),
                "one timed-out read: sensor fault, no more reads");
 
-    /* Reset with the sensor back: the fault clears and the car reads not
-     * calibrated at once; the sensor is started and calibrated again. */
+    /* Reset with the sensor back: the fault clears, lifted with it, and
+     * the car reads not calibrated at once; the sensor is started and
+     * calibrated again. */
     g_starts = 0;
     s4_reset_sensor();
     b_early = (0u != g_faults) || (0u != g_tilt.cal);

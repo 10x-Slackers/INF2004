@@ -75,7 +75,8 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `g_search.from_mm` (line following): odometer when a sensor last saw black | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | `unsigned int` bit-field | Line Following task and `line_following_start()`, under the line mutex |
 | 3 | `g_search.phase`: none, pivoting towards `last_side`, pivoting back | 0 to 2 | 2 | As above | As above |
 | 3 | `g_search.start_deg`: heading when the search began | 0 to 359° (motion's `heading_deg`) | 9 | As above | As above |
-| 3 | `g_search.black_mm`: odometer when the sensor now black turned black | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | Line Following task only, under the line mutex |
+| 3 | `g_search.samples`: samples since the search began | 0 to 600 (6 s), where the search ends | 10 | As above | Line Following task only, under the line mutex |
+| 3 | `g_search.black_mm`: odometer when the sensor now black turned black | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
 | 3 | `g_steer.turn` (line following): current turn, permille of the speed, + left | −1000 to 1000 | 11 | `signed int` bit-field | Line Following task only, under the line mutex |
 | 3 | `g_steer.from_mm`: odometer at the last steering step | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | `unsigned int` bit-field | As above |
 | 3 | `g_steer.speed_mm_s`: forward speed while following | 1 to 500 mm/s | 9 | `unsigned int` bit-field | `line_following_start()` and the Line Following task, under the line mutex |

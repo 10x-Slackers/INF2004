@@ -173,7 +173,7 @@ stateDiagram-v2
     Idle --> Follow: line_following_start()
     Follow --> Search: 80 mm with both sensors white
     Search --> Follow: a sensor sees black
-    Search --> Lost: no line within the sweep
+    Search --> Lost: no line within the sweep, or 6 s
     Follow --> Lost: one sensor black for 300 mm
     Lost --> Follow: line_following_start()
     Follow --> Idle: line_following_stop()

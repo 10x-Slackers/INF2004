@@ -1,4 +1,4 @@
-# Host test at 354bea5 (branch motion-stall-init-latch), 2026-11-23
+# Host test at 354bea5 (#58, branch motion-stall-init-latch), 2026-11-23
 
 $ cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 app_program/subsystem2/motion_control.c testing/subsystem2/host/test_motion.c -lm -o /tmp/test_motion && /tmp/test_motion
 PASS  before init: latched, and a release is ignored

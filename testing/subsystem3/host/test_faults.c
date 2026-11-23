@@ -210,13 +210,15 @@ static void test_stuck_sensor(void)
     test_check((0u == g_faults) && (0u == line.b_lost),
                "the next start clears the fault and b_lost");
 
-    /* The other sensor crossing lines does not hide a stuck one. */
+    /* The other sensor crossing lines does not hide a stuck one, and its
+     * black counts from the first crossing (last_side is still left). */
+    test_follow(0u, 30u);
     for (lap = 0u; (lap < 4u) && (0u == g_faults); lap++)
     {
-        test_follow(DRV_LINE_RIGHT | DRV_LINE_LEFT, 30u);
+        test_follow(DRV_LINE_RIGHT | DRV_LINE_LEFT, 60u);
         test_follow(DRV_LINE_RIGHT, 60u);
     }
-    test_check(test_stuck() && (4u == lap),
+    test_check(test_stuck() && (3u == lap),
                "right stuck, left crossing lines: fault past 300 mm");
 
     /* The longest runs measured (120 mm), back to back through junctions,

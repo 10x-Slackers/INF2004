@@ -44,7 +44,8 @@ typedef struct
     unsigned int phase : 2;     /* 0 none, 1 towards last_side, 2 back. */
     unsigned int start_deg : 9; /* Heading when the search began. */
     unsigned int samples : 10;  /* Since the search began, to SEARCH_MAX. */
-    unsigned int black_mm : 24; /* Odometer when one sensor's black began. */
+    unsigned int black : 2;     /* DRV_LINE_... black ever since black_mm. */
+    unsigned int black_mm : 24; /* Odometer when their black began. */
 } line_following_search_t;
 
 /* Steering, under gh_mutex. */
@@ -154,12 +155,10 @@ void line_following_task(INT stacd, void * p_exinf)
 
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_line.bits = bits;
-        /* All white, or the other sensor alone (last_side is still the
-         * sample before's): no sensor has stayed black. Both black (a
-         * junction) keeps the run of the one black before. */
-        if ((!g_line.b_following) || (0u == bits) ||
-            ((LINE_FOLLOWING_BOTH != bits) && (bits != g_line.last_side)))
+        g_search.black &= bits; /* Sensors black ever since black_mm. */
+        if ((!g_line.b_following) || (0u == g_search.black))
         {
+            g_search.black = bits; /* None is: start again from here. */
             g_search.black_mm = motion.distance_mm;
         }
         if (((motion.distance_mm - g_search.black_mm) &

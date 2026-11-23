@@ -151,7 +151,7 @@ static void test_reset(void)
     }
 }
 
-/* Feed n samples as good reads, every other one 1 mg lower on Z: a real
+/* Feed n samples as good reads, every other one 1 mg lower on Y: a real
  * sensor's noise, without which the reading would count as frozen. */
 static void test_feed(int32_t x_mg, int32_t y_mg, int32_t z_mg, int n)
 {
@@ -159,7 +159,7 @@ static void test_feed(int32_t x_mg, int32_t y_mg, int32_t z_mg, int n)
 
     for (i = 0; i < n; i++)
     {
-        imu_step(true, x_mg, y_mg, z_mg - (i & 1));
+        imu_step(true, x_mg, y_mg - (i & 1), z_mg);
     }
 }
 
@@ -358,6 +358,14 @@ int main(void)
     test_steps(true, 1);
     test_check((!b_early) && (APP_FAULT_IMU_SENSOR == g_faults),
                "50 unchanged readings in a row: sensor fault, not at 49 + 49");
+
+    /* Frozen from power-on: faults, and its readings never calibrate. */
+    memset(&g_imu, 0, sizeof(g_imu));
+    g_faults = 0u;
+    test_steps(true, S4_CAL_N + 1);
+    test_check((APP_FAULT_IMU_SENSOR == g_faults) &&
+                   (g_imu.cal_count < S4_CAL_N),
+               "frozen at power-on: sensor fault, not calibrated");
 
     printf("%s: %d failure(s)\n", (0 == g_failures) ? "ALL PASS" : "FAILED",
            g_failures);

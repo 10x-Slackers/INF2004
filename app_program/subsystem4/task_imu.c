@@ -23,15 +23,15 @@
  *
  * Sensor fault, latched until reset too: S4_FAIL_MS of failed reads in a
  * row, or S4_FROZEN_MS of readings with no axis changed (a working GY-511
- * moves by a few mg even at rest). Checked from power-on, so a car reset
- * with the sensor still out faults again before it calibrates.
+ * moves by a few mg even at rest). Checked from power-on, and no reading
+ * is used once it is set, so a car reset with the sensor still out or
+ * frozen faults again and never calibrates.
  *
  * Humps pass under the right wheel only, so its height is
  * track width x sin(roll). A hump starts when that height stays at
  * S4_HUMP_ON_MM or more for S4_HUMP_MIN_MS, which ignores jolts, and ends,
  * with its peak logged, when it falls below S4_HUMP_OFF_MM. None are tracked
- * while an IMU fault is set: the car is being handled, not driven, or the
- * readings cannot be trusted.
+ * while an IMU fault is set: the car is being handled, not driven.
  */
 
 #include "subsystem4.h"
@@ -204,7 +204,7 @@ void s4_imu_task(INT stacd, void * p_exinf)
 
 /*!
  * @brief One wake-up: time the beep, latch a sensor fault if the reads keep
- * failing or the reading has stopped changing, then calibrate or sample.
+ * failing or the reading has stopped changing, else calibrate or sample.
  *
  * @param[in] b_ready The read worked; if not, x, y and z are ignored.
  */
@@ -237,7 +237,8 @@ static void imu_step(bool b_ready, int32_t x_mg, int32_t y_mg, int32_t z_mg)
         g_imu.beep_left = S4_ALARM_MS / S4_IMU_MS;
     }
 
-    if (b_ready) /* A failed read skips the sample. */
+    /* A failed read skips the sample; a sensor fault ends them. */
+    if (b_ready && (0u == (g_imu.faults & APP_FAULT_IMU_SENSOR)))
     {
         g_imu.last_x = x_mg;
         g_imu.last_y = y_mg;
@@ -321,7 +322,7 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
         imu_count(g_imu.high_count, (sample.height_mm >= S4_HUMP_ON_MM));
     if (0u != (app_faults() & APP_FAULT_IMU))
     {
-        g_imu.high_count = 0; /* Handled, or no sensor: not a hump. */
+        g_imu.high_count = 0; /* Picked up or turned over: not a hump. */
         g_imu.peak_mm = 0;
     }
     if (((g_imu.high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||

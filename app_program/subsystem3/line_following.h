@@ -8,7 +8,9 @@
  * does not stop it. After LINE_FOLLOWING_LOST_MM with both sensors white
  * the task pivots up to LINE_FOLLOWING_SEARCH_DEG each way to find the
  * line again (b_searching); if it does not, it brakes, stops following
- * and sets b_lost until the next start. Both constants are in the .c.
+ * and sets b_lost until the next start. It does the same, and sets
+ * APP_FAULT_LINE_SENSOR, when one sensor stays black for
+ * LINE_FOLLOWING_STUCK_MM. The constants are in the .c.
  *
  * The two sensors straddle the 18 mm line: both white means the car is
  * centred (or has lost the line, see last_side and b_lost), one black means the
@@ -34,7 +36,7 @@ typedef struct
     unsigned int b_junction : 1;  /* Both black long enough: a junction. */
     unsigned int b_following : 1; /* Steering the car. */
     unsigned int b_searching : 1; /* Pivoting to find a lost line. */
-    unsigned int b_lost : 1;      /* Search failed; braked. */
+    unsigned int b_lost : 1;      /* Search failed or sensor stuck; braked. */
     unsigned int count : 8;       /* Samples taken, wraps. */
     unsigned int sample_ms : 32;  /* Kernel time of the sample, wraps. */
 } line_following_t;

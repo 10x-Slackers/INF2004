@@ -8,6 +8,10 @@
  * pivots towards last_side, then back past the start heading the other
  * way, and resumes following as soon as either sensor sees black. A false
  * alarm on a straight costs a small pivot: the line soon reaches a sensor.
+ *
+ * A sensor stuck on black would hold the turn for ever and never look
+ * lost, so one sensor black for over LINE_FOLLOWING_STUCK_MM stops the car
+ * as a failed search does, with APP_FAULT_LINE_SENSOR.
  */
 
 #include "line_following.h"
@@ -26,16 +30,18 @@
 #define LINE_FOLLOWING_RISE_MM    30
 #define LINE_FOLLOWING_FALL_MM    10
 #define LINE_FOLLOWING_DRIFT_MM   40
-#define LINE_FOLLOWING_LOST_MM    80u /* All white this far: lost. */
-#define LINE_FOLLOWING_SEARCH_DEG 135 /* Pivot each side of the heading. */
-#define LINE_FOLLOWING_PIVOT_MM_S 100 /* Wheel speed while pivoting. */
+#define LINE_FOLLOWING_LOST_MM    80u  /* All white this far: lost. */
+#define LINE_FOLLOWING_SEARCH_DEG 135  /* Pivot each side of the heading. */
+#define LINE_FOLLOWING_PIVOT_MM_S 100  /* Wheel speed while pivoting. */
+#define LINE_FOLLOWING_STUCK_MM   300u /* One sensor black this far: stuck. */
 
-/* Line search, under gh_mutex. */
+/* Line search and stuck sensor check, under gh_mutex. */
 typedef struct
 {
     unsigned int from_mm : 24;  /* Odometer when a sensor last saw black. */
     unsigned int phase : 2;     /* 0 none, 1 towards last_side, 2 back. */
     unsigned int start_deg : 9; /* Heading when the search began. */
+    unsigned int black_mm : 24; /* Odometer when one sensor's black began. */
 } line_following_search_t;
 
 /* Steering, under gh_mutex. */
@@ -84,7 +90,8 @@ void line_following_get(line_following_t * p_line)
 }
 
 /*!
- * @brief Start steering the car along the line, and clear b_lost.
+ * @brief Start steering the car along the line, and clear b_lost and
+ * APP_FAULT_LINE_SENSOR.
  *
  * @param[in] speed_mm_s Forward speed, 1 to LINE_FOLLOWING_MAX_MM_S.
  * @return False if the speed is out of range; nothing changes.
@@ -100,6 +107,7 @@ bool line_following_start(uint32_t speed_mm_s)
         g_steer.speed_mm_s = speed_mm_s; /* <= MAX_MM_S: fits. */
         g_line.b_following = true;
         g_line.b_lost = false;
+        app_fault_clear(APP_FAULT_LINE_SENSOR);
         (void)tk_unl_mtx(gh_mutex);
     }
     return b_valid;
@@ -140,6 +148,25 @@ void line_following_task(INT stacd, void * p_exinf)
 
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_line.bits = bits;
+        /* All white, or the other sensor alone: no sensor has stayed black.
+         * Both black (a junction) keeps the run of the one black before. */
+        if ((!g_line.b_following) || (0u == bits) ||
+            ((LINE_FOLLOWING_BOTH != bits) && (bits != g_line.last_side)))
+        {
+            g_search.black_mm = motion.distance_mm;
+        }
+        else if (((motion.distance_mm - g_search.black_mm) &
+                  MOTION_CONTROL_DISTANCE_MASK) > LINE_FOLLOWING_STUCK_MM)
+        {
+            g_line.b_following = false; /* Stuck: stop as for a lost line. */
+            g_line.b_lost = true;
+            motion_control_stop();
+            app_fault_set(APP_FAULT_LINE_SENSOR);
+        }
+        else
+        {
+            /* A sensor on the line. */
+        }
         if ((DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits))
         {
             g_line.last_side = bits;

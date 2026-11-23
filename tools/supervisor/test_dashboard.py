@@ -14,7 +14,9 @@ class DashboardTest(unittest.TestCase):
         self.assertEqual(name, "telemetry")
         self.assertEqual(values["state"], "SAFE_STOP")
         self.assertEqual(values["barcode"], "U-turn")
-        self.assertEqual(values["faults"], ["WIFI", "LIFTED"])
+        self.assertEqual(
+            values["faults"], ["STALL_LEFT", "IMU_SENSOR", "BARCODE_SENSOR"]
+        )
         self.assertEqual((values["pitch"], values["roll"]), (900, -900))
         self.assertEqual(
             dashboard.decode("csc13/scan", payloads.C_SCAN_BYTES),

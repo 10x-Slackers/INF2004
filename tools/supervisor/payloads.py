@@ -31,7 +31,7 @@ LAYOUTS = {
         ("avoid_side", 2, 0),
         ("bypasses", 4, 0),
         ("forward_mm", 12, 0),
-        ("faults", 11, 0),
+        ("faults", 15, 0),
     ],
     "motion": [
         ("state", 2, 0),
@@ -83,6 +83,10 @@ FAULTS = [
     "AVOID_MOTION",
     "WIFI",
     "LIFTED",
+    "IMU_SENSOR",
+    "LINE_SENSOR",
+    "DIRECTION",
+    "BARCODE_SENSOR",
 ]  # APP_FAULT_... in app_fault.h, bit 0 first.
 COMMANDS = {"START": 1, "STOP": 2, "RESET": 4}  # S1_CMD_... in subsystem1.h.
 
@@ -147,7 +151,8 @@ C_MOTION_BYTES = bytes.fromhex("9d663220c1234abcdef01230")
 
 # payload_pack_telemetry() and payload_pack_scan() output for these values,
 # from S1-U02's test_payload.c. Every field has its top bit set, so a field
-# packed too narrow shows; roll is negative instead, for the offset.
+# packed too narrow shows; roll is negative instead, for the offset, and
+# faults has its lowest bit set too, so a misplaced last field shows.
 C_TELEMETRY_VALUES = {
     "state": 5,
     "latched": 1,
@@ -166,9 +171,9 @@ C_TELEMETRY_VALUES = {
     "avoid_side": 2,
     "bypasses": 9,
     "forward_mm": 4000,
-    "faults": 0x600,
+    "faults": 0x4801,
 }
-C_TELEMETRY_BYTES = bytes.fromhex("bb933c207caab29fa0c000")
+C_TELEMETRY_BYTES = bytes.fromhex("bb933c207caab29fa09002")
 C_SCAN_VALUES = {
     "closest_mm": 2100,
     "closest_deg": 135,

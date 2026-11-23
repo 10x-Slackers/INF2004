@@ -40,7 +40,7 @@ void payload_pack_telemetry(const payload_telemetry_t * p_telemetry,
     payload_put(p_payload, &bit, p_telemetry->avoid_side, 2u);
     payload_put(p_payload, &bit, p_telemetry->bypasses, 4u);
     payload_put(p_payload, &bit, p_telemetry->forward_mm, 12u);
-    payload_put(p_payload, &bit, p_telemetry->faults, 11u);
+    payload_put(p_payload, &bit, p_telemetry->faults, 15u);
 }
 
 /*!

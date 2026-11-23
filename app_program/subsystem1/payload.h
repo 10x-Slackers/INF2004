@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include "../subsystem5/scan_profile.h"
 
-#define PAYLOAD_TELEMETRY_BYTES 11u  /* 83 bits. */
+#define PAYLOAD_TELEMETRY_BYTES 11u  /* 87 bits. */
 #define PAYLOAD_SCAN_BYTES      9u   /* 68 bits. */
 #define PAYLOAD_PITCH_OFFSET    1024 /* Added to pitch and roll when sent. */
 
@@ -37,7 +37,7 @@ typedef struct
     unsigned int avoid_side : 2;
     unsigned int bypasses : 4;
     unsigned int forward_mm : 12;
-    unsigned int faults : 11;
+    unsigned int faults : 15;
 } payload_telemetry_t;
 
 void payload_pack_telemetry(const payload_telemetry_t * p_telemetry,

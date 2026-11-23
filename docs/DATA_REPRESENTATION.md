@@ -101,9 +101,9 @@ Application data uses only the bits its valid range needs (change requirement "M
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
 | Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | Controller task only |
 | Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | `bool` bit-field | Controller task only |
-| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 83, 92, 68, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
+| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 87, 92, 68, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
 | 1 | Message buffer entry (topic number + payload) and command event flag: [TELEMETRY.md](TELEMETRY.md#inside-the-car) | Topic 0 to 3; commands one bit each | 8 + payload; 3 | `uint8_t` topic, the smallest unit of a message; event flag bits, set and clear atomic | Telemetry task → Wi-Fi service, both `TMO_POL`; Wi-Fi service → Vehicle Controller |
-| 1 | `payload_telemetry_t`: the telemetry fields gathered for packing | Per field, as sent | 83 | `unsigned int` and `signed int` bit-fields | Telemetry task only |
+| 1 | `payload_telemetry_t`: the telemetry fields gathered for packing | Per field, as sent | 87 | `unsigned int` and `signed int` bit-fields | Telemetry task only |
 | 1 | Telemetry task: heartbeat count; cycles since the last heartbeat | 0 to 65535, wraps; 0 to 4 | 16; 3 | `uint16_t`, the payload's own width; `uint8_t`, the smallest standard type | Telemetry task only |
 
 ## Evidence

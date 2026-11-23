@@ -58,7 +58,7 @@
   dl { display: grid; grid-template-columns: auto auto; gap: .3rem 1rem; margin: 0; }
   dt { color: var(--muted); }
   dd { margin: 0; text-align: right; font-weight: 600; }
-  body.stale :is(main, h1) { opacity: .35; }
+  body.stale :is(main, h1), body:not(.stale) .invalid { opacity: .35; }
 
   /* The two IR sensors over the tape: filled when over black. */
   .sensors { position: relative; height: 3.4rem; margin-bottom: .8rem; }
@@ -114,10 +114,10 @@
     <p id="hint"></p>
   </div>
   <div class="controls">
-    <button type="button" id="START" title="Begin following the line (READY only)">Start</button>
-    <button type="button" id="STOP" title="Brake and latch a safe stop (Esc)">Stop</button>
-    <button type="button" id="RESET" title="Clear the safe stop (SAFE_STOP only)">Reset</button>
-    <p id="notice">Esc sends Stop</p>
+    <button type="button" id="START" disabled title="Begin following the line (READY only)">Start</button>
+    <button type="button" id="STOP" disabled title="Brake and latch a safe stop (Esc)">Stop</button>
+    <button type="button" id="RESET" disabled title="Clear the safe stop (SAFE_STOP only)">Reset</button>
+    <p id="notice"></p>
   </div>
 </section>
 
@@ -163,6 +163,8 @@
   const MOVING = ['READY', 'FOLLOW', 'AVOID', 'TURN'];
   const yes = v => v ? 'yes' : 'no';
   const deg = v => `${(v / 10).toFixed(1)}°`;
+  // 4000 mm while the last scan missed an echo: not known to be a clear path.
+  const noEcho = t => t.forward_mm >= 4000 && t.faults.includes('NO_ECHO');
   const GROUPS = {  // List id: [label, topic, text from the topic's fields].
     line: [
       ['Junction', 'telemetry', t => yes(t.junction)],
@@ -187,7 +189,8 @@
       ['On a hump', 'telemetry', t => yes(t.on_hump)],
     ],
     'obstacle-values': [
-      ['Ahead', 'telemetry', t => t.forward_mm >= 4000 ? 'clear' : `${t.forward_mm} mm`],
+      ['Ahead', 'telemetry', t => noEcho(t) ? 'no echo' : t.forward_mm >= 4000 ? 'clear'
+        : t.forward_mm ? `${t.forward_mm} mm` : '–'],  // 0: no scan yet.
       ['Avoidance', 'telemetry', t => t.avoid_state],
       ['Bypass side', 'telemetry', t => t.avoid_side],
       ['Bypasses', 'telemetry', t => t.bypasses],
@@ -200,6 +203,7 @@
   };
   const $ = id => document.getElementById(id);
   let stateName = null, stateSince = 0, lastEvent = 0, run = null;
+  let notice = '';  // The last command's result, under the buttons.
 
   // One <dt>/<dd> per field, made once; refresh() fills in the <dd>.
   for (const [id, fields] of Object.entries(GROUPS)) {
@@ -221,7 +225,7 @@
   }
 
   function showScan(t, s) {
-    const [x, y] = point(90, t ? t.forward_mm : 0);
+    const [x, y] = point(90, t && !noEcho(t) ? t.forward_mm : 0);
     $('ray').setAttribute('x2', x);
     $('ray').setAttribute('y2', y);
     if (!s) return;
@@ -250,6 +254,9 @@
     $('START').disabled = off || name !== 'READY';
     $('RESET').disabled = off || name !== 'SAFE_STOP';
     $('STOP').disabled = off || !MOVING.includes(name);
+    if (off) notice = '';  // An old result would read as new once the car is back.
+    $('notice').textContent = off ? 'No link to the car: commands are not queued'
+      : notice || 'Esc sends Stop';
   }
 
   // Newest first; the server sends only the events after lastEvent.
@@ -299,6 +306,9 @@
       li.textContent = f.toLowerCase().replaceAll('_', ' ');
       return li;
     }));
+    // Not calibrated, or the IMU not reading: these are not measurements.
+    $('terrain').classList.toggle('invalid',
+      !!t && (t.state === 'INIT' || t.faults.includes('IMU_SENSOR')));
     showScan(t, topic('scan').values);
     if (data.run !== run) {  // A new server: its ids start from 1 again.
       run = data.run;
@@ -311,8 +321,9 @@
 
   async function send(name) {
     const response = await fetch(`/cmd/${name}`, {method: 'POST'}).catch(() => null);
-    $('notice').textContent = !response ? 'Not sent: the dashboard server stopped'
+    notice = !response ? 'Not sent: the dashboard server stopped'
       : response.ok ? `Sent ${name[0] + name.slice(1).toLowerCase()}` : await response.text();
+    $('notice').textContent = notice;
   }
 
   for (const id of ['START', 'STOP', 'RESET']) $(id).onclick = () => send(id);

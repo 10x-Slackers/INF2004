@@ -1,0 +1,103 @@
+Host run on commit 7b437f1, 2026-11-23. No car attached.
+Python 3.14.8, cc (GCC) 16.2.1 20260810, mosquitto 2.1.2-2, paho-mqtt 2.2.0 in a venv from tools/supervisor/requirements.txt
+
+=== S1-U01 ===
+$ python3 -I tools/supervisor/payloads.py
+PASS  telemetry round trip (min)
+PASS  telemetry round trip (max)
+PASS  motion round trip (min)
+PASS  motion round trip (max)
+PASS  scan round trip (min)
+PASS  scan round trip (max)
+PASS  heartbeat round trip (min)
+PASS  heartbeat round trip (max)
+PASS  cmd round trip (min)
+PASS  cmd round trip (max)
+PASS  motion matches motion_control_pack()
+PASS  telemetry matches payload_pack_telemetry()
+PASS  scan matches payload_pack_scan()
+
+Topic      Bits  Binary B  JSON B  Saved  Hz  JSON B/s  Binary B/s
+telemetry    87        11     275    96%   5      1375          55
+           45261fa423548417260000  {"v":1,"robot_id":"CSC13","seq":1234,"state":"FOLLOW","latched":0,"line":1,"junction":0,"following":1,"barcode":1,"barcodes":3,"motion_class":0,"pitch":-12,"roll":35,"hump_max":21,"humps":2,"on_hump":0,"avoid_state":1,"avoid_side":0,"bypasses":1,"forward_mm":1830,"faults":0}
+motion       92        12     171    93%   5       855          60
+           6c3e634cbbc53bf060030a20  {"v":1,"robot_id":"CSC13","seq":1234,"state":1,"command":5,"heading_deg":271,"left_speed":198,"right_speed":203,"left_count":48211,"right_count":48902,"distance_mm":12450}
+scan         68         9     144    94%   -         0           0
+           0785a46694933408c0  {"v":1,"robot_id":"CSC13","seq":1234,"closest_mm":120,"closest_deg":90,"right_deg":70,"left_deg":105,"width_mm":73,"left_mm":820,"right_mm":140}
+heartbeat    16         2      50    96%   1        50           2
+           04d2  {"v":1,"robot_id":"CSC13","seq":1234,"count":1234}
+cmd           8         1     101    99%   -         0           0
+           01  {"v":1,"robot_id":"CSC13","session_id":"s1","command_id":"c7","seq":7,"cmd":"START","challenge":"n4"}
+
+Periodic total: JSON 2280 B/s, binary 117 B/s
+
+ALL PASS
+
+=== S1-U02 ===
+$ cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 app_program/subsystem1/payload.c testing/subsystem1/host/test_payload.c -o /tmp/test_payload && /tmp/test_payload
+PASS  telemetry matches payloads.pack(): bb933c207caab29fa09002
+PASS  scan matches payloads.pack(): 834878287c8fa08020
+ALL PASS
+
+=== S1-U03 ===
+$ (cd tools/supervisor && python3 -m unittest -v test_dashboard)
+test_decodes_what_the_car_packs (test_dashboard.DashboardTest.test_decodes_what_the_car_packs) ... ok
+test_heartbeat_gaps_and_restarts (test_dashboard.DashboardTest.test_heartbeat_gaps_and_restarts) ... ok
+test_ignores_other_messages (test_dashboard.DashboardTest.test_ignores_other_messages) ... ok
+test_logs_what_changed (test_dashboard.DashboardTest.test_logs_what_changed) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK
+
+=== S1-U04 ===
+$ mosquitto -c <listener 18830 on 127.0.0.1, allow_anonymous true> &
+$ python3 tools/supervisor/dashboard.py --broker-port 18830 --port 8057 &
+Broker 127.0.0.1:18830, page http://127.0.0.1:8057
+
+# The S1-U02 bytes, the S2-U10 motion bytes, a heartbeat of 1234, then a telemetry of the wrong size.
+$ echo bb933c207caab29fa09002 | xxd -r -p | mosquitto_pub -p 18830 -t csc13/telemetry -s
+$ echo 834878287c8fa08020 | xxd -r -p | mosquitto_pub -p 18830 -t csc13/scan -s
+$ echo 9d663220c1234abcdef01230 | xxd -r -p | mosquitto_pub -p 18830 -t csc13/motion -s
+$ echo 04d2 | xxd -r -p | mosquitto_pub -p 18830 -t csc13/heartbeat -s
+$ echo 00112233 | xxd -r -p | mosquitto_pub -p 18830 -t csc13/telemetry -s
+$ curl -s http://127.0.0.1:8057/state | python3 -I -c "import json, sys; [print(k, v['values']) for k, v in json.load(sys.stdin)['topics'].items()]"
+telemetry {'state': 'SAFE_STOP', 'latched': 1, 'line': 2, 'junction': 1, 'following': 1, 'barcode': 'U-turn', 'barcodes': 9, 'motion_class': 'descending', 'pitch': 900, 'roll': -900, 'hump_max': 42, 'humps': 10, 'on_hump': 1, 'avoid_state': 'stopped', 'avoid_side': 'right', 'bypasses': 9, 'forward_mm': 4000, 'faults': ['STALL_LEFT', 'IMU_SENSOR', 'BARCODE_SENSOR']}
+scan {'closest_mm': 2100, 'closest_deg': 135, 'right_deg': 130, 'left_deg': 135, 'width_mm': 200, 'left_mm': 4000, 'right_mm': 2050}
+motion {'state': 'complete', 'command': 'left', 'heading_deg': 345, 'left_speed': 100, 'right_speed': -500, 'left_count': 4660, 'right_count': 43981, 'distance_mm': 15663395}
+heartbeat {'count': 1234}
+
+$ mosquitto_sub -p 18830 -t csc13/cmd -F '%t %x' &
+$ curl -s -o /dev/null -w 'HTTP %{http_code}\n' -X POST http://127.0.0.1:8057/cmd/START    # what the START button sends
+HTTP 200
+$ curl -s -o /dev/null -w 'HTTP %{http_code}\n' -X POST http://127.0.0.1:8057/cmd/STOP    # what the STOP button sends
+HTTP 200
+$ curl -s -o /dev/null -w 'HTTP %{http_code}\n' -X POST http://127.0.0.1:8057/cmd/RESET    # what the RESET button sends
+HTTP 200
+# mosquitto_sub printed:
+csc13/cmd 01
+csc13/cmd 02
+csc13/cmd 04
+
+# Dashboard and subscriber stopped.
+=== S1-U05 ===
+# Broker as above; python3 tools/supervisor/dashboard.py --broker-port 18830 --port 8056; the page open in Chromium.
+# A script stood in for the car: every 200 ms it published csc13/telemetry packed with
+# payloads.pack("telemetry", ...), and every 1 s csc13/heartbeat, for one case at a time.
+# Every case started from payloads.SAMPLES["telemetry"] with motion_class 3 (climbing), then:
+#
+# Case        Fields changed                              What the page showed
+# page load   the page as served, before its first status All three buttons off
+# healthy     state FOLLOW, forward_mm 1830               Terrain at full strength: -1.2°, 3.5°, climbing, 21 mm. Ahead "1830 mm", ray to the fan's edge. Stop on. "Esc sends Stop"
+# clear       forward_mm 4000, no fault                   Ahead "clear", ray to the fan's edge
+# init        state INIT                                  "Starting up". Terrain dimmed (opacity 0.35), the other blocks not. All three buttons off (as in INIT before)
+# imu         state READY, faults IMU_SENSOR              Faults "imu sensor". Terrain dimmed, the other blocks not. Start and Stop on
+# noecho      forward_mm 4000, faults NO_ECHO             Faults "no echo". Ahead "no echo", no ray
+# sideecho    state AVOID, forward_mm 240, faults NO_ECHO Faults "no echo". Ahead "240 mm", ray drawn to 240 mm
+# noscan      state READY, forward_mm 0                   Ahead "–", no ray
+# offline     nothing published for 4 s (after imu,       Header red, "Car offline, last heard 4 s ago". Start, Stop and Reset off.
+#             and after pressing Start: "Sent Start")     Under them: "No link to the car: commands are not queued". Page dimmed once (0.35), Terrain no fainter than the rest
+# back online imu again                                   Buttons by state again; under them "Esc sends Stop", not the old "Sent Start"
+#
+# Broker, dashboard, script and browser stopped.

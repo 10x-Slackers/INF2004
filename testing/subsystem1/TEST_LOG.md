@@ -26,8 +26,8 @@ Methods and how to record results: `testing/README.md`.
 | 2026-11-19 | S1-U01 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | Payload layouts unchanged |
 | 2026-11-19 | S1-U02 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | Same run |
 | 2026-11-19 | S1-U03 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | Run-summary text now says the highest hump of this run |
-| 2026-11-23 | S1-U01 | `7b437f1` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | Fault field widened to 15 bits for the sensor faults (bits 11 to 14); telemetry is 87 bits, still 11 bytes. Run by the coding agent |
-| 2026-11-23 | S1-U02 | `7b437f1` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | Faults 0x4801: the top bit, `IMU_SENSOR` and bit 0. Packing the fault field at its old 11 bits makes the test fail |
-| 2026-11-23 | S1-U03 | `7b437f1` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | The S1-U02 bytes decode to `STALL_LEFT`, `IMU_SENSOR`, `BARCODE_SENSOR` |
-| 2026-11-23 | S1-U04 | `7b437f1` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | Mosquitto 2.1.2, with the 87-bit telemetry bytes. A telemetry message of the wrong size was ignored |
-| 2026-11-23 | S1-U05 | `7b437f1` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | Chromium against Mosquitto and a scripted stand-in for the car; ten cases, each as listed in the log. The car's own `IMU_SENSOR` and `NO_ECHO` were not exercised: no car attached |
+| 2026-11-23 | S1-U01 | `7b437f1 (#60)` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | Fault field widened to 15 bits for the sensor faults (bits 11 to 14); telemetry is 87 bits, still 11 bytes. Run by the coding agent |
+| 2026-11-23 | S1-U02 | `7b437f1 (#60)` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | Faults 0x4801: the top bit, `IMU_SENSOR` and bit 0. Packing the fault field at its old 11 bits makes the test fail |
+| 2026-11-23 | S1-U03 | `7b437f1 (#60)` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | The S1-U02 bytes decode to `STALL_LEFT`, `IMU_SENSOR`, `BARCODE_SENSOR` |
+| 2026-11-23 | S1-U04 | `7b437f1 (#60)` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | Mosquitto 2.1.2, with the 87-bit telemetry bytes. A telemetry message of the wrong size was ignored |
+| 2026-11-23 | S1-U05 | `7b437f1 (#60)` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | Chromium against Mosquitto and a scripted stand-in for the car; ten cases, each as listed in the log. The car's own `IMU_SENSOR` and `NO_ECHO` were not exercised: no car attached |

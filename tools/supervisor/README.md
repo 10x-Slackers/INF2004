@@ -19,11 +19,11 @@ Or run steps 1 and 3 in containers, with nothing to install but Podman or Docker
 
 ## What it shows
 
-- **The state**, large and coloured, with how long the car has been in it and what to do next. Start works only in READY, Reset only in SAFE_STOP; Stop in READY, FOLLOW, AVOID and TURN, and Esc sends it. The buttons are off while the car is offline.
+- **The state**, large and coloured, with how long the car has been in it and what to do next. Start works only in READY, Reset only in SAFE_STOP; Stop in READY, FOLLOW, AVOID and TURN, and Esc sends it. The buttons are off while the car is offline (no heartbeat for 2.5 s) or the broker is away, and a line under them says so: a command sent then would be lost, not queued.
 - **Line** (FR2, FR3): the two IR sensors over the tape, junction, the last barcode and the count.
 - **Motion** (FR4): wheel speeds, distance, heading, the current move and the encoder counts.
-- **Terrain** (FR5, FR10): pitch, roll, motion class, the number of humps and the highest since the car was powered on.
-- **Obstacle** (FR6, FR7): the range ahead and the last profile as a sketch (servo angles, 90° straight ahead, out to 0.6 m), with the avoidance state, side and clearances.
+- **Terrain** (FR5, FR10): pitch, roll, motion class, the number of humps and the highest since the car was powered on. Dimmed while the state is INIT (the IMU is not calibrated yet) or the `IMU_SENSOR` fault is set, because the values are not measurements then.
+- **Obstacle** (FR6, FR7): the range ahead and the last profile as a sketch (servo angles, 90° straight ahead, out to 0.6 m), with the avoidance state, side and clearances. A range of 4000 mm reads "clear"; while the `NO_ECHO` fault is set it reads "no echo" and the sketch draws no ray, because the last scan missed an echo and the path is not known to be clear. Before the first scan the range reads "–".
 - **Faults** (FR11): every active `APP_FAULT_...` and the safety latch.
 - **Events**: what changed, with the time, newest first. State changes, barcodes, humps, bypasses, faults set and cleared, profiled obstacles, missed heartbeats, a car restart, the commands sent, and on every safe stop a summary with the highest hump and the active faults (FR12). **Download log** saves it as text, for test evidence; **Clear log** empties it before a test.
 

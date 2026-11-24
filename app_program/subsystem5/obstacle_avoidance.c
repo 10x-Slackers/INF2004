@@ -504,12 +504,15 @@ static void obstacle_avoidance_avoid(void)
         legs[OBSTACLE_AVOIDANCE_OUT] =
             obstacle_avoidance_diagonal(&scan.profile, side);
         /* Axle travel along the line until the back clears the obstacle,
-         * taken as twice as long as it is wide, less what the diagonal
-         * covers. At least 240 against at most 163: no underflow. */
+         * taken as twice as long as its blocked edges are apart, less what
+         * the diagonal covers. At least 240 against at most 163: no
+         * underflow. */
         legs[OBSTACLE_AVOIDANCE_PASS] =
             OBSTACLE_AVOIDANCE_FRONT_MM + scan.profile.closest_mm +
-            (2u * scan.profile.width_mm) + OBSTACLE_AVOIDANCE_REAR_MM +
-            OBSTACLE_AVOIDANCE_GAP_MM -
+            (2u * scan_profile_width_mm(scan.profile.closest_mm,
+                                        scan.profile.left_deg -
+                                            scan.profile.right_deg)) +
+            OBSTACLE_AVOIDANCE_REAR_MM + OBSTACLE_AVOIDANCE_GAP_MM -
             ((legs[OBSTACLE_AVOIDANCE_OUT] * OBSTACLE_AVOIDANCE_COS_TURN) /
              1000u);
         /* Back short of the line, so the line sensors, ahead of the axle,

@@ -38,6 +38,65 @@ uint32_t scan_profile_arc_mm(uint32_t range_mm, uint32_t angle_deg)
 }
 
 /*!
+ * @brief Width as an arc, capped to fit 8 bits: only a run over about 70
+ * degrees reaches it.
+ */
+uint32_t scan_profile_width_mm(uint32_t range_mm, uint32_t angle_deg)
+{
+    uint32_t const width_mm = scan_profile_arc_mm(range_mm, angle_deg);
+
+    return (width_mm > 255u) ? 255u : width_mm;
+}
+
+/*!
+ * @brief Furthest a ray on the obstacle ahead reads: SCAN_PROFILE_DEPTH_MM
+ * past the ray ahead, and at least SCAN_PROFILE_BLOCK_MM.
+ *
+ * @return mm, or 0 if the ray ahead is not blocked.
+ */
+uint32_t scan_profile_reach_mm(uint32_t ahead_mm)
+{
+    uint32_t reach_mm = ahead_mm + SCAN_PROFILE_DEPTH_MM;
+
+    if (ahead_mm > SCAN_PROFILE_BLOCK_MM)
+    {
+        reach_mm = 0u;
+    }
+    else if (reach_mm < SCAN_PROFILE_BLOCK_MM)
+    {
+        reach_mm = SCAN_PROFILE_BLOCK_MM;
+    }
+    else
+    {
+        /* Past the ray ahead. */
+    }
+    return reach_mm;
+}
+
+/*!
+ * @brief The run of rays within limit_mm around the ray ahead, as its
+ * outermost rays. Both are the ray ahead if that is not within it.
+ */
+static void scan_profile_run(const uint16_t * p_rays, uint32_t limit_mm,
+                             uint32_t * p_right, uint32_t * p_left)
+{
+    *p_right = SCAN_PROFILE_AHEAD;
+    *p_left = SCAN_PROFILE_AHEAD;
+    if (p_rays[SCAN_PROFILE_AHEAD] <= limit_mm)
+    {
+        while ((*p_right > 0u) && (p_rays[*p_right - 1u] <= limit_mm))
+        {
+            (*p_right)--;
+        }
+        while (((*p_left + 1u) < SCAN_PROFILE_RAYS) &&
+               (p_rays[*p_left + 1u] <= limit_mm))
+        {
+            (*p_left)++;
+        }
+    }
+}
+
+/*!
  * @brief Build the profile of the obstacle ahead.
  *
  * @param[in]  p_rays    SCAN_PROFILE_RAYS ranges in mm, each ray at
@@ -52,22 +111,16 @@ void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
     uint32_t closest = SCAN_PROFILE_AHEAD;
     uint32_t right = SCAN_PROFILE_AHEAD;
     uint32_t left = SCAN_PROFILE_AHEAD;
+    uint32_t wide_right = SCAN_PROFILE_AHEAD;
+    uint32_t wide_left = SCAN_PROFILE_AHEAD;
     uint32_t ray = 0u;
-    uint32_t width_mm = 0u;
+    uint32_t span_deg = 0u;
 
-    /* The obstacle is the run of blocked rays around the one ahead. */
-    if (b_obstacle)
-    {
-        while ((right > 0u) && (p_rays[right - 1u] <= SCAN_PROFILE_BLOCK_MM))
-        {
-            right--;
-        }
-        while (((left + 1u) < SCAN_PROFILE_RAYS) &&
-               (p_rays[left + 1u] <= SCAN_PROFILE_BLOCK_MM))
-        {
-            left++;
-        }
-    }
+    /* The obstacle is the run of blocked rays around the one ahead; its
+     * width is measured across the wider run on the same obstacle. */
+    scan_profile_run(p_rays, SCAN_PROFILE_BLOCK_MM, &right, &left);
+    scan_profile_run(p_rays, scan_profile_reach_mm(p_rays[SCAN_PROFILE_AHEAD]),
+                     &wide_right, &wide_left);
     for (ray = right; ray <= left; ray++)
     {
         closest = (p_rays[ray] < p_rays[closest]) ? ray : closest;
@@ -78,11 +131,13 @@ void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
     p_profile->b_obstacle = b_obstacle;
     p_profile->right_deg = SCAN_PROFILE_DEG(right);
     p_profile->left_deg = SCAN_PROFILE_DEG(left);
-    /* With no obstacle the edges meet, so the width is 0. Capped to fit
-     * 8 bits: only a run over about 70 degrees reaches it. */
-    width_mm = scan_profile_arc_mm(
-        p_rays[closest], SCAN_PROFILE_DEG(left) - SCAN_PROFILE_DEG(right));
-    p_profile->width_mm = (width_mm > 255u) ? 255u : width_mm;
+    /* Less the beam spread at both edges. With no obstacle the edges
+     * meet, so the width is 0. */
+    span_deg = SCAN_PROFILE_DEG(wide_left) - SCAN_PROFILE_DEG(wide_right);
+    span_deg = (span_deg > (2u * SCAN_PROFILE_EDGE_DEG))
+                   ? (span_deg - (2u * SCAN_PROFILE_EDGE_DEG))
+                   : 0u;
+    p_profile->width_mm = scan_profile_width_mm(p_rays[closest], span_deg);
     p_profile->left_mm = p_rays[SCAN_PROFILE_RAYS - 1u];
     p_profile->right_mm = p_rays[0];
 }

@@ -2,14 +2,15 @@
  *
  * @brief Host test of subsystem 3's sensor fault checks: a line sensor
  * stuck on black, the time limit on the lost-line search, and barcode ADC
- * samples that stop. Also that the end of a barcode does not start a search.
+ * samples that stop. Also that the end of a barcode does not start a
+ * search, and a dip in the odometer does not end one.
  *
  * Runs the real Line Following and Barcode Decoder tasks. The kernel calls
  * come from stub/ and the stubs below; tk_slp_tsk() is one 10 ms wake-up
  * and leaves the task when the wake-ups asked for are used up, so a task's
  * local variables start again on every run. The car is a model: each
  * wake-up moves the odometer by the wheel speeds last commanded, and the
- * heading never moves. Build and run as in S3-U22 and S3-U23 of
+ * heading never moves. Build and run as in S3-U22 to S3-U24 of
  * testing/subsystem3/TEST_LOG.md.
  */
 
@@ -33,6 +34,7 @@ static int32_t g_left_mm_s;    /* Wheel speeds last commanded. */
 static int32_t g_right_mm_s;
 static uint32_t g_um;       /* Odometer. */
 static uint32_t g_moved_um; /* How far the last wake-up moved it. */
+static uint32_t g_back_um;  /* The next wake-up rolls it back this far. */
 static uint32_t g_faults;   /* Stands in for the kernel event flag. */
 static uint32_t g_bars_um;  /* A barcode beside the line starts here... */
 static uint32_t g_bars_end; /* ...and ends here; none if they are equal. */
@@ -73,7 +75,8 @@ static void test_move(void)
 {
     /* (|left| + |right|) / 2 mm/s for 10 ms, in um. */
     g_moved_um = (uint32_t)(abs(g_left_mm_s) + abs(g_right_mm_s)) * 5u;
-    g_um += g_moved_um;
+    g_um += g_moved_um - g_back_um;
+    g_back_um = 0u;
 }
 
 /* One 10 ms wake-up. With gb_both, a wake-up of the Line Following task
@@ -352,14 +355,34 @@ static void test_barcode_end(void)
     gb_both = false;
 }
 
+/* The car stops over a space of a barcode and a wheel rocks back two
+ * edges: the odometer dips, and the barcode must not end there. */
+static void test_barcode_rollback(void)
+{
+    barcode_decoder_t barcode = {0};
+
+    (void)motion_control_drive((int32_t)TEST_SPEED_MM_S,
+                               (int32_t)TEST_SPEED_MM_S);
+    g_bars_um = g_um + 20000u;
+    g_bars_end = g_bars_um + 200000u;
+    test_barcode(20u, 32u); /* 48 mm: 28 mm into the bars, on a space. */
+    motion_control_stop();
+    g_back_um = 80u;
+    test_barcode(20u, 2u);
+    barcode_decoder_get(&barcode);
+    test_check(0u != barcode.b_reading,
+               "stopped on a barcode, the odometer dips 80 um: still reading");
+}
+
 int main(void)
 {
     (void)line_following_init();
     (void)barcode_decoder_init();
     test_stuck_sensor();
     test_search_limit();
-    test_barcode_end();
     test_barcode_samples();
+    test_barcode_end();      /* These two after the sample counts: they would */
+    test_barcode_rollback(); /* leave its 100 ms window part used. */
     printf("%s\n", (0 == g_failures) ? "ALL PASS" : "FAILED");
     return (0 == g_failures) ? 0 : 1;
 }

@@ -28,6 +28,9 @@
 /* Elements after the first bar before b_reading: the third bar has begun,
  * each gap under BARCODE_END, which a lone line or speck does not give. */
 #define BARCODE_READING 3u
+/* um moved since the last read, an unsigned difference: from this up it
+ * wrapped, so the distance went back. */
+#define BARCODE_BACK 0x80000000u
 
 /* The command of each letter, A to Z, all NONE (ignored) until the
  * supervisor sends a map (barcode_decoder_set_actions()). */
@@ -137,6 +140,13 @@ void barcode_decoder_task(INT stacd, void * p_exinf)
         count = drv_barcode_read(samples);
         /* Read right after the samples, so both end at the same moment. */
         moved = motion_control_distance_um() - last_um;
+        if (moved >= BARCODE_BACK)
+        {
+            /* A wheel rolled back or reversed, as when the car stops: the
+             * distance can dip between two motion steps. Stay here until
+             * the car has rolled past this point again. */
+            moved = 0u;
+        }
         motion_control_get_status(&motion);
         min = 4095u;
         max = 0u;

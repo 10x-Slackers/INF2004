@@ -330,7 +330,8 @@ void motion_control_tick(uint32_t elapsed_ms)
 
 /*!
  * @brief Distance rolled up to now, in um, wraps. Unlike status.distance_mm
- * it includes the edges since the last step.
+ * it includes the edges since the last step, so it can step back a little
+ * where a wheel rolls back or reverses within a step.
  */
 uint32_t motion_control_distance_um(void)
 {

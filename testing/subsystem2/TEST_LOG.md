@@ -55,3 +55,5 @@ Methods and how to record results: `testing/README.md`. Manual tests use the `TE
 | 2026-10-31 | S2-U01 | `af4be0d` | commit2main | PASS | `logs/2026-10-31_pr31_bench.txt` | Left +25 353 for 10 turns; right +27 902 for 11 turns (expected 27 907) |
 | 2026-11-19 | S2-U10 | `3e7007a` | commit2main | PASS | `logs/2026-11-19_exact_periods_host.txt` | `motion_control.c` unchanged |
 | 2026-11-23 | S2-U10 | `354bea5` (#58) | commit2main | PASS | `logs/2026-11-23_stall_latch_host.txt` | Blocked wheel: stall fault after 0.5 s. Before `motion_control_init()` the latch is set and a release is ignored |
+| 2026-11-24 | S2-U13 | `05bb0ff` (#58) | commit2main | PASS | `logs/2026-11-24_stall_bench.txt` | Right wheel held in the backward drive: at 0 from 170080 to 170580 ms, then `state=3 faults=2`. Left wheel held in the left 90: `state=3 faults=1` about 0.48 s after it stopped. Right held in the right 90: `faults=2` |
+| 2026-11-24 | S2-U12 | `05bb0ff` (#58) | commit2main | PASS | `logs/2026-11-24_stall_bench.txt` | Wheels free, whole bench sequence: no stall. Every step `faults=0` except `forward 300` at 200 mm/s, `faults=4` (one missed encoder phase, as before) |

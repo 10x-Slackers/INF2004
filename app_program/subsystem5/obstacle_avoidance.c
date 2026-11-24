@@ -352,7 +352,7 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
     else
     {
         /* Negative here, so -turn_deg is positive and fits. */
-        (void)motion_control_turn_right((uint32_t)-turn_deg);
+        (void)motion_control_turn_right((uint32_t)(-turn_deg));
     }
     (void)tk_unl_mtx(gh_mutex);
 
@@ -433,7 +433,7 @@ static bool obstacle_avoidance_turn(uint32_t side, int32_t turns)
 static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
                                     const uint32_t * p_legs)
 {
-    const obstacle_avoidance_step_t * p_step = &g_steps[step];
+    const obstacle_avoidance_step_t * const p_step = &g_steps[step];
     motion_control_status_t motion = {0};
     uint32_t const ahead_mm =
         OBSTACLE_AVOIDANCE_LINE_MM + OBSTACLE_AVOIDANCE_EARLY_MM;

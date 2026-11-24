@@ -22,16 +22,11 @@
 #define SCAN_PROFILE_RAYS      19u   /* 45..135 degrees in 5 degree steps. */
 #define SCAN_PROFILE_AHEAD     9u    /* Ray at 90 degrees. */
 #define SCAN_PROFILE_COARSE    3u    /* Coarse rays: every third, 15 degrees. */
-#define SCAN_PROFILE_MIN_MM    20u   /* Sensor's shortest range. */
 #define SCAN_PROFILE_FAR_MM    4000u /* Nothing within the sensor's range. */
 #define SCAN_PROFILE_BLOCK_MM  200u  /* A ray this close hits an obstacle. */
 #define SCAN_PROFILE_CLEAR_MM  250u  /* A side this open can be passed. */
 #define SCAN_PROFILE_DEPTH_MM  50u   /* Same obstacle, past the ray ahead. */
 #define SCAN_PROFILE_EDGE_DEG  5u    /* Edge rays see this past the edge. */
-
-/* Servo angle of a ray. */
-#define SCAN_PROFILE_DEG(ray)                                                  \
-    (SCAN_PROFILE_MIN_DEG + ((ray) * SCAN_PROFILE_STEP_DEG))
 
 /* scan_profile_side() */
 #define SCAN_PROFILE_NONE  0u
@@ -65,6 +60,14 @@ uint32_t scan_profile_width_mm(uint32_t range_mm, uint32_t angle_deg);
 uint32_t scan_profile_reach_mm(uint32_t ahead_mm);
 void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile);
 uint32_t scan_profile_side(uint32_t left_mm, uint32_t right_mm);
+
+/*!
+ * @brief Servo angle of a ray, in degrees.
+ */
+static inline uint32_t scan_profile_deg(uint32_t ray)
+{
+    return SCAN_PROFILE_MIN_DEG + (ray * SCAN_PROFILE_STEP_DEG);
+}
 
 #endif /* SCAN_PROFILE_H */
 

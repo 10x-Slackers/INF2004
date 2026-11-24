@@ -56,15 +56,6 @@
 #error "A samples-in-a-row threshold needs more than 6 bits"
 #endif
 
-/* Written under gh_s4_mutex. */
-static s4_accel_t g_accel;
-static s4_tilt_t g_tilt;
-static s4_hump_t g_hump;
-static s4_motion_t g_motion;
-
-/* s4_reset_sensor() asks the IMU task to start again. */
-static volatile bool gb_reset;
-
 /* Kept between samples. IMU task only. Each field is sized to its range
  * (docs/DATA_REPRESENTATION.md): readings are -2048..2047 mg, so a sample
  * less its offset is -4095..4095 mg. */
@@ -98,8 +89,6 @@ typedef struct
     signed int last_z : 12;
 } imu_state_t;
 
-static imu_state_t g_imu;
-
 /* One calibrated sample, passed from imu_sample() to imu_publish(). */
 typedef struct
 {
@@ -111,6 +100,17 @@ typedef struct
     int32_t height_mm; /* Right wheel height. */
     bool b_hump_over;
 } imu_sample_t;
+
+/* Written under gh_s4_mutex. */
+static s4_accel_t g_accel;
+static s4_tilt_t g_tilt;
+static s4_hump_t g_hump;
+static s4_motion_t g_motion;
+
+/* s4_reset_sensor() asks the IMU task to start again. */
+static volatile bool gb_reset;
+
+static imu_state_t g_imu;
 
 static const char * const g_motion_name[] = {
     "steady", "accelerating", "braking", "climbing", "descending"};
@@ -321,9 +321,11 @@ static void imu_calibrate(int32_t x_mg, int32_t y_mg, int32_t z_mg)
     g_imu.cal_count++;
     if (S4_CAL_N == g_imu.cal_count)
     {
-        g_imu.offset_x = g_imu.sum_x / g_imu.cal_count;
-        g_imu.offset_y = g_imu.sum_y / g_imu.cal_count;
-        g_imu.offset_z = (g_imu.sum_z / g_imu.cal_count) - IMU_MG_PER_G;
+        /* (int32_t): the count is S4_CAL_N here; a signed division. */
+        g_imu.offset_x = g_imu.sum_x / (int32_t)g_imu.cal_count;
+        g_imu.offset_y = g_imu.sum_y / (int32_t)g_imu.cal_count;
+        g_imu.offset_z =
+            (g_imu.sum_z / (int32_t)g_imu.cal_count) - IMU_MG_PER_G;
         APP_PRINTF("[imu] calibrated: offsets x=%d y=%d z=%d mg\n",
                    g_imu.offset_x, g_imu.offset_y, g_imu.offset_z);
         imu_beep_on();
@@ -354,9 +356,9 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
     sample.roll = imu_clamp((g_imu.smooth_x * IMU_DECIDEG_PER_G) /
                                 (IMU_SMOOTH * IMU_MG_PER_G),
                             S4_ANGLE_MAX);
-    g_imu.tilted_count =
-        imu_count(g_imu.tilted_count, (imu_beyond(sample.pitch, S4_TILT_MAX) ||
-                                       imu_beyond(sample.roll, S4_TILT_MAX)));
+    g_imu.tilted_count = imu_count(g_imu.tilted_count,
+                                   ((imu_beyond(sample.pitch, S4_TILT_MAX)) ||
+                                    (imu_beyond(sample.roll, S4_TILT_MAX))));
 
     /* Only the right wheel crosses humps, so the car tips sideways about
      * the line from the left wheel to the caster. */
@@ -371,9 +373,10 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
     }
     if (((g_imu.high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||
          (g_imu.peak_mm > 0)) &&
-        (sample.height_mm > g_imu.peak_mm))
+        (sample.height_mm > (int32_t)g_imu.peak_mm)) /* 9 bits: fits. */
     {
-        g_imu.peak_mm = (uint32_t)sample.height_mm; /* On a hump: its top. */
+        /* On a hump: its top. (uint32_t): above the old peak, so positive. */
+        g_imu.peak_mm = (uint32_t)sample.height_mm;
     }
     sample.b_hump_over =
         (g_imu.peak_mm > 0) && (sample.height_mm < S4_HUMP_OFF_MM);
@@ -416,6 +419,7 @@ static void imu_push(int32_t y_mg)
  */
 static void imu_publish(const imu_sample_t * p_sample)
 {
+    /* push_class only ever holds an s4_motion_class_t. */
     s4_motion_class_t motion_class = (s4_motion_class_t)g_imu.push_class;
     bool b_new_upside = false;
     bool b_new_tilt = false;
@@ -444,11 +448,12 @@ static void imu_publish(const imu_sample_t * p_sample)
     }
 
     /* On a hump the car also tips nose down, so humps take precedence. A
-     * hump goes up once and down once: once descending, stay so. */
+     * hump goes up once and down once: once descending, stay so.
+     * (int32_t): peak_mm is 9 bits, and the difference may be negative. */
     g_imu.b_descending =
         (g_hump.on) &&
         ((g_imu.b_descending) ||
-         (p_sample->height_mm <= (g_imu.peak_mm - IMU_DESCEND_MM)));
+         (p_sample->height_mm <= ((int32_t)g_imu.peak_mm - IMU_DESCEND_MM)));
     if (g_hump.on)
     {
         motion_class = g_imu.b_descending ? S4_DESCENDING : S4_CLIMBING;

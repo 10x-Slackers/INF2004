@@ -8,6 +8,10 @@
  *
  * The kernel powers the ADC up at boot, and makes GP26 an analog input
  * (DEVCONF_ADC_PIN_INIT_0). Nothing opens the kernel's "adca" device.
+ *
+ * Registers: RP2040 datasheet, "ADC and Temperature Sensor" and "DMA"; the
+ * same addresses and bits are in the Pico SDK's hardware/regs/adc.h and
+ * dma.h.
  */
 
 #include "drv_barcode.h"

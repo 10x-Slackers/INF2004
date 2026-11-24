@@ -13,10 +13,9 @@
 #include "../subsystem3/barcode_decoder.h"
 #include "../subsystem5/scan_profile.h"
 
-#define PAYLOAD_TELEMETRY_BYTES 12u  /* 96 bits. */
-#define PAYLOAD_SCAN_BYTES      9u   /* 68 bits. */
-#define PAYLOAD_MAP_BYTES       10u  /* 78 bits. */
-#define PAYLOAD_PITCH_OFFSET    1024 /* Added to pitch and roll when sent. */
+#define PAYLOAD_TELEMETRY_BYTES 12u /* 96 bits. */
+#define PAYLOAD_SCAN_BYTES      9u  /* 68 bits. */
+#define PAYLOAD_MAP_BYTES       10u /* 78 bits. */
 
 /* The telemetry fields in payload order, each in the bits it is sent in.
  * docs/TELEMETRY.md names the source of each. */

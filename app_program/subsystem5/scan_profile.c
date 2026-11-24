@@ -6,6 +6,9 @@
 #include "scan_profile.h"
 #include <stdbool.h>
 
+static void scan_profile_run(const uint16_t * p_rays, uint32_t limit_mm,
+                             uint32_t * p_right, uint32_t * p_left);
+
 /*!
  * @brief Echo pulse width to distance: 58 us per cm there and back.
  *
@@ -74,33 +77,10 @@ uint32_t scan_profile_reach_mm(uint32_t ahead_mm)
 }
 
 /*!
- * @brief The run of rays within limit_mm around the ray ahead, as its
- * outermost rays. Both are the ray ahead if that is not within it.
- */
-static void scan_profile_run(const uint16_t * p_rays, uint32_t limit_mm,
-                             uint32_t * p_right, uint32_t * p_left)
-{
-    *p_right = SCAN_PROFILE_AHEAD;
-    *p_left = SCAN_PROFILE_AHEAD;
-    if (p_rays[SCAN_PROFILE_AHEAD] <= limit_mm)
-    {
-        while ((*p_right > 0u) && (p_rays[*p_right - 1u] <= limit_mm))
-        {
-            (*p_right)--;
-        }
-        while (((*p_left + 1u) < SCAN_PROFILE_RAYS) &&
-               (p_rays[*p_left + 1u] <= limit_mm))
-        {
-            (*p_left)++;
-        }
-    }
-}
-
-/*!
  * @brief Build the profile of the obstacle ahead.
  *
  * @param[in]  p_rays    SCAN_PROFILE_RAYS ranges in mm, each ray at
- *                       SCAN_PROFILE_DEG(ray) degrees. Rays not
+ *                       scan_profile_deg(ray) degrees. Rays not
  *                       measured read SCAN_PROFILE_FAR_MM.
  * @param[out] p_profile The profile.
  */
@@ -127,13 +107,13 @@ void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
     }
 
     p_profile->closest_mm = p_rays[closest];
-    p_profile->closest_deg = SCAN_PROFILE_DEG(closest);
+    p_profile->closest_deg = scan_profile_deg(closest);
     p_profile->b_obstacle = b_obstacle;
-    p_profile->right_deg = SCAN_PROFILE_DEG(right);
-    p_profile->left_deg = SCAN_PROFILE_DEG(left);
+    p_profile->right_deg = scan_profile_deg(right);
+    p_profile->left_deg = scan_profile_deg(left);
     /* Less the beam spread at both edges. With no obstacle the edges
      * meet, so the width is 0. */
-    span_deg = SCAN_PROFILE_DEG(wide_left) - SCAN_PROFILE_DEG(wide_right);
+    span_deg = scan_profile_deg(wide_left) - scan_profile_deg(wide_right);
     span_deg = (span_deg > (2u * SCAN_PROFILE_EDGE_DEG))
                    ? (span_deg - (2u * SCAN_PROFILE_EDGE_DEG))
                    : 0u;
@@ -165,6 +145,29 @@ uint32_t scan_profile_side(uint32_t left_mm, uint32_t right_mm)
         /* Neither side is open: no reverse, the caller stops. */
     }
     return side;
+}
+
+/*!
+ * @brief The run of rays within limit_mm around the ray ahead, as its
+ * outermost rays. Both are the ray ahead if that is not within it.
+ */
+static void scan_profile_run(const uint16_t * p_rays, uint32_t limit_mm,
+                             uint32_t * p_right, uint32_t * p_left)
+{
+    *p_right = SCAN_PROFILE_AHEAD;
+    *p_left = SCAN_PROFILE_AHEAD;
+    if (p_rays[SCAN_PROFILE_AHEAD] <= limit_mm)
+    {
+        while ((*p_right > 0u) && (p_rays[*p_right - 1u] <= limit_mm))
+        {
+            (*p_right)--;
+        }
+        while (((*p_left + 1u) < SCAN_PROFILE_RAYS) &&
+               (p_rays[*p_left + 1u] <= limit_mm))
+        {
+            (*p_left)++;
+        }
+    }
 }
 
 /*** end of file ***/

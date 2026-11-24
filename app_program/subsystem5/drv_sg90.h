@@ -1,7 +1,7 @@
 /** @file drv_sg90.h
  *
  * @brief SG90 servo that pans the ultrasonic sensor, on GP12 (PWM slice
- * 6 A). Call only from the scan task.
+ * 6 A). Call only from the scan task and its init.
  */
 
 #ifndef DRV_SG90_H

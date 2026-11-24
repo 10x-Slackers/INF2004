@@ -29,7 +29,7 @@
 #define DRV_MOTION_LEFT_ENCODER_SIGN  (-1)
 #define DRV_MOTION_RIGHT_ENCODER_SIGN 1
 
-/* Decoder state of one wheel, used only by the ISR. */
+/* Decoder state of one wheel: set by init, then used only by the ISR. */
 typedef struct
 {
     unsigned int phase : 2;      /* A * 2 + B */

@@ -15,6 +15,7 @@
 #define CODE39_WIDE        3u
 #define CODE39_BARS_WIDE   6u /* Wide bars and spaces in *X*. */
 #define CODE39_SPACES_WIDE 3u
+#define CODE39_START       0x2Au /* '*', the start and stop character. */
 
 /* Patterns, first element in the most significant of 9 bits, 1 = wide,
  * in the order of g_letters. */
@@ -82,7 +83,8 @@ static uint32_t code39_one_way(const uint16_t * p_widths,
         (p_widths[CODE39_PER_CHR] <= p_threshold[1]) &&
         (p_widths[CODE39_STRIDE + CODE39_PER_CHR] <= p_threshold[1]);
 
-    return (b_gaps && ('*' == start) && ('*' == stop) && ('*' != letter))
+    return (b_gaps && (CODE39_START == start) && (CODE39_START == stop) &&
+            (CODE39_START != letter))
                ? letter
                : 0u;
 }
@@ -114,6 +116,7 @@ static uint32_t code39_char(const uint16_t * p_widths,
                      (known < (sizeof(g_patterns) / sizeof(g_patterns[0])));
          known++)
     {
+        /* (uint8_t): every character of g_letters is ASCII. */
         letter =
             (g_patterns[known] == pattern) ? (uint8_t)g_letters[known] : letter;
     }
@@ -133,18 +136,19 @@ static uint32_t code39_split(const uint16_t * p_widths, uint32_t first,
     uint16_t sorted[(CODE39_ELEMENTS + 1u) / 2u] = {0}; /* Widest first. */
     uint32_t count = 0u;
     uint32_t element = 0u;
-    uint32_t at = 0u;
+    uint32_t slot = 0u;
 
     for (element = first; element < CODE39_ELEMENTS; element += 2u)
     {
-        for (at = count; (at > 0u) && (sorted[at - 1u] < p_widths[element]);
-             at--)
+        for (slot = count;
+             (slot > 0u) && (sorted[slot - 1u] < p_widths[element]); slot--)
         {
-            sorted[at] = sorted[at - 1u];
+            sorted[slot] = sorted[slot - 1u];
         }
-        sorted[at] = p_widths[element];
+        sorted[slot] = p_widths[element];
         count++;
     }
+    /* (uint32_t): the sum of two 16-bit widths needs 17 bits. */
     return ((uint32_t)sorted[wide - 1u] + sorted[wide]) / 2u;
 }
 

@@ -322,7 +322,7 @@ static void line_following_drive(uint32_t bits,
                                  bool b_straight, uint32_t straight_deg)
 {
     if ((g_line.b_following) && (0u == g_search.phase) &&
-        (b_straight || g_wobble.b_hold) && (0u == bits))
+        (b_straight || (g_wobble.b_hold)) && (0u == bits))
     {
         line_following_hold(p_motion,
                             b_straight ? straight_deg : g_wobble.hold_deg);
@@ -360,7 +360,7 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm,
     int32_t const speed = (int32_t)g_steer.speed_mm_s; /* 9 bits: fits. */
     int32_t turn = g_steer.turn;
     /* A few mm since the last sample, so the cast keeps it. */
-    int32_t const mm =
+    int32_t const step_mm =
         (int32_t)motion_control_mm_since(g_steer.from_mm, distance_mm);
     /* All white beyond DRIFT_MM; the search starts before it gets large. */
     int32_t const white =
@@ -368,7 +368,7 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm,
         LINE_FOLLOWING_DRIFT_MM;
     bool const b_one = (DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits);
     int32_t target = 0; /* Centred, or a junction: straight on. */
-    int32_t step = (mm * LINE_FOLLOWING_TURN_MAX) / LINE_FOLLOWING_FALL_MM;
+    int32_t step = (step_mm * LINE_FOLLOWING_TURN_MAX) / LINE_FOLLOWING_FALL_MM;
 
     if (DRV_LINE_LEFT == bits)
     {
@@ -381,6 +381,7 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm,
     else if ((0u == bits) && (white > 0) && (0u != g_line.last_side))
     {
         /* Centred for long, or the line curved away: drift towards it. */
+        /* (int32_t): LOST_MM is a small positive constant. */
         target = (white * LINE_FOLLOWING_TURN_MIN) /
                  ((int32_t)LINE_FOLLOWING_LOST_MM - LINE_FOLLOWING_DRIFT_MM);
         target = (DRV_LINE_RIGHT == g_line.last_side) ? -target : target;
@@ -391,7 +392,7 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm,
     }
     if (b_one)
     {
-        step = (mm * (LINE_FOLLOWING_TURN_MAX - LINE_FOLLOWING_TURN_MIN)) /
+        step = (step_mm * (LINE_FOLLOWING_TURN_MAX - LINE_FOLLOWING_TURN_MIN)) /
                LINE_FOLLOWING_RISE_MM;
         /* Below the min, or the other way: start at the min towards it. */
         if (((target * turn) / max) < LINE_FOLLOWING_TURN_MIN)
@@ -491,7 +492,8 @@ static bool line_following_wobble(uint32_t bits, uint32_t prev,
         {
             g_wobble.right_deg = p_motion->heading_deg;
         }
-        /* Halfway round the shorter arc from right to left: 0..359. */
+        /* Halfway round the shorter arc from right to left: 0..359.
+         * (int32_t): right_deg is 0..359. */
         mid_deg = (uint32_t)(((int32_t)g_wobble.right_deg + 360 +
                               (line_following_off(g_wobble.left_deg,
                                                   g_wobble.right_deg) /

@@ -162,7 +162,7 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
             vc_enter(VC_FOLLOW, "MQTT START");
         }
         else if ((0u != (commands & S1_CMD_RESET)) &&
-                 (VC_SAFE_STOP == g_vc.state) && safety_monitor_clear())
+                 (VC_SAFE_STOP == g_vc.state) && (safety_monitor_clear()))
         {
             vc_enter(VC_INIT, "MQTT RESET"); /* READY once calibrated. */
         }
@@ -283,6 +283,7 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
 static void vc_enter(vc_state_t state, const char * p_cause)
 {
     s4_hump_t hump = {0};
+    /* state only ever holds a vc_state_t. */
     vc_state_t const previous = (vc_state_t)g_vc.state;
 
     APP_PRINTF("[vc] %s -> %s: %s\n", g_names[g_vc.state], g_names[state],

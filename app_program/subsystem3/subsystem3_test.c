@@ -22,6 +22,8 @@
 #define S3_TEST_Z           0x0D0u
 #define S3_TEST_BAD         0x1E0u /* 4 wide: no character. */
 #define S3_TEST_START       0x094u /* '*' */
+#define S3_TEST_LETTER_A    0x41u  /* 'A' as code39_decode() returns it. */
+#define S3_TEST_LETTER_Z    0x5Au  /* 'Z' */
 #define S3_TEST_FIRST_GAP   9u
 #define S3_BENCH_POLL_MS    10 /* Waits 2 kernel ticks: a poll every 20 ms. */
 #define S3_BENCH_STEP_MS    20u
@@ -49,7 +51,6 @@ void subsystem3_test(void)
 {
     line_following_t line = {0};
     barcode_decoder_raw_t raw = {0};
-    barcode_decoder_t barcode = {0};
     uint16_t widths[CODE39_ELEMENTS] = {0};
     uint32_t letter = 0u;
     uint32_t count = 0u;
@@ -88,17 +89,21 @@ void subsystem3_test(void)
     subsystem3_symbol(widths, S3_TEST_A, false);
     letter = code39_decode(widths);
     subsystem3_symbol(widths, S3_TEST_A, true);
-    TEST_CHECK("S3-U11", ('A' == letter) && ('A' == code39_decode(widths)),
+    TEST_CHECK("S3-U11",
+               (S3_TEST_LETTER_A == letter) &&
+                   (S3_TEST_LETTER_A == code39_decode(widths)),
                "decodes *A* read either way");
     subsystem3_symbol(widths, S3_TEST_Z, false);
-    TEST_CHECK("S3-U20", 'Z' == code39_decode(widths), "decodes *Z*");
+    TEST_CHECK("S3-U20", S3_TEST_LETTER_Z == code39_decode(widths),
+               "decodes *Z*");
     subsystem3_symbol(widths, S3_TEST_BAD, false);
     letter = code39_decode(widths);
     subsystem3_symbol(widths, S3_TEST_A, false);
     widths[S3_TEST_FIRST_GAP] = S3_TEST_WIDE; /* A wide gap: misread. */
     TEST_CHECK("S3-U12", (0u == letter) && (0u == code39_decode(widths)),
                "rejects a 4-wide letter and a misread *A*");
-    TEST_CHECK("S3-U13", 8u == sizeof(barcode), "packed barcode 8 bytes");
+    TEST_CHECK("S3-U13", 8u == sizeof(barcode_decoder_t),
+               "packed barcode 8 bytes");
     TEST_SUMMARY("subsystem3");
 
     (void)app_start_task(subsystem3_bench_task, S3_PRI_BENCH, 0, "s3_bench");
@@ -111,17 +116,18 @@ static void subsystem3_symbol(uint16_t * p_widths, uint32_t pattern,
                               bool b_reversed)
 {
     uint32_t const chars[3] = {S3_TEST_START, pattern, S3_TEST_START};
-    uint32_t i = 0u;
-    uint32_t at = 0u;
+    uint32_t element = 0u;
+    uint32_t slot = 0u;
 
-    for (i = 0u; i < CODE39_ELEMENTS; i++)
+    for (element = 0u; element < CODE39_ELEMENTS; element++)
     {
         /* Every 10th element is the narrow gap between characters. */
-        at = b_reversed ? (CODE39_ELEMENTS - 1u - i) : i;
-        p_widths[at] = ((9u != (i % 10u)) &&
-                        (0u != (chars[i / 10u] & (0x100u >> (i % 10u)))))
-                           ? S3_TEST_WIDE
-                           : S3_TEST_NARROW;
+        slot = b_reversed ? (CODE39_ELEMENTS - 1u - element) : element;
+        p_widths[slot] =
+            ((9u != (element % 10u)) &&
+             (0u != (chars[element / 10u] & (0x100u >> (element % 10u)))))
+                ? S3_TEST_WIDE
+                : S3_TEST_NARROW;
     }
 }
 
@@ -307,7 +313,7 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
                 b_stop = subsystem3_bench_report(&last);
                 command = subsystem3_bench_barcode(&last_barcode);
                 pending = (BARCODE_DECODER_NONE != command) ? command : pending;
-                if ((!b_stop) && last.b_junction && (!b_was_junction) &&
+                if ((!b_stop) && (last.b_junction) && (!b_was_junction) &&
                     (BARCODE_DECODER_NONE != pending))
                 {
                     b_stop = !subsystem3_bench_turn(pending);

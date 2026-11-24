@@ -16,7 +16,7 @@
  *     TEST_SUMMARY("subsystem1");
  *
  * Test IDs must match the ones in testing/<subsystem>/TEST_LOG.md. These
- * are macros (a deviation from rule 6.3.a, see app.h) so that a failure
+ * are macros (a deviation from rule 6.3, see app.h) so that a failure
  * reports the caller's file and line.
  */
 

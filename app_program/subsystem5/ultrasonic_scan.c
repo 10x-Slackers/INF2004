@@ -9,8 +9,10 @@
 #include "drv_sg90.h"
 #include "subsystem5.h"
 
-#define ULTRASONIC_SCAN_SETTLE_MS 200 /* Servo travel before a reading. */
-#define ULTRASONIC_SCAN_READS     3u  /* Readings per ray, for a median. */
+#define ULTRASONIC_SCAN_SETTLE_MS 200  /* Servo travel before a reading. */
+#define ULTRASONIC_SCAN_READS     3u   /* Readings per ray, for a median. */
+#define ULTRASONIC_SCAN_RIGHT     (-1) /* Ray step towards the right, */
+#define ULTRASONIC_SCAN_LEFT      1    /* and towards the left. */
 
 static ID gh_mutex;
 static ID gh_request; /* Semaphore: a scan was requested. */
@@ -113,7 +115,7 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
     scan_profile_t profile = {0};
     SYSTIM now = {0};
     uint32_t ray = 0u;
-    int32_t dir = 0;  /* -1 right, +1 left. */
+    int32_t dir = 0;  /* ULTRASONIC_SCAN_RIGHT, then _LEFT. */
     int32_t fine = 0; /* Ray of the fine scan. */
     uint32_t reach_mm = 0u;
     uint32_t range_mm = 0u;
@@ -121,7 +123,8 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
 
     if (ULTRASONIC_SCAN_PROFILE == mode)
     {
-        /* Coarse: every 15 degrees. Rays not measured read as open. */
+        /* Coarse: every 15 degrees. Rays not measured read as open.
+         * (uint16_t): FAR_MM is 4000. */
         for (ray = 0u; ray < SCAN_PROFILE_RAYS; ray++)
         {
             rays[ray] = (0u == (ray % SCAN_PROFILE_COARSE))
@@ -129,9 +132,10 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
                             : (uint16_t)SCAN_PROFILE_FAR_MM;
         }
         /* Fine: out from the ray ahead, right then left, while on the
-         * obstacle ahead. */
+         * obstacle ahead. (int32_t): the ray constants are under 20;
+         * (uint32_t): fine is 0..18 inside the loop. */
         reach_mm = scan_profile_reach_mm(rays[SCAN_PROFILE_AHEAD]);
-        for (dir = -1; dir <= 1; dir += 2)
+        for (dir = ULTRASONIC_SCAN_RIGHT; dir <= ULTRASONIC_SCAN_LEFT; dir += 2)
         {
             for (fine = (int32_t)SCAN_PROFILE_AHEAD + dir;
                  (fine >= 0) && (fine < (int32_t)SCAN_PROFILE_RAYS) &&
@@ -195,7 +199,7 @@ static uint16_t ultrasonic_scan_ray(uint32_t ray, bool * pb_fault)
     bool b_echo = true;
     uint32_t reading = 0u;
 
-    ultrasonic_scan_aim(SCAN_PROFILE_DEG(ray));
+    ultrasonic_scan_aim(scan_profile_deg(ray));
     for (reading = 0u; reading < ULTRASONIC_SCAN_READS; reading++)
     {
         b_echo = (drv_hcsr04_measure(&range_mm[reading])) && b_echo;

@@ -206,7 +206,7 @@ uint32_t app_faults(void)
 INT usermain(void)
 {
     T_RVER version = {0};
-    T_CFLG flag = {0};
+    T_CFLG const flag = {0};
     T_DINT handler = {0};
 
     (void)tk_ref_ver(&version);

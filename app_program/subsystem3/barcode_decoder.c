@@ -202,16 +202,16 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
 
     if (b_black != g_code.b_black)
     {
-        if (g_code.b_black && (!g_code.b_in_code))
+        if ((g_code.b_black) && (!g_code.b_in_code))
         {
             g_code.b_in_code = true; /* The first bar has ended. */
             g_code.elements = 0u;
         }
-        if (g_code.b_in_code && (width > BARCODE_END))
+        if ((g_code.b_in_code) && (width > BARCODE_END))
         {
             g_code.b_in_code = false; /* A bar this long is not a barcode. */
         }
-        if (g_code.b_in_code && (g_code.elements < CODE39_ELEMENTS))
+        if ((g_code.b_in_code) && (g_code.elements < CODE39_ELEMENTS))
         {
             /* In a barcode, width is at most BARCODE_END: it fits. */
             g_widths[g_code.elements] = (uint16_t)width;
@@ -220,7 +220,7 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
         g_run_start = pos;
         g_code.b_black = b_black;
     }
-    else if (g_code.b_in_code && (!g_code.b_black) && (width > BARCODE_END))
+    else if ((g_code.b_in_code) && (!g_code.b_black) && (width > BARCODE_END))
     {
         barcode_decoder_end(odometer_mm);
         g_code.b_in_code = false;
@@ -240,7 +240,8 @@ static void barcode_decoder_end(uint32_t odometer_mm)
      * print) are ignored: only the first 29 are kept. */
     uint32_t const letter =
         (g_code.elements >= CODE39_ELEMENTS) ? code39_decode(g_widths) : 0u;
-    /* 1..26 for A..Z; 0 for a misread or a digit, which have no action. */
+    /* 1..26 for A..Z; 0 for a misread or a digit, which have no action.
+     * (uint32_t): a character constant is a small positive number. */
     uint32_t const index =
         ((letter >= (uint32_t)'A') && (letter <= (uint32_t)'Z'))
             ? ((letter - (uint32_t)'A') + 1u)

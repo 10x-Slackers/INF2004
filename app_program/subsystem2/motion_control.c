@@ -621,7 +621,7 @@ static void motion_control_profile(int32_t left_delta, int32_t right_delta,
         {
             speed = (int32_t)g_run.speed_mm_s;
         }
-        g_run.profile_speed = (uint32_t)speed; /* 30..1000 here. */
+        g_run.profile_speed = (uint32_t)speed; /* 10..1000 here. */
 
         /* The wheel that is ahead slows down, the other speeds up. */
         correction = motion_control_clamp((left - right) / MOTION_SYNC_DIVISOR,

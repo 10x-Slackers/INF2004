@@ -5,6 +5,9 @@
  */
 
 #include "payload.h"
+
+#define PAYLOAD_PITCH_OFFSET 1024 /* Added to pitch and roll when sent. */
+#define PAYLOAD_ACTION_BITS  3u   /* Bits of one letter's action in a map. */
 #include <string.h>
 
 static void payload_put(uint8_t * p_payload, uint32_t * p_bit, uint32_t value,
@@ -79,8 +82,9 @@ void payload_unpack_map(const uint8_t * p_payload, uint8_t * p_actions)
     for (letter = 0u; letter < BARCODE_DECODER_LETTERS; letter++)
     {
         p_actions[letter] = 0u;
-        for (shift = 0u; shift < 3u; shift++)
+        for (shift = 0u; shift < PAYLOAD_ACTION_BITS; shift++)
         {
+            /* (uint8_t): three bits are shifted in, so at most 7. */
             p_actions[letter] =
                 (uint8_t)((p_actions[letter] << 1) |
                           ((p_payload[bit / 8u] >> (7u - (bit % 8u))) & 1u));
@@ -105,6 +109,7 @@ static void payload_put(uint8_t * p_payload, uint32_t * p_bit, uint32_t value,
         shift--;
         if (0u != ((value >> shift) & 1u))
         {
+            /* (uint8_t): 0x80 shifted right by 0..7 is one bit of a byte. */
             p_payload[*p_bit / 8u] |= (uint8_t)(0x80u >> (*p_bit % 8u));
         }
         (*p_bit)++;

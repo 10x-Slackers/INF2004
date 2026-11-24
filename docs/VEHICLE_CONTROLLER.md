@@ -74,7 +74,7 @@ Constants are at the top of `vehicle_controller.c`.
 | Constant         | Default | Set it to                                                                                |
 | ---------------- | ------- | ---------------------------------------------------------------------------------------- |
 | `VC_AXLE_MM`     | 115     | Distance from the line sensors back to the wheel axle, so turns pivot over the junction  |
-| `VC_SPEED_MM_S`  | 175     | Line following speed, 1 to 500                                                           |
+| `VC_SPEED_MM_S`  | 150     | Line following speed, 1 to 500                                                           |
 | `VC_MOVE_CYCLES` | 500     | Limit on each junction move, in 10 ms cycles                                              |
 
 ## Console

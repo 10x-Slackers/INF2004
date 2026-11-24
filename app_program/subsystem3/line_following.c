@@ -15,7 +15,7 @@
 #include "../subsystem2/motion_control.h"
 
 #define LINE_FOLLOWING_BOTH     (DRV_LINE_LEFT | DRV_LINE_RIGHT)
-#define LINE_FOLLOWING_JUNCTION 5u /* Samples: 50 ms, 9 mm at 0.175 m/s. */
+#define LINE_FOLLOWING_JUNCTION 6u /* Samples: 60 ms, 9 mm at 0.15 m/s. */
 /* Wheel speed change, permille of the speed: 1000 stops the inner wheel.
  * A sensor turning black starts it at once at TURN_MIN towards that side;
  * it rises to TURN_MAX over RISE_MM while the sensor stays black and falls

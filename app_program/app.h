@@ -23,6 +23,8 @@
  *   declares every subsystemN_init/_start/_test(). A subsystemN.h declares
  *   its task entries, keeping kernel types out of the module headers that
  *   host tests include.
+ * - 5.2.a: bit-fields are unsigned int or signed int, the types C
+ *   guarantees for a bit-field; the field's width gives its size.
  * - 5.3.a: signed bit-fields hold signed values in the fewest bits
  *   (docs/DATA_REPRESENTATION.md).
  * - 5.2: kernel calls, task entries and handlers use kernel types (ER, ID,

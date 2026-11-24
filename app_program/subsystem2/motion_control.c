@@ -481,7 +481,7 @@ static bool motion_control_start(uint32_t command, uint32_t amount)
         b_valid = !gb_latched;
         if (b_valid)
         {
-            g_run.goal = (uint32_t)goal; /* Limits keep it under 62120. */
+            g_run.goal = (uint32_t)goal; /* Limits keep it to 62120. */
             g_run.left_progress = 0u;
             g_run.right_progress = 0u;
             g_run.profile_speed = MOTION_APPROACH_MM_S;

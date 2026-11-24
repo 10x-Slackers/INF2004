@@ -31,7 +31,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 2 | `.left_count`, `.right_count`: encoder edges | 0 to 65535, wraps | 16 each | `unsigned int` bit-field | As above |
 | 2 | `.distance_mm`: distance rolled | 0 to 16 777 215 mm, wraps | 24 | `unsigned int` bit-field | As above |
 | 2 | `g_run.speed_mm_s`: cruise speed of moves and turns | 10 to 1000 mm/s | 10 | `unsigned int` bit-field | `motion_control_set_speed()` and the motion task, under the motion mutex |
-| 2 | `g_run.goal`: edges each wheel must roll | 0 to 62 119 (5 m) | 16 | `unsigned int` bit-field | Command calls and the motion task, under the motion mutex |
+| 2 | `g_run.goal`: edges each wheel must roll | 0 to 62 120 (5 m) | 16 | `unsigned int` bit-field | Command calls and the motion task, under the motion mutex |
 | 2 | `g_run.left_target`, `.right_target`: drive speeds | −1000 to 1000 mm/s | 11 each | `signed int` bit-field | As above |
 | 2 | `g_run.drive_age`: periods since the last `drive()` | 0 to 20 (200 ms expiry) | 5 | `unsigned int` bit-field | As above |
 | 2 | `g_run.left_progress`, `.right_progress`: edges rolled | 0 to 131 071, clamped | 17 each | `unsigned int` bit-field | Motion task only |
@@ -61,7 +61,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 5 | `.bypasses`: bypasses finished | 0 to 15, wraps | 4 | As above | As above |
 | 5 | `.left_mm`, `.right_mm`: clearance 45° left and right, copied from the profile | 0 to 4000 mm (0: not measured) | 12 each | As above | As above |
 | 5 | `g_watch.start_mm` (avoidance): motion `distance_mm` at the start of the return diagonal | 0 to 2²⁴−1 mm, wraps | 24 | `unsigned int` bit-field; written under the avoidance mutex | Avoidance task and `obstacle_avoidance_line()` |
-| 5 | `g_watch.from_mm` (avoidance): distance along the return diagonal before the line is watched for | 0 to 111 mm (diagonal 144 to 326 mm); 9 bits leave room for a larger `GAP_MM` or `HALF_MM` | 9 | As above | As above |
+| 5 | `g_watch.from_mm` (avoidance): distance along the return diagonal before the line is watched for | 0 to 110 mm (diagonal 144 to 325 mm); 9 bits leave room for a larger `GAP_MM` or `HALF_MM` | 9 | As above | As above |
 | 5 | `g_watch.b_found` (avoidance): line seen, diagonal cut short | 0 or 1 | 1 | As above | As above |
 | 5 | `g_next.mode` (scan): requested scan, forward or profile | 0 or 1 | 1 | `unsigned int` bit-field; written under the scan mutex | `ultrasonic_scan_request()` and the scan task |
 | 5 | `g_next.request` (scan): requests made | 0 to 15, wraps | 4 | As above | As above |
@@ -100,7 +100,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `.b_reading`: the sensor is over a barcode now | 0 or 1 | 1 | As above | As above |
 | 3 | `g_actions` (barcode decoder): the command of each letter, A to Z | 0 to 4 each (as `.command`) | 8 each | `uint8_t`, the smallest standard type; the `map` payload sends it in 3 bits each | `barcode_decoder_set_actions()` writes it and the Barcode Decoder task reads it, both under the barcode mutex |
 | 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in µm (0 to 30000) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
-| 3 | `g_code.elements`, `.b_black`, `.b_in_code` (barcode decoder): elements in the barcode so far, black now, inside a barcode | 0 to 31, stops at 31 (29 are decoded); 0 or 1 each | 5; 1 each | `unsigned int` bit-field | Barcode Decoder task only |
+| 3 | `g_code.elements`, `.b_black`, `.b_in_code` (barcode decoder): elements in the barcode so far, black now, inside a barcode | 0 to 29, where it stops (29 are decoded); 0 or 1 each | 5; 1 each | `unsigned int` bit-field | Barcode Decoder task only |
 | 3 | `g_check.wakes`, `.samples` (barcode decoder): wake-ups in the current 100 ms check of the ADC, and the samples read in them | 0 to 10; 0 to 2550 (10 reads of up to 255) | 4; 12 | `unsigned int` bit-field | Barcode Decoder task only |
 | 3 | `g_run_start` (barcode decoder): where the current bar or space began | 0 to 2³²−1 µm, wraps (`motion_control_distance_um()`) | 32 | `uint32_t`, the odometer's own width | Barcode Decoder task only |
 | 3 | `g_read` (driver): next ring index to hand out | 0 to 255 | 8 | `uint8_t` | Barcode Decoder task only |
@@ -118,9 +118,9 @@ Application data uses only the bits its valid range needs (change requirement "M
 | Shared | `g_vc.released`: cycles GP20 has been released | 0 to 5, stops at 5 | 3 | As above | Controller task only |
 | Shared | `g_vc.pending`: barcode command for the next junction | 0 to 4 | 3 | As above | Controller task only |
 | Shared | `g_vc.b_turning`: TURN past the roll forward | 0 or 1 | 1 | `bool` bit-field | Controller task only |
-| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 87, 92, 68, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
+| 1 | MQTT payloads `telemetry`, `motion`, `scan`, `heartbeat`, `cmd`: every field in [TELEMETRY.md](TELEMETRY.md) | Per field | 96, 92, 68, 16, 8 | Explicit shifts, most significant bit first | Wi-Fi service and the supervisor |
 | 1 | Message buffer entry (topic number + payload) and command event flag: [TELEMETRY.md](TELEMETRY.md#inside-the-car) | Topic 0 to 3; commands one bit each | 8 + payload; 3 | `uint8_t` topic, the smallest unit of a message; event flag bits, set and clear atomic | Telemetry task → Wi-Fi service, both `TMO_POL`; Wi-Fi service → Vehicle Controller |
-| 1 | `payload_telemetry_t`: the telemetry fields gathered for packing | Per field, as sent | 87 | `unsigned int` and `signed int` bit-fields | Telemetry task only |
+| 1 | `payload_telemetry_t`: the telemetry fields gathered for packing | Per field, as sent | 96 | `unsigned int` and `signed int` bit-fields | Telemetry task only |
 | 1 | Telemetry task: heartbeat count; cycles since the last heartbeat | 0 to 65535, wraps; 0 to 4 | 16; 3 | `uint16_t`, the payload's own width; `uint8_t`, the smallest standard type | Telemetry task only |
 
 ## Evidence

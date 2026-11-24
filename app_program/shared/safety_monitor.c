@@ -2,7 +2,7 @@
  *
  * @brief Safety Monitor task. Every 10 ms it checks the IMU faults and the
  * motion state, and latches a stop on either. Collision risk belongs to
- * obstacle avoidance, which stops on two readings within 150 mm. The latch is
+ * obstacle avoidance, which stops on two readings within 200 mm. The latch is
  * motion control's own (motion_control_latch()), so it is kept in one place.
  */
 

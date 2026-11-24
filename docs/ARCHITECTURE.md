@@ -126,7 +126,7 @@ Notes:
 
 - Each interface except I12 is a set of function calls that copy a record under the provider's mutex, so they are safe from any task on either core. I12 uses a message buffer (telemetry out) and an event flag (commands in).
 - Only one task steers at a time: the Vehicle Controller starts line following and avoidance, avoidance stops line following when it takes over (I1), and the controller restarts it once avoidance is back to watching ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#hand-over-to-avoidance)).
-- Collision risk belongs to Obstacle Avoidance, which brakes on the second forward reading in a row within 150 mm. It reads the range only while the car follows the line or drives straight in a bypass: nothing checks it during turns (avoidance's bypass turns, the controller's junction turns, the line follower's lost-line pivot). The Safety Monitor does not read I8: a range backstop could never act before avoidance, which brakes on the same reading, and only avoidance requests readings.
+- Collision risk belongs to Obstacle Avoidance, which brakes on the second forward reading in a row within 200 mm. It reads the range only while the car follows the line or drives straight in a bypass: nothing checks it during turns (avoidance's bypass turns, the controller's junction turns, the line follower's lost-line pivot). The Safety Monitor does not read I8: a range backstop could never act before avoidance, which brakes on the same reading, and only avoidance requests readings.
 - The Safety Monitor latches a stop on an IMU fault bit or motion `FAILED`. The Vehicle Controller latches it too for each of its own stops, including the supervisor's `STOP`. While the latch is set, motion control refuses every command, so a request issued before the stop can never move the car (FR11).
 - The supervisor may only start, stop and reset. It never steers or sets speed (FR1).
 
@@ -180,7 +180,7 @@ stateDiagram-v2
     Search --> Idle: line_following_stop()
 ```
 
-- **Follow** reads the left and right IR sensors every 10 ms and steers towards the sensor that sees black. Both black for 6 samples is a junction, driven straight over.
+- **Follow** reads the left and right IR sensors every 10 ms and steers towards the sensor that sees black. Both black for 6 samples is a junction, driven straight over. Hits weaving from side to side switch it to holding the average heading until a long hit (a curve).
 - **Search** pivots towards the side the line was last seen, then the other way. **Lost** brakes and sets `b_lost`; the Vehicle Controller takes a safe stop. A sensor black for 300 mm is stuck, and also sets `APP_FAULT_LINE_SENSOR`.
 - The **Barcode Decoder** samples all the time. A barcode ends at a white run over 30 mm; it is decoded as Code 39 in either direction and validated, or rejected and counted. An unvalidated barcode is never acted on. Under 100 samples in 100 ms sets `APP_FAULT_BARCODE_SENSOR` and changes nothing else.
 - The Vehicle Controller acts on the latest validated barcode at the next junction (TURN), with encoder-based motion, then starts line following again.
@@ -195,7 +195,7 @@ Tasks: Ultrasonic Scan, Obstacle Avoidance, Vehicle Controller, Wheel Motion Con
 stateDiagram-v2
     [*] --> IDLE
     IDLE --> MONITOR: start
-    MONITOR --> PROFILE: two readings in a row within 150 mm
+    MONITOR --> PROFILE: two readings in a row within 200 mm
     MONITOR --> STOPPED: no echo
     PROFILE --> MONITOR: nothing straight ahead
     PROFILE --> BYPASS: a side open
@@ -209,7 +209,7 @@ stateDiagram-v2
 
 - **Monitor** asks for forward readings while the car follows the line.
 - **Profile** stops line following, brakes, then asks for a profile scan with the car still: a coarse sweep every 15°, then a fine sweep every 5° outward from straight ahead while the rays are blocked. The result is the obstacle's edges, width and closest point, and the clearance 45° left and right.
-- **Bypass** picks the more open side with at least 250 mm (left on a tie), checks along the first diagonal that the path is clear (if not, trying the other side once if the scan found it open), then drives seven encoder-based steps around the obstacle back to the original line and heading. Each straight step watches the range ahead and stops within 150 mm.
+- **Bypass** picks the more open side with at least 250 mm (left on a tie), checks along the first diagonal that the path is clear (if not, trying the other side once if the scan found it open), then drives seven encoder-based steps around the obstacle back to the original heading, just beside the line. Each straight step watches the range ahead and stops within 200 mm.
 - Reverse is disabled: nothing verifies clearance behind the car. No safe forward route means Safe Stop (FR7).
 
 Details: [OBSTACLE_AVOIDANCE.md](OBSTACLE_AVOIDANCE.md#how-it-works).

@@ -36,7 +36,7 @@ static const struct
 } g_actions[] = {
     {'A', BARCODE_DECODER_LEFT},     {'B', BARCODE_DECODER_RIGHT},
     {'C', BARCODE_DECODER_STRAIGHT}, {'D', BARCODE_DECODER_UTURN},
-    {'Z', BARCODE_DECODER_LEFT},
+    {'F', BARCODE_DECODER_RIGHT},    {'Z', BARCODE_DECODER_LEFT},
 };
 
 static ID gh_mutex;

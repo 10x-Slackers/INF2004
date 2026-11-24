@@ -179,7 +179,7 @@ stateDiagram-v2
     Search --> Idle: line_following_stop()
 ```
 
-- **Follow** reads the left and right IR sensors every 10 ms and steers towards the sensor that sees black. Both black for 5 samples is a junction, driven straight over. Hits weaving from side to side switch it to holding the average heading until a long hit (a curve).
+- **Follow** reads the left and right IR sensors every 10 ms and steers towards the sensor that sees black. Both black for 6 samples is a junction, driven straight over. Hits weaving from side to side switch it to holding the average heading until a long hit (a curve).
 - **Search** pivots towards the side the line was last seen, then the other way. **Lost** brakes and sets `b_lost`; the Vehicle Controller takes a safe stop.
 - The **Barcode Decoder** samples all the time. A barcode ends at a white run over 30 mm; it is decoded as Code 39 in either direction and validated, or rejected and counted. An unvalidated barcode is never acted on.
 - The Vehicle Controller acts on the latest validated barcode at the next junction (TURN), with encoder-based motion, then starts line following again.

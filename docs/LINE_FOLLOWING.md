@@ -39,7 +39,7 @@ A junction does not stop line following: the controller decides what to do at on
 | ------------- | --------- | ----------------------------------------------------------------------------- |
 | `bits`        | 0–3       | `DRV_LINE_LEFT` (1), `DRV_LINE_RIGHT` (2): that sensor sees black now          |
 | `last_side`   | 0–2       | Last single sensor to see black; 0 before the first                           |
-| `b_junction`  | 0–1       | Both sensors black for 5 samples in a row (50 ms, 9 mm at 175 mm/s)           |
+| `b_junction`  | 0–1       | Both sensors black for 6 samples in a row (60 ms, 9 mm at 150 mm/s)           |
 | `b_following` | 0–1       | Steering the car                                                              |
 | `b_searching` | 0–1       | Pivoting to find a lost line                                                  |
 | `b_lost`      | 0–1       | The search did not find the line: braked and stopped following, until the next `start()` |

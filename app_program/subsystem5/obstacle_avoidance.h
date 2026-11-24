@@ -36,6 +36,7 @@ typedef struct
 bool obstacle_avoidance_init(void);
 void obstacle_avoidance_start(void);
 void obstacle_avoidance_cancel(void);
+void obstacle_avoidance_line(void);
 void obstacle_avoidance_get_status(obstacle_avoidance_status_t * p_status);
 
 #endif /* OBSTACLE_AVOIDANCE_H */

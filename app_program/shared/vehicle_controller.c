@@ -24,9 +24,10 @@
 #define VC_PERIOD_MS   10u
 #define VC_BUTTON      20u  /* Robo Pico button, low when pressed. */
 #define VC_RELEASED    5u   /* Cycles released before a press counts. */
-#define VC_SPEED_MM_S  150u /* Line following speed. */
+#define VC_SPEED_MM_S  160u /* Line following speed. */
 #define VC_AXLE_MM     115u /* Line sensors ahead of the axle. */
 #define VC_MOVE_CYCLES 500u /* 5 s limit on each junction move. */
+#define VC_MOVE_MM_S   250u /* Junction moves and turns. */
 #define VC_TURN_DEG    90u  /* Barcode A and B. */
 #define VC_UTURN_DEG   180u /* Barcode D. */
 
@@ -59,7 +60,8 @@ static volatile struct
 
 static void vehicle_controller_task(INT stacd, void * p_exinf);
 static void vc_step(bool b_press, bool b_barcode, bool b_junction,
-                    bool b_searching, uint32_t command, uint32_t avoid_state,
+                    const line_following_t * p_line, uint32_t command,
+                    uint32_t avoid_state,
                     const motion_control_status_t * p_motion);
 static void vc_enter(vc_state_t state, const char * p_cause);
 static bool vc_pressed(void);
@@ -167,8 +169,8 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
         }
         else
         {
-            vc_step(b_press, b_barcode, b_junction, (0u != line.b_searching),
-                    barcode.command, avoid.state, &motion);
+            vc_step(b_press, b_barcode, b_junction, &line, barcode.command,
+                    avoid.state, &motion);
         }
     }
 }
@@ -179,15 +181,17 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
  * @param[in] b_press     GP20 was pressed.
  * @param[in] b_barcode   A barcode was validated since FOLLOW last ran.
  * @param[in] b_junction  A junction began since FOLLOW last ran.
- * @param[in] b_searching The line follower is pivoting to find the line.
+ * @param[in] p_line      Line state.
  * @param[in] command     The last validated barcode command.
  * @param[in] avoid_state Obstacle avoidance state.
  * @param[in] p_motion    Motion status.
  */
 static void vc_step(bool b_press, bool b_barcode, bool b_junction,
-                    bool b_searching, uint32_t command, uint32_t avoid_state,
+                    const line_following_t * p_line, uint32_t command,
+                    uint32_t avoid_state,
                     const motion_control_status_t * p_motion)
 {
+    bool const b_searching = (0u != p_line->b_searching);
     s4_tilt_t tilt = {0};
 
     switch (g_vc.state)
@@ -244,6 +248,12 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
             break;
 
         case VC_AVOID:
+            /* Every cycle: the bypass task reads too slowly to see the
+             * line go by. */
+            if (0u != p_line->bits)
+            {
+                obstacle_avoidance_line();
+            }
             if (OBSTACLE_AVOIDANCE_MONITOR == avoid_state)
             {
                 vc_enter(VC_FOLLOW, "obstacle passed");
@@ -301,6 +311,7 @@ static void vc_enter(vc_state_t state, const char * p_cause)
             line_following_stop();
             obstacle_avoidance_cancel();
             g_vc.b_turning = false;
+            (void)motion_control_set_speed(VC_MOVE_MM_S);
             (void)motion_control_move_forward(VC_AXLE_MM);
             break;
 

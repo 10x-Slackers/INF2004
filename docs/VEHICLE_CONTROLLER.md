@@ -32,8 +32,8 @@ stateDiagram-v2
 | INIT      | Waits for the IMU's calibration (`s4_get_tilt()`, `cal`)                                                                                                                                         |
 | READY     | Car stopped. Barcodes read now are ignored                                                                                                                                                               |
 | FOLLOW    | `line_following_start(VC_SPEED_MM_S)` and `obstacle_avoidance_start()`. A newly validated barcode becomes the pending command; a later one replaces it. While the line follower pivots to find a lost line (`b_searching`), avoidance is cancelled, so the sweep is not taken for an obstacle ahead, and started again once the line is found                                                              |
-| AVOID     | Hands off: avoidance has already stopped line following and drives the car until it is back to `MONITOR`, stopped on the original line                                                                   |
-| TURN      | Stops line following, cancels avoidance, rolls forward `VC_AXLE_MM` onto the junction, then turns for the pending command: A or Z left 90°, B or F right 90°, C none, D left 180°. Each move must finish in 5 s |
+| AVOID     | Avoidance has already stopped line following and drives the car until it is back to `MONITOR`, stopped on the original line. Each cycle a line sensor sees black, it calls `obstacle_avoidance_line()`, which ends the return diagonal on the line                                                                   |
+| TURN      | Stops line following, cancels avoidance, sets the cruise speed to `VC_MOVE_MM_S`, rolls forward `VC_AXLE_MM` onto the junction, then turns for the pending command: A or Z left 90°, B or F right 90°, C none, D left 180°. Each move must finish in 5 s |
 | SAFE_STOP | Entered whenever the Safety Monitor is latched, from any state; the controller's own stops latch it too. Cancels avoidance and stops line following (which brakes). GP20 clears the latch and returns to INIT, which moves on to READY as soon as the IMU is calibrated, so a stop taken before calibration cannot skip it; a second press starts again (FR11). Tilt and upside-down faults stay latched until reset, so the car stays here; an IMU sensor fault is cleared by the press, and INIT then waits for the IMU to calibrate again, so the car comes back here if the sensor still does not work; a lifted fault clears about 1 s after the lift, so a car picked up after calibration needs one press to clear before the press that starts it |
 
 A barcode validated during TURN or AVOID becomes the pending command once FOLLOW resumes. A junction is acted on at its first sample (`b_junction` rising), and only in FOLLOW with a command pending: one crossed during a bypass or a turn is not taken later, unless, after a bypass, the sensors are still on it when FOLLOW resumes.
@@ -74,8 +74,9 @@ Constants are at the top of `vehicle_controller.c`.
 | Constant         | Default | Set it to                                                                                |
 | ---------------- | ------- | ---------------------------------------------------------------------------------------- |
 | `VC_AXLE_MM`     | 115     | Distance from the line sensors back to the wheel axle, so turns pivot over the junction  |
-| `VC_SPEED_MM_S`  | 150     | Line following speed, 1 to 500                                                           |
+| `VC_SPEED_MM_S`  | 160     | Line following speed, 1 to 500                                                           |
 | `VC_MOVE_CYCLES` | 500     | Limit on each junction move, in 10 ms cycles                                              |
+| `VC_MOVE_MM_S`   | 250     | Cruise speed of the junction moves and turns                                             |
 
 ## Console
 

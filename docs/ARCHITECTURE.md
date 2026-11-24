@@ -46,7 +46,7 @@ The periodic tasks are woken by cyclic handlers (`app_start_cyclic()`), so their
 
 The ADC samples the barcode sensor (ADC0) at 2 ksample/s from start-up, paced by the ADC clock divider and moved by one DMA channel into a 256-sample (128 ms) ring that wraps by itself. Every 10 ms the task takes the samples written since its last read, about 20. A task that falls more than 128 ms behind loses the oldest samples. Bar widths are measured against encoder distance (I5), never against task wake-ups, so speed changes do not distort them.
 
-At 150 mm/s and a 3 mm narrow bar this gives about 40 samples per narrow bar.
+At 160 mm/s and a 3 mm narrow bar this gives about 37 samples per narrow bar.
 
 ### Hardware ownership
 
@@ -115,7 +115,7 @@ Not drawn: the Telemetry task reads every task's status for its payloads ([Telem
 | I3  | Vehicle Controller, Line Following, Obstacle Avoidance → Wheel Motion Control | Move a distance, turn an angle, drive at wheel speeds (expires after 200 ms unless renewed), stop; a new command replaces the running one |
 | I4  | Wheel Motion Control → any task                                   | Motion status: `IDLE`, `RUNNING`, `COMPLETE`, `FAILED`, speeds, counts                     |
 | I5  | Wheel Motion Control → Barcode Decoder, Line Following            | Odometer and heading; distance rolled up to now in µm                                      |
-| I6  | Vehicle Controller ↔ Obstacle Avoidance                           | Start / cancel one way; state, bypass side and step, clearances the other                  |
+| I6  | Vehicle Controller ↔ Obstacle Avoidance                           | Start / cancel / line seen one way; state, bypass side and step, clearances the other                  |
 | I7  | Obstacle Avoidance → Ultrasonic Scan                              | Scan request: `FORWARD` (one reading ahead) or `PROFILE` (coarse then fine sweep)          |
 | I8  | Ultrasonic Scan → Obstacle Avoidance                              | Forward range and its time, obstacle profile                                               |
 | I9  | IMU and Terrain Monitor → Vehicle Controller                      | Calibration done, highest hump of the run; tilt, upside-down, lifted and sensor faults as fault bits |

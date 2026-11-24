@@ -94,7 +94,7 @@ Measured on the assembled car. Distances along the car are from the drive (encod
 
 | Dimension | Value | Used by |
 | --- | --- | --- |
-| Line sensors ahead of the axle | 115 mm | `VC_AXLE_MM` (junction turns), `S3_BENCH_AXLE_MM`, the lost-line search reach ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works)) |
+| Line sensors ahead of the axle | 115 mm | `VC_AXLE_MM` (junction turns), `OBSTACLE_AVOIDANCE_LINE_MM` (bypass return), `S3_BENCH_AXLE_MM`, the lost-line search reach ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works)) |
 | Spacing of the two line sensors | 20 mm between their inner edges, about 30 mm centre to centre | Line following ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#calibration)) |
 | Caster ball bearing from the axle | 80 mm | The three-point stance the hump estimate assumes ([ARCHITECTURE.md](ARCHITECTURE.md#imu-terrain-monitoring)) |
 | Ultrasonic sensor ahead of the axle | 100 mm | `OBSTACLE_AVOIDANCE_FRONT_MM` |

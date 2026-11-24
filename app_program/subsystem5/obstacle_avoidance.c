@@ -16,7 +16,7 @@
 #define OBSTACLE_AVOIDANCE_SCAN_MS  12000u /* Longest profile scan. */
 #define OBSTACLE_AVOIDANCE_MOVE_MS  10000u
 #define OBSTACLE_AVOIDANCE_STEPS    7u
-#define OBSTACLE_AVOIDANCE_SPEED    300u /* mm/s, bypass moves and turns. */
+#define OBSTACLE_AVOIDANCE_SPEED    250u /* mm/s, bypass moves and turns. */
 #define OBSTACLE_AVOIDANCE_TURN_DEG 60   /* Diagonals' angle off the line. */
 #define OBSTACLE_AVOIDANCE_SIN_TURN 866u /* sin 60 degrees, per 1000. */
 #define OBSTACLE_AVOIDANCE_COS_TURN 500u /* cos 60 degrees, per 1000. */
@@ -25,10 +25,11 @@
 #define OBSTACLE_AVOIDANCE_REAR_MM  80u  /* Axle to the back of the car. */
 #define OBSTACLE_AVOIDANCE_GAP_MM   40u  /* Clearance kept everywhere. */
 #define OBSTACLE_AVOIDANCE_BLOCKED  2u   /* In a row: skips a stray echo. */
-#define OBSTACLE_AVOIDANCE_SHORT_MM 25u  /* Return diagonal cut, see below. */
+#define OBSTACLE_AVOIDANCE_LINE_MM  115u /* Line sensors ahead of axle. */
+#define OBSTACLE_AVOIDANCE_EARLY_MM 100u /* Line watched this far early. */
+#define OBSTACLE_AVOIDANCE_RETURN   6u   /* Step of the return diagonal. */
 #define OBSTACLE_AVOIDANCE_OUT      0u   /* Legs of the bypass. */
 #define OBSTACLE_AVOIDANCE_PASS     1u
-#define OBSTACLE_AVOIDANCE_BACK     2u
 /* One bypass step: a turn towards the bypass side (+1) or back (-1), or,
  * with no turn (0), a move forward along leg. The first turn is
  * obstacle_avoidance_face()'s, which checks the diagonal. */
@@ -41,12 +42,19 @@ typedef struct
 static const obstacle_avoidance_step_t g_steps[OBSTACLE_AVOIDANCE_STEPS] = {
     {1, 0u},  {0, OBSTACLE_AVOIDANCE_OUT},
     {-1, 0u}, {0, OBSTACLE_AVOIDANCE_PASS},
-    {-1, 0u}, {0, OBSTACLE_AVOIDANCE_BACK},
+    {-1, 0u}, {0, OBSTACLE_AVOIDANCE_OUT}, /* Back: as long as out. */
     {1, 0u}};
 
 static ID gh_mutex;
 static ID gh_task;
 static obstacle_avoidance_status_t g_status;
+/* Return diagonal, under gh_mutex: where the line is watched for. */
+static struct
+{
+    unsigned int start_mm : 24; /* Motion distance_mm at its start. */
+    unsigned int from_mm : 9;   /* Watched from this far along it. */
+    bool b_found : 1;           /* Line seen; rolling the axle onto it. */
+} g_watch;
 
 static void obstacle_avoidance_task(INT stacd, void * p_exinf);
 static bool obstacle_avoidance_running(uint32_t state);
@@ -123,6 +131,31 @@ void obstacle_avoidance_cancel(void)
     }
     g_status.state = OBSTACLE_AVOIDANCE_IDLE;
     g_status.step = 0u;
+    (void)tk_unl_mtx(gh_mutex);
+}
+
+/*!
+ * @brief A line sensor sees black. Near where the line should be on the
+ * return diagonal, cut the diagonal short so the car stops with its axle
+ * on the line, then turns along it. Elsewhere, nothing.
+ */
+void obstacle_avoidance_line(void)
+{
+    motion_control_status_t motion = {0};
+
+    /* Under the lock, so the diagonal's own command has been given. */
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+    motion_control_get_status(&motion);
+    if ((OBSTACLE_AVOIDANCE_BYPASS == g_status.state) &&
+        (OBSTACLE_AVOIDANCE_RETURN == g_status.step) && (!g_watch.b_found) &&
+        (MOTION_CONTROL_RUNNING == motion.state) &&
+        (MOTION_CONTROL_CMD_FORWARD == motion.command) &&
+        (((motion.distance_mm - g_watch.start_mm) &
+          MOTION_CONTROL_DISTANCE_MASK) >= g_watch.from_mm))
+    {
+        g_watch.b_found = true;
+        (void)motion_control_move_forward(OBSTACLE_AVOIDANCE_LINE_MM);
+    }
     (void)tk_unl_mtx(gh_mutex);
 }
 
@@ -302,7 +335,7 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
 
     /* Under the lock, so a cancel cannot slip in before the command. */
     (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
-    /* The cruise speed is shared: the controller's junction moves keep it. */
+    /* The cruise speed is shared: the controller sets its own for junctions. */
     (void)motion_control_set_speed(OBSTACLE_AVOIDANCE_SPEED);
     if (!obstacle_avoidance_running(g_status.state))
     {
@@ -339,7 +372,11 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
         {
             /* Clear ahead, or already stopped by the scan. */
         }
+        /* Under the lock, so obstacle_avoidance_line() cannot replace a
+         * move this loop has just seen complete. */
+        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         motion_control_get_status(&status);
+        (void)tk_unl_mtx(gh_mutex);
     } while (
         (obstacle_avoidance_active()) &&
         (MOTION_CONTROL_RUNNING == status.state) &&
@@ -397,7 +434,24 @@ static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
                                     const uint32_t * p_legs)
 {
     const obstacle_avoidance_step_t * p_step = &g_steps[step];
+    motion_control_status_t motion = {0};
+    uint32_t const ahead_mm =
+        OBSTACLE_AVOIDANCE_LINE_MM + OBSTACLE_AVOIDANCE_EARLY_MM;
 
+    if (OBSTACLE_AVOIDANCE_RETURN == (step + 1u))
+    {
+        /* The sensors should reach the line LINE_MM before
+         * the end. The diagonal is under 330 mm, so from_mm is under 115;
+         * its 9 bits leave room for a larger GAP_MM or HALF_MM. */
+        motion_control_get_status(&motion);
+        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+        g_watch.start_mm = motion.distance_mm;
+        g_watch.from_mm = (p_legs[OBSTACLE_AVOIDANCE_OUT] > ahead_mm)
+                              ? (p_legs[OBSTACLE_AVOIDANCE_OUT] - ahead_mm)
+                              : 0u;
+        g_watch.b_found = false;
+        (void)tk_unl_mtx(gh_mutex);
+    }
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, step + 1u);
     return (0 != p_step->turn)
                ? obstacle_avoidance_turn(side, p_step->turn)
@@ -464,14 +518,15 @@ static uint32_t obstacle_avoidance_face(const scan_profile_t * p_profile,
 /*!
  * @brief Stop, profile the obstacle and the clearance each side, and drive
  * round it on the more open side: out on a diagonal, straight past, and
- * back on a diagonal to the original line and heading. Back to watching if the
+ * back on a diagonal to the original line (cut short where the line sensors
+ * find it, obstacle_avoidance_line()) and heading. Back to watching if the
  * obstacle has gone.
  */
 static void obstacle_avoidance_avoid(void)
 {
     ultrasonic_scan_t scan = {0};
     uint32_t side = SCAN_PROFILE_NONE;
-    uint32_t legs[3] = {0u}; /* OBSTACLE_AVOIDANCE_OUT, _PASS, _BACK. */
+    uint32_t legs[2] = {0u}; /* OBSTACLE_AVOIDANCE_OUT, _PASS. */
     uint32_t step = 0u;
 
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_PROFILE, 0u);
@@ -504,22 +559,18 @@ static void obstacle_avoidance_avoid(void)
         legs[OBSTACLE_AVOIDANCE_OUT] =
             obstacle_avoidance_diagonal(&scan.profile, side);
         /* Axle travel along the line until the back clears the obstacle,
-         * taken as twice as long as its blocked edges are apart, less what
+         * taken as 1.5 times as long as its blocked edges are apart, less what
          * the diagonal covers. At least 240 against at most 163: no
          * underflow. */
         legs[OBSTACLE_AVOIDANCE_PASS] =
             OBSTACLE_AVOIDANCE_FRONT_MM + scan.profile.closest_mm +
-            (2u * scan_profile_width_mm(scan.profile.closest_mm,
-                                        scan.profile.left_deg -
-                                            scan.profile.right_deg)) +
+            ((3u * scan_profile_width_mm(scan.profile.closest_mm,
+                                         scan.profile.left_deg -
+                                             scan.profile.right_deg)) /
+             2u) +
             OBSTACLE_AVOIDANCE_REAR_MM + OBSTACLE_AVOIDANCE_GAP_MM -
             ((legs[OBSTACLE_AVOIDANCE_OUT] * OBSTACLE_AVOIDANCE_COS_TURN) /
              1000u);
-        /* Back short of the line, so the line sensors, ahead of the axle,
-         * do not cross it before the last turn. The diagonal is at least
-         * 144 mm: no underflow. */
-        legs[OBSTACLE_AVOIDANCE_BACK] =
-            legs[OBSTACLE_AVOIDANCE_OUT] - OBSTACLE_AVOIDANCE_SHORT_MM;
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_status.side = side; /* Faced, after any turn round. */
         (void)tk_unl_mtx(gh_mutex);

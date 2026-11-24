@@ -35,8 +35,7 @@ ER subsystem2_init(void)
  */
 ER subsystem2_start(void)
 {
-    /* FP is the kernel's generic task pointer type. */
-    return app_start_cyclic(app_start_task((FP)subsystem2_motion_task,
+    return app_start_cyclic(app_start_task(subsystem2_motion_task,
                                            S2_PRI_MOTION, TP_PRC1, "s2_motion"),
                             MOTION_CONTROL_PERIOD_MS);
 }

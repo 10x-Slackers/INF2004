@@ -24,32 +24,31 @@
 #define TEST_REPORT_H
 
 #include <stdint.h>
-#include <tm/tmonitor.h>
+#include "app.h"
 
 #define TEST_INIT()                                                            \
     int32_t test_passed = 0;                                                   \
     int32_t test_failed = 0
 
-/* (UB *) below: tm_printf() takes unsigned chars. */
 #define TEST_CHECK(id, cond, desc)                                             \
     do                                                                         \
     {                                                                          \
         if (cond)                                                              \
         {                                                                      \
             test_passed++;                                                     \
-            tm_printf((UB *)"[TEST] %s PASS  %s\n", (id), (desc));             \
+            APP_PRINTF("[TEST] %s PASS  %s\n", (id), (desc));                  \
         }                                                                      \
         else                                                                   \
         {                                                                      \
             test_failed++;                                                     \
-            tm_printf((UB *)"[TEST] %s FAIL  %s   (%s:%d)\n", (id), (desc),    \
-                      __FILE__, __LINE__);                                     \
+            APP_PRINTF("[TEST] %s FAIL  %s   (%s:%d)\n", (id), (desc),         \
+                       __FILE__, __LINE__);                                    \
         }                                                                      \
     } while (0)
 
 #define TEST_SUMMARY(name)                                                     \
-    (tm_printf((UB *)"[TEST] %s SUMMARY %d passed, %d failed\n", (name),       \
-               test_passed, test_failed))
+    (APP_PRINTF("[TEST] %s SUMMARY %d passed, %d failed\n", (name),            \
+                test_passed, test_failed))
 
 #endif /* TEST_REPORT_H */
 

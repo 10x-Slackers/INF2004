@@ -96,9 +96,8 @@ bool obstacle_avoidance_init(void)
  */
 ID obstacle_avoidance_start_task(void)
 {
-    /* FP is the kernel's generic task pointer type. */
-    gh_task = app_start_task((FP)obstacle_avoidance_task, S5_PRI_AVOID, 0,
-                             "s5_avoid");
+    gh_task =
+        app_start_task(obstacle_avoidance_task, S5_PRI_AVOID, 0, "s5_avoid");
     return gh_task;
 }
 

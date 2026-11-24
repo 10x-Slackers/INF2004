@@ -252,15 +252,14 @@ static void barcode_decoder_end(uint32_t odometer_mm)
     /* Bench evidence for S3-U14: what the sensor measured, in 0.1 mm. */
     if (g_code.elements >= CODE39_PER_CHR)
     {
-        /* (UB *): tm_printf() takes unsigned chars. (int): letter is 0
-         * or a Code 39 character. */
-        tm_printf((UB *)"[barcode] elements=%u letter=%c widths_0.1mm=",
-                  g_code.elements, (0u != letter) ? (int)letter : '-');
+        /* (int): letter is 0 or a Code 39 character. */
+        APP_PRINTF("[barcode] elements=%u letter=%c widths_0.1mm=",
+                   g_code.elements, (0u != letter) ? (int)letter : '-');
         for (element = 0u; element < g_code.elements; element++)
         {
-            tm_printf((UB *)" %u", g_widths[element] / 100u);
+            APP_PRINTF(" %u", g_widths[element] / 100u);
         }
-        tm_printf((UB *)"\n");
+        APP_PRINTF("\n");
     }
 #endif
 

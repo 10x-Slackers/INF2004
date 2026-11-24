@@ -74,9 +74,8 @@ ER vehicle_controller_start(void)
 {
     app_pull_up(VC_BUTTON);
 
-    /* FP is the kernel's generic task pointer type. */
     return app_start_cyclic(
-        app_start_task((FP)vehicle_controller_task, VC_PRI, 0u, "vc"),
+        app_start_task(vehicle_controller_task, VC_PRI, 0u, "vc"),
         VC_PERIOD_MS);
 }
 
@@ -215,8 +214,7 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
             if (b_barcode)
             {
                 g_vc.pending = command;
-                /* (UB *): tm_printf() takes unsigned chars. */
-                tm_printf((UB *)"[vc] barcode %u pending\n", g_vc.pending);
+                APP_PRINTF("[vc] barcode %u pending\n", g_vc.pending);
             }
             /* Pause avoidance while the line follower pivots: the sweep
              * would see the sides as obstacles ahead. */
@@ -287,9 +285,8 @@ static void vc_enter(vc_state_t state, const char * p_cause)
     s4_hump_t hump = {0};
     vc_state_t const previous = (vc_state_t)g_vc.state;
 
-    /* (UB *): tm_printf() takes unsigned chars. */
-    tm_printf((UB *)"[vc] %s -> %s: %s\n", g_names[g_vc.state], g_names[state],
-              p_cause);
+    APP_PRINTF("[vc] %s -> %s: %s\n", g_names[g_vc.state], g_names[state],
+               p_cause);
     g_vc.state = state;
     g_vc.cycles = 0u;
     switch (state)
@@ -320,7 +317,7 @@ static void vc_enter(vc_state_t state, const char * p_cause)
             safety_monitor_stop(SAFETY_MONITOR_CONTROLLER); /* If ours. */
             line_following_stop();                          /* Stop steering. */
             s4_get_hump(&hump);
-            tm_printf((UB *)"[vc] max hump %u mm\n", hump.max);
+            APP_PRINTF("[vc] max hump %u mm\n", hump.max);
             break;
 
         default:

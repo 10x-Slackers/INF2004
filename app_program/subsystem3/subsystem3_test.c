@@ -101,9 +101,7 @@ void subsystem3_test(void)
     TEST_CHECK("S3-U13", 8u == sizeof(barcode), "packed barcode 8 bytes");
     TEST_SUMMARY("subsystem3");
 
-    /* FP is the kernel's generic task pointer type. */
-    (void)app_start_task((FP)subsystem3_bench_task, S3_PRI_BENCH, 0,
-                         "s3_bench");
+    (void)app_start_task(subsystem3_bench_task, S3_PRI_BENCH, 0, "s3_bench");
 }
 
 /*!
@@ -146,15 +144,14 @@ static bool subsystem3_bench_report(line_following_t * p_last)
         (line.b_lost != p_last->b_lost))
     {
         motion_control_get_status(&motion);
-        /* (UB *): tm_printf() takes unsigned chars. */
-        tm_printf((UB *)"[line] left=%u right=%u junction=%u last=%u "
-                        "following=%u searching=%u lost=%u stuck=%u mm=%u "
-                        "deg=%u\n",
-                  line.bits & DRV_LINE_LEFT, (line.bits & DRV_LINE_RIGHT) >> 1,
-                  line.b_junction, line.last_side, line.b_following,
-                  line.b_searching, line.b_lost,
-                  0u != (app_faults() & APP_FAULT_LINE_SENSOR),
-                  motion.distance_mm, motion.heading_deg);
+        APP_PRINTF("[line] left=%u right=%u junction=%u last=%u "
+                   "following=%u searching=%u lost=%u stuck=%u mm=%u "
+                   "deg=%u\n",
+                   line.bits & DRV_LINE_LEFT, (line.bits & DRV_LINE_RIGHT) >> 1,
+                   line.b_junction, line.last_side, line.b_following,
+                   line.b_searching, line.b_lost,
+                   0u != (app_faults() & APP_FAULT_LINE_SENSOR),
+                   motion.distance_mm, motion.heading_deg);
         *p_last = line;
     }
     return line.b_lost;
@@ -174,10 +171,9 @@ static uint32_t subsystem3_bench_barcode(barcode_decoder_t * p_last)
     if ((barcode.count != p_last->count) ||
         (barcode.rejects != p_last->rejects))
     {
-        /* (UB *): tm_printf() takes unsigned chars. */
-        tm_printf((UB *)"[barcode] command=%u count=%u rejects=%u at_mm=%u\n",
-                  barcode.command, barcode.count, barcode.rejects,
-                  barcode.distance_mm);
+        APP_PRINTF("[barcode] command=%u count=%u rejects=%u at_mm=%u\n",
+                   barcode.command, barcode.count, barcode.rejects,
+                   barcode.distance_mm);
         command = (barcode.count != p_last->count) ? barcode.command
                                                    : BARCODE_DECODER_NONE;
         *p_last = barcode;
@@ -216,8 +212,7 @@ static bool subsystem3_bench_turn(uint32_t command)
 {
     bool b_ok = false;
 
-    /* (UB *): tm_printf() takes unsigned chars. */
-    tm_printf((UB *)"[line] junction: command %u\n", command);
+    APP_PRINTF("[line] junction: command %u\n", command);
     line_following_stop();
     b_ok = subsystem3_bench_move(motion_control_move_forward(S3_BENCH_AXLE_MM));
     if (b_ok && (BARCODE_DECODER_LEFT == command))
@@ -246,8 +241,7 @@ static bool subsystem3_bench_turn(uint32_t command)
     else
     {
         motion_control_stop();
-        /* (UB *): tm_printf() takes unsigned chars. */
-        tm_printf((UB *)"[line] junction move failed\n");
+        APP_PRINTF("[line] junction move failed\n");
     }
     return b_ok;
 }
@@ -278,9 +272,8 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
     app_pull_up(S3_BENCH_BUTTON);
     last.bits = DRV_LINE_LEFT | DRV_LINE_RIGHT;
     last.b_junction = true; /* Unlikely at power-up: print the first state. */
-    /* (UB *): tm_printf() takes unsigned chars. */
-    tm_printf((UB *)"[line] bench: hold GP21 for %u s to follow the line\n",
-              S3_BENCH_HOLD_MS / 1000u);
+    APP_PRINTF("[line] bench: hold GP21 for %u s to follow the line\n",
+               S3_BENCH_HOLD_MS / 1000u);
     for (;;)
     {
         (void)subsystem3_bench_report(&last);
@@ -289,9 +282,8 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
         if (polls >= S3_BENCH_RAW_POLLS)
         {
             barcode_decoder_get_raw(&raw);
-            /* (UB *): tm_printf() takes unsigned chars. */
-            tm_printf((UB *)"[bar] min=%u max=%u fault=%u\n", raw.min, raw.max,
-                      0u != (app_faults() & APP_FAULT_BARCODE_SENSOR));
+            APP_PRINTF("[bar] min=%u max=%u fault=%u\n", raw.min, raw.max,
+                       0u != (app_faults() & APP_FAULT_BARCODE_SENSOR));
             polls = 0u;
         }
         if (0u == gpio_get_val(S3_BENCH_BUTTON))
@@ -301,10 +293,9 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
         else if (held_ms >= S3_BENCH_HOLD_MS)
         {
             held_ms = 0u;
-            /* (UB *): tm_printf() takes unsigned chars. */
-            tm_printf((UB *)"[line] put the car on the line, starting in "
-                            "%d s\n",
-                      S3_BENCH_GO_MS / 1000);
+            APP_PRINTF("[line] put the car on the line, starting in "
+                       "%d s\n",
+                       S3_BENCH_GO_MS / 1000);
             tk_dly_tsk(S3_BENCH_GO_MS);
             (void)line_following_start(S3_BENCH_SPEED_MM_S);
             pending = BARCODE_DECODER_NONE;
@@ -325,8 +316,7 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
                 tk_dly_tsk(S3_BENCH_POLL_MS);
             }
             line_following_stop();
-            /* (UB *): tm_printf() takes unsigned chars. */
-            tm_printf((UB *)"[line] bench done after %u ms\n", run_ms);
+            APP_PRINTF("[line] bench done after %u ms\n", run_ms);
         }
         else
         {

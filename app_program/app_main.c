@@ -53,12 +53,12 @@ static void app_gpio_isr(UINT intno);
  * @brief Create and start one task. prc = TP_PRC1 (core 0), TP_PRC2
  * (core 1), or 0 for "any core".
  */
-ID app_start_task(FP p_entry, PRI pri, UW prc, const char * p_name)
+ID app_start_task(app_task_t p_entry, PRI pri, UW prc, const char * p_name)
 {
     T_CTSK task = {0};
     ID h_task = 0;
 
-    task.task = p_entry;              /* Function the task runs. */
+    task.task = (FP)p_entry;          /* FP: the kernel's function type. */
     task.itskpri = pri;               /* Initial priority (1 = highest). */
     task.stksz = APP_TASK_STACK_SIZE; /* The kernel allocates the stack. */
     task.tskatr = TA_HLNG | TA_RNG3;  /* C code, user protection level. */
@@ -92,8 +92,7 @@ void app_check(ER result, const char * p_what)
 {
     if (result < E_OK)
     {
-        /* (UB *): tm_printf() takes unsigned chars. */
-        tm_printf((UB *)"ERROR %s: %d\n", p_what, result);
+        APP_PRINTF("ERROR %s: %d\n", p_what, result);
     }
 }
 
@@ -120,7 +119,7 @@ ER app_start_cyclic(ID h_task, RELTIM period_ms)
      * back unchanged. */
     cyclic.exinf = (void *)h_task;
     cyclic.cycatr = TA_HLNG | TA_STA;
-    cyclic.cychdr = (FP)app_wake; /* FP is the kernel's handler type. */
+    cyclic.cychdr = (FP)app_wake; /* FP, as in app_start_task(). */
     cyclic.cyctim = period_ms;
     cyclic.cycphs = period_ms;
     return (h_task < E_OK) ? h_task : tk_cre_cyc(&cyclic);
@@ -211,15 +210,14 @@ INT usermain(void)
     T_DINT handler = {0};
 
     (void)tk_ref_ver(&version);
-    /* (UB *) in this function: tm_printf() takes unsigned chars. */
-    tm_printf((UB *)"\n=== micro T-Kernel on Raspberry Pi Pico W"
-                    " (spec 0x%04x, product 0x%04x) ===\n",
-              version.spver, version.prver);
+    APP_PRINTF("\n=== micro T-Kernel on Raspberry Pi Pico W"
+               " (spec 0x%04x, product 0x%04x) ===\n",
+               version.spver, version.prver);
 #if TK_SUPPORT_SMP
-    tm_printf((UB *)"dual-core (SMP) build, usermain on core %d\n",
-              tk_get_prc() - 1); /* tk_get_prc() counts from 1. */
+    APP_PRINTF("dual-core (SMP) build, usermain on core %d\n",
+               tk_get_prc() - 1); /* tk_get_prc() counts from 1. */
 #else
-    tm_printf((UB *)"single-core build\n");
+    APP_PRINTF("single-core build\n");
 #endif
 
     /* The kernel leaves the PWM block in reset (USE_PTMR = 0 in
@@ -238,7 +236,7 @@ INT usermain(void)
     /* The GPIO interrupt next, on this core (0): subsystems register with
      * app_gpio_register() in their _init(). */
     handler.intatr = TA_HLNG;
-    handler.inthdr = (FP)app_gpio_isr; /* Kernel handler type, as above. */
+    handler.inthdr = (FP)app_gpio_isr; /* FP, as in app_start_task(). */
     app_check(tk_def_int(APP_GPIO_IRQ, &handler), "GPIO interrupt");
     EnableInt(APP_GPIO_IRQ, APP_GPIO_IRQ_PRIORITY);
 
@@ -262,19 +260,19 @@ INT usermain(void)
     app_check(vehicle_controller_start(), "vehicle_controller_start");
 #endif
 
-    tm_printf((UB *)"all subsystems started\n\n");
+    APP_PRINTF("all subsystems started\n\n");
 
 #if APP_TEST
     /* Test build (make TEST=1): run every subsystem's tests in turn, here
      * in the initial task, while the system is running. Tests may call
      * tk_dly_tsk() to let the other tasks work for a while. */
-    tm_printf((UB *)"[TEST] === test run start ===\n");
+    APP_PRINTF("[TEST] === test run start ===\n");
     subsystem1_test();
     subsystem2_test();
     subsystem3_test();
     subsystem4_test();
     subsystem5_test();
-    tm_printf((UB *)"[TEST] === test run end ===\n");
+    APP_PRINTF("[TEST] === test run end ===\n");
 #endif
 
     /* Sleep forever. Returning from usermain() would shut down. */

@@ -66,10 +66,9 @@ ER subsystem1_init(void)
 ER subsystem1_start(void)
 {
 #if TM_MQTT
-    return app_start_cyclic(app_start_task((FP)s1_telemetry_task,
-                                           S1_PRI_TELEMETRY, 0u,
-                                           "s1_telemetry"),
-                            S1_PERIOD_MS);
+    return app_start_cyclic(
+        app_start_task(s1_telemetry_task, S1_PRI_TELEMETRY, 0u, "s1_telemetry"),
+        S1_PERIOD_MS);
 #else
     return E_OK;
 #endif
@@ -223,10 +222,8 @@ void mqtt_utk_app_map(const uint8_t * p_map)
     {
         digits[letter] = (char)('0' + actions[letter]);
     }
-    /* One call, as the console is slow. (UB *): tm_printf() takes unsigned
-     * chars. */
-    tm_printf((UB *)"[s1] barcode map A-Z (0 ignore .. 4 U-turn): %s\n",
-              digits);
+    /* One call, as the console is slow. */
+    APP_PRINTF("[s1] barcode map A-Z (0 ignore .. 4 U-turn): %s\n", digits);
 }
 
 /*!

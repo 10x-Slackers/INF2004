@@ -22,13 +22,11 @@ ER subsystem3_init(void)
  */
 ER subsystem3_start(void)
 {
-    /* FP is the kernel's generic task pointer type. */
-    ER const h_barcode_cyclic =
-        app_start_cyclic(app_start_task((FP)barcode_decoder_task,
-                                        S3_PRI_BARCODE, 0, "s3_barcode"),
-                         LINE_FOLLOWING_PERIOD_MS);
+    ER const h_barcode_cyclic = app_start_cyclic(
+        app_start_task(barcode_decoder_task, S3_PRI_BARCODE, 0, "s3_barcode"),
+        LINE_FOLLOWING_PERIOD_MS);
     ER const h_line_cyclic = app_start_cyclic(
-        app_start_task((FP)line_following_task, S3_PRI_LINE, 0, "s3_line"),
+        app_start_task(line_following_task, S3_PRI_LINE, 0, "s3_line"),
         LINE_FOLLOWING_PERIOD_MS);
 
     return (h_barcode_cyclic < E_OK) ? h_barcode_cyclic : h_line_cyclic;

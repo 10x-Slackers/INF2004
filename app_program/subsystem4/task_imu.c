@@ -271,9 +271,8 @@ static void imu_read(void)
     {
         g_imu.faults |= APP_FAULT_IMU_SENSOR; /* Until a Reset. */
         app_fault_set(APP_FAULT_IMU_SENSOR);
-        /* (UB *): tm_printf() takes unsigned chars. */
-        tm_printf((UB *)"[imu] FAULT: sensor %s\n",
-                  b_ready ? "frozen" : "not answering");
+        APP_PRINTF("[imu] FAULT: sensor %s\n",
+                   b_ready ? "frozen" : "not answering");
         imu_beep_on();
         g_imu.beep_left = S4_ALARM_MS / S4_IMU_MS;
         /* A read that timed out let 1 s of wake-ups queue: drop them, or
@@ -325,9 +324,8 @@ static void imu_calibrate(int32_t x_mg, int32_t y_mg, int32_t z_mg)
         g_imu.offset_x = g_imu.sum_x / g_imu.cal_count;
         g_imu.offset_y = g_imu.sum_y / g_imu.cal_count;
         g_imu.offset_z = (g_imu.sum_z / g_imu.cal_count) - IMU_MG_PER_G;
-        /* (UB *): tm_printf() takes unsigned chars. */
-        tm_printf((UB *)"[imu] calibrated: offsets x=%d y=%d z=%d mg\n",
-                  g_imu.offset_x, g_imu.offset_y, g_imu.offset_z);
+        APP_PRINTF("[imu] calibrated: offsets x=%d y=%d z=%d mg\n",
+                   g_imu.offset_x, g_imu.offset_y, g_imu.offset_z);
         imu_beep_on();
         g_imu.beep_left = S4_BEEP_MS / S4_IMU_MS;
     }
@@ -463,10 +461,9 @@ static void imu_publish(const imu_sample_t * p_sample)
     g_motion.cls = motion_class;
     (void)tk_unl_mtx(gh_s4_mutex);
 
-    /* (UB *): tm_printf() takes unsigned chars, in every call below. */
     if (b_changed)
     {
-        tm_printf((UB *)"[imu] motion: %s\n", g_motion_name[motion_class]);
+        APP_PRINTF("[imu] motion: %s\n", g_motion_name[motion_class]);
     }
     if (g_imu.lift_count >= (S4_LIFT_MS / S4_IMU_MS))
     {
@@ -484,15 +481,15 @@ static void imu_publish(const imu_sample_t * p_sample)
         ((S4_LIFT_MS / S4_IMU_MS) == g_imu.lift_count))
     {
         app_fault_set(g_imu.faults);
-        tm_printf((UB *)"[imu] FAULT: %s\n",
-                  b_new_upside ? "upside down"
-                               : (b_new_tilt ? "tilt" : "lifted"));
+        APP_PRINTF("[imu] FAULT: %s\n", b_new_upside
+                                            ? "upside down"
+                                            : (b_new_tilt ? "tilt" : "lifted"));
         imu_beep_on();
         g_imu.beep_left = S4_ALARM_MS / S4_IMU_MS;
     }
     if (p_sample->b_hump_over)
     {
-        tm_printf((UB *)"[imu] hump: peak %d mm\n", g_imu.peak_mm);
+        APP_PRINTF("[imu] hump: peak %d mm\n", g_imu.peak_mm);
         g_imu.peak_mm = 0;
     }
 
@@ -500,10 +497,10 @@ static void imu_publish(const imu_sample_t * p_sample)
     g_imu.print_count = (g_imu.print_count + 1) % (IMU_PRINT_MS / S4_IMU_MS);
     if (APP_TEST && (0 == g_imu.print_count))
     {
-        tm_printf((UB *)"[imu] x=%d y=%d z=%d mg pitch=%d roll=%d "
-                        "(0.1 deg) h=%d mm\n",
-                  p_sample->x_mg, p_sample->y_mg, p_sample->z_mg,
-                  p_sample->pitch, p_sample->roll, p_sample->height_mm);
+        APP_PRINTF("[imu] x=%d y=%d z=%d mg pitch=%d roll=%d "
+                   "(0.1 deg) h=%d mm\n",
+                   p_sample->x_mg, p_sample->y_mg, p_sample->z_mg,
+                   p_sample->pitch, p_sample->roll, p_sample->height_mm);
     }
 }
 

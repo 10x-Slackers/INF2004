@@ -75,8 +75,7 @@ static void subsystem5_range_task(INT stacd, void * p_exinf)
 
 ER subsystem5_start(void)
 {
-    /* FP is the kernel's generic task pointer type. */
-    return app_start_cyclic(app_start_task((FP)subsystem5_range_task,
+    return app_start_cyclic(app_start_task(subsystem5_range_task,
                                            S5_PRI_RANGE, 0, "s5_range"),
                             S5_RANGE_MS);
 }
@@ -129,13 +128,13 @@ The build does not use the Pico SDK's CMake system or runtime. It compiles selec
 
 ## Console output
 
-Print with `tm_printf`:
+Print with `APP_PRINTF` (`app.h`), which calls the kernel's `tm_printf` with the cast its format argument needs:
 
 ```c
-tm_printf((UB *)"[line] pos=%d\n", pos);
+APP_PRINTF("[line] pos=%d\n", pos);
 ```
 
-- `tm_printf` is atomic per call, not per line. Build a whole line with `tm_sprintf` into a buffer and emit it with one `tm_printf`, or another task's output can land in the middle.
+- `tm_printf` is atomic per call, not per line. Build a whole line with `tm_sprintf` into a buffer and emit it with one `APP_PRINTF`, or another task's output can land in the middle.
 - Over USB the console is a ring buffer drained by the kernel's USB task. Nothing is visible until the host has opened the port, and output written just before a crash is lost; build with `CRASH_REPORT=1` to see it on UART0.
 - Do not print from interrupt handlers or tight control loops.
 

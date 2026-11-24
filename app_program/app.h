@@ -28,7 +28,8 @@
  * - 5.2: kernel calls, task entries and handlers use kernel types (ER, ID,
  *   INT, UB, ...), as the kernel's prototypes do.
  * - 6.3.a: the TEST_* helpers in test_report.h are macros, because they
- *   report the caller's file and line.
+ *   report the caller's file and line; APP_PRINTF() is one, because it
+ *   passes on any number of arguments.
  */
 
 #ifndef APP_H
@@ -42,9 +43,16 @@
 
 #define APP_TASK_STACK_SIZE 2048 /* Bytes; tm_printf needs ~1 KB. */
 
+/* Print on the console, as printf(). tm_printf() takes its format as
+ * unsigned chars, hence the cast. */
+#define APP_PRINTF(...) tm_printf((UB *)__VA_ARGS__)
+
+/* A task's entry function. */
+typedef void (*app_task_t)(INT stacd, void * p_exinf);
+
 /* Create and start a task. prc = TP_PRC1 (core 0), TP_PRC2 (core 1), or
  * 0 for "any core". */
-ID app_start_task(FP p_entry, PRI pri, UW prc, const char * p_name);
+ID app_start_task(app_task_t p_entry, PRI pri, UW prc, const char * p_name);
 
 /* Print a readable message if a kernel call failed (negative code). */
 void app_check(ER result, const char * p_what);

@@ -25,6 +25,9 @@
 #define BARCODE_END         30000u /* um: 30 mm, over 3 wide bars. */
 #define BARCODE_CHECK_WAKES 10u    /* 100 ms: 200 samples are due. */
 #define BARCODE_CHECK_MIN   100u   /* Fewer samples in that time: a fault. */
+/* Elements after the first bar before b_reading: the third bar has begun,
+ * each gap under BARCODE_END, which a lone line or speck does not give. */
+#define BARCODE_READING 3u
 
 /* The course's barcodes: change these lines when the letters are announced
  * (any number of letters per command). Other valid letters are rejected. Z is
@@ -155,6 +158,8 @@ void barcode_decoder_task(INT stacd, void * p_exinf)
         g_raw.min = min;
         g_raw.max = max;
         g_raw.samples += count;
+        g_barcode.b_reading =
+            (g_code.b_in_code) && (g_code.elements >= BARCODE_READING);
         (void)tk_unl_mtx(gh_mutex);
     }
 }

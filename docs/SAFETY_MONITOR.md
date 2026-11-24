@@ -18,7 +18,7 @@ Every 10 ms the task latches a stop for any of these. The cause is printed with 
 | `STALL`         | 4     | Motion `FAILED`: a wheel stalled during a move, turn or drive                                                |
 | `CONTROLLER`    | 8     | Raised by the Vehicle Controller for every safe stop of its own: GP20, the supervisor's STOP, an avoidance safe stop, a lost line, a failed or timed-out junction move |
 
-Collision risk is not checked here: obstacle avoidance stops on the second forward reading in a row within 150 mm and safe-stops when no side is open, and its safe stop latches through the controller (`CONTROLLER`). It reads the range only while following and on the straight bypass steps, so nothing checks it during turns (bypass turns, junction turns, the lost-line pivot). A backstop on the forward range cannot act first: avoidance brakes on the same reading, and only avoidance requests readings, so without it the range goes stale.
+Collision risk is not checked here: obstacle avoidance stops on the second forward reading in a row within 200 mm and safe-stops when no side is open, and its safe stop latches through the controller (`CONTROLLER`). It reads the range only while following and on the straight bypass steps, so nothing checks it during turns (bypass turns, junction turns, the lost-line pivot). A backstop on the forward range cannot act first: avoidance brakes on the same reading, and only avoidance requests readings, so without it the range goes stale.
 
 ## API
 

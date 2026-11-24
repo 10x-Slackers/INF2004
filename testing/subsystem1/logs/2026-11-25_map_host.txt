@@ -1,0 +1,58 @@
+Host run on commit 696f53b, 2026-11-25. No car attached.
+Python 3.14.8, cc (GCC) 16.2.1 20260810
+
+=== S1-U01 ===
+$ python3 -I tools/supervisor/payloads.py
+PASS  telemetry round trip (min)
+PASS  telemetry round trip (max)
+PASS  motion round trip (min)
+PASS  motion round trip (max)
+PASS  scan round trip (min)
+PASS  scan round trip (max)
+PASS  heartbeat round trip (min)
+PASS  heartbeat round trip (max)
+PASS  cmd round trip (min)
+PASS  cmd round trip (max)
+PASS  map round trip (min)
+PASS  map round trip (max)
+PASS  motion matches motion_control_pack()
+PASS  telemetry matches payload_pack_telemetry()
+PASS  scan matches payload_pack_scan()
+PASS  map matches payload_unpack_map()
+
+Topic      Bits  Binary B  JSON B  Saved  Hz  JSON B/s  Binary B/s
+telemetry    96        12     299    96%   5      1495          60
+           45261fa4235484172600003a  {"v":1,"robot_id":"CSC13","seq":1234,"state":"FOLLOW","latched":0,"line":1,"junction":0,"following":1,"barcode":1,"barcodes":3,"motion_class":0,"pitch":-12,"roll":35,"hump_max":21,"humps":2,"on_hump":0,"avoid_state":1,"avoid_side":0,"bypasses":1,"forward_mm":1830,"faults":0,"rejects":1,"letter":26}
+motion       92        12     171    93%   5       855          60
+           6c3e634cbbc53bf060030a20  {"v":1,"robot_id":"CSC13","seq":1234,"state":1,"command":5,"heading_deg":271,"left_speed":198,"right_speed":203,"left_count":48211,"right_count":48902,"distance_mm":12450}
+scan         68         9     144    94%   -         0           0
+           0785a46694933408c0  {"v":1,"robot_id":"CSC13","seq":1234,"closest_mm":120,"closest_deg":90,"right_deg":70,"left_deg":105,"width_mm":73,"left_mm":820,"right_mm":140}
+heartbeat    16         2      50    96%   1        50           2
+           04d2  {"v":1,"robot_id":"CSC13","seq":1234,"count":1234}
+cmd           8         1     101    99%   -         0           0
+           01  {"v":1,"robot_id":"CSC13","session_id":"s1","command_id":"c7","seq":7,"cmd":"START","challenge":"n4"}
+map          78        10      52    81%   -         0           0
+           29c00000000000000000  {"A":"left","B":"right","C":"straight","D":"U-turn"}
+
+Periodic total: JSON 2400 B/s, binary 122 B/s
+
+ALL PASS
+
+=== S1-U02 ===
+$ cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 app_program/subsystem1/payload.c testing/subsystem1/host/test_payload.c -o /tmp/test_payload && /tmp/test_payload
+PASS  telemetry matches payloads.pack(): bb933c207caab29fa090033a
+PASS  scan matches payloads.pack(): 834878287c8fa08020
+PASS  map (unpacked) matches payloads.pack(): 0001020304050607000102030405060700010203040506070001
+ALL PASS
+
+=== S1-U03 ===
+$ cd tools/supervisor && python -m unittest -v test_dashboard    (paho-mqtt 2.2.0)
+test_decodes_what_the_car_packs (test_dashboard.DashboardTest.test_decodes_what_the_car_packs) ... ok
+test_heartbeat_gaps_and_restarts (test_dashboard.DashboardTest.test_heartbeat_gaps_and_restarts) ... ok
+test_ignores_other_messages (test_dashboard.DashboardTest.test_ignores_other_messages) ... ok
+test_logs_what_changed (test_dashboard.DashboardTest.test_logs_what_changed) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK

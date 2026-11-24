@@ -31,3 +31,6 @@ Methods and how to record results: `testing/README.md`.
 | 2026-11-23 | S1-U03 | `7b437f1 (#60)` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | The S1-U02 bytes decode to `STALL_LEFT`, `IMU_SENSOR`, `BARCODE_SENSOR` |
 | 2026-11-23 | S1-U04 | `7b437f1 (#60)` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | Mosquitto 2.1.2, with the 87-bit telemetry bytes. A telemetry message of the wrong size was ignored |
 | 2026-11-23 | S1-U05 | `7b437f1 (#60)` | commit2main | PASS | `logs/2026-11-23_faults15_host.txt` | Chromium against Mosquitto and a scripted stand-in for the car; ten cases, each as listed in the log. The car's own `IMU_SENSOR` and `NO_ECHO` were not exercised: no car attached |
+| 2026-11-25 | S1-U01 | `696f53b (#68)` | commit2main | PASS | `logs/2026-11-25_map_host.txt` | Telemetry is 96 bits (12 bytes) with the last barcode's letter and command; the `map` payload is 78 bits (10 bytes). Periodic topics 122 B/s against 2400 B/s as JSON |
+| 2026-11-25 | S1-U02 | `696f53b (#68)` | commit2main | PASS | `logs/2026-11-25_map_host.txt` | Same run: the 96-bit telemetry, the scan and the unpacked `map` match `payloads.pack()` |
+| 2026-11-25 | S1-U03 | `696f53b (#68)` | commit2main | PASS | `logs/2026-11-25_map_host.txt` | Same run, paho-mqtt 2.2.0 |

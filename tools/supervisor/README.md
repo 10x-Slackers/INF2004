@@ -5,7 +5,7 @@ A page on the laptop that shows what the car is doing and sends it Start, Stop, 
 ## Run it
 
 1. On the laptop, start the broker: `mosquitto -c tools/supervisor/mosquitto.conf`. This config lets the car connect from the network; Mosquitto's default accepts only the laptop itself.
-2. Put the laptop's address on that network in `MQTT_BROKER_IP` of `config/wifi_secrets.h` (copied from `wifi_secrets.example.h`), then build and flash with `make -C build_make NET=lwip MQTT=1`.
+2. Put the laptop's address on that network in `MQTT_BROKER_IP` of `config/wifi_secrets.h` (copied from `wifi_secrets.example.h`), then build and flash with `make -C build_make`.
 3. Start the dashboard and open <http://127.0.0.1:8000>:
 
    ```sh

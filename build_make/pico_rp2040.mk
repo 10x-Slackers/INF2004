@@ -49,12 +49,24 @@ WIFI_SUFFIX := _wifi
 # requires -- single-core satisfies it trivially.
 endif
 
-# Optional lwIP network stack on top of WIFI=cyw43. NO_SYS=1 (raw API, no
+# TEST=1 builds the subsystem self-tests into the image (APP_TEST=1 in C).
+# The image gets a _test suffix so it cannot be mistaken for the normal one.
+TEST ?= 0
+ifneq ($(filter $(TEST),0 1),$(TEST))
+$(error Unknown TEST '$(TEST)'; use 0 or 1)
+endif
+ifeq ($(TEST),1)
+TEST_SUFFIX := _test
+endif
+
+# lwIP network stack on top of WIFI=cyw43. NO_SYS=1 (raw API, no
 # tcpip thread): everything that calls into lwIP -- cyw43_poll(),
 # sys_check_timeouts(), and any application tcp_*/udp_*/dns_* call -- runs
 # on the same processor-1-owned task that already services the radio, per
 # docs/RELEASE.md safety rule 6. See lib/liblwip/sysdepend/pico_rp2040/.
-NET ?= none
+# On by default, as the car's image needs it for MQTT; off by default in the
+# test image (TEST=1) and without the radio (WIFI=none).
+NET ?= $(if $(filter cyw43-0,$(WIFI)-$(TEST)),lwip,none)
 ifneq ($(filter $(NET),none lwip),$(NET))
 $(error Unknown NET '$(NET)'; use none or lwip)
 endif
@@ -65,12 +77,13 @@ endif
 NET_SUFFIX := _lwip
 endif
 
-# Optional MQTT client on top of NET=lwip. Connects and publishes from the
+# MQTT client on top of NET=lwip. Connects and publishes from the
 # same processor-1-owned task as everything else above -- see
 # lib/liblwip/sysdepend/pico_rp2040/mqtt_utk.c. The broker address
 # comes from config/wifi_secrets.h (gitignored; copy from
 # config/wifi_secrets.example.h), same as the WiFi credentials.
-MQTT ?= 0
+# On by default with NET=lwip, except in the test image.
+MQTT ?= $(if $(filter lwip-0,$(NET)-$(TEST)),1,0)
 ifneq ($(filter $(MQTT),0 1),$(MQTT))
 $(error Unknown MQTT '$(MQTT)'; use 0 or 1)
 endif
@@ -79,16 +92,6 @@ ifneq ($(NET),lwip)
 $(error MQTT=1 requires NET=lwip)
 endif
 MQTT_SUFFIX := _mqtt
-endif
-
-# TEST=1 builds the subsystem self-tests into the image (APP_TEST=1 in C).
-# The image gets a _test suffix so it cannot be mistaken for the normal one.
-TEST ?= 0
-ifneq ($(filter $(TEST),0 1),$(TEST))
-$(error Unknown TEST '$(TEST)'; use 0 or 1)
-endif
-ifeq ($(TEST),1)
-TEST_SUFFIX := _test
 endif
 
 # CRASH_REPORT=1 also copies every console line to UART0 on GP0 (TX) /
@@ -394,6 +397,9 @@ LIBLWIP_PORT := ../lib/liblwip/sysdepend/pico_rp2040
 
 ifeq ($(wildcard $(LWIPDIR)/core/init.c),)
 $(error lwIP not found below $(PICO_SDK_PATH); initialize the pico-sdk submodules)
+endif
+ifeq ($(wildcard ../config/wifi_secrets.h)$(filter clean,$(MAKECMDGOALS)),)
+$(error config/wifi_secrets.h is missing: copy config/wifi_secrets.example.h to it and fill in the Wi-Fi network and the broker, or build without the network with NET=none)
 endif
 
 # COREFILES + CORE4FILES (IPv4 only) + the one NETIFFILES entry we need, per

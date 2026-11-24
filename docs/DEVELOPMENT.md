@@ -11,7 +11,7 @@ Run from the repository root, inside the Dev Container or with the SDK and compi
 | Build      | `make -C build_make -j$(nproc)`                                                                              |
 | Test build | `make -C build_make TEST=1 -j$(nproc)`                                                                       |
 | Clean      | `make -C build_make clean`                                                                                   |
-| Flash      | Hold **BOOTSEL** while plugging in USB, then `picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2` |
+| Flash      | Hold **BOOTSEL** while plugging in USB, then `picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2` |
 | Console    | `screen /dev/ttyACM0 115200`                                                                                 |
 
 The same steps exist as the VS Code tasks `Build`, `Build (tests)`, `Build (crash report)`, `Clean` and `Flash` (`Flash` runs the default `Build` first).
@@ -20,13 +20,13 @@ Check that both the normal and the `TEST=1` build still succeed without new warn
 
 ### Building with MQTT
 
-1. Copy the credentials template and fill in the network and broker:
+The normal build includes the network stack, the MQTT client and the Telemetry task, and needs the Wi-Fi network and broker. Copy the credentials template and fill it in once:
 
-   ```sh
-   cp config/wifi_secrets.example.h config/wifi_secrets.h
-   ```
+```sh
+cp config/wifi_secrets.example.h config/wifi_secrets.h
+```
 
-2. Build with `make -C build_make NET=lwip MQTT=1 -j$(nproc)`.
+The test build leaves the network out, as does `make -C build_make NET=none -j$(nproc)`, which needs no credentials; that image has no telemetry and ignores every barcode.
 
 The broker set-up and the supervisor dashboard are in [TELEMETRY.md](TELEMETRY.md#supervisor-dashboard).
 

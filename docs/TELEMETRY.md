@@ -84,7 +84,7 @@ Only the kernel's Wi-Fi service task may call MQTT (`TEAM.md` section 3), so the
 
 The Telemetry task (`s1_telemetry`, priority 20, in the band of `TEAM.md` section 4) sends with `TMO_POL` and drops a message when the buffer is full, so a slow network never blocks it. The service reads the buffer with `TMO_POL` too, on each of its 2 ms polls while the broker is connected, and publishes until the buffer is empty or lwIP has no room; a message lwIP refuses is kept and offered again on the next poll. The Vehicle Controller takes the command bits once per 10 ms cycle, also with `TMO_POL`, which clears them. Event flag set and clear calls are atomic, so the command bits need no lock.
 
-The task and the message buffer are built only with `NET=lwip MQTT=1` ([DEVELOPMENT.md](DEVELOPMENT.md#building-with-mqtt)); the event flag exists in every build, and without MQTT nothing sets it.
+The task and the message buffer are built only with `NET=lwip MQTT=1`, the default of the normal build ([DEVELOPMENT.md](DEVELOPMENT.md#building-with-mqtt)); the event flag exists in every build, and without MQTT nothing sets it.
 
 | Code | Contents |
 | ---- | -------- |

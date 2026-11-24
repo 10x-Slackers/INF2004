@@ -35,8 +35,8 @@ MQTT, and stops when it is picked up.
    ```
 
 2. Click on the "Re-open in Dev Container" prompt. The container installs the compiler and `picotool`, clones the [Pico SDK](https://github.com/raspberrypi/pico-sdk) into `.pico-sdk/` with the USB, Wi-Fi and lwIP submodules, sets `PICO_SDK_PATH` and installs the pre-commit hooks, so section 1 below can be skipped.
-3. For the MQTT build, copy `config/wifi_secrets.example.h` to `config/wifi_secrets.h` and fill in the Wi-Fi network and broker address (section 3).
-4. Build from the repository root with `make -C build_make -j$(nproc)` (or the VS Code `Build` task), then flash with `picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2` (or the `Flash` task) while the Pico W is in BOOTSEL mode. Build options are in section 3.
+3. Copy `config/wifi_secrets.example.h` to `config/wifi_secrets.h` and fill in the Wi-Fi network and broker address (section 3). The build stops and says so if the file is missing.
+4. Build from the repository root with `make -C build_make -j$(nproc)` (or the VS Code `Build` task), then flash with `picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2` (or the `Flash` task) while the Pico W is in BOOTSEL mode. Build options are in section 3.
 
 ### Developer Tooling
 
@@ -63,8 +63,8 @@ The rest of this file is the template's own guide.
 ## micro T-Kernel 3.0 project for Raspberry Pi Pico W
 
 The firmware runs micro T-Kernel 3.0 on **both cores** of the Pico W's
-RP2040, with a USB serial console, the Wi-Fi driver and, in the MQTT build,
-lwIP and an MQTT client built in. It runs on a Cytron Robo Pico carrier
+RP2040, with a USB serial console, the Wi-Fi driver, lwIP and an MQTT
+client built in. It runs on a Cytron Robo Pico carrier
 board; the wiring is in [docs/HARDWARE.md](docs/HARDWARE.md).
 
 You need a **Raspberry Pi Pico W**, a USB cable, and a computer running
@@ -105,7 +105,7 @@ git submodule update --init lib/tinyusb lib/cyw43-driver lib/lwip
 ```
 
 The `submodule` line is required: it downloads the USB and WiFi drivers and
-the lwIP network stack (used by the MQTT build).
+the lwIP network stack.
 (SDK 2.3.0 has also been tested and works.)
 
 **1.3 Install the Arm GNU Toolchain (the compiler)**
@@ -161,12 +161,14 @@ make -j8
 ```
 
 A successful build ends with a line like
-`tools/elf2uf2 mtk3pico_smp1_usb_cdc_wifi.elf mtk3pico_smp1_usb_cdc_wifi.uf2`.
-Your firmware is **`build_make/mtk3pico_smp1_usb_cdc_wifi.uf2`**.
+`tools/elf2uf2 mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.elf mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2`.
+Your firmware is **`build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2`**.
 
 If `make` stops with an error, it tells you which one is wrong:
-`arm-none-eabi-gcc not found` means fix `PATH`, and
-`PICO_SDK_PATH is not set` means fix `PICO_SDK_PATH` (step 1.4).
+`arm-none-eabi-gcc not found` means fix `PATH`,
+`PICO_SDK_PATH is not set` means fix `PICO_SDK_PATH` (step 1.4), and
+`config/wifi_secrets.h is missing` means copy `config/wifi_secrets.example.h`
+to that name and fill it in (section 3).
 
 To build a single-core, UART-only or test version, see section 3.
 
@@ -178,8 +180,8 @@ To build a single-core, UART-only or test version, see section 3.
    `build_make` to open the folder in Windows. The Pico reboots by itself.
 
 With `picotool` installed (it is in the Dev Container), run
-`picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2` instead of
-copying.
+`picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2`
+instead of copying.
 
 **2.4 See the output**
 
@@ -257,21 +259,29 @@ they are `CNF_MAX_...` in `config/config.h`.
 ### Network and MQTT: `NET`, `MQTT`
 
 The telemetry and supervisor commands need two more options, handled the
-same way:
+same way. Both are on by default, so a plain `make` builds the car's full
+image; the test image (`TEST=1`) and a build with `WIFI=none` leave them off
+unless they are given:
 
 | Option | Values (**default**) | What it does | Image name | C macro |
 |---|---|---|---|---|
-| `NET` | **`none`**, `lwip` | `lwip` adds the lwIP TCP/IP stack, run by the Wi-Fi service task. Needs `WIFI=cyw43` | `_lwip` | `TM_NET_LWIP` |
-| `MQTT` | **`0`**, `1` | `1` adds the MQTT client and Subsystem 1's Telemetry task. Needs `NET=lwip` | `_mqtt` | `TM_MQTT` |
+| `NET` | `none`, **`lwip`** | `lwip` adds the lwIP TCP/IP stack, run by the Wi-Fi service task. Needs `WIFI=cyw43` | `_lwip` | `TM_NET_LWIP` |
+| `MQTT` | `0`, **`1`** | `1` adds the MQTT client and Subsystem 1's Telemetry task. Needs `NET=lwip` | `_mqtt` | `TM_MQTT` |
 
 They need the SDK's `lib/lwip` submodule and a `config/wifi_secrets.h` with
 the Wi-Fi network and broker address (copy `config/wifi_secrets.example.h`;
-the file is gitignored, never commit it). The car's full image for the demo:
+the file is gitignored, never commit it). The car's full image, and one
+without the network for a quick build with no credentials:
 
 ```sh
-make NET=lwip MQTT=1 -j8
+make -j8
 #  -> build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2
+make NET=none -j8
+#  -> build_make/mtk3pico_smp1_usb_cdc_wifi.uf2
 ```
+
+Without MQTT the car has no telemetry and ignores every barcode, because the
+barcode actions come from the dashboard.
 
 Topics, payloads and the laptop dashboard are in
 [docs/TELEMETRY.md](docs/TELEMETRY.md).

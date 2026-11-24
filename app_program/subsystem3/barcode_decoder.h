@@ -7,7 +7,8 @@
  *
  * Poll barcode_decoder_get() and act when count changes. A barcode that
  * is read but not valid (a letter not in g_actions, a misread) only bumps
- * rejects; an unvalidated command is never published.
+ * rejects; an unvalidated command is never published. b_reading is set
+ * while the sensor is part way through what looks like a barcode.
  */
 
 #ifndef BARCODE_DECODER_H
@@ -30,6 +31,7 @@ typedef struct
     unsigned int count : 4;        /* Barcodes validated, wraps. */
     unsigned int rejects : 4;      /* Barcodes read but rejected, wraps. */
     unsigned int distance_mm : 24; /* Odometer at its end (I5), wraps. */
+    unsigned int b_reading : 1;    /* Over a barcode now. */
 } barcode_decoder_t;
 
 /* Raw sensor level over the last 10 ms, for calibration. */

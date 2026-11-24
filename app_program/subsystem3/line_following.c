@@ -12,9 +12,14 @@
  * A sensor stuck on black would hold the turn for ever and never look
  * lost, so one sensor black for over LINE_FOLLOWING_STUCK_MM stops the car
  * as a failed search does, with APP_FAULT_LINE_SENSOR.
+ *
+ * Barcodes lie on straights, so while the barcode sensor is over one the car
+ * holds the heading it had when the barcode was recognised (the wobble hold
+ * heading if holding), and a sensor hit turns it at most TURN_MIN.
  */
 
 #include "line_following.h"
+#include "barcode_decoder.h"
 #include "subsystem3.h"
 #include "../subsystem2/motion_control.h"
 
@@ -97,12 +102,14 @@ static line_following_search_t g_search;
 static line_following_steer_t g_steer;
 static line_following_wobble_t g_wobble;
 
-static void line_following_steer(uint32_t bits, uint32_t distance_mm);
+static void line_following_steer(uint32_t bits, uint32_t distance_mm,
+                                 int32_t max);
 static void line_following_search(const motion_control_status_t * p_motion);
 static bool line_following_wobble(uint32_t bits, uint32_t prev,
                                   const motion_control_status_t * p_motion);
 static int32_t line_following_off(uint32_t to_deg, uint32_t from_deg);
-static void line_following_hold(const motion_control_status_t * p_motion);
+static void line_following_hold(const motion_control_status_t * p_motion,
+                                uint32_t to_deg);
 
 /*!
  * @brief Create the lock and set up the sensors.
@@ -175,10 +182,13 @@ void line_following_task(INT stacd, void * p_exinf)
 {
     SYSTIM now = {0};
     motion_control_status_t motion = {0};
+    barcode_decoder_t barcode = {0};
     uint32_t bits = 0u;
     uint32_t both = 0u; /* Samples in a row with both sensors black. */
     uint32_t prev = 0u; /* Sensors over black at the last sample. */
     bool b_hold = false;
+    bool b_straight = false;    /* Over a barcode: hold straight_deg. */
+    uint32_t straight_deg = 0u; /* Heading held over a barcode. */
 
     (void)stacd;
     (void)p_exinf;
@@ -189,6 +199,7 @@ void line_following_task(INT stacd, void * p_exinf)
         both = (LINE_FOLLOWING_BOTH == bits) ? (both + 1u) : 0u;
         (void)tk_get_otm(&now);
         motion_control_get_status(&motion);
+        barcode_decoder_get(&barcode);
 
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         prev = g_line.bits;
@@ -216,6 +227,12 @@ void line_following_task(INT stacd, void * p_exinf)
         g_line.sample_ms = now.lo;
         b_hold = (g_line.b_following) && (0u == g_search.phase) &&
                  (line_following_wobble(bits, prev, &motion));
+        if ((0u != barcode.b_reading) && (!b_straight))
+        {
+            straight_deg =
+                g_wobble.b_hold ? g_wobble.hold_deg : motion.heading_deg;
+        }
+        b_straight = (0u != barcode.b_reading);
         if ((!g_line.b_following) || (0u != bits))
         {
             g_search.phase = 0u; /* Not following, found, or never lost. */
@@ -224,8 +241,8 @@ void line_following_task(INT stacd, void * p_exinf)
         else if ((0u == g_search.phase) &&
                  (((motion.distance_mm - g_search.from_mm) &
                    MOTION_CONTROL_DISTANCE_MASK) >=
-                  (b_hold ? LINE_FOLLOWING_HOLD_LOST_MM
-                          : LINE_FOLLOWING_LOST_MM)))
+                  ((b_hold || b_straight) ? LINE_FOLLOWING_HOLD_LOST_MM
+                                          : LINE_FOLLOWING_LOST_MM)))
         {
             g_search.phase = 1u;
             g_search.start_deg = motion.heading_deg;
@@ -238,13 +255,16 @@ void line_following_task(INT stacd, void * p_exinf)
             /* Centred, or still searching. */
         }
         if ((g_line.b_following) && (0u == g_search.phase) &&
-            (g_wobble.b_hold) && (0u == bits))
+            (b_straight || g_wobble.b_hold) && (0u == bits))
         {
-            line_following_hold(&motion);
+            line_following_hold(&motion,
+                                b_straight ? straight_deg : g_wobble.hold_deg);
         }
         else if ((g_line.b_following) && (0u == g_search.phase))
         {
-            line_following_steer(bits, motion.distance_mm);
+            line_following_steer(bits, motion.distance_mm,
+                                 b_straight ? LINE_FOLLOWING_TURN_MIN
+                                            : LINE_FOLLOWING_TURN_MAX);
         }
         else
         {
@@ -268,8 +288,10 @@ void line_following_task(INT stacd, void * p_exinf)
  *
  * @param[in] bits        Sensors over black.
  * @param[in] distance_mm Odometer now.
+ * @param[in] max         Largest turn towards a sensor, TURN_MIN..TURN_MAX.
  */
-static void line_following_steer(uint32_t bits, uint32_t distance_mm)
+static void line_following_steer(uint32_t bits, uint32_t distance_mm,
+                                 int32_t max)
 {
     int32_t const speed = (int32_t)g_steer.speed_mm_s; /* 9 bits: fits. */
     int32_t turn = g_steer.turn;
@@ -286,11 +308,11 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm)
 
     if (DRV_LINE_LEFT == bits)
     {
-        target = LINE_FOLLOWING_TURN_MAX;
+        target = max;
     }
     else if (DRV_LINE_RIGHT == bits)
     {
-        target = -LINE_FOLLOWING_TURN_MAX;
+        target = -max;
     }
     else if ((0u == bits) && (white > 0) && (0u != g_line.last_side))
     {
@@ -308,10 +330,9 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm)
         step = (mm * (LINE_FOLLOWING_TURN_MAX - LINE_FOLLOWING_TURN_MIN)) /
                LINE_FOLLOWING_RISE_MM;
         /* Below the min, or the other way: start at the min towards it. */
-        if (((target * turn) / LINE_FOLLOWING_TURN_MAX) <
-            LINE_FOLLOWING_TURN_MIN)
+        if (((target * turn) / max) < LINE_FOLLOWING_TURN_MIN)
         {
-            turn = (target * LINE_FOLLOWING_TURN_MIN) / LINE_FOLLOWING_TURN_MAX;
+            turn = (target * LINE_FOLLOWING_TURN_MIN) / max;
         }
     }
     if (turn < target)
@@ -456,17 +477,17 @@ static int32_t line_following_off(uint32_t to_deg, uint32_t from_deg)
 }
 
 /*!
- * @brief Turn towards hold_deg, gently. Call under gh_mutex while
- * following.
+ * @brief Turn towards to_deg, gently. Call under gh_mutex while following.
  *
  * @param[in] p_motion Motion status, for the odometer and heading.
+ * @param[in] to_deg   Heading to hold, 0..359.
  */
-static void line_following_hold(const motion_control_status_t * p_motion)
+static void line_following_hold(const motion_control_status_t * p_motion,
+                                uint32_t to_deg)
 {
     int32_t const speed = (int32_t)g_steer.speed_mm_s; /* 9 bits: fits. */
-    int32_t turn =
-        line_following_off(g_wobble.hold_deg, p_motion->heading_deg) *
-        LINE_FOLLOWING_HOLD_GAIN;
+    int32_t turn = line_following_off(to_deg, p_motion->heading_deg) *
+                   LINE_FOLLOWING_HOLD_GAIN;
 
     turn = (turn > LINE_FOLLOWING_TURN_MIN) ? LINE_FOLLOWING_TURN_MIN : turn;
     turn = (turn < -LINE_FOLLOWING_TURN_MIN) ? -LINE_FOLLOWING_TURN_MIN : turn;

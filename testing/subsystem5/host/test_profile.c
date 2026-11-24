@@ -84,14 +84,14 @@ int main(void)
 
     for (ray = 0u; ray < SCAN_PROFILE_RAYS; ray++)
     {
-        rays[ray] = 150u;
+        rays[ray] = 200u;
     }
     scan_profile_build(rays, &p);
     test_check((45u == p.right_deg) && (135u == p.left_deg) &&
-                   (235u == p.width_mm) && (150u == p.right_mm) &&
-                   (150u == p.left_mm),
+                   (255u == p.width_mm) && (200u == p.right_mm) &&
+                   (200u == p.left_mm),
                "blocked across the sweep: edges at both ends, width "
-               "235 mm");
+               "314 mm capped at 255");
 
     p = test_profile(one_ray, 4000u, 4000u);
     test_check((0u == p.width_mm) && (1u == p.b_obstacle) &&

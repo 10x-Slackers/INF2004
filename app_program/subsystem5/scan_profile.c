@@ -53,6 +53,7 @@ void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
     uint32_t right = SCAN_PROFILE_AHEAD;
     uint32_t left = SCAN_PROFILE_AHEAD;
     uint32_t ray = 0u;
+    uint32_t width_mm = 0u;
 
     /* The obstacle is the run of blocked rays around the one ahead. */
     if (b_obstacle)
@@ -77,9 +78,11 @@ void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile)
     p_profile->b_obstacle = b_obstacle;
     p_profile->right_deg = SCAN_PROFILE_DEG(right);
     p_profile->left_deg = SCAN_PROFILE_DEG(left);
-    /* With no obstacle the edges meet, so the width is 0. */
-    p_profile->width_mm = scan_profile_arc_mm(
+    /* With no obstacle the edges meet, so the width is 0. Capped to fit
+     * 8 bits: only a run over about 70 degrees reaches it. */
+    width_mm = scan_profile_arc_mm(
         p_rays[closest], SCAN_PROFILE_DEG(left) - SCAN_PROFILE_DEG(right));
+    p_profile->width_mm = (width_mm > 255u) ? 255u : width_mm;
     p_profile->left_mm = p_rays[SCAN_PROFILE_RAYS - 1u];
     p_profile->right_mm = p_rays[0];
 }

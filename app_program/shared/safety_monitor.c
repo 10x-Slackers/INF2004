@@ -44,7 +44,8 @@ void safety_monitor_stop(uint32_t cause)
 /*!
  * @brief Release the latch, unless the IMU still reports a fault (tilt and
  * upside down stay latched until reset; lifted clears 1 s after a lift; the
- * sensor fault is cleared here, and the IMU then calibrates again).
+ * sensor fault is cleared here, and the IMU then calibrates again) or
+ * motion control keeps it because its start-up failed.
  *
  * @return True if released.
  */
@@ -57,6 +58,10 @@ bool safety_monitor_clear(void)
     if (b_clear)
     {
         (void)motion_control_latch(false);
+        b_clear = !motion_control_latched();
+    }
+    if (b_clear)
+    {
         /* (UB *): tm_printf() takes unsigned chars. */
         tm_printf((UB *)"[safety] cleared\n");
     }

@@ -15,7 +15,8 @@ static volatile uint16_t g_max_tick_us;
 static void subsystem2_motion_task(INT stacd, void * p_exinf);
 
 /*!
- * @brief Set up the motors and encoders, with both motors braked.
+ * @brief Set up the motors and encoders, with both motors braked. If the
+ * driver fails, motion control is left latched: it never drives.
  */
 ER subsystem2_init(void)
 {

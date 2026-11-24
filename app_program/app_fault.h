@@ -14,8 +14,8 @@
  * Each owner sets and clears only its own bits. */
 
 /* S2, cleared by the next motion command. */
-#define APP_FAULT_STALL_LEFT  (1u << 0) /* Driven 1 s with no edge. */
-#define APP_FAULT_STALL_RIGHT (1u << 1) /* Driven 1 s with no edge. */
+#define APP_FAULT_STALL_LEFT  (1u << 0) /* Driven 0.5 s with no edge. */
+#define APP_FAULT_STALL_RIGHT (1u << 1) /* Driven 0.5 s with no edge. */
 #define APP_FAULT_ENCODER     (1u << 2) /* Missed phase; still runs. */
 /* S4, latched until reset. */
 #define APP_FAULT_UPSIDE_DOWN (1u << 3) /* Picked up and turned over. */

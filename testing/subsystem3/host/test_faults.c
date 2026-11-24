@@ -2,14 +2,14 @@
  *
  * @brief Host test of subsystem 3's sensor fault checks: a line sensor
  * stuck on black, the time limit on the lost-line search, and barcode ADC
- * samples that stop.
+ * samples that stop. Also that the end of a barcode does not start a search.
  *
  * Runs the real Line Following and Barcode Decoder tasks. The kernel calls
  * come from stub/ and the stubs below; tk_slp_tsk() is one 10 ms wake-up
  * and leaves the task when the wake-ups asked for are used up, so a task's
  * local variables start again on every run. The car is a model: each
  * wake-up moves the odometer by the wheel speeds last commanded, and the
- * heading never moves. Build and run as in S3-U22 of
+ * heading never moves. Build and run as in S3-U22 and S3-U23 of
  * testing/subsystem3/TEST_LOG.md.
  */
 
@@ -20,16 +20,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TEST_SPEED_MM_S 150u /* As the Vehicle Controller follows. */
+#define TEST_SPEED_MM_S 150u  /* As the Vehicle Controller follows. */
+#define TEST_BAR_UM     5000u /* Bars and spaces of the printed barcode. */
+#define TEST_BLACK      4000u /* ADC counts over a bar. */
 
 static jmp_buf g_task_exit;
-static uint32_t g_wakes;    /* Wake-ups left before the task is left. */
-static uint32_t g_bits;     /* What the line sensors read. */
-static uint32_t g_adc;      /* Samples per barcode read. */
-static int32_t g_left_mm_s; /* Wheel speeds last commanded. */
+static jmp_buf g_barcode_exit; /* Barcode task run inside a line wake-up. */
+static uint32_t g_wakes;       /* Wake-ups left before the task is left. */
+static uint32_t g_bits;        /* What the line sensors read. */
+static uint32_t g_adc;         /* Samples per barcode read. */
+static int32_t g_left_mm_s;    /* Wheel speeds last commanded. */
 static int32_t g_right_mm_s;
-static uint32_t g_um;     /* Odometer. */
-static uint32_t g_faults; /* Stands in for the kernel event flag. */
+static uint32_t g_um;       /* Odometer. */
+static uint32_t g_moved_um; /* How far the last wake-up moved it. */
+static uint32_t g_faults;   /* Stands in for the kernel event flag. */
+static uint32_t g_bars_um;  /* A barcode beside the line starts here... */
+static uint32_t g_bars_end; /* ...and ends here; none if they are equal. */
+static bool gb_both;        /* Each line wake-up also runs the decoder. */
+static bool gb_decoding;    /* Inside that decoder run. */
+static bool gb_decoded;     /* Its one wake-up is used up. */
 static int g_failures;
 
 /* ---- Stubs: kernel, faults, drivers and the car ----------------------- */
@@ -59,17 +68,49 @@ ER tk_get_otm(SYSTIM * p_time)
     return E_OK;
 }
 
-/* One 10 ms wake-up: the car has moved at the speeds last commanded. */
+/* The car has moved for 10 ms at the speeds last commanded. */
+static void test_move(void)
+{
+    /* (|left| + |right|) / 2 mm/s for 10 ms, in um. */
+    g_moved_um = (uint32_t)(abs(g_left_mm_s) + abs(g_right_mm_s)) * 5u;
+    g_um += g_moved_um;
+}
+
+/* One 10 ms wake-up. With gb_both, a wake-up of the Line Following task
+ * first runs the Barcode Decoder task for the same 10 ms, as on the car,
+ * where the decoder has the higher priority. */
 ER tk_slp_tsk(TMO tmout)
 {
     (void)tmout;
-    if (0u == g_wakes)
+    if (gb_decoding)
+    {
+        if (gb_decoded)
+        {
+            longjmp(g_barcode_exit, 1);
+        }
+        gb_decoded = true;
+        test_move();
+    }
+    else if (0u == g_wakes)
     {
         longjmp(g_task_exit, 1);
     }
-    g_wakes--;
-    /* (|left| + |right|) / 2 mm/s for 10 ms, in um. */
-    g_um += (uint32_t)(abs(g_left_mm_s) + abs(g_right_mm_s)) * 5u;
+    else if (gb_both)
+    {
+        g_wakes--;
+        gb_decoding = true;
+        gb_decoded = false;
+        if (0 == setjmp(g_barcode_exit))
+        {
+            barcode_decoder_task(0, NULL);
+        }
+        gb_decoding = false;
+    }
+    else
+    {
+        g_wakes--;
+        test_move();
+    }
     return E_OK;
 }
 
@@ -96,13 +137,20 @@ void drv_barcode_init(void)
 {
 }
 
+/* White, but black over the bars of the barcode, each sample placed along
+ * the last wake-up's travel as the decoder places it. */
 uint32_t drv_barcode_read(uint16_t * p_samples)
 {
     uint32_t sample = 0u;
+    uint32_t um = 0u;
 
     for (sample = 0u; sample < g_adc; sample++)
     {
-        p_samples[sample] = 0u; /* White. */
+        um = (g_um - g_moved_um) + ((g_moved_um * (sample + 1u)) / g_adc);
+        p_samples[sample] = ((um >= g_bars_um) && (um < g_bars_end) &&
+                             (0u == (((um - g_bars_um) / TEST_BAR_UM) % 2u)))
+                                ? TEST_BLACK
+                                : 0u;
     }
     return g_adc;
 }
@@ -275,12 +323,42 @@ static void test_barcode_samples(void)
     test_check(0u == g_faults, "100 samples in 100 ms: fault cleared");
 }
 
+/* The car runs centred, both sensors white, over a 200 mm barcode beside
+ * the line. Its end must not start a search: all white counts from there. */
+static void test_barcode_end(void)
+{
+    line_following_t line = {0};
+    barcode_decoder_t barcode = {0};
+
+    test_start();
+    g_bars_um = g_um + 20000u;
+    g_bars_end = g_bars_um + 200000u;
+    g_adc = 20u;
+    gb_both = true;
+    test_follow(0u, 240u);
+    line_following_get(&line);
+    barcode_decoder_get(&barcode);
+    test_check((0u != barcode.b_reading) && (0u == line.b_searching),
+               "all white for 240 mm over a barcode: reading, no search");
+    test_follow(0u, 60u);
+    line_following_get(&line);
+    barcode_decoder_get(&barcode);
+    test_check((0u == barcode.b_reading) && (0u == line.b_searching),
+               "the barcode has ended, 300 mm all white: no search");
+    test_follow(0u, 60u);
+    line_following_get(&line);
+    test_check(0u != line.b_searching,
+               "all white for 80 mm past the barcode: searching");
+    gb_both = false;
+}
+
 int main(void)
 {
     (void)line_following_init();
     (void)barcode_decoder_init();
     test_stuck_sensor();
     test_search_limit();
+    test_barcode_end();
     test_barcode_samples();
     printf("%s\n", (0 == g_failures) ? "ALL PASS" : "FAILED");
     return (0 == g_failures) ? 0 : 1;

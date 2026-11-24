@@ -15,7 +15,9 @@
  *
  * Barcodes lie on straights, so while the barcode sensor is over one the car
  * holds the heading it had when the barcode was recognised (the wobble hold
- * heading if holding), and a sensor hit turns it at most TURN_MIN.
+ * heading if holding), and a sensor hit turns it at most TURN_MIN. All white
+ * is counted from the start again where the barcode ends, unless the wobble
+ * hold is on.
  */
 
 #include "line_following.h"
@@ -61,7 +63,7 @@
 /* Line search and stuck sensor check, under gh_mutex. */
 typedef struct
 {
-    unsigned int from_mm : 24;  /* Odometer when a sensor last saw black. */
+    unsigned int from_mm : 24;  /* Odometer where all white began. */
     unsigned int phase : 2;     /* 0 none, 1 towards last_side, 2 back. */
     unsigned int start_deg : 9; /* Heading when the search began. */
     unsigned int samples : 10;  /* Since the search began, to SEARCH_MAX. */
@@ -231,6 +233,17 @@ void line_following_task(INT stacd, void * p_exinf)
         {
             straight_deg =
                 g_wobble.b_hold ? g_wobble.hold_deg : motion.heading_deg;
+        }
+        else if ((0u == barcode.b_reading) && b_straight && (!b_hold))
+        {
+            /* The barcode has ended and LOST_MM applies again: all white
+             * counts from here, or the distance held straight over it
+             * would look lost at once. */
+            g_search.from_mm = motion.distance_mm;
+        }
+        else
+        {
+            /* Still over a barcode, or still not. */
         }
         b_straight = (0u != barcode.b_reading);
         if ((!g_line.b_following) || (0u != bits))

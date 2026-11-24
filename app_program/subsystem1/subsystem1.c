@@ -26,6 +26,9 @@
     (MQTT_UTK_MSG_MAX < (1u + PAYLOAD_TELEMETRY_BYTES))
 #error "MQTT_UTK_MSG_MAX is smaller than a queued message"
 #endif
+#if MQTT_UTK_MAP_BYTES != PAYLOAD_MAP_BYTES
+#error "MQTT_UTK_MAP_BYTES does not match the map payload"
+#endif
 
 static ID gh_s1_queue; /* Message buffer: Telemetry task to Wi-Fi service. */
 
@@ -166,6 +169,8 @@ static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
     telemetry.bypasses = p_avoid->bypasses;
     telemetry.forward_mm = p_scan->forward_mm;
     telemetry.faults = app_faults();
+    telemetry.rejects = barcode.rejects;
+    telemetry.letter = barcode.letter;
     payload_pack_telemetry(&telemetry, p_payload);
 }
 
@@ -200,6 +205,28 @@ int32_t mqtt_utk_app_take(uint8_t * p_message)
 void mqtt_utk_app_command(uint8_t command)
 {
     (void)tk_set_flg(gh_s1_command_flag, command & S1_CMD_ALL);
+}
+
+/*!
+ * @brief The Wi-Fi service received a barcode map: give the Barcode Decoder
+ * its new action for each letter.
+ */
+void mqtt_utk_app_map(const uint8_t * p_map)
+{
+    uint8_t actions[BARCODE_DECODER_LETTERS] = {0};
+    char digits[BARCODE_DECODER_LETTERS + 1u] = {0}; /* Ends in '\0'. */
+    uint32_t letter = 0u;
+
+    payload_unpack_map(p_map, actions);
+    barcode_decoder_set_actions(actions);
+    for (letter = 0u; letter < BARCODE_DECODER_LETTERS; letter++)
+    {
+        digits[letter] = (char)('0' + actions[letter]);
+    }
+    /* One call, as the console is slow. (UB *): tm_printf() takes unsigned
+     * chars. */
+    tm_printf((UB *)"[s1] barcode map A-Z (0 ignore .. 4 U-turn): %s\n",
+              digits);
 }
 
 /*!

@@ -92,8 +92,10 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `g_ring` (driver): barcode samples | 0 to 4095 | 16 each | `volatile uint16_t`, the ADC FIFO's format written by DMA (out of scope) | DMA writes, the Barcode Decoder task reads |
 | 3 | `barcode_decoder_t.command`: last validated command (none, left, right, straight, U-turn) | 0 to 4 | 3 | `unsigned int` bit-field | Readers copy it with `barcode_decoder_get()`, under the barcode mutex |
 | 3 | `.count`, `.rejects`: barcodes validated and rejected | 0 to 15 each, wrap | 4 each | As above | As above |
+| 3 | `.letter`: last letter read, validated or rejected | 0 to 26 (0 misread or digit, 1 to 26 A to Z) | 5 | As above | As above |
 | 3 | `.distance_mm`: odometer at the end of the barcode | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
 | 3 | `.b_reading`: the sensor is over a barcode now | 0 or 1 | 1 | As above | As above |
+| 3 | `g_actions` (barcode decoder): the command of each letter, A to Z | 0 to 4 each (as `.command`) | 8 each | `uint8_t`, the smallest standard type; the `map` payload sends it in 3 bits each | `barcode_decoder_set_actions()` writes it and the Barcode Decoder task reads it, both under the barcode mutex |
 | 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in µm (0 to 30000) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
 | 3 | `g_code.elements`, `.b_black`, `.b_in_code` (barcode decoder): elements in the barcode so far, black now, inside a barcode | 0 to 31, stops at 31 (29 are decoded); 0 or 1 each | 5; 1 each | `unsigned int` bit-field | Barcode Decoder task only |
 | 3 | `g_check.wakes`, `.samples` (barcode decoder): wake-ups in the current 100 ms check of the ADC, and the samples read in them | 0 to 10; 0 to 2550 (10 reads of up to 255) | 4; 12 | `unsigned int` bit-field | Barcode Decoder task only |

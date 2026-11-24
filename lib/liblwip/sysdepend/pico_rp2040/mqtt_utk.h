@@ -19,6 +19,9 @@
 #define MQTT_UTK_TOPIC_SCAN		2u
 #define MQTT_UTK_TOPIC_HEARTBEAT	3u
 
+/* The payload of a message on csc13/map: 3 bits per letter, A to Z. */
+#define MQTT_UTK_MAP_BYTES	10
+
 /* Call from cyw43_utk_task() on every poll while the link is up. The first
  * call connects; every call publishes what the application has queued. */
 void mqtt_utk_poll(void);
@@ -32,6 +35,9 @@ int32_t mqtt_utk_app_take(uint8_t *msg);
 
 /* The one-byte payload of a message on csc13/cmd. */
 void mqtt_utk_app_command(uint8_t cmd);
+
+/* The MQTT_UTK_MAP_BYTES payload of a message on csc13/map. */
+void mqtt_utk_app_map(const uint8_t *map);
 
 /* The broker accepted the connection (true), or it failed or dropped. */
 void mqtt_utk_app_online(bool online);

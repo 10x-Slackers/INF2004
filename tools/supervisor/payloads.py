@@ -10,6 +10,9 @@ Run as in S1-U01 of testing/subsystem1/TEST_LOG.md.
 """
 
 import json
+import string
+
+LETTERS = string.ascii_uppercase  # The map payload's fields, A first.
 
 # (name, bits, offset added before packing)
 LAYOUTS = {
@@ -32,6 +35,8 @@ LAYOUTS = {
         ("bypasses", 4, 0),
         ("forward_mm", 12, 0),
         ("faults", 15, 0),
+        ("rejects", 4, 0),
+        ("letter", 5, 0),
     ],
     "motion": [
         ("state", 2, 0),
@@ -54,17 +59,21 @@ LAYOUTS = {
     ],
     "heartbeat": [("count", 16, 0)],
     "cmd": [("cmd", 8, 0)],  # COMMANDS bits, below.
+    "map": [(letter, 3, 0) for letter in LETTERS],  # ACTIONS, below.
 }
 
 # Names of the enumerated fields by value, from the C headers.
 STATES = ["INIT", "READY", "FOLLOW", "AVOID", "TURN", "SAFE_STOP"]
+ACTIONS = ["none", "left", "right", "straight", "U-turn"]  # BARCODE_DECODER_...
 NAMES = {
+    "map": {letter: ["ignore"] + ACTIONS[1:] for letter in LETTERS},
     "telemetry": {
         "state": STATES,
-        "barcode": ["none", "left", "right", "straight", "U-turn"],
+        "barcode": ACTIONS,
         "motion_class": ["steady", "accelerating", "braking", "climbing", "descending"],
         "avoid_state": ["idle", "watching", "profiling", "bypassing", "stopped"],
         "avoid_side": ["none", "left", "right"],
+        "letter": ["none"] + list(LETTERS),
     },
     "motion": {
         "state": ["idle", "running", "complete", "failed"],
@@ -111,6 +120,8 @@ SAMPLES = {
         "bypasses": 1,
         "forward_mm": 1830,
         "faults": 0,
+        "rejects": 1,
+        "letter": 26,
     },
     "motion": {
         "state": 1,
@@ -133,6 +144,7 @@ SAMPLES = {
     },
     "heartbeat": {"count": 1234},
     "cmd": {"cmd": 1},
+    "map": dict.fromkeys(LETTERS, 0) | {"A": 1, "B": 2, "C": 3, "D": 4},  # Brief's.
 }
 
 # motion_control_pack() output for these values, from S2-U10's
@@ -152,7 +164,8 @@ C_MOTION_BYTES = bytes.fromhex("9d663220c1234abcdef01230")
 # payload_pack_telemetry() and payload_pack_scan() output for these values,
 # from S1-U02's test_payload.c. Every field has its top bit set, so a field
 # packed too narrow shows; roll is negative instead, for the offset, and
-# faults has its lowest bit set too, so a misplaced last field shows.
+# faults has its lowest bit set too, so a misplaced field after it shows.
+# letter is 26 (Z), the most it is sent.
 C_TELEMETRY_VALUES = {
     "state": 5,
     "latched": 1,
@@ -172,8 +185,10 @@ C_TELEMETRY_VALUES = {
     "bypasses": 9,
     "forward_mm": 4000,
     "faults": 0x4801,
+    "rejects": 9,
+    "letter": 26,
 }
-C_TELEMETRY_BYTES = bytes.fromhex("bb933c207caab29fa09002")
+C_TELEMETRY_BYTES = bytes.fromhex("bb933c207caab29fa090033a")
 C_SCAN_VALUES = {
     "closest_mm": 2100,
     "closest_deg": 135,
@@ -184,6 +199,10 @@ C_SCAN_VALUES = {
     "right_mm": 2050,
 }
 C_SCAN_BYTES = bytes.fromhex("834878287c8fa08020")
+# payload_unpack_map() must give these values, A to Z counting 0 to 7 over
+# and over, from these bytes: every bit of every field is used.
+C_MAP_VALUES = {letter: i % 8 for i, letter in enumerate(LETTERS)}
+C_MAP_BYTES = bytes.fromhex("05397705397705397704")
 
 # The same data as Week 6 JSON: names spelled out, enums as words.
 COMMON = {"v": 1, "robot_id": "CSC13", "seq": 1234}
@@ -231,6 +250,8 @@ def unpack(name, payload):
 
 def as_json(name, values):
     doc = CMD_JSON if name == "cmd" else {**COMMON, **values}
+    if name == "map":  # Only the letters that do something, by name.
+        doc = {k: ACTIONS[v] for k, v in values.items() if v}
     if name == "telemetry":
         doc["state"] = STATES[values["state"]]
     return json.dumps(doc, separators=(",", ":")).encode()
@@ -263,6 +284,9 @@ def main():
     )
     check(
         pack("scan", C_SCAN_VALUES) == C_SCAN_BYTES, "scan matches payload_pack_scan()"
+    )
+    check(
+        pack("map", C_MAP_VALUES) == C_MAP_BYTES, "map matches payload_unpack_map()"
     )
 
     json_s = binary_s = 0

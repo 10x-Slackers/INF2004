@@ -120,11 +120,11 @@ Not drawn: the Telemetry task reads every task's status for its payloads ([Telem
 | I8  | Ultrasonic Scan → Obstacle Avoidance                              | Forward range and its time, obstacle profile                                               |
 | I9  | IMU and Terrain Monitor → Vehicle Controller                      | Calibration done, highest hump of the run; tilt, upside-down, lifted and sensor faults as fault bits |
 | I11 | Vehicle Controller → Safety Monitor → Wheel Motion Control        | Stop with a cause, clear; the motion latch, which refuses every command while set          |
-| I12 | Wi-Fi service → Vehicle Controller; Telemetry → Wi-Fi service     | `START` / `STOP` / `RESET` from the supervisor; telemetry, scan, motion and heartbeat to it |
+| I12 | Wi-Fi service → Vehicle Controller; Telemetry → Wi-Fi service     | `START` / `STOP` / `RESET` and the barcode actions (`map`) from the supervisor; telemetry, scan, motion and heartbeat to it |
 
 Notes:
 
-- Each interface except I12 is a set of function calls that copy a record under the provider's mutex, so they are safe from any task on either core. I12 uses a message buffer (telemetry out) and an event flag (commands in).
+- Each interface except I12 is a set of function calls that copy a record under the provider's mutex, so they are safe from any task on either core. I12 uses a message buffer (telemetry out) and an event flag (commands in); the barcode actions go in through `barcode_decoder_set_actions()`, under the barcode mutex.
 - Only one task steers at a time: the Vehicle Controller starts line following and avoidance, avoidance stops line following when it takes over (I1), and the controller restarts it once avoidance is back to watching ([VEHICLE_CONTROLLER.md](VEHICLE_CONTROLLER.md#hand-over-to-avoidance)).
 - Collision risk belongs to Obstacle Avoidance, which brakes on the second forward reading in a row within 200 mm. It reads the range only while the car follows the line or drives straight in a bypass: nothing checks it during turns (avoidance's bypass turns, the controller's junction turns, the line follower's lost-line pivot). The Safety Monitor does not read I8: a range backstop could never act before avoidance, which brakes on the same reading, and only avoidance requests readings.
 - The Safety Monitor latches a stop on an IMU fault bit or motion `FAILED`. The Vehicle Controller latches it too for each of its own stops, including the supervisor's `STOP`. While the latch is set, motion control refuses every command, so a request issued before the stop can never move the car (FR11). If motion control fails to start, it holds the latch from power-up, and neither GP20 nor the supervisor's `RESET` releases it.

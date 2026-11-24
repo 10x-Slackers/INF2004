@@ -1,8 +1,8 @@
 """Supervisor dashboard for the car (docs/TELEMETRY.md).
 
 Subscribes to csc13/#, decodes each payload with payloads.py, keeps an event
-log of what changed, and serves a local page with the live state and the
-Start, Stop and Reset commands. Run:
+log of what changed, and serves a local page with the live state, the
+Start, Stop and Reset commands and the barcode actions. Run:
 
     python3 tools/supervisor/dashboard.py --broker <broker IP>
     then open http://127.0.0.1:8000
@@ -22,8 +22,9 @@ import paho.mqtt.client as mqtt
 import payloads
 
 PREFIX = "csc13/"
-COUNTS = ("barcodes", "humps", "bypasses")  # Telemetry counters, which wrap.
+COUNTS = ("barcodes", "rejects", "humps", "bypasses")  # Telemetry counters, which wrap.
 PAGE = Path(__file__).with_name("dashboard.html")
+MAP_NAMES = payloads.NAMES["map"]["A"]  # Every letter's choices, by value.
 
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 lock = threading.Lock()  # Guards latest and events: MQTT and HTTP threads.
@@ -73,7 +74,13 @@ def telemetry_events(old, new):
                 )
             )
     if new["barcodes"] != old["barcodes"]:
-        found.append((f"Barcode read: {new['barcode']}", "info"))
+        found.append((f"Barcode {new['letter']}: {new['barcode']}", "info"))
+    if new["rejects"] != old["rejects"]:  # Ignored, a misread or a digit.
+        found.append(
+            (f"Barcode {new['letter']}: ignored", "info")
+            if new["letter"] != "none"
+            else ("Barcode read, not a letter", "info")
+        )
     if new["humps"] != old["humps"]:
         found.append((f"Hump measured, highest this run {new['hump_max']} mm", "info"))
     if new["bypasses"] != old["bypasses"]:
@@ -190,16 +197,28 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self.reply(200, PAGE.read_bytes(), "text/html")
 
-    def do_POST(self):  # /clear, or /cmd/START, /cmd/STOP or /cmd/RESET.
+    def do_POST(self):  # /clear, /map, or /cmd/START, /cmd/STOP or /cmd/RESET.
         name = self.path.removeprefix("/cmd/")
         if self.path == "/clear":
             with lock:
                 events.clear()
             self.reply(200, "", "text/plain")
-        elif name not in payloads.COMMANDS:
+        elif self.path != "/map" and name not in payloads.COMMANDS:
             self.reply(404, "Unknown command", "text/plain")
         elif not client.is_connected():
             self.reply(503, "Not sent: no broker connection", "text/plain")
+        elif self.path == "/map":  # Body: {"A": "left", ...}, every letter.
+            body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            values = {k: MAP_NAMES.index(v) for k, v in body.items()}
+            payload = payloads.pack("map", values)
+            # Retained, so the car gets it whenever it connects, even if it
+            # is off now. Shown at once, before the broker's copy comes back.
+            client.publish(PREFIX + "map", payload, retain=True)
+            with lock:
+                latest["map"] = (time.time(), decode(PREFIX + "map", payload)[1])
+            used = [f"{k} {MAP_NAMES[v]}" for k, v in values.items() if v]
+            log(f"Sent barcode actions: {', '.join(used) or 'all ignored'}", "command")
+            self.reply(200, "", "text/plain")
         else:
             client.publish(PREFIX + "cmd", bytes([payloads.COMMANDS[name]]))
             log(f"Sent {name.capitalize()}", "command")

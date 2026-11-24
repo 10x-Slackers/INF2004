@@ -33,13 +33,20 @@ class DashboardTest(unittest.TestCase):
             "state": "FOLLOW",
             "barcode": "left",
             "barcodes": 15,
+            "rejects": 3,
+            "letter": "A",
             "humps": 1,
             "hump_max": 12,
             "bypasses": 0,
             "faults": ["NO_ECHO"],
         }
         new = dict(
-            old, state="SAFE_STOP", barcode="right", barcodes=0, faults=["TILT"]
+            old,
+            state="SAFE_STOP",
+            barcode="right",
+            barcodes=0,
+            letter="B",
+            faults=["TILT"],
         )  # The barcode count wrapped.
         self.assertEqual(
             dashboard.telemetry_events(old, new),
@@ -49,12 +56,20 @@ class DashboardTest(unittest.TestCase):
                     "Run ended: highest hump this run 12 mm, faults: TILT",
                     "summary",
                 ),
-                ("Barcode read: right", "info"),
+                ("Barcode B: right", "info"),
                 ("Fault: TILT", "fault"),
                 ("Fault cleared: NO_ECHO", "info"),
             ],
         )
         self.assertEqual(dashboard.telemetry_events(old, old), [])
+        self.assertEqual(
+            dashboard.telemetry_events(old, dict(old, rejects=4, letter="Q")),
+            [("Barcode Q: ignored", "info")],
+        )
+        self.assertEqual(
+            dashboard.telemetry_events(old, dict(old, rejects=4, letter="none")),
+            [("Barcode read, not a letter", "info")],
+        )
 
     def test_heartbeat_gaps_and_restarts(self):
         self.assertIsNone(dashboard.heartbeat_event(None, 7))

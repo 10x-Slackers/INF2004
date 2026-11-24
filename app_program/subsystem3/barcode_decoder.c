@@ -29,18 +29,9 @@
  * each gap under BARCODE_END, which a lone line or speck does not give. */
 #define BARCODE_READING 3u
 
-/* The course's barcodes: change these lines when the letters are announced
- * (any number of letters per command). Other valid letters are rejected. Z is
- * the barcode between the loops on the example course. */
-static const struct
-{
-    char letter;
-    uint8_t command; /* BARCODE_DECODER_... */
-} g_actions[] = {
-    {'A', BARCODE_DECODER_LEFT},     {'B', BARCODE_DECODER_RIGHT},
-    {'C', BARCODE_DECODER_STRAIGHT}, {'D', BARCODE_DECODER_UTURN},
-    {'F', BARCODE_DECODER_RIGHT},    {'Z', BARCODE_DECODER_LEFT},
-};
+/* The command of each letter, A to Z, all NONE (ignored) until the
+ * supervisor sends a map (barcode_decoder_set_actions()). */
+static uint8_t g_actions[BARCODE_DECODER_LETTERS];
 
 static ID gh_mutex;
 static barcode_decoder_t g_barcode;
@@ -100,6 +91,26 @@ void barcode_decoder_get_raw(barcode_decoder_raw_t * p_raw)
 {
     (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     *p_raw = g_raw;
+    (void)tk_unl_mtx(gh_mutex);
+}
+
+/*!
+ * @brief Replace the command of every letter, for barcodes read from now.
+ * A value that is not a command (over UTURN) ignores the letter.
+ *
+ * @param[in] p_actions BARCODE_DECODER_LETTERS commands, A first.
+ */
+void barcode_decoder_set_actions(const uint8_t * p_actions)
+{
+    uint32_t letter = 0u;
+
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+    for (letter = 0u; letter < BARCODE_DECODER_LETTERS; letter++)
+    {
+        g_actions[letter] = (p_actions[letter] <= BARCODE_DECODER_UTURN)
+                                ? p_actions[letter]
+                                : BARCODE_DECODER_NONE;
+    }
     (void)tk_unl_mtx(gh_mutex);
 }
 
@@ -219,8 +230,12 @@ static void barcode_decoder_end(uint32_t odometer_mm)
      * print) are ignored: only the first 29 are kept. */
     uint32_t const letter =
         (g_code.elements >= CODE39_ELEMENTS) ? code39_decode(g_widths) : 0u;
+    /* 1..26 for A..Z; 0 for a misread or a digit, which have no action. */
+    uint32_t const index =
+        ((letter >= (uint32_t)'A') && (letter <= (uint32_t)'Z'))
+            ? ((letter - (uint32_t)'A') + 1u)
+            : 0u;
     uint32_t command = BARCODE_DECODER_NONE;
-    uint32_t action = 0u;
 #if APP_TEST
     uint32_t element = 0u;
 
@@ -239,23 +254,21 @@ static void barcode_decoder_end(uint32_t odometer_mm)
     }
 #endif
 
-    for (action = 0u; action < (sizeof(g_actions) / sizeof(g_actions[0]));
-         action++)
-    {
-        command = ((uint32_t)g_actions[action].letter == letter)
-                      ? g_actions[action].command
-                      : command;
-    }
-
     (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+    if (0u != index)
+    {
+        command = g_actions[index - 1u];
+    }
     if (BARCODE_DECODER_NONE != command)
     {
         g_barcode.command = command;
+        g_barcode.letter = index;
         g_barcode.count++;
         g_barcode.distance_mm = odometer_mm;
     }
     else if (g_code.elements >= CODE39_PER_CHR)
     {
+        g_barcode.letter = index;
         g_barcode.rejects++; /* Shorter runs are specks, or the line. */
     }
     else

@@ -84,6 +84,16 @@
   #faults { list-style: none; margin: 0 0 .8rem; padding: 0; font-weight: 600; color: var(--stop); }
   #faults:empty::before { content: "No faults"; color: var(--go); }
 
+  .map { margin-top: 2.5rem; }
+  .map h2 { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; }
+  .map h2 button { font-size: .9rem; padding: .45rem 1rem; }
+  #map-notice { font: .9rem system-ui, sans-serif; color: var(--muted); }
+  #map-notice.dirty { color: var(--caution); font-weight: 600; }
+  #map { display: grid; gap: .4rem 1rem; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); }
+  #map label { display: flex; align-items: center; gap: .5rem; font-weight: 700; }
+  #map select { flex: 1; font: inherit; font-weight: 400; padding: .15rem; }
+  #map select.on { font-weight: 600; color: var(--ready); }
+
   .log { margin-top: 2.5rem; }
   .log h2 { display: flex; justify-content: space-between; align-items: baseline; }
   .log a, .log h2 button { font: .9rem system-ui, sans-serif; color: var(--ready); }
@@ -145,6 +155,15 @@
   <section><h2>Faults</h2><ul id="faults"></ul><dl id="safety"></dl></section>
 </main>
 
+<section class="map">
+  <h2>Barcode actions
+    <button type="button" id="map-send" disabled>Send to car</button>
+    <button type="button" id="map-default">Ignore all</button>
+    <span id="map-notice"></span>
+  </h2>
+  <div id="map"></div>
+</section>
+
 <section class="log">
   <h2>Events <span><button type="button" id="clear-log">Clear log</button> <a href="/log" download="car-log.txt">Download log</a></span></h2>
   <ol id="events"></ol>
@@ -170,6 +189,7 @@
       ['Junction', 'telemetry', t => yes(t.junction)],
       ['Following', 'telemetry', t => yes(t.following)],
       ['Last barcode', 'telemetry', t => t.barcode],
+      ['Last letter read', 'telemetry', t => t.letter === 'none' ? '–' : t.letter],
       ['Barcodes read', 'telemetry', t => t.barcodes],
     ],
     motion: [
@@ -204,6 +224,35 @@
   const $ = id => document.getElementById(id);
   let stateName = null, stateSince = 0, lastEvent = 0, run = null;
   let notice = '';  // The last command's result, under the buttons.
+  let mapDirty = false, mapNotice = '';  // Edited and not yet sent; the last send's result.
+  let mapOnBroker = false;  // The broker holds a map.
+  const ACTIONS = ['ignore', 'left', 'right', 'straight', 'U-turn'];
+
+  // One <select> per letter, A to Z.
+  const selects = {};
+  for (const letter of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+    const label = document.createElement('label'), select = document.createElement('select');
+    select.append(...ACTIONS.map(a => new Option(a, a)));
+    select.onchange = edited;
+    label.append(letter, select);
+    $('map').append(label);
+    selects[letter] = select;
+  }
+  function edited() { mapDirty = true; mapNotice = ''; markMap(); }
+  function markMap() {
+    for (const select of Object.values(selects)) select.classList.toggle('on', select.value !== 'ignore');
+    $('map-notice').className = mapDirty ? 'dirty' : '';
+    $('map-notice').textContent = mapNotice || (mapDirty ? 'Not sent yet'
+      : mapOnBroker ? 'Table on the broker' : 'No table sent: the car ignores every letter');
+  }
+  // The broker's map, none until one is sent (every letter ignored).
+  function showMap(map, broker) {
+    $('map-send').disabled = !broker;
+    mapOnBroker = Object.keys(map).length > 0;
+    if (mapDirty) return;  // Keep the user's edits until they send.
+    for (const [letter, action] of Object.entries(map)) selects[letter].value = action;
+    markMap();
+  }
 
   // One <dt>/<dd> per field, made once; refresh() fills in the <dd>.
   for (const [id, fields] of Object.entries(GROUPS)) {
@@ -310,6 +359,7 @@
     $('terrain').classList.toggle('invalid',
       !!t && (t.state === 'INIT' || t.faults.includes('IMU_SENSOR')));
     showScan(t, topic('scan').values);
+    showMap(topic('map').values || {}, data.broker);
     if (data.run !== run) {  // A new server: its ids start from 1 again.
       run = data.run;
       lastEvent = 0;
@@ -319,14 +369,29 @@
     }
   }
 
+  // POST to the dashboard server: '' if it worked, else why not.
+  async function post(path, body) {
+    const response = await fetch(path, {method: 'POST', body}).catch(() => null);
+    return !response ? 'Not sent: the dashboard server stopped' : response.ok ? '' : await response.text();
+  }
+
   async function send(name) {
-    const response = await fetch(`/cmd/${name}`, {method: 'POST'}).catch(() => null);
-    notice = !response ? 'Not sent: the dashboard server stopped'
-      : response.ok ? `Sent ${name[0] + name.slice(1).toLowerCase()}` : await response.text();
+    notice = await post(`/cmd/${name}`) || `Sent ${name[0] + name.slice(1).toLowerCase()}`;
     $('notice').textContent = notice;
   }
 
   for (const id of ['START', 'STOP', 'RESET']) $(id).onclick = () => send(id);
+  $('map-default').onclick = () => {
+    for (const select of Object.values(selects)) select.value = 'ignore';
+    edited();
+  };
+  $('map-send').onclick = async () => {
+    const map = Object.fromEntries(Object.entries(selects).map(([k, s]) => [k, s.value]));
+    const error = await post('/map', JSON.stringify(map));
+    mapDirty = !!error;
+    mapNotice = error || 'Sent';
+    markMap();
+  };
   $('clear-log').onclick = async () => {
     await fetch('/clear', {method: 'POST'}).catch(() => null);
     $('events').replaceChildren();

@@ -1,6 +1,7 @@
 /** @file payload.c
  *
- * @brief Packs the telemetry and scan MQTT payloads with explicit shifts.
+ * @brief Packs the telemetry and scan MQTT payloads and unpacks the map
+ * payload, with explicit shifts.
  */
 
 #include "payload.h"
@@ -41,6 +42,8 @@ void payload_pack_telemetry(const payload_telemetry_t * p_telemetry,
     payload_put(p_payload, &bit, p_telemetry->bypasses, 4u);
     payload_put(p_payload, &bit, p_telemetry->forward_mm, 12u);
     payload_put(p_payload, &bit, p_telemetry->faults, 15u);
+    payload_put(p_payload, &bit, p_telemetry->rejects, 4u);
+    payload_put(p_payload, &bit, p_telemetry->letter, 5u);
 }
 
 /*!
@@ -60,6 +63,30 @@ void payload_pack_scan(const scan_profile_t * p_profile, uint8_t * p_payload)
     payload_put(p_payload, &bit, p_profile->width_mm, 8u);
     payload_put(p_payload, &bit, p_profile->left_mm, 12u);
     payload_put(p_payload, &bit, p_profile->right_mm, 12u);
+}
+
+/*!
+ * @brief Unpack the map payload: one action per letter, A first.
+ *
+ * @param[out] p_actions BARCODE_DECODER_LETTERS values, 0..7.
+ */
+void payload_unpack_map(const uint8_t * p_payload, uint8_t * p_actions)
+{
+    uint32_t bit = 0u;
+    uint32_t letter = 0u;
+    uint32_t shift = 0u;
+
+    for (letter = 0u; letter < BARCODE_DECODER_LETTERS; letter++)
+    {
+        p_actions[letter] = 0u;
+        for (shift = 0u; shift < 3u; shift++)
+        {
+            p_actions[letter] =
+                (uint8_t)((p_actions[letter] << 1) |
+                          ((p_payload[bit / 8u] >> (7u - (bit % 8u))) & 1u));
+            bit++;
+        }
+    }
 }
 
 /*!

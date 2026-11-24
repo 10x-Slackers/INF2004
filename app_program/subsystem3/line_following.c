@@ -104,6 +104,13 @@ static line_following_search_t g_search;
 static line_following_steer_t g_steer;
 static line_following_wobble_t g_wobble;
 
+static void line_following_stuck(uint32_t bits, uint32_t distance_mm);
+static void line_following_watch(uint32_t bits,
+                                 const motion_control_status_t * p_motion,
+                                 uint32_t lost_mm);
+static void line_following_drive(uint32_t bits,
+                                 const motion_control_status_t * p_motion,
+                                 bool b_straight, uint32_t straight_deg);
 static void line_following_steer(uint32_t bits, uint32_t distance_mm,
                                  int32_t max);
 static void line_following_search(const motion_control_status_t * p_motion);
@@ -206,20 +213,7 @@ void line_following_task(INT stacd, void * p_exinf)
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         prev = g_line.bits;
         g_line.bits = bits;
-        g_search.black &= bits; /* Sensors black ever since black_mm. */
-        if ((!g_line.b_following) || (0u == g_search.black))
-        {
-            g_search.black = bits; /* None is: start again from here. */
-            g_search.black_mm = motion.distance_mm;
-        }
-        if (motion_control_mm_since(g_search.black_mm, motion.distance_mm) >
-            LINE_FOLLOWING_STUCK_MM)
-        {
-            g_line.b_following = false; /* Stuck: stop as for a lost line. */
-            g_line.b_lost = true;
-            motion_control_stop();
-            app_fault_set(APP_FAULT_LINE_SENSOR);
-        }
+        line_following_stuck(bits, motion.distance_mm);
         if ((DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits))
         {
             g_line.last_side = bits;
@@ -246,50 +240,107 @@ void line_following_task(INT stacd, void * p_exinf)
             /* Still over a barcode, or still not. */
         }
         b_straight = (0u != barcode.b_reading);
-        if ((!g_line.b_following) || (0u != bits))
-        {
-            g_search.phase = 0u; /* Not following, found, or never lost. */
-            g_search.from_mm = motion.distance_mm;
-        }
-        else if ((0u == g_search.phase) &&
-                 (motion_control_mm_since(g_search.from_mm,
-                                          motion.distance_mm) >=
-                  ((b_hold || b_straight) ? LINE_FOLLOWING_HOLD_LOST_MM
-                                          : LINE_FOLLOWING_LOST_MM)))
-        {
-            g_search.phase = 1u;
-            g_search.start_deg = motion.heading_deg;
-            g_search.samples = 0u;
-            g_wobble.b_hold = false;
-            g_wobble.hits = 0u;
-        }
-        else
-        {
-            /* Centred, or still searching. */
-        }
-        if ((g_line.b_following) && (0u == g_search.phase) &&
-            (b_straight || g_wobble.b_hold) && (0u == bits))
-        {
-            line_following_hold(&motion,
-                                b_straight ? straight_deg : g_wobble.hold_deg);
-        }
-        else if ((g_line.b_following) && (0u == g_search.phase))
-        {
-            line_following_steer(bits, motion.distance_mm,
-                                 b_straight ? LINE_FOLLOWING_TURN_MIN
-                                            : LINE_FOLLOWING_TURN_MAX);
-        }
-        else
-        {
-            g_steer.turn = 0; /* Steering starts again from straight on. */
-            g_steer.from_mm = motion.distance_mm;
-            if (g_line.b_following)
-            {
-                line_following_search(&motion);
-            }
-        }
+        line_following_watch(bits, &motion,
+                             (b_hold || b_straight)
+                                 ? LINE_FOLLOWING_HOLD_LOST_MM
+                                 : LINE_FOLLOWING_LOST_MM);
+        line_following_drive(bits, &motion, b_straight, straight_deg);
         g_line.b_searching = (g_line.b_following) && (0u != g_search.phase);
         (void)tk_unl_mtx(gh_mutex);
+    }
+}
+
+/*!
+ * @brief Stop, as for a lost line, once one sensor has been black for over
+ * LINE_FOLLOWING_STUCK_MM: a stuck sensor. Call under gh_mutex.
+ *
+ * @param[in] bits        Sensors over black.
+ * @param[in] distance_mm Odometer now.
+ */
+static void line_following_stuck(uint32_t bits, uint32_t distance_mm)
+{
+    g_search.black &= bits; /* Sensors black ever since black_mm. */
+    if ((!g_line.b_following) || (0u == g_search.black))
+    {
+        g_search.black = bits; /* None is: start again from here. */
+        g_search.black_mm = distance_mm;
+    }
+    if (motion_control_mm_since(g_search.black_mm, distance_mm) >
+        LINE_FOLLOWING_STUCK_MM)
+    {
+        g_line.b_following = false;
+        g_line.b_lost = true;
+        motion_control_stop();
+        app_fault_set(APP_FAULT_LINE_SENSOR);
+    }
+}
+
+/*!
+ * @brief Start the search once the car has rolled lost_mm with both
+ * sensors white. Call under gh_mutex.
+ *
+ * @param[in] bits     Sensors over black.
+ * @param[in] p_motion Motion status, for the odometer and heading.
+ * @param[in] lost_mm  All white this far: lost.
+ */
+static void line_following_watch(uint32_t bits,
+                                 const motion_control_status_t * p_motion,
+                                 uint32_t lost_mm)
+{
+    if ((!g_line.b_following) || (0u != bits))
+    {
+        g_search.phase = 0u; /* Not following, found, or never lost. */
+        g_search.from_mm = p_motion->distance_mm;
+    }
+    else if ((0u == g_search.phase) &&
+             (motion_control_mm_since(g_search.from_mm,
+                                      p_motion->distance_mm) >= lost_mm))
+    {
+        g_search.phase = 1u;
+        g_search.start_deg = p_motion->heading_deg;
+        g_search.samples = 0u;
+        g_wobble.b_hold = false;
+        g_wobble.hits = 0u;
+    }
+    else
+    {
+        /* Centred, or still searching. */
+    }
+}
+
+/*!
+ * @brief Drive for this sample: hold a heading, steer along the line or
+ * search for it. Drives nothing unless following. Call under gh_mutex.
+ *
+ * @param[in] bits         Sensors over black.
+ * @param[in] p_motion     Motion status, for the odometer and heading.
+ * @param[in] b_straight   Over a barcode: hold straight_deg.
+ * @param[in] straight_deg Heading held over a barcode.
+ */
+static void line_following_drive(uint32_t bits,
+                                 const motion_control_status_t * p_motion,
+                                 bool b_straight, uint32_t straight_deg)
+{
+    if ((g_line.b_following) && (0u == g_search.phase) &&
+        (b_straight || g_wobble.b_hold) && (0u == bits))
+    {
+        line_following_hold(p_motion,
+                            b_straight ? straight_deg : g_wobble.hold_deg);
+    }
+    else if ((g_line.b_following) && (0u == g_search.phase))
+    {
+        line_following_steer(bits, p_motion->distance_mm,
+                             b_straight ? LINE_FOLLOWING_TURN_MIN
+                                        : LINE_FOLLOWING_TURN_MAX);
+    }
+    else
+    {
+        g_steer.turn = 0; /* Steering starts again from straight on. */
+        g_steer.from_mm = p_motion->distance_mm;
+        if (g_line.b_following)
+        {
+            line_following_search(p_motion);
+        }
     }
 }
 

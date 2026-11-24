@@ -8,6 +8,10 @@
  * pivots towards last_side, then back past the start heading the other
  * way, and resumes following as soon as either sensor sees black. A false
  * alarm on a straight costs a small pivot: the line soon reaches a sensor.
+ *
+ * A sensor stuck on black would hold the turn for ever and never look
+ * lost, so one sensor black for over LINE_FOLLOWING_STUCK_MM stops the car
+ * as a failed search does, with APP_FAULT_LINE_SENSOR.
  */
 
 #include "line_following.h"
@@ -29,6 +33,9 @@
 #define LINE_FOLLOWING_LOST_MM    80u /* All white this far: lost. */
 #define LINE_FOLLOWING_SEARCH_DEG 135 /* Pivot each side of the heading. */
 #define LINE_FOLLOWING_PIVOT_MM_S 100 /* Wheel speed while pivoting. */
+/* Samples: 6 s. A whole search is under 5 s; a wrong heading never ends. */
+#define LINE_FOLLOWING_SEARCH_MAX 600u
+#define LINE_FOLLOWING_STUCK_MM   300u /* One sensor black this far: stuck. */
 /* Wobble: WOBBLE_HITS sensor hits in a row, alternating sides, each within
  * WOBBLE_MM of the last (any distance while holding), mean a straight. Hits
  * are still steered as usual, but while both sensors are white the car holds
@@ -46,12 +53,15 @@
 #define LINE_FOLLOWING_HOLD_BEND_DEG 8
 #define LINE_FOLLOWING_HOLD_OFF_DEG  15
 
-/* Line search, under gh_mutex. */
+/* Line search and stuck sensor check, under gh_mutex. */
 typedef struct
 {
     unsigned int from_mm : 24;  /* Odometer when a sensor last saw black. */
     unsigned int phase : 2;     /* 0 none, 1 towards last_side, 2 back. */
     unsigned int start_deg : 9; /* Heading when the search began. */
+    unsigned int samples : 10;  /* Since the search began, to SEARCH_MAX. */
+    unsigned int black : 2;     /* DRV_LINE_... black ever since black_mm. */
+    unsigned int black_mm : 24; /* Odometer when their black began. */
 } line_following_search_t;
 
 /* Steering, under gh_mutex. */
@@ -76,6 +86,9 @@ typedef struct
 
 #if (LINE_FOLLOWING_MAX_MM_S > 511u) || (LINE_FOLLOWING_TURN_MAX > 1023)
 #error "g_steer.speed_mm_s or g_steer.turn is too narrow"
+#endif
+#if LINE_FOLLOWING_SEARCH_MAX > 1023u
+#error "g_search.samples is too narrow"
 #endif
 
 static ID gh_mutex;
@@ -117,7 +130,8 @@ void line_following_get(line_following_t * p_line)
 }
 
 /*!
- * @brief Start steering the car along the line, and clear b_lost.
+ * @brief Start steering the car along the line, and clear b_lost and
+ * APP_FAULT_LINE_SENSOR.
  *
  * @param[in] speed_mm_s Forward speed, 1 to LINE_FOLLOWING_MAX_MM_S.
  * @return False if the speed is out of range; nothing changes.
@@ -133,6 +147,7 @@ bool line_following_start(uint32_t speed_mm_s)
         g_steer.speed_mm_s = speed_mm_s; /* <= MAX_MM_S: fits. */
         g_line.b_following = true;
         g_line.b_lost = false;
+        app_fault_clear(APP_FAULT_LINE_SENSOR);
         g_wobble.b_hold = false;
         g_wobble.hits = 0u;
         (void)tk_unl_mtx(gh_mutex);
@@ -178,6 +193,20 @@ void line_following_task(INT stacd, void * p_exinf)
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         prev = g_line.bits;
         g_line.bits = bits;
+        g_search.black &= bits; /* Sensors black ever since black_mm. */
+        if ((!g_line.b_following) || (0u == g_search.black))
+        {
+            g_search.black = bits; /* None is: start again from here. */
+            g_search.black_mm = motion.distance_mm;
+        }
+        if (((motion.distance_mm - g_search.black_mm) &
+             MOTION_CONTROL_DISTANCE_MASK) > LINE_FOLLOWING_STUCK_MM)
+        {
+            g_line.b_following = false; /* Stuck: stop as for a lost line. */
+            g_line.b_lost = true;
+            motion_control_stop();
+            app_fault_set(APP_FAULT_LINE_SENSOR);
+        }
         if ((DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits))
         {
             g_line.last_side = bits;
@@ -200,6 +229,7 @@ void line_following_task(INT stacd, void * p_exinf)
         {
             g_search.phase = 1u;
             g_search.start_deg = motion.heading_deg;
+            g_search.samples = 0u;
             g_wobble.b_hold = false;
             g_wobble.hits = 0u;
         }
@@ -300,7 +330,8 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm)
 
 /*!
  * @brief Pivot towards last_side up to LINE_FOLLOWING_SEARCH_DEG, then the
- * other way to as far past the start heading; then brake and set b_lost.
+ * other way to as far past the start heading; then, or after
+ * LINE_FOLLOWING_SEARCH_MAX samples, brake and set b_lost.
  * Call under gh_mutex while following.
  *
  * @param[in] p_motion Motion status, for the heading.
@@ -320,7 +351,9 @@ static void line_following_search(const motion_control_status_t * p_motion)
     {
         g_search.phase = 2u;
     }
-    if ((2u == g_search.phase) && (turned <= -LINE_FOLLOWING_SEARCH_DEG))
+    g_search.samples++; /* The search ends at SEARCH_MAX: fits. */
+    if (((2u == g_search.phase) && (turned <= -LINE_FOLLOWING_SEARCH_DEG)) ||
+        (g_search.samples >= LINE_FOLLOWING_SEARCH_MAX))
     {
         g_line.b_following = false;
         g_line.b_lost = true;

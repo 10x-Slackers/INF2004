@@ -41,7 +41,7 @@ A barcode validated during TURN or AVOID becomes the pending command once FOLLOW
 Some parts of the mission have no state of their own:
 
 - **Humps:** Subsystem 4 tracks humps by itself in every state. Each Start (READY to FOLLOW) resets the highest hump, so it covers the current run, and every safe stop prints it.
-- **Line recovery:** a bypass ends stopped on the original line, so FOLLOW simply restarts line following. The line follower searches for a lost line by itself ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works)); if its search fails it sets `b_lost` and the controller takes a safe stop (`line lost`).
+- **Line recovery:** a bypass ends stopped on the original line, so FOLLOW simply restarts line following. The line follower searches for a lost line by itself ([LINE_FOLLOWING.md](LINE_FOLLOWING.md#how-it-works)); if its search fails, or a line sensor is stuck on black (`APP_FAULT_LINE_SENSOR`), it sets `b_lost` and the controller takes a safe stop (`line lost`).
 - **End of a course:** the courses have no finish marker, so a course ends with a GP20 Stop or the supervisor's STOP, and SAFE_STOP prints the run's highest hump (FR12). A junction with nothing pending is driven straight over.
 
 ## GP20

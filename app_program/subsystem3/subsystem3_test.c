@@ -148,11 +148,13 @@ static bool subsystem3_bench_report(line_following_t * p_last)
         motion_control_get_status(&motion);
         /* (UB *): tm_printf() takes unsigned chars. */
         tm_printf((UB *)"[line] left=%u right=%u junction=%u last=%u "
-                        "following=%u searching=%u lost=%u mm=%u deg=%u\n",
+                        "following=%u searching=%u lost=%u stuck=%u mm=%u "
+                        "deg=%u\n",
                   line.bits & DRV_LINE_LEFT, (line.bits & DRV_LINE_RIGHT) >> 1,
                   line.b_junction, line.last_side, line.b_following,
-                  line.b_searching, line.b_lost, motion.distance_mm,
-                  motion.heading_deg);
+                  line.b_searching, line.b_lost,
+                  0u != (app_faults() & APP_FAULT_LINE_SENSOR),
+                  motion.distance_mm, motion.heading_deg);
         *p_last = line;
     }
     return line.b_lost;
@@ -288,7 +290,8 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
         {
             barcode_decoder_get_raw(&raw);
             /* (UB *): tm_printf() takes unsigned chars. */
-            tm_printf((UB *)"[bar] min=%u max=%u\n", raw.min, raw.max);
+            tm_printf((UB *)"[bar] min=%u max=%u fault=%u\n", raw.min, raw.max,
+                      0u != (app_faults() & APP_FAULT_BARCODE_SENSOR));
             polls = 0u;
         }
         if (0u == gpio_get_val(S3_BENCH_BUTTON))

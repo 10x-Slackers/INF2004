@@ -70,12 +70,15 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `.b_junction`: both sensors black for 6 samples | 0 or 1 | 1 | As above | As above |
 | 3 | `.b_following`: steering the car | 0 or 1 | 1 | As above | As above |
 | 3 | `.b_searching`: pivoting to find a lost line | 0 or 1 | 1 | As above | As above |
-| 3 | `.b_lost`: the lost-line search failed | 0 or 1 | 1 | As above | As above |
+| 3 | `.b_lost`: the lost-line search failed, or a sensor is stuck on black | 0 or 1 | 1 | As above | As above |
 | 3 | `.count`: samples taken | 0 to 255, wraps | 8 | As above | As above |
 | 3 | `.sample_ms`: kernel time of the sample | 0 to 2³²−1 ms, wraps | 32 | As above | As above |
 | 3 | `g_search.from_mm` (line following): odometer when a sensor last saw black | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | `unsigned int` bit-field | Line Following task and `line_following_start()`, under the line mutex |
 | 3 | `g_search.phase`: none, pivoting towards `last_side`, pivoting back | 0 to 2 | 2 | As above | As above |
 | 3 | `g_search.start_deg`: heading when the search began | 0 to 359° (motion's `heading_deg`) | 9 | As above | As above |
+| 3 | `g_search.samples`: samples since the search began | 0 to 600 (6 s), where the search ends | 10 | As above | Line Following task only, under the line mutex |
+| 3 | `g_search.black`: sensors that have read black ever since `black_mm` | One bit each | 2 | As above | As above |
+| 3 | `g_search.black_mm`: odometer when those sensors' black began | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
 | 3 | `g_steer.turn` (line following): current turn, permille of the speed, + left | −1000 to 1000 | 11 | `signed int` bit-field | Line Following task only, under the line mutex |
 | 3 | `g_steer.from_mm`: odometer at the last steering step | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | `unsigned int` bit-field | As above |
 | 3 | `g_steer.speed_mm_s`: forward speed while following | 1 to 500 mm/s | 9 | `unsigned int` bit-field | `line_following_start()` and the Line Following task, under the line mutex |
@@ -92,6 +95,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 3 | `.distance_mm`: odometer at the end of the barcode | 0 to 16 777 215 mm, wraps (motion's `distance_mm`) | 24 | As above | As above |
 | 3 | `g_widths` (barcode decoder): bar and space widths of one barcode | 0 to 30 mm in µm (0 to 30000) | 16 each | `uint16_t`, the smallest standard type that fits | Barcode Decoder task only |
 | 3 | `g_code.elements`, `.b_black`, `.b_in_code` (barcode decoder): elements in the barcode so far, black now, inside a barcode | 0 to 31, stops at 31 (29 are decoded); 0 or 1 each | 5; 1 each | `unsigned int` bit-field | Barcode Decoder task only |
+| 3 | `g_check.wakes`, `.samples` (barcode decoder): wake-ups in the current 100 ms check of the ADC, and the samples read in them | 0 to 10; 0 to 2550 (10 reads of up to 255) | 4; 12 | `unsigned int` bit-field | Barcode Decoder task only |
 | 3 | `g_run_start` (barcode decoder): where the current bar or space began | 0 to 2³²−1 µm, wraps (`motion_control_distance_um()`) | 32 | `uint32_t`, the odometer's own width | Barcode Decoder task only |
 | 3 | `g_read` (driver): next ring index to hand out | 0 to 255 | 8 | `uint8_t` | Barcode Decoder task only |
 | 4 | `g_imu.cal_count` (IMU task): calibration samples so far | 0 to 200 | 8 | `unsigned int` bit-field | IMU task only |

@@ -149,8 +149,8 @@ void obstacle_avoidance_line(void)
         (OBSTACLE_AVOIDANCE_RETURN == g_status.step) && (!g_watch.b_found) &&
         (MOTION_CONTROL_RUNNING == motion.state) &&
         (MOTION_CONTROL_CMD_FORWARD == motion.command) &&
-        (((motion.distance_mm - g_watch.start_mm) &
-          MOTION_CONTROL_DISTANCE_MASK) >= g_watch.from_mm))
+        (motion_control_mm_since(g_watch.start_mm, motion.distance_mm) >=
+         g_watch.from_mm))
     {
         g_watch.b_found = true;
         (void)motion_control_move_forward(OBSTACLE_AVOIDANCE_LINE_MM);

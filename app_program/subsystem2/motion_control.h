@@ -67,6 +67,15 @@ void motion_control_pack(const motion_control_status_t * p_status,
                          uint8_t * p_packet);
 void motion_control_tick(uint32_t elapsed_ms);
 
+/*!
+ * @brief Distance rolled from one status.distance_mm to a later one, in mm,
+ * right across the odometer's wrap.
+ */
+static inline uint32_t motion_control_mm_since(uint32_t from_mm, uint32_t to_mm)
+{
+    return (to_mm - from_mm) & MOTION_CONTROL_DISTANCE_MASK;
+}
+
 #endif /* MOTION_CONTROL_H */
 
 /*** end of file ***/

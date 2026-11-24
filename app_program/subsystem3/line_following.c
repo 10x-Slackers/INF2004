@@ -212,8 +212,8 @@ void line_following_task(INT stacd, void * p_exinf)
             g_search.black = bits; /* None is: start again from here. */
             g_search.black_mm = motion.distance_mm;
         }
-        if (((motion.distance_mm - g_search.black_mm) &
-             MOTION_CONTROL_DISTANCE_MASK) > LINE_FOLLOWING_STUCK_MM)
+        if (motion_control_mm_since(g_search.black_mm, motion.distance_mm) >
+            LINE_FOLLOWING_STUCK_MM)
         {
             g_line.b_following = false; /* Stuck: stop as for a lost line. */
             g_line.b_lost = true;
@@ -252,8 +252,8 @@ void line_following_task(INT stacd, void * p_exinf)
             g_search.from_mm = motion.distance_mm;
         }
         else if ((0u == g_search.phase) &&
-                 (((motion.distance_mm - g_search.from_mm) &
-                   MOTION_CONTROL_DISTANCE_MASK) >=
+                 (motion_control_mm_since(g_search.from_mm,
+                                          motion.distance_mm) >=
                   ((b_hold || b_straight) ? LINE_FOLLOWING_HOLD_LOST_MM
                                           : LINE_FOLLOWING_LOST_MM)))
         {
@@ -309,12 +309,12 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm,
     int32_t const speed = (int32_t)g_steer.speed_mm_s; /* 9 bits: fits. */
     int32_t turn = g_steer.turn;
     /* A few mm since the last sample, so the cast keeps it. */
-    int32_t const mm = (int32_t)((distance_mm - g_steer.from_mm) &
-                                 MOTION_CONTROL_DISTANCE_MASK);
+    int32_t const mm =
+        (int32_t)motion_control_mm_since(g_steer.from_mm, distance_mm);
     /* All white beyond DRIFT_MM; the search starts before it gets large. */
-    int32_t const white = (int32_t)((distance_mm - g_search.from_mm) &
-                                    MOTION_CONTROL_DISTANCE_MASK) -
-                          LINE_FOLLOWING_DRIFT_MM;
+    int32_t const white =
+        (int32_t)motion_control_mm_since(g_search.from_mm, distance_mm) -
+        LINE_FOLLOWING_DRIFT_MM;
     bool const b_one = (DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits);
     int32_t target = 0; /* Centred, or a junction: straight on. */
     int32_t step = (mm * LINE_FOLLOWING_TURN_MAX) / LINE_FOLLOWING_FALL_MM;
@@ -373,12 +373,9 @@ static void line_following_steer(uint32_t bits, uint32_t distance_mm,
 static void line_following_search(const motion_control_status_t * p_motion)
 {
     int32_t side = (DRV_LINE_RIGHT == g_line.last_side) ? -1 : 1; /* +left. */
-    /* Degrees turned anticlockwise since the search began, -180..179. Both
-     * headings are 0..359, so the casts keep them. */
+    /* Degrees turned anticlockwise since the search began, -180..179. */
     int32_t turned =
-        (((int32_t)p_motion->heading_deg - (int32_t)g_search.start_deg + 540) %
-         360) -
-        180;
+        line_following_off(p_motion->heading_deg, g_search.start_deg);
 
     turned *= side; /* Now towards last_side. */
     if ((1u == g_search.phase) && (turned >= LINE_FOLLOWING_SEARCH_DEG))
@@ -414,8 +411,8 @@ static bool line_following_wobble(uint32_t bits, uint32_t prev,
                                   const motion_control_status_t * p_motion)
 {
     bool const b_one = (DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits);
-    uint32_t const since_mm = (p_motion->distance_mm - g_wobble.hit_mm) &
-                              MOTION_CONTROL_DISTANCE_MASK;
+    uint32_t const since_mm =
+        motion_control_mm_since(g_wobble.hit_mm, p_motion->distance_mm);
     /* Degrees from the heading to the held one, +left. */
     int32_t const off =
         line_following_off(g_wobble.hold_deg, p_motion->heading_deg);

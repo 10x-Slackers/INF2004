@@ -24,6 +24,7 @@ Tests and results: [testing/subsystem2](../testing/subsystem2/TEST_LOG.md).
 | `motion_control_latch(latched)`      | Safety latch ([SAFETY_MONITOR.md](SAFETY_MONITOR.md)): `true` brakes like `stop()` and makes every move, turn and drive return false until `false`. Returns true if it was already latched. `motion_control_latched()` reads it. If start-up fails (`subsystem2_init()`), the latch is set from power-up and cannot be released |
 | `motion_control_get_status(&status)` | Copy the status (below)                                                                          |
 | `motion_control_distance_um()`       | Distance rolled up to now in µm, wraps. Counts the edges since the last step too, so it is finer and fresher than `distance_mm`, but can step back a little where a wheel rolls back or reverses within a step |
+| `motion_control_mm_since(from, to)`  | Distance rolled between two `distance_mm` readings, across the odometer's wrap                   |
 | `motion_control_set_speed(mm_s)`     | Speed of later moves and turns, 10–1000 mm/s (default 100)                                       |
 | `motion_control_pack(&status, buf)`  | 12-byte telemetry payload                                                                        |
 

@@ -24,7 +24,7 @@
 #define SCAN_PROFILE_COARSE    3u    /* Coarse rays: every third, 15 degrees. */
 #define SCAN_PROFILE_MIN_MM    20u   /* Sensor's shortest range. */
 #define SCAN_PROFILE_FAR_MM    4000u /* Nothing within the sensor's range. */
-#define SCAN_PROFILE_BLOCK_MM  150u  /* A ray this close hits an obstacle. */
+#define SCAN_PROFILE_BLOCK_MM  200u  /* A ray this close hits an obstacle. */
 #define SCAN_PROFILE_CLEAR_MM  250u  /* A side this open can be passed. */
 
 /* Servo angle of a ray. */
@@ -38,7 +38,7 @@
 
 /* Obstacle profile. The obstacle is the run of blocked rays around the ray
  * ahead; the edges are its outermost rays. The width is rough: the arc
- * between the edges at the closest distance, at most about 235 mm. The
+ * between the edges at the closest distance, capped at 255 mm. The
  * clearances are the outer rays, 45 degrees either side of ahead. */
 typedef struct
 {

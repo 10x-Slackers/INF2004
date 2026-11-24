@@ -16,6 +16,7 @@
 #define OBSTACLE_AVOIDANCE_SCAN_MS  12000u /* Longest profile scan. */
 #define OBSTACLE_AVOIDANCE_MOVE_MS  10000u
 #define OBSTACLE_AVOIDANCE_STEPS    7u
+#define OBSTACLE_AVOIDANCE_SPEED    300u /* mm/s, bypass moves and turns. */
 #define OBSTACLE_AVOIDANCE_TURN_DEG 60   /* Diagonals' angle off the line. */
 #define OBSTACLE_AVOIDANCE_SIN_TURN 866u /* sin 60 degrees, per 1000. */
 #define OBSTACLE_AVOIDANCE_COS_TURN 500u /* cos 60 degrees, per 1000. */
@@ -24,18 +25,24 @@
 #define OBSTACLE_AVOIDANCE_REAR_MM  80u  /* Axle to the back of the car. */
 #define OBSTACLE_AVOIDANCE_GAP_MM   40u  /* Clearance kept everywhere. */
 #define OBSTACLE_AVOIDANCE_BLOCKED  2u   /* In a row: skips a stray echo. */
-/* One bypass step: a turn towards the bypass side (+1) or back (-1), or a
- * move forward (0): the pass alongside the obstacle, or a diagonal. The
- * first turn is obstacle_avoidance_face()'s, which checks the diagonal. */
+#define OBSTACLE_AVOIDANCE_SHORT_MM 25u  /* Return diagonal cut, see below. */
+#define OBSTACLE_AVOIDANCE_OUT      0u   /* Legs of the bypass. */
+#define OBSTACLE_AVOIDANCE_PASS     1u
+#define OBSTACLE_AVOIDANCE_BACK     2u
+/* One bypass step: a turn towards the bypass side (+1) or back (-1), or,
+ * with no turn (0), a move forward along leg. The first turn is
+ * obstacle_avoidance_face()'s, which checks the diagonal. */
 typedef struct
 {
     int8_t turn;
-    bool b_pass;
+    uint8_t leg;
 } obstacle_avoidance_step_t;
 
 static const obstacle_avoidance_step_t g_steps[OBSTACLE_AVOIDANCE_STEPS] = {
-    {1, false},  {0, false}, {-1, false}, {0, true},
-    {-1, false}, {0, false}, {1, false}};
+    {1, 0u},  {0, OBSTACLE_AVOIDANCE_OUT},
+    {-1, 0u}, {0, OBSTACLE_AVOIDANCE_PASS},
+    {-1, 0u}, {0, OBSTACLE_AVOIDANCE_BACK},
+    {1, 0u}};
 
 static ID gh_mutex;
 static ID gh_task;
@@ -54,7 +61,7 @@ static uint32_t obstacle_avoidance_diagonal(const scan_profile_t * p_profile,
                                             uint32_t side);
 static bool obstacle_avoidance_turn(uint32_t side, int32_t turns);
 static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
-                                    uint32_t diagonal_mm, uint32_t pass_mm);
+                                    const uint32_t * p_legs);
 static bool obstacle_avoidance_path(const scan_profile_t * p_profile,
                                     uint32_t side);
 static uint32_t obstacle_avoidance_face(const scan_profile_t * p_profile,
@@ -295,6 +302,8 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
 
     /* Under the lock, so a cancel cannot slip in before the command. */
     (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+    /* The cruise speed is shared: the controller's junction moves keep it. */
+    (void)motion_control_set_speed(OBSTACLE_AVOIDANCE_SPEED);
     if (!obstacle_avoidance_running(g_status.state))
     {
         /* Cancelled or stopped. */
@@ -385,14 +394,14 @@ static bool obstacle_avoidance_turn(uint32_t side, int32_t turns)
  * @return False if cancelled or stopped.
  */
 static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
-                                    uint32_t diagonal_mm, uint32_t pass_mm)
+                                    const uint32_t * p_legs)
 {
     const obstacle_avoidance_step_t * p_step = &g_steps[step];
 
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, step + 1u);
-    return (0 != p_step->turn) ? obstacle_avoidance_turn(side, p_step->turn)
-                               : obstacle_avoidance_move(
-                                     0, p_step->b_pass ? pass_mm : diagonal_mm);
+    return (0 != p_step->turn)
+               ? obstacle_avoidance_turn(side, p_step->turn)
+               : obstacle_avoidance_move(0, p_legs[p_step->leg]);
 }
 
 /*!
@@ -462,8 +471,7 @@ static void obstacle_avoidance_avoid(void)
 {
     ultrasonic_scan_t scan = {0};
     uint32_t side = SCAN_PROFILE_NONE;
-    uint32_t diagonal_mm = 0u;
-    uint32_t pass_mm = 0u;
+    uint32_t legs[3] = {0u}; /* OBSTACLE_AVOIDANCE_OUT, _PASS, _BACK. */
     uint32_t step = 0u;
 
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_PROFILE, 0u);
@@ -493,21 +501,29 @@ static void obstacle_avoidance_avoid(void)
         g_status.right_mm = scan.profile.right_mm;
         (void)tk_unl_mtx(gh_mutex);
         side = obstacle_avoidance_face(&scan.profile, side);
-        diagonal_mm = obstacle_avoidance_diagonal(&scan.profile, side);
+        legs[OBSTACLE_AVOIDANCE_OUT] =
+            obstacle_avoidance_diagonal(&scan.profile, side);
         /* Axle travel along the line until the back clears the obstacle,
          * taken as twice as long as it is wide, less what the diagonal
-         * covers. At least 240 against at most 140: no underflow. */
-        pass_mm = OBSTACLE_AVOIDANCE_FRONT_MM + scan.profile.closest_mm +
-                  (2u * scan.profile.width_mm) + OBSTACLE_AVOIDANCE_REAR_MM +
-                  OBSTACLE_AVOIDANCE_GAP_MM -
-                  ((diagonal_mm * OBSTACLE_AVOIDANCE_COS_TURN) / 1000u);
+         * covers. At least 240 against at most 163: no underflow. */
+        legs[OBSTACLE_AVOIDANCE_PASS] =
+            OBSTACLE_AVOIDANCE_FRONT_MM + scan.profile.closest_mm +
+            (2u * scan.profile.width_mm) + OBSTACLE_AVOIDANCE_REAR_MM +
+            OBSTACLE_AVOIDANCE_GAP_MM -
+            ((legs[OBSTACLE_AVOIDANCE_OUT] * OBSTACLE_AVOIDANCE_COS_TURN) /
+             1000u);
+        /* Back short of the line, so the line sensors, ahead of the axle,
+         * do not cross it before the last turn. The diagonal is at least
+         * 144 mm: no underflow. */
+        legs[OBSTACLE_AVOIDANCE_BACK] =
+            legs[OBSTACLE_AVOIDANCE_OUT] - OBSTACLE_AVOIDANCE_SHORT_MM;
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_status.side = side; /* Faced, after any turn round. */
         (void)tk_unl_mtx(gh_mutex);
         /* Step 1, the turn, is done. */
         for (step = 1u;
              (SCAN_PROFILE_NONE != side) && (step < OBSTACLE_AVOIDANCE_STEPS) &&
-             (obstacle_avoidance_step(side, step, diagonal_mm, pass_mm));
+             (obstacle_avoidance_step(side, step, legs));
              step++)
         {
             /* Each step runs in the loop test. */

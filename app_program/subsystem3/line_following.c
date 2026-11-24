@@ -15,7 +15,7 @@
 #include "../subsystem2/motion_control.h"
 
 #define LINE_FOLLOWING_BOTH     (DRV_LINE_LEFT | DRV_LINE_RIGHT)
-#define LINE_FOLLOWING_JUNCTION 6u /* Samples: 60 ms, 9 mm at 0.15 m/s. */
+#define LINE_FOLLOWING_JUNCTION 5u /* Samples: 50 ms, 9 mm at 0.175 m/s. */
 /* Wheel speed change, permille of the speed: 1000 stops the inner wheel.
  * A sensor turning black starts it at once at TURN_MIN towards that side;
  * it rises to TURN_MAX over RISE_MM while the sensor stays black and falls
@@ -29,6 +29,22 @@
 #define LINE_FOLLOWING_LOST_MM    80u /* All white this far: lost. */
 #define LINE_FOLLOWING_SEARCH_DEG 135 /* Pivot each side of the heading. */
 #define LINE_FOLLOWING_PIVOT_MM_S 100 /* Wheel speed while pivoting. */
+/* Wobble: WOBBLE_HITS sensor hits in a row, alternating sides, each within
+ * WOBBLE_MM of the last (any distance while holding), mean a straight. Hits
+ * are still steered as usual, but while both sensors are white the car holds
+ * the heading halfway between the last left and right hits instead of
+ * drifting, turning HOLD_GAIN permille per degree off it, at most TURN_MIN.
+ * A curve ends the hold: two hits in a row on one side, one over
+ * HOLD_EXIT_MM, a new halfway heading over HOLD_BEND_DEG from the held one,
+ * or the car over HOLD_OFF_DEG off it. All white is lost only after
+ * HOLD_LOST_MM. */
+#define LINE_FOLLOWING_WOBBLE_HITS   3u
+#define LINE_FOLLOWING_WOBBLE_MM     150u
+#define LINE_FOLLOWING_HOLD_GAIN     50
+#define LINE_FOLLOWING_HOLD_EXIT_MM  40u
+#define LINE_FOLLOWING_HOLD_LOST_MM  300u
+#define LINE_FOLLOWING_HOLD_BEND_DEG 8
+#define LINE_FOLLOWING_HOLD_OFF_DEG  15
 
 /* Line search, under gh_mutex. */
 typedef struct
@@ -46,6 +62,18 @@ typedef struct
     unsigned int from_mm : 24;   /* Odometer at the last steer. */
 } line_following_steer_t;
 
+/* Wobble detection and heading hold, under gh_mutex. */
+typedef struct
+{
+    unsigned int hit_mm : 24;   /* Odometer where the last hit began. */
+    unsigned int hits : 2;      /* Alternating hits in a row, up to 3. */
+    unsigned int side : 2;      /* DRV_LINE_LEFT or _RIGHT: last hit. */
+    unsigned int b_hold : 1;    /* Holding hold_deg. */
+    unsigned int hold_deg : 9;  /* Heading held. */
+    unsigned int left_deg : 9;  /* Heading at the last left hit. */
+    unsigned int right_deg : 9; /* And at the last right hit. */
+} line_following_wobble_t;
+
 #if (LINE_FOLLOWING_MAX_MM_S > 511u) || (LINE_FOLLOWING_TURN_MAX > 1023)
 #error "g_steer.speed_mm_s or g_steer.turn is too narrow"
 #endif
@@ -54,9 +82,14 @@ static ID gh_mutex;
 static line_following_t g_line;
 static line_following_search_t g_search;
 static line_following_steer_t g_steer;
+static line_following_wobble_t g_wobble;
 
 static void line_following_steer(uint32_t bits, uint32_t distance_mm);
 static void line_following_search(const motion_control_status_t * p_motion);
+static bool line_following_wobble(uint32_t bits, uint32_t prev,
+                                  const motion_control_status_t * p_motion);
+static int32_t line_following_off(uint32_t to_deg, uint32_t from_deg);
+static void line_following_hold(const motion_control_status_t * p_motion);
 
 /*!
  * @brief Create the lock and set up the sensors.
@@ -100,6 +133,8 @@ bool line_following_start(uint32_t speed_mm_s)
         g_steer.speed_mm_s = speed_mm_s; /* <= MAX_MM_S: fits. */
         g_line.b_following = true;
         g_line.b_lost = false;
+        g_wobble.b_hold = false;
+        g_wobble.hits = 0u;
         (void)tk_unl_mtx(gh_mutex);
     }
     return b_valid;
@@ -127,6 +162,8 @@ void line_following_task(INT stacd, void * p_exinf)
     motion_control_status_t motion = {0};
     uint32_t bits = 0u;
     uint32_t both = 0u; /* Samples in a row with both sensors black. */
+    uint32_t prev = 0u; /* Sensors over black at the last sample. */
+    bool b_hold = false;
 
     (void)stacd;
     (void)p_exinf;
@@ -139,6 +176,7 @@ void line_following_task(INT stacd, void * p_exinf)
         motion_control_get_status(&motion);
 
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+        prev = g_line.bits;
         g_line.bits = bits;
         if ((DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits))
         {
@@ -147,6 +185,8 @@ void line_following_task(INT stacd, void * p_exinf)
         g_line.b_junction = (both >= LINE_FOLLOWING_JUNCTION);
         g_line.count++;
         g_line.sample_ms = now.lo;
+        b_hold = (g_line.b_following) && (0u == g_search.phase) &&
+                 (line_following_wobble(bits, prev, &motion));
         if ((!g_line.b_following) || (0u != bits))
         {
             g_search.phase = 0u; /* Not following, found, or never lost. */
@@ -154,16 +194,25 @@ void line_following_task(INT stacd, void * p_exinf)
         }
         else if ((0u == g_search.phase) &&
                  (((motion.distance_mm - g_search.from_mm) &
-                   MOTION_CONTROL_DISTANCE_MASK) >= LINE_FOLLOWING_LOST_MM))
+                   MOTION_CONTROL_DISTANCE_MASK) >=
+                  (b_hold ? LINE_FOLLOWING_HOLD_LOST_MM
+                          : LINE_FOLLOWING_LOST_MM)))
         {
             g_search.phase = 1u;
             g_search.start_deg = motion.heading_deg;
+            g_wobble.b_hold = false;
+            g_wobble.hits = 0u;
         }
         else
         {
             /* Centred, or still searching. */
         }
-        if ((g_line.b_following) && (0u == g_search.phase))
+        if ((g_line.b_following) && (0u == g_search.phase) &&
+            (g_wobble.b_hold) && (0u == bits))
+        {
+            line_following_hold(&motion);
+        }
+        else if ((g_line.b_following) && (0u == g_search.phase))
         {
             line_following_steer(bits, motion.distance_mm);
         }
@@ -283,6 +332,115 @@ static void line_following_search(const motion_control_status_t * p_motion)
         (void)motion_control_drive(-side * LINE_FOLLOWING_PIVOT_MM_S,
                                    side * LINE_FOLLOWING_PIVOT_MM_S);
     }
+}
+
+/*!
+ * @brief Track sensor hits; hold a heading on a wobble, and stop on a
+ * curve. Call under gh_mutex while following.
+ *
+ * @param[in] bits     Sensors over black now.
+ * @param[in] prev     And at the last sample.
+ * @param[in] p_motion Motion status, for the odometer and heading.
+ * @return True while holding.
+ */
+static bool line_following_wobble(uint32_t bits, uint32_t prev,
+                                  const motion_control_status_t * p_motion)
+{
+    bool const b_one = (DRV_LINE_LEFT == bits) || (DRV_LINE_RIGHT == bits);
+    uint32_t const since_mm = (p_motion->distance_mm - g_wobble.hit_mm) &
+                              MOTION_CONTROL_DISTANCE_MASK;
+    /* Degrees from the heading to the held one, +left. */
+    int32_t const off =
+        line_following_off(g_wobble.hold_deg, p_motion->heading_deg);
+    uint32_t mid_deg = 0u;
+    int32_t bend = 0;
+
+    if (b_one && (bits != prev))
+    {
+        /* A new hit: the other side from the last, and close to it unless
+         * holding, when hits come further apart. */
+        g_wobble.hits =
+            ((bits != g_wobble.side) &&
+             ((g_wobble.b_hold) || (since_mm <= LINE_FOLLOWING_WOBBLE_MM)))
+                ? ((g_wobble.hits < LINE_FOLLOWING_WOBBLE_HITS)
+                       ? (g_wobble.hits + 1u)
+                       : g_wobble.hits)
+                : 1u;
+        g_wobble.side = bits;
+        g_wobble.hit_mm = p_motion->distance_mm;
+        if (DRV_LINE_LEFT == bits)
+        {
+            g_wobble.left_deg = p_motion->heading_deg;
+        }
+        else
+        {
+            g_wobble.right_deg = p_motion->heading_deg;
+        }
+        /* Halfway round the shorter arc from right to left: 0..359. */
+        mid_deg = (uint32_t)(((int32_t)g_wobble.right_deg + 360 +
+                              (line_following_off(g_wobble.left_deg,
+                                                  g_wobble.right_deg) /
+                               2)) %
+                             360);
+        bend = line_following_off(mid_deg, g_wobble.hold_deg);
+        if ((g_wobble.b_hold) && ((bend > LINE_FOLLOWING_HOLD_BEND_DEG) ||
+                                  (bend < -LINE_FOLLOWING_HOLD_BEND_DEG)))
+        {
+            /* The weave has turned: a curve. Start counting again. */
+            g_wobble.hits = 1u;
+        }
+        /* Fewer hits: one side twice (a curve), or far apart. */
+        g_wobble.b_hold = (LINE_FOLLOWING_WOBBLE_HITS == g_wobble.hits);
+        g_wobble.hold_deg = mid_deg;
+    }
+    else if ((g_wobble.b_hold) && ((off > LINE_FOLLOWING_HOLD_OFF_DEG) ||
+                                   (off < -LINE_FOLLOWING_HOLD_OFF_DEG)))
+    {
+        /* Steered well off the held heading: a curve. */
+        g_wobble.b_hold = false;
+        g_wobble.hits = 0u;
+    }
+    else if (b_one && (since_mm > LINE_FOLLOWING_HOLD_EXIT_MM))
+    {
+        /* A long hit: a curve or a real drift, so steer again. */
+        g_wobble.b_hold = false;
+        g_wobble.hits = 0u;
+    }
+    else
+    {
+        /* Same hit, or no hit. */
+    }
+    return g_wobble.b_hold;
+}
+
+/*!
+ * @brief Degrees from from_deg round to to_deg, +anticlockwise (left),
+ * -180..179. Both are headings, 0..359, so the casts keep them.
+ */
+static int32_t line_following_off(uint32_t to_deg, uint32_t from_deg)
+{
+    return ((((int32_t)to_deg - (int32_t)from_deg) + 540) % 360) - 180;
+}
+
+/*!
+ * @brief Turn towards hold_deg, gently. Call under gh_mutex while
+ * following.
+ *
+ * @param[in] p_motion Motion status, for the odometer and heading.
+ */
+static void line_following_hold(const motion_control_status_t * p_motion)
+{
+    int32_t const speed = (int32_t)g_steer.speed_mm_s; /* 9 bits: fits. */
+    int32_t turn =
+        line_following_off(g_wobble.hold_deg, p_motion->heading_deg) *
+        LINE_FOLLOWING_HOLD_GAIN;
+
+    turn = (turn > LINE_FOLLOWING_TURN_MIN) ? LINE_FOLLOWING_TURN_MIN : turn;
+    turn = (turn < -LINE_FOLLOWING_TURN_MIN) ? -LINE_FOLLOWING_TURN_MIN : turn;
+    g_steer.turn = turn; /* Within +-TURN_MIN: fits. */
+    g_steer.from_mm = p_motion->distance_mm;
+    turn = (speed * turn) / 1000; /* Wheel speed change, +left. */
+    (void)motion_control_drive(speed - turn, speed + turn);
 }
 
 /*** end of file ***/

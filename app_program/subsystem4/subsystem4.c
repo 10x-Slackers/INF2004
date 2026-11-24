@@ -5,8 +5,9 @@
  */
 
 #include "subsystem4.h"
+#include "task_imu.h"
 
-ID gh_s4_mutex;
+ID gh_s4_mutex = 0;
 
 /*!
  * @brief Create the mutex that guards the IMU records.

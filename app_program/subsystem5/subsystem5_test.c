@@ -12,9 +12,9 @@
 #include "../test_report.h"
 
 #if APP_TEST
-#define S5_TEST_SCAN_MS   500  /* A forward reading takes about 60 ms. */
-#define S5_BENCH_BUTTON   20u  /* Robo Pico button, low when pressed. */
-#define S5_BENCH_GO_MS    5000 /* Time to put the car down after a press. */
+#define S5_TEST_SCAN_MS   500u  /* A forward reading takes about 60 ms. */
+#define S5_BENCH_BUTTON   20u   /* Robo Pico button, low when pressed. */
+#define S5_BENCH_GO_MS    5000u /* Time to put the car down after a press. */
 #define S5_BENCH_POLL_MS  20u
 #define S5_BENCH_HOLD_MS  1000u /* A press this long starts the drive. */
 #define S5_BENCH_DRIVE_MM 1500u
@@ -27,11 +27,11 @@ typedef struct
     obstacle_avoidance_status_t status;
     uint32_t faults;
     uint32_t motion;
-    uint32_t ms; /* Since the run started. */
+    uint32_t elapsed_ms; /* Since the run started. */
 } s5_bench_record_t;
 
-static s5_bench_record_t g_log[S5_BENCH_LOG]; /* Bench task only. */
-static uint32_t g_logged;
+static s5_bench_record_t g_log[S5_BENCH_LOG] = {0}; /* Bench task only. */
+static uint32_t g_logged = 0u;
 
 static void subsystem5_bench_task(INT stacd, void * p_exinf);
 
@@ -101,8 +101,9 @@ static void subsystem5_bench_print(const s5_bench_record_t * p_rec)
                p_rec->scan.profile.right_mm, p_rec->scan.profile.left_mm);
     APP_PRINTF("[avoid] t=%u ms state=%u faults=0x%x side=%u step=%u "
                "bypasses=%u right_mm=%u left_mm=%u motion=%u\n",
-               p_rec->ms, p_rec->status.state, p_rec->faults & APP_FAULT_AVOID,
-               p_rec->status.side, p_rec->status.step, p_rec->status.bypasses,
+               p_rec->elapsed_ms, p_rec->status.state,
+               p_rec->faults & APP_FAULT_AVOID, p_rec->status.side,
+               p_rec->status.step, p_rec->status.bypasses,
                p_rec->status.right_mm, p_rec->status.left_mm, p_rec->motion);
 }
 
@@ -125,7 +126,7 @@ static void subsystem5_bench_report(uint32_t start_ms, bool b_run)
     (void)tk_get_otm(&now);
     rec.faults = app_faults();
     rec.motion = motion.state;
-    rec.ms = b_run ? (now.lo - start_ms) : 0u;
+    rec.elapsed_ms = b_run ? (now.lo - start_ms) : 0u;
     if (b_run && (g_logged < S5_BENCH_LOG))
     {
         g_log[g_logged] = rec;

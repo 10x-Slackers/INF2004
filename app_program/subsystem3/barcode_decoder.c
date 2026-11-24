@@ -34,26 +34,26 @@
 
 /* The command of each letter, A to Z, all NONE (ignored) until the
  * supervisor sends a map (barcode_decoder_set_actions()). */
-static uint8_t g_actions[BARCODE_DECODER_LETTERS];
+static uint8_t g_actions[BARCODE_DECODER_LETTERS] = {0};
 
-static ID gh_mutex;
-static barcode_decoder_t g_barcode;
-static barcode_decoder_raw_t g_raw;
+static ID gh_mutex = 0;
+static barcode_decoder_t g_barcode = {0};
+static barcode_decoder_raw_t g_raw = {0};
 
 /* Barcode Decoder task only: the barcode being read, and the ADC check. */
-static uint16_t g_widths[CODE39_ELEMENTS];
-static uint32_t g_run_start; /* um, as motion_control_distance_um(). */
+static uint16_t g_widths[CODE39_ELEMENTS] = {0};
+static uint32_t g_run_start = 0u; /* um, as motion_control_distance_um(). */
 static struct
 {
     unsigned int elements : 5; /* Widths kept, 0..CODE39_ELEMENTS (29). */
-    unsigned int b_black : 1;
-    unsigned int b_in_code : 1;
-} g_code;
+    bool b_black : 1;
+    bool b_in_code : 1;
+} g_code = {0};
 static struct
 {
     unsigned int wakes : 4;    /* Wake-ups so far, 0..BARCODE_CHECK_WAKES. */
     unsigned int samples : 12; /* Samples in them, up to 10 rings (2550). */
-} g_check;
+} g_check = {0};
 #if BARCODE_CHECK_WAKES > 15u /* 15 reads of under a ring also fit samples. */
 #error "g_check.wakes is too narrow"
 #endif

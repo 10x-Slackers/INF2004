@@ -45,16 +45,16 @@ static const obstacle_avoidance_step_t g_steps[OBSTACLE_AVOIDANCE_STEPS] = {
     {-1, 0u}, {0, OBSTACLE_AVOIDANCE_OUT}, /* Back: as long as out. */
     {1, 0u}};
 
-static ID gh_mutex;
-static ID gh_task;
-static obstacle_avoidance_status_t g_status;
+static ID gh_mutex = 0;
+static ID gh_task = 0;
+static obstacle_avoidance_status_t g_status = {0};
 /* Return diagonal, under gh_mutex: where the line is watched for. */
 static struct
 {
     unsigned int start_mm : 24; /* Motion distance_mm at its start. */
     unsigned int from_mm : 9;   /* Watched from this far along it. */
     bool b_found : 1;           /* Line seen; rolling the axle onto it. */
-} g_watch;
+} g_watch = {0};
 
 static void obstacle_avoidance_task(INT stacd, void * p_exinf);
 static bool obstacle_avoidance_running(uint32_t state);
@@ -98,7 +98,7 @@ bool obstacle_avoidance_init(void)
 ID obstacle_avoidance_start_task(void)
 {
     gh_task =
-        app_start_task(obstacle_avoidance_task, S5_PRI_AVOID, 0, "s5_avoid");
+        app_start_task(obstacle_avoidance_task, S5_PRI_AVOID, 0u, "s5_avoid");
     return gh_task;
 }
 
@@ -590,7 +590,7 @@ static void obstacle_avoidance_avoid(void)
         obstacle_avoidance_stop(APP_FAULT_AVOID_MOTION);
     }
     else if ((obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan)) &&
-             (0u != scan.profile.b_obstacle))
+             (scan.profile.b_obstacle))
     {
         APP_PRINTF("[avoid] obstacle: width %u mm, closest %u mm at %u deg, "
                    "clear left %u mm, right %u mm\n",

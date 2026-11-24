@@ -31,9 +31,10 @@
 #endif
 #endif /* TM_MQTT */
 
-ID gh_s1_command_flag;
+ID gh_s1_command_flag = 0;
 #if TM_MQTT
-static ID gh_s1_queue; /* Message buffer: Telemetry task to Wi-Fi service. */
+static ID gh_s1_queue =
+    0; /* Message buffer: Telemetry task to Wi-Fi service. */
 
 static void s1_telemetry_task(INT stacd, void * p_exinf);
 static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
@@ -209,10 +210,10 @@ static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
     s4_get_hump(&hump);
 
     telemetry.state = vehicle_controller_state();
-    telemetry.latched = motion_control_latched() ? 1u : 0u;
+    telemetry.b_latched = motion_control_latched();
     telemetry.line = line.bits;
-    telemetry.junction = line.b_junction;
-    telemetry.following = line.b_following;
+    telemetry.b_junction = line.b_junction;
+    telemetry.b_following = line.b_following;
     telemetry.barcode = barcode.command;
     telemetry.barcodes = barcode.count;
     telemetry.motion_class = motion_class.cls;
@@ -220,7 +221,7 @@ static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
     telemetry.roll = tilt.roll;
     telemetry.hump_max = hump.max;
     telemetry.humps = hump.count;
-    telemetry.on_hump = hump.on;
+    telemetry.b_on_hump = hump.b_on;
     telemetry.avoid_state = p_avoid->state;
     telemetry.avoid_side = p_avoid->side;
     telemetry.bypasses = p_avoid->bypasses;

@@ -5,12 +5,13 @@
  */
 
 #include "subsystem4.h"
+#include "task_imu.h"
 #include "../test_report.h"
 
 #if APP_TEST
-#define S4_TEST_POLLS      30  /* Wait up to 3 s for calibration... */
-#define S4_TEST_POLL_MS    100 /* ...polling every 100 ms. */
-#define S4_TEST_WINDOW_MS  500
+#define S4_TEST_POLLS      30   /* Wait up to 3 s for calibration... */
+#define S4_TEST_POLL_MS    100u /* ...polling every 100 ms. */
+#define S4_TEST_WINDOW_MS  500u
 #define S4_TEST_MIN_READS  3u  /* Readings in the window: some... */
 #define S4_TEST_LOW_READS  45u /* ...and one every 10 ms, +-10%. */
 #define S4_TEST_TOP_READS  55u
@@ -38,12 +39,12 @@ void subsystem4_test(void)
     TEST_INIT();
 
     /* Readings start once start-up calibration (2 s, board still) ends. */
-    for (int32_t poll = 0; (poll < S4_TEST_POLLS) && (!tilt.cal); poll++)
+    for (int32_t poll = 0; (poll < S4_TEST_POLLS) && (!tilt.b_cal); poll++)
     {
         (void)tk_dly_tsk(S4_TEST_POLL_MS);
         s4_get_tilt(&tilt);
     }
-    TEST_CHECK("S4-U05", tilt.cal, "start-up calibration ends within 3 s");
+    TEST_CHECK("S4-U05", tilt.b_cal, "start-up calibration ends within 3 s");
 
     s4_get_accel(&before);
     (void)tk_dly_tsk(S4_TEST_WINDOW_MS);

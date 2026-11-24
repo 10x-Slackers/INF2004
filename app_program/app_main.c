@@ -23,7 +23,8 @@
 #include "shared/safety_monitor.h"
 #include "shared/vehicle_controller.h"
 
-#define APP_ANY_CORE 0u
+#define APP_TASK_STACK_SIZE 2048 /* Bytes; tm_printf needs ~1 KB. */
+#define APP_ANY_CORE        0u
 
 /* GPIO bank 0 interrupt: RP2040 datasheet section 2.19. */
 #define APP_GPIO_IRQ           13u /* IO_IRQ_BANK0 */
@@ -37,14 +38,14 @@
 #define APP_GPIO_EDGE_BITS     0xccccccccu
 #define APP_GPIO_CALLBACKS     2u /* Encoders (S2) and echo (S5). */
 
-static ID gh_fault_flag; /* The shared fault bitmask (app_fault.h). */
+static ID gh_fault_flag = 0; /* The shared fault bitmask (app_fault.h). */
 
 /* GPIO edge callbacks, read by the interrupt. pins is 0 in a free slot. */
 static volatile struct
 {
     uint32_t pins;
     app_gpio_callback_t p_callback;
-} g_gpio[APP_GPIO_CALLBACKS];
+} g_gpio[APP_GPIO_CALLBACKS] = {0};
 
 static void app_wake(void * p_exinf);
 static void app_gpio_isr(UINT intno);

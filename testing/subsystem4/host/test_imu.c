@@ -165,7 +165,7 @@ static void test_reset(void)
     memset(&g_motion, 0, sizeof(g_motion));
     g_faults = 0u;
     gb_reset = false;
-    for (i = 0; i < S4_CAL_N; i++)
+    for (i = 0; i < (int)S4_CAL_N; i++)
     {
         imu_calibrate(0, 0, TEST_G_MG);
     }
@@ -282,7 +282,7 @@ int main(void)
     }
     test_feed(0, 0, -TEST_G_MG, 50);
     printf("INFO  slow lift: upside down latched at sample %d\n", first);
-    test_check((first > 100) && (first <= (100 + TEST_UPSIDE_N + 1)),
+    test_check((first > 100) && (first <= (100 + (int)TEST_UPSIDE_N + 1)),
                "turned over across 2 s: upside down within 200 ms of 90");
 
     /* Latched until reset: righting the car does not clear it. */
@@ -412,19 +412,19 @@ int main(void)
      * calibrated again. */
     g_starts = 0;
     s4_reset_sensor();
-    b_early = (0u != g_faults) || (0u != g_tilt.cal);
+    b_early = (0u != g_faults) || (g_tilt.b_cal);
     test_feed(0, 0, TEST_G_MG, S4_CAL_N);
-    b_early = b_early || (0u != g_tilt.cal);
+    b_early = b_early || (g_tilt.b_cal);
     test_feed(0, 0, TEST_G_MG, 1);
     test_check((!b_early) && (0u == g_faults) && (1 == g_starts) &&
-                   (0u != g_tilt.cal),
+                   (g_tilt.b_cal),
                "Reset: fault cleared, sensor started, calibrated again");
 
     /* Reset with the sensor still out: faults again, not calibrated. */
     test_steps(E_IO, TEST_FAIL_N);
     s4_reset_sensor();
     test_steps(E_IO, TEST_FAIL_N);
-    test_check((APP_FAULT_IMU_SENSOR == g_faults) && (0u == g_tilt.cal) &&
+    test_check((APP_FAULT_IMU_SENSOR == g_faults) && (!g_tilt.b_cal) &&
                    (0 == g_imu.cal_count),
                "Reset, sensor still out: sensor fault, not calibrated");
 
@@ -434,7 +434,7 @@ int main(void)
     g_starts = 0;
     s4_reset_sensor();
     test_roll(60.0, 1);
-    test_check((APP_FAULT_TILT == g_faults) && (0u != g_tilt.cal) &&
+    test_check((APP_FAULT_TILT == g_faults) && (g_tilt.b_cal) &&
                    (0 == g_starts) && (S4_CAL_N == g_imu.cal_count),
                "Reset with no sensor fault: tilt stays, no recalibration");
 

@@ -74,10 +74,10 @@ configuration, so record it below first.
 | DMA channel 11 | Line following (Buddy 3) | `s3_barcode` | ADC FIFO to the sample ring. The Wi-Fi driver claims the lowest free channels (0, 1) at run time |
 | PWM4, PWM5 | Motion (Buddy 2) | `s2_motion` (`motion_control_stop()` may brake from any task) | GP8–GP11 |
 | IRQ13 (GPIO bank 0), core 0 | *shared* (`app_main.c`) | `app_gpio_isr` | Passes edges to the callbacks registered with `app_gpio_register()` in each `_init()`, not `tk_def_int(13)`. 2 slots |
-| GPIO edge callback on IRQ13 | Motion (Buddy 2) | `drv_motion_edge`, registered with `app_gpio_register()` | GP2/3, GP16/17 encoders |
+| GPIO edge callback on IRQ13 | Motion (Buddy 2) | `drv_motion_edge_isr`, registered with `app_gpio_register()` | GP2/3, GP16/17 encoders |
 | PWM slice 3 | IMU (Buddy 4) | `s4_imu` | Slice 3 A: GP22 buzzer |
 | PWM slice 6 | Ultrasonic (Buddy 5) | `s5_scan` | Slice 6 A: GP12 servo |
-| GPIO edge callback on IRQ13 | Ultrasonic (Buddy 5) | `drv_hcsr04_edge`, registered with `app_gpio_register()` | GP1 echo |
+| GPIO edge callback on IRQ13 | Ultrasonic (Buddy 5) | `drv_hcsr04_edge_isr`, registered with `app_gpio_register()` | GP1 echo |
 | WiFi radio, TCP/IP, MQTT | *kernel* | `cyw43_utk_task` (built in) | GP23–25, GP29 |
 
 ### Wi-Fi and MQTT

@@ -9,19 +9,19 @@
 #include "drv_sg90.h"
 #include "subsystem5.h"
 
-#define ULTRASONIC_SCAN_SETTLE_MS 200  /* Servo travel before a reading. */
+#define ULTRASONIC_SCAN_SETTLE_MS 200u /* Servo travel before a reading. */
 #define ULTRASONIC_SCAN_READS     3u   /* Readings per ray, for a median. */
 #define ULTRASONIC_SCAN_RIGHT     (-1) /* Ray step towards the right, */
 #define ULTRASONIC_SCAN_LEFT      1    /* and towards the left. */
 
-static ID gh_mutex;
-static ID gh_request; /* Semaphore: a scan was requested. */
+static ID gh_mutex = 0;
+static ID gh_request = 0; /* Semaphore: a scan was requested. */
 static struct
 {
     unsigned int mode : 1;    /* ULTRASONIC_SCAN_... */
     unsigned int request : 4; /* Requests made, wraps. */
-} g_next;
-static ultrasonic_scan_t g_scan;
+} g_next = {0};
+static ultrasonic_scan_t g_scan = {0};
 static uint8_t g_angle = SCAN_PROFILE_AHEAD_DEG; /* Scan task only. */
 
 static void ultrasonic_scan_serve(uint32_t mode, uint32_t request);

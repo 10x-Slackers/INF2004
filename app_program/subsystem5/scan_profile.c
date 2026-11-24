@@ -6,6 +6,9 @@
 #include "scan_profile.h"
 #include <stdbool.h>
 
+#define SCAN_PROFILE_DEPTH_MM 50u /* Same obstacle, past the ray ahead. */
+#define SCAN_PROFILE_EDGE_DEG 5u  /* Edge rays see this past the edge. */
+
 static void scan_profile_run(const uint16_t * p_rays, uint32_t limit_mm,
                              uint32_t * p_right, uint32_t * p_left);
 

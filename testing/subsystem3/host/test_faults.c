@@ -244,7 +244,7 @@ static bool test_stuck(void)
     line_following_t line = {0};
 
     line_following_get(&line);
-    return (0u != line.b_lost) && (0u == line.b_following) &&
+    return (line.b_lost) && (!line.b_following) &&
            (0u != (g_faults & APP_FAULT_LINE_SENSOR)) && (0 == g_left_mm_s) &&
            (0 == g_right_mm_s);
 }
@@ -265,7 +265,7 @@ static void test_stuck_sensor(void)
 
     test_start();
     line_following_get(&line);
-    test_check((0u == g_faults) && (0u == line.b_lost),
+    test_check((0u == g_faults) && (!line.b_lost),
                "the next start clears the fault and b_lost");
 
     /* The other sensor crossing lines does not hide a stuck one, and its
@@ -290,7 +290,7 @@ static void test_stuck_sensor(void)
         test_follow(DRV_LINE_LEFT | DRV_LINE_RIGHT, 30u);
     }
     line_following_get(&line);
-    test_check((0u == g_faults) && (0u != line.b_following),
+    test_check((0u == g_faults) && (line.b_following),
                "120 mm runs on alternate sides through junctions: no fault");
     test_follow(DRV_LINE_LEFT | DRV_LINE_RIGHT, 310u);
     test_check(test_stuck(), "both black past 300 mm: fault");
@@ -305,14 +305,14 @@ static void test_search_limit(void)
     test_start();
     test_follow(0u, 90u);
     line_following_get(&line);
-    test_check(0u != line.b_searching, "all white for 90 mm: searching");
-    for (wakes = 0u; (wakes < 1000u) && (0u != line.b_searching); wakes++)
+    test_check(line.b_searching, "all white for 90 mm: searching");
+    for (wakes = 0u; (wakes < 1000u) && (line.b_searching); wakes++)
     {
         test_line(0u, 1u);
         line_following_get(&line);
     }
-    test_check((wakes > 590u) && (wakes <= 600u) && (0u != line.b_lost) &&
-                   (0u == line.b_following) && (0 == g_left_mm_s) &&
+    test_check((wakes > 590u) && (wakes <= 600u) && (line.b_lost) &&
+                   (!line.b_following) && (0 == g_left_mm_s) &&
                    (0 == g_right_mm_s) && (0u == g_faults),
                "the heading never moves: braked and lost after 6 s");
 }
@@ -348,16 +348,16 @@ static void test_barcode_end(void)
     test_follow(0u, 240u);
     line_following_get(&line);
     barcode_decoder_get(&barcode);
-    test_check((0u != barcode.b_reading) && (0u == line.b_searching),
+    test_check((barcode.b_reading) && (!line.b_searching),
                "all white for 240 mm over a barcode: reading, no search");
     test_follow(0u, 60u);
     line_following_get(&line);
     barcode_decoder_get(&barcode);
-    test_check((0u == barcode.b_reading) && (0u == line.b_searching),
+    test_check((!barcode.b_reading) && (!line.b_searching),
                "the barcode has ended, 300 mm all white: no search");
     test_follow(0u, 60u);
     line_following_get(&line);
-    test_check(0u != line.b_searching,
+    test_check(line.b_searching,
                "all white for 80 mm past the barcode: searching");
     gb_both = false;
 }
@@ -377,7 +377,7 @@ static void test_barcode_rollback(void)
     g_back_um = 80u;
     test_barcode(20u, 2u);
     barcode_decoder_get(&barcode);
-    test_check(0u != barcode.b_reading,
+    test_check(barcode.b_reading,
                "stopped on a barcode, the odometer dips 80 um: still reading");
 }
 

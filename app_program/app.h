@@ -14,12 +14,16 @@
  * band (TEAM.md section 4), defined in its own header.
  *
  * The application code follows BARR-C:2018. Deviations shared by every
- * subsystem:
+ * subsystem, approved by the team: the five subsystem owners in TEAM.md
+ * section 1 agree each one when they review the change that adds it. A
+ * subsystem's own deviations are in its header, approved by its owner.
  * - 2.2.b, 3.1.j, 3.2, 3.3.b, 3.3.c, 8.3.a: layout is the repository's
  *   .clang-format, which does not add a blank line around every block or
  *   after the end-of-file comment, and indents a break with its case's
  *   statements.
  * - 1.6.a: a (void) cast that discards a return value has no comment.
+ * - 2.2.a: a comment at the end of a line that gives a unit, a range or a
+ *   short note is a phrase, not a sentence.
  * - 1.8.c: data shared between tasks is read and written under a mutex,
  *   and handles are set before the tasks start, so neither is volatile.
  *   Data an interrupt handler shares is volatile.
@@ -27,16 +31,18 @@
  *   left out with NDEBUG.
  * - 4.1.b: the subsystemN file names come from the course template.
  * - 4.2.a, 4.3.c: app_main.c implements this file and app_fault.h.
- * - 4.2.a, 6.2.d: the subsystemN_test.c files have no header; this file
- *   declares every subsystemN_init/_start/_test(). A subsystemN.h declares
- *   its task entries, keeping kernel types out of the module headers that
- *   host tests include.
+ * - 4.2.a, 4.3.c, 6.2.d: the subsystemN_test.c files have no header; this
+ *   file declares every subsystemN_init/_start/_test(). A subsystemN.h
+ *   declares its task entries and the functions that start its tasks,
+ *   keeping kernel types out of the module headers that host tests include.
+ * - 4.2.c: a subsystem's header defines its task priorities (TEAM.md
+ *   section 4), though only its own code uses them.
  * - 5.2.a: bit-fields are bool, unsigned int or signed int, the types C
  *   allows for a bit-field; the field's width gives its size.
  * - 5.3.a: signed bit-fields hold signed values in the fewest bits
  *   (docs/DATA_REPRESENTATION.md).
- * - 5.3.c: an unsigned bit-field narrower than int, which C promotes to
- *   int, is compared with enum constants and with unsuffixed constants.
+ * - 5.3.c: an unsigned bit-field that holds an enum's value is compared
+ *   with that enum's constants, which C makes int.
  * - 5.2: kernel calls, task entries and handlers use kernel types (ER, ID,
  *   INT, UB, ...), as the kernel's prototypes do.
  * - 6.1.g, 6.1.i, 6.2.d: usermain() and subsystem 1's mqtt_utk_app_*()
@@ -56,8 +62,6 @@
 #include <bsp/libbsp.h>  /* Board helpers: gpio_set_pin/val, pwm_... */
 #include "app_fault.h"   /* The shared fault bitmask. */
 #include <stdbool.h>
-
-#define APP_TASK_STACK_SIZE 2048 /* Bytes; tm_printf needs ~1 KB. */
 
 /* Print on the console, as printf(). tm_printf() takes its format as
  * unsigned chars, hence the cast. */

@@ -25,10 +25,10 @@ void payload_pack_telemetry(const payload_telemetry_t * p_telemetry,
 
     memset(p_payload, 0, PAYLOAD_TELEMETRY_BYTES);
     payload_put(p_payload, &bit, p_telemetry->state, 3u);
-    payload_put(p_payload, &bit, p_telemetry->latched, 1u);
+    payload_put(p_payload, &bit, p_telemetry->b_latched, 1u);
     payload_put(p_payload, &bit, p_telemetry->line, 2u);
-    payload_put(p_payload, &bit, p_telemetry->junction, 1u);
-    payload_put(p_payload, &bit, p_telemetry->following, 1u);
+    payload_put(p_payload, &bit, p_telemetry->b_junction, 1u);
+    payload_put(p_payload, &bit, p_telemetry->b_following, 1u);
     payload_put(p_payload, &bit, p_telemetry->barcode, 3u);
     payload_put(p_payload, &bit, p_telemetry->barcodes, 4u);
     payload_put(p_payload, &bit, p_telemetry->motion_class, 3u);
@@ -39,7 +39,7 @@ void payload_pack_telemetry(const payload_telemetry_t * p_telemetry,
                 (uint32_t)(p_telemetry->roll + PAYLOAD_PITCH_OFFSET), 11u);
     payload_put(p_payload, &bit, p_telemetry->hump_max, 6u);
     payload_put(p_payload, &bit, p_telemetry->humps, 4u);
-    payload_put(p_payload, &bit, p_telemetry->on_hump, 1u);
+    payload_put(p_payload, &bit, p_telemetry->b_on_hump, 1u);
     payload_put(p_payload, &bit, p_telemetry->avoid_state, 3u);
     payload_put(p_payload, &bit, p_telemetry->avoid_side, 2u);
     payload_put(p_payload, &bit, p_telemetry->bypasses, 4u);

@@ -39,7 +39,7 @@ Each field's range is in [DATA_REPRESENTATION.md](DATA_REPRESENTATION.md#fields)
 | 29–39 | `roll` | `s4_tilt_t.roll` + 1024 |
 | 40–45 | `hump_max` | `s4_hump_t.max`: the highest hump of the run, reset at each Start |
 | 46–49 | `humps` | `s4_hump_t.count` |
-| 50 | `on_hump` | `s4_hump_t.on` |
+| 50 | `on_hump` | `s4_hump_t.b_on` |
 | 51–53 | `avoid_state` | `obstacle_avoidance_status_t.state` |
 | 54–55 | `avoid_side` | `obstacle_avoidance_status_t.side`: 0 none, 1 left, 2 right |
 | 56–59 | `bypasses` | `obstacle_avoidance_status_t.bypasses` |

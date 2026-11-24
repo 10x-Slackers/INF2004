@@ -31,14 +31,14 @@
 /* Latest line state. */
 typedef struct
 {
-    unsigned int bits : 2;        /* DRV_LINE_LEFT | DRV_LINE_RIGHT now. */
-    unsigned int last_side : 2;   /* Last single sensor to see black. */
-    unsigned int b_junction : 1;  /* Both black long enough: a junction. */
-    unsigned int b_following : 1; /* Steering the car. */
-    unsigned int b_searching : 1; /* Pivoting to find a lost line. */
-    unsigned int b_lost : 1;      /* Search failed or sensor stuck; braked. */
-    unsigned int count : 8;       /* Samples taken, wraps. */
-    unsigned int sample_ms : 32;  /* Kernel time of the sample, wraps. */
+    unsigned int bits : 2;       /* DRV_LINE_LEFT | DRV_LINE_RIGHT now. */
+    unsigned int last_side : 2;  /* Last single sensor to see black. */
+    bool b_junction : 1;         /* Both black long enough: a junction. */
+    bool b_following : 1;        /* Steering the car. */
+    bool b_searching : 1;        /* Pivoting to find a lost line. */
+    bool b_lost : 1;             /* Search failed or sensor stuck; braked. */
+    unsigned int count : 8;      /* Samples taken, wraps. */
+    unsigned int sample_ms : 32; /* Kernel time of the sample, wraps. */
 } line_following_t;
 
 bool line_following_init(void);

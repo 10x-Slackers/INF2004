@@ -11,16 +11,16 @@
 #include "../test_report.h"
 
 #if APP_TEST
-#define S2_TEST_WAIT_MS 200 /* 20 control periods. */
+#define S2_TEST_WAIT_MS 200u /* 20 control periods. */
 #define S2_TEST_TICK_US 1000u
-#define S2_BENCH_BUTTON 21u  /* Robo Pico button, low when pressed. */
-#define S2_BENCH_GO_MS  5000 /* Time to put the car down after a press. */
+#define S2_BENCH_BUTTON 21u   /* Robo Pico button, low when pressed. */
+#define S2_BENCH_GO_MS  5000u /* Time to put the car down after a press. */
 /* A tap is under 0.5 s; a hold from 1 s is subsystem 3's. */
 #define S2_BENCH_TAP_POLLS 25u
-#define S2_BENCH_PAUSE_MS  3000 /* Still after each step, to measure it. */
+#define S2_BENCH_PAUSE_MS  3000u /* Still after each step, to measure it. */
 #define S2_BENCH_DRIVE_MS  2000u
-#define S2_BENCH_POLL_MS   10 /* Waits 2 kernel ticks: a line every 20 ms. */
-#define S2_BENCH_STATUS_MS 1000
+#define S2_BENCH_POLL_MS   10u /* Waits 2 kernel ticks: a line every 20 ms. */
+#define S2_BENCH_STATUS_MS 1000u
 #define S2_BENCH_MM_S      100
 #define S2_BENCH_FAST_MM_S 200u
 #define S2_BENCH_MOVE_MM   300u

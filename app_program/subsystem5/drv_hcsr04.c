@@ -13,22 +13,22 @@
 
 #define DRV_HCSR04_TRIG     0u
 #define DRV_HCSR04_ECHO     1u
-#define DRV_HCSR04_TRIG_US  10u     /* Datasheet: at least 10 us. */
-#define DRV_HCSR04_CYCLE_US 60000u  /* Datasheet: 60 ms between triggers. */
+#define DRV_HCSR04_TRIG_US  10u     /* HC-SR04 datasheet: at least 10 us. */
+#define DRV_HCSR04_CYCLE_US 60000u  /* The same: 60 ms between triggers. */
 #define DRV_HCSR04_ECHO_MS  50      /* With no target ECHO is high ~38 ms, */
 #define DRV_HCSR04_BUSY_US  500000u /* ...on some modules much longer. */
 #define DRV_HCSR04_POLL_MS  10u
 
 /* Written by the edge callback, read after it wakes the task. */
-static volatile uint32_t g_rise_us;
-static volatile uint32_t g_width_us;
-static volatile bool gb_rose;
-static volatile bool gb_fell;
-static volatile ID gh_task;
+static volatile uint32_t g_rise_us = 0u;
+static volatile uint32_t g_width_us = 0u;
+static volatile bool gb_rose = false;
+static volatile bool gb_fell = false;
+static volatile ID gh_task = 0;
 
-static uint32_t g_trigger_us; /* Scan task only. */
+static uint32_t g_trigger_us = 0u; /* Scan task only. */
 
-static void drv_hcsr04_edge(uint32_t pins);
+static void drv_hcsr04_edge_isr(uint32_t pins);
 
 /*!
  * @brief Set up TRIG low and ECHO as an input, and register for the ECHO
@@ -41,7 +41,7 @@ bool drv_hcsr04_init(void)
     (void)gpio_set_val(DRV_HCSR04_TRIG, 0u);
     (void)gpio_set_pin(DRV_HCSR04_TRIG, GPIO_MODE_OUT);
     (void)gpio_set_pin(DRV_HCSR04_ECHO, GPIO_MODE_IN);
-    return app_gpio_register(1u << DRV_HCSR04_ECHO, drv_hcsr04_edge);
+    return app_gpio_register(1u << DRV_HCSR04_ECHO, drv_hcsr04_edge_isr);
 }
 
 /*!
@@ -87,7 +87,7 @@ bool drv_hcsr04_measure(uint32_t * p_mm)
  * @brief GPIO interrupt callback for ECHO: time the pulse, then wake the
  * measuring task on its falling edge.
  */
-static void drv_hcsr04_edge(uint32_t pins)
+static void drv_hcsr04_edge_isr(uint32_t pins)
 {
     uint32_t const now_us = in_w(TIMER_TIMERAWL);
 

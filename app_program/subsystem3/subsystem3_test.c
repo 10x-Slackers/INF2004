@@ -15,7 +15,7 @@
 #include "../subsystem2/motion_control.h"
 
 #if APP_TEST
-#define S3_TEST_WAIT_MS     100   /* Ten sampling periods. */
+#define S3_TEST_WAIT_MS     100u  /* Ten sampling periods. */
 #define S3_TEST_NARROW      3000u /* 3 mm in um, as the decoder measures. */
 #define S3_TEST_WIDE        9000u
 #define S3_TEST_A           0x109u /* Code 39 patterns, 1 = wide. */
@@ -25,11 +25,11 @@
 #define S3_TEST_LETTER_A    0x41u  /* 'A' as code39_decode() returns it. */
 #define S3_TEST_LETTER_Z    0x5Au  /* 'Z' */
 #define S3_TEST_FIRST_GAP   9u
-#define S3_BENCH_POLL_MS    10 /* Waits 2 kernel ticks: a poll every 20 ms. */
+#define S3_BENCH_POLL_MS    10u /* Waits 2 kernel ticks: a poll every 20 ms. */
 #define S3_BENCH_STEP_MS    20u
 #define S3_BENCH_BUTTON     21u   /* Robo Pico button, low when pressed. */
 #define S3_BENCH_HOLD_MS    1000u /* Subsystem 2 takes taps under 0.5 s. */
-#define S3_BENCH_GO_MS      5000  /* Time to put the car on the line. */
+#define S3_BENCH_GO_MS      5000u /* Time to put the car on the line. */
 #define S3_BENCH_RUN_MS     15000u
 #define S3_BENCH_SPEED_MM_S 150u
 #define S3_BENCH_RAW_POLLS  25u /* Print the barcode level every 0.5 s. */
@@ -300,8 +300,8 @@ static void subsystem3_bench_task(INT stacd, void * p_exinf)
         {
             held_ms = 0u;
             APP_PRINTF("[line] put the car on the line, starting in "
-                       "%d s\n",
-                       S3_BENCH_GO_MS / 1000);
+                       "%u s\n",
+                       S3_BENCH_GO_MS / 1000u);
             tk_dly_tsk(S3_BENCH_GO_MS);
             (void)line_following_start(S3_BENCH_SPEED_MM_S);
             pending = BARCODE_DECODER_NONE;

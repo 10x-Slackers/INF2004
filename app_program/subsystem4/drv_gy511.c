@@ -18,7 +18,7 @@
 #define DRV_GY511_JUSTIFY    16     /* 12 bits left-justified in 16. */
 #define DRV_GY511_SIGN       32768u /* Bit 15, the sign of a 16-bit value. */
 
-static ID gh_i2c;
+static ID gh_i2c = 0;
 
 static int32_t drv_gy511_axis(const uint8_t * p_raw);
 

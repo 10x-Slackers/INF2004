@@ -85,7 +85,7 @@ typedef struct
     unsigned int hit_mm : 24;   /* Odometer where the last hit began. */
     unsigned int hits : 2;      /* Alternating hits in a row, up to 3. */
     unsigned int side : 2;      /* DRV_LINE_LEFT or _RIGHT: last hit. */
-    unsigned int b_hold : 1;    /* Holding hold_deg. */
+    bool b_hold : 1;            /* Holding hold_deg. */
     unsigned int hold_deg : 9;  /* Heading held. */
     unsigned int left_deg : 9;  /* Heading at the last left hit. */
     unsigned int right_deg : 9; /* And at the last right hit. */
@@ -98,11 +98,11 @@ typedef struct
 #error "g_search.samples is too narrow"
 #endif
 
-static ID gh_mutex;
-static line_following_t g_line;
-static line_following_search_t g_search;
-static line_following_steer_t g_steer;
-static line_following_wobble_t g_wobble;
+static ID gh_mutex = 0;
+static line_following_t g_line = {0};
+static line_following_search_t g_search = {0};
+static line_following_steer_t g_steer = {0};
+static line_following_wobble_t g_wobble = {0};
 
 static void line_following_stuck(uint32_t bits, uint32_t distance_mm);
 static void line_following_watch(uint32_t bits,
@@ -223,12 +223,12 @@ void line_following_task(INT stacd, void * p_exinf)
         g_line.sample_ms = now.lo;
         b_hold = (g_line.b_following) && (0u == g_search.phase) &&
                  (line_following_wobble(bits, prev, &motion));
-        if ((0u != barcode.b_reading) && (!b_straight))
+        if ((barcode.b_reading) && (!b_straight))
         {
             straight_deg =
                 g_wobble.b_hold ? g_wobble.hold_deg : motion.heading_deg;
         }
-        else if ((0u == barcode.b_reading) && b_straight && (!b_hold))
+        else if ((!barcode.b_reading) && b_straight && (!b_hold))
         {
             /* The barcode has ended and LOST_MM applies again: all white
              * counts from here, or the distance held straight over it
@@ -239,7 +239,7 @@ void line_following_task(INT stacd, void * p_exinf)
         {
             /* Still over a barcode, or still not. */
         }
-        b_straight = (0u != barcode.b_reading);
+        b_straight = (barcode.b_reading);
         line_following_watch(bits, &motion,
                              (b_hold || b_straight)
                                  ? LINE_FOLLOWING_HOLD_LOST_MM

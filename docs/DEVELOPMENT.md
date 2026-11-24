@@ -85,7 +85,7 @@ The third argument of `app_start_task()` pins the task to a core: `TP_PRC1` (cor
 
 ### Things to know
 
-- **Stacks are `APP_TASK_STACK_SIZE` bytes** (`app.h`). Raise it for a task with deep call chains or large locals.
+- **Stacks are `APP_TASK_STACK_SIZE` bytes** (`app_main.c`). Raise it for a task with deep call chains or large locals.
 - **`tk_dly_tsk` is a relative delay.** The period becomes the delay plus the work time, so it drifts. For a fixed rate, use a cyclic handler: `app_start_cyclic()` in `app.h` wakes a task every period.
 - **The tick is 10 ms** (`CNF_TIMER_PERIOD` in `config/config.h`). A relative wait also gets one extra tick, so `tk_dly_tsk(10)` waits 10 to 20 ms, about 20 ms in a periodic loop.
 - **There is no FPU.** Floating point is software-emulated; keep it out of fast loops.

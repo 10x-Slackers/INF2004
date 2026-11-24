@@ -43,9 +43,9 @@
 #define MOTION_PACKET_OFFSET  1024 /* Telemetry speeds are mm/s + 1024. */
 #define MOTION_Q8             256
 
-static motion_control_status_t g_status;
+static motion_control_status_t g_status = {0};
 static bool gb_latched = true; /* Safety stop: every command refused. */
-static bool gb_ready;          /* Init ran: the latch can be released. */
+static bool gb_ready = false;  /* Init ran: the latch can be released. */
 
 static struct
 {
@@ -64,7 +64,7 @@ static struct
     unsigned int drive_age : 5; /* Ticks since the last drive call. */
     unsigned int heading : 30;  /* (right - left) * D, mod one turn. */
     unsigned int odometer : 30; /* |left| + |right| edges, wraps. */
-} g_run;
+} g_run = {0};
 
 #if (MOTION_STALL_TICKS > 63u)
 #error "g_run.left_stall and .right_stall are too narrow"
@@ -74,7 +74,7 @@ static struct
 {
     signed int integral : 16;
     signed int last_error : 12; /* mm/s. */
-} g_pid[2];
+} g_pid[2] = {0};
 
 static int32_t motion_control_clamp(int64_t value, int32_t min, int32_t max);
 static int32_t motion_control_wrap(uint32_t difference);

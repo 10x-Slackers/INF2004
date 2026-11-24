@@ -34,7 +34,7 @@
  * while an IMU fault is set: the car is being handled, not driven.
  */
 
-#include "subsystem4.h"
+#include "task_imu.h"
 #include "drv_gy511.h"
 
 #define IMU_MG_PER_G      1000
@@ -42,7 +42,7 @@
 #define IMU_AVERAGE       256 /* Slow average weight: ~2.5 s. */
 #define IMU_DECIDEG_PER_G 573 /* Small angles: 1 g ~ 1 rad = 57.3 deg. */
 #define IMU_DESCEND_MM    2   /* This far below the peak: descending. */
-#define IMU_PRINT_MS      100
+#define IMU_PRINT_MS      100u
 #define IMU_COUNT_MAX     63u
 #define IMU_PWM_CLOCK_HZ  125000000u /* System clock, divider 1. */
 
@@ -81,10 +81,10 @@ typedef struct
     unsigned int beep_left : 7;    /* Samples until the buzzer stops. */
     unsigned int faults : 12;    /* Latched APP_FAULT_IMU bits (not lifted). */
     unsigned int push_class : 3; /* s4_motion_class_t. */
-    unsigned int b_descending : 1; /* Past the top of the current hump. */
-    unsigned int fail_count : 6;   /* Reads in a row that failed, */
-    unsigned int same_count : 6;   /* that matched the one before. */
-    signed int last_x : 12;        /* The reading before: -2048..2047 mg. */
+    bool b_descending : 1;       /* Past the top of the current hump. */
+    unsigned int fail_count : 6; /* Reads in a row that failed, */
+    unsigned int same_count : 6; /* that matched the one before. */
+    signed int last_x : 12;      /* The reading before: -2048..2047 mg. */
     signed int last_y : 12;
     signed int last_z : 12;
 } imu_state_t;
@@ -102,15 +102,15 @@ typedef struct
 } imu_sample_t;
 
 /* Written under gh_s4_mutex. */
-static s4_accel_t g_accel;
-static s4_tilt_t g_tilt;
-static s4_hump_t g_hump;
-static s4_motion_t g_motion;
+static s4_accel_t g_accel = {0};
+static s4_tilt_t g_tilt = {0};
+static s4_hump_t g_hump = {0};
+static s4_motion_t g_motion = {0};
 
 /* s4_reset_sensor() asks the IMU task to start again. */
-static volatile bool gb_reset;
+static volatile bool gb_reset = false;
 
-static imu_state_t g_imu;
+static imu_state_t g_imu = {0};
 
 static const char * const g_motion_name[] = {
     "steady", "accelerating", "braking", "climbing", "descending"};
@@ -231,11 +231,11 @@ static void imu_step(void)
         app_check(drv_gy511_start(), "drv_gy511_start");
     }
 
-    if (1 == g_imu.beep_left)
+    if (1u == g_imu.beep_left)
     {
         (void)pwm_set_enabled(S4_BUZZER_PIN, FALSE);
     }
-    if (g_imu.beep_left > 0)
+    if (g_imu.beep_left > 0u)
     {
         g_imu.beep_left--;
     }
@@ -260,7 +260,7 @@ static void imu_read(void)
     bool const b_same = b_ready && (x_mg == g_imu.last_x) &&
                         (y_mg == g_imu.last_y) && (z_mg == g_imu.last_z);
 
-    if (0 == g_imu.fail_count)
+    if (0u == g_imu.fail_count)
     {
         app_check(result, "drv_gy511_read"); /* Not 100 a second. */
     }
@@ -310,7 +310,7 @@ static void imu_calibrate(int32_t x_mg, int32_t y_mg, int32_t z_mg)
         (imu_moved(z_mg, g_imu.sum_z, g_imu.cal_count)))
     {
         /* Car moved: start again. */
-        g_imu.cal_count = 0;
+        g_imu.cal_count = 0u;
         g_imu.sum_x = 0;
         g_imu.sum_y = 0;
         g_imu.sum_z = 0;
@@ -368,18 +368,18 @@ static void imu_sample(int32_t x_mg, int32_t y_mg, int32_t z_mg)
         imu_count(g_imu.high_count, (sample.height_mm >= S4_HUMP_ON_MM));
     if (0u != (app_faults() & APP_FAULT_IMU))
     {
-        g_imu.high_count = 0; /* Picked up or turned over: not a hump. */
-        g_imu.peak_mm = 0;
+        g_imu.high_count = 0u; /* Picked up or turned over: not a hump. */
+        g_imu.peak_mm = 0u;
     }
     if (((g_imu.high_count >= (S4_HUMP_MIN_MS / S4_IMU_MS)) ||
-         (g_imu.peak_mm > 0)) &&
+         (g_imu.peak_mm > 0u)) &&
         (sample.height_mm > (int32_t)g_imu.peak_mm)) /* 9 bits: fits. */
     {
         /* On a hump: its top. (uint32_t): above the old peak, so positive. */
         g_imu.peak_mm = (uint32_t)sample.height_mm;
     }
     sample.b_hump_over =
-        (g_imu.peak_mm > 0) && (sample.height_mm < S4_HUMP_OFF_MM);
+        (g_imu.peak_mm > 0u) && (sample.height_mm < S4_HUMP_OFF_MM);
     imu_publish(&sample);
 }
 
@@ -396,7 +396,7 @@ static void imu_push(int32_t y_mg)
     g_imu.avg_y += y_mg - (g_imu.avg_y / IMU_AVERAGE);
     if (!imu_beyond(push_mg, S4_ACCEL_MG / 2))
     {
-        g_imu.pushed_count = 0;
+        g_imu.pushed_count = 0u;
         g_imu.push_class = S4_STEADY;
     }
     else if (imu_beyond(push_mg, S4_ACCEL_MG))
@@ -432,14 +432,14 @@ static void imu_publish(const imu_sample_t * p_sample)
     g_accel.count++;
     g_tilt.pitch = p_sample->pitch;
     g_tilt.roll = p_sample->roll;
-    g_tilt.cal = 1u;
+    g_tilt.b_cal = true;
     b_new_upside = (g_imu.upside_count >= (S4_UPSIDE_MS / S4_IMU_MS)) &&
                    (0u == (g_imu.faults & APP_FAULT_UPSIDE_DOWN));
     b_new_tilt = (g_imu.tilted_count >= (S4_TILT_MS / S4_IMU_MS)) &&
                  (0u == (g_imu.faults & APP_FAULT_TILT));
     g_imu.faults |= (b_new_upside ? APP_FAULT_UPSIDE_DOWN : 0u) |
                     (b_new_tilt ? APP_FAULT_TILT : 0u); /* Latched. */
-    g_hump.on = (g_imu.peak_mm > 0) && (!p_sample->b_hump_over);
+    g_hump.b_on = (g_imu.peak_mm > 0u) && (!p_sample->b_hump_over);
     if (p_sample->b_hump_over)
     {
         g_hump.peak = imu_clamp(g_imu.peak_mm, S4_HUMP_MAX_MM);
@@ -451,10 +451,10 @@ static void imu_publish(const imu_sample_t * p_sample)
      * hump goes up once and down once: once descending, stay so.
      * (int32_t): peak_mm is 9 bits, and the difference may be negative. */
     g_imu.b_descending =
-        (g_hump.on) &&
+        (g_hump.b_on) &&
         ((g_imu.b_descending) ||
          (p_sample->height_mm <= ((int32_t)g_imu.peak_mm - IMU_DESCEND_MM)));
-    if (g_hump.on)
+    if (g_hump.b_on)
     {
         motion_class = g_imu.b_descending ? S4_DESCENDING : S4_CLIMBING;
     }
@@ -474,7 +474,7 @@ static void imu_publish(const imu_sample_t * p_sample)
     {
         app_fault_set(APP_FAULT_LIFTED);
     }
-    else if (0 == g_imu.beep_left)
+    else if (0u == g_imu.beep_left)
     {
         app_fault_clear(APP_FAULT_LIFTED); /* Beep over: GP20 can clear. */
     }
@@ -495,12 +495,12 @@ static void imu_publish(const imu_sample_t * p_sample)
     if (p_sample->b_hump_over)
     {
         APP_PRINTF("[imu] hump: peak %d mm\n", g_imu.peak_mm);
-        g_imu.peak_mm = 0;
+        g_imu.peak_mm = 0u;
     }
 
     /* TEST=1 only: it would bury the [vc] and [safety] lines. */
-    g_imu.print_count = (g_imu.print_count + 1) % (IMU_PRINT_MS / S4_IMU_MS);
-    if (APP_TEST && (0 == g_imu.print_count))
+    g_imu.print_count = (g_imu.print_count + 1u) % (IMU_PRINT_MS / S4_IMU_MS);
+    if (APP_TEST && (0u == g_imu.print_count))
     {
         APP_PRINTF("[imu] x=%d y=%d z=%d mg pitch=%d roll=%d "
                    "(0.1 deg) h=%d mm\n",

@@ -36,7 +36,7 @@ typedef struct
     unsigned int letter : 5;       /* Last read or rejected: 1..26 A..Z, 0
                                     * a misread or a digit. */
     unsigned int distance_mm : 24; /* Odometer at its end (I5), wraps. */
-    unsigned int b_reading : 1;    /* Over a barcode now. */
+    bool b_reading : 1;            /* Over a barcode now. */
 } barcode_decoder_t;
 
 /* Raw sensor level over the last 10 ms, for calibration. */

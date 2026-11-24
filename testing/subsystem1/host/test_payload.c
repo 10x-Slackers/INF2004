@@ -36,10 +36,10 @@ int main(void)
     static const uint8_t scan_bytes[PAYLOAD_SCAN_BYTES] = {
         0x83u, 0x48u, 0x78u, 0x28u, 0x7cu, 0x8fu, 0xa0u, 0x80u, 0x20u};
     const payload_telemetry_t telemetry = {.state = 5u,
-                                           .latched = 1u,
+                                           .b_latched = true,
                                            .line = 2u,
-                                           .junction = 1u,
-                                           .following = 1u,
+                                           .b_junction = true,
+                                           .b_following = true,
                                            .barcode = 4u,
                                            .barcodes = 9u,
                                            .motion_class = 4u,
@@ -47,7 +47,7 @@ int main(void)
                                            .roll = -900,
                                            .hump_max = 42u,
                                            .humps = 10u,
-                                           .on_hump = 1u,
+                                           .b_on_hump = true,
                                            .avoid_state = 4u,
                                            .avoid_side = 2u,
                                            .bypasses = 9u,

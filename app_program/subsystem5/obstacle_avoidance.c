@@ -592,6 +592,11 @@ static void obstacle_avoidance_avoid(void)
     else if ((obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan)) &&
              (0u != scan.profile.b_obstacle))
     {
+        APP_PRINTF("[avoid] obstacle: width %u mm, closest %u mm at %u deg, "
+                   "clear left %u mm, right %u mm\n",
+                   scan.profile.width_mm, scan.profile.closest_mm,
+                   scan.profile.closest_deg, scan.profile.left_mm,
+                   scan.profile.right_mm);
         obstacle_avoidance_bypass(&scan.profile);
     }
     else

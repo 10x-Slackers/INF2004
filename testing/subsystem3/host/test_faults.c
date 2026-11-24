@@ -127,6 +127,13 @@ void app_fault_clear(uint32_t bits)
     g_faults &= ~bits;
 }
 
+/* The decoder's line for each barcode read is not shown here. */
+INT tm_printf(UB const * p_format, ...)
+{
+    (void)p_format;
+    return 0;
+}
+
 void drv_line_init(void)
 {
 }

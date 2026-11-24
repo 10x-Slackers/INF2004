@@ -285,6 +285,13 @@ static void barcode_decoder_end(uint32_t odometer_mm)
         /* Ignored. */
     }
     (void)tk_unl_mtx(gh_mutex);
+    if (g_code.elements >= CODE39_PER_CHR)
+    {
+        /* Once per barcode read. (int): letter is 0 or a Code 39
+         * character. */
+        APP_PRINTF("[barcode] letter=%c command=%u\n",
+                   (0u != letter) ? (int)letter : '-', command);
+    }
 }
 
 /*** end of file ***/

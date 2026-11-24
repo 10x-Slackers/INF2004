@@ -84,6 +84,7 @@ Every state change prints its cause, for example:
 
 ```
 [vc] READY -> FOLLOW: GP20
+[barcode] letter=A command=1
 [vc] barcode 1 pending
 [vc] FOLLOW -> TURN: junction
 [vc] TURN -> FOLLOW: turn done
@@ -91,6 +92,8 @@ Every state change prints its cause, for example:
 [safety] stop, cause 0x8
 [vc] max hump 12 mm
 ```
+
+The Barcode Decoder prints `[barcode] letter=… command=…` for every barcode read (`-` for a misread, command 0 for a letter with no action), and Obstacle Avoidance prints each profile it acts on: `[avoid] obstacle: width 176 mm, closest 78 mm at 90 deg, clear left 300 mm, right 1200 mm`.
 
 A supervisor command that is acted on is its own cause: `MQTT START`, `MQTT STOP` or `MQTT RESET` in place of `GP20`.
 

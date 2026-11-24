@@ -115,6 +115,7 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
     uint32_t ray = 0u;
     int32_t dir = 0;  /* -1 right, +1 left. */
     int32_t fine = 0; /* Ray of the fine scan. */
+    uint32_t reach_mm = 0u;
     uint32_t range_mm = 0u;
     bool b_fault = false;
 
@@ -127,12 +128,14 @@ static void ultrasonic_scan_serve(uint32_t mode, uint32_t request)
                             ? ultrasonic_scan_ray(ray, &b_fault)
                             : (uint16_t)SCAN_PROFILE_FAR_MM;
         }
-        /* Fine: out from the ray ahead, right then left, while blocked. */
+        /* Fine: out from the ray ahead, right then left, while on the
+         * obstacle ahead. */
+        reach_mm = scan_profile_reach_mm(rays[SCAN_PROFILE_AHEAD]);
         for (dir = -1; dir <= 1; dir += 2)
         {
             for (fine = (int32_t)SCAN_PROFILE_AHEAD + dir;
                  (fine >= 0) && (fine < (int32_t)SCAN_PROFILE_RAYS) &&
-                 (rays[fine - dir] <= SCAN_PROFILE_BLOCK_MM);
+                 (rays[fine - dir] <= reach_mm);
                  fine += dir)
             {
                 if (0 != (fine % (int32_t)SCAN_PROFILE_COARSE))

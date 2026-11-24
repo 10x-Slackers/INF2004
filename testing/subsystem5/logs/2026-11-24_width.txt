@@ -1,0 +1,41 @@
+# S5-U08 width, test image, short presses with the car still.
+# Before the fix (main 4d8369a), 180 mm flat obstacle (later remeasured 170 mm):
+[scan] forward_mm=192 fault=0 closest=192@95 edges=90..100 width=0 obstacle=1 clear=227/263
+[scan] forward_mm=208 fault=0 closest=208@90 edges=90..90 width=0 obstacle=0 clear=248/430
+[scan] forward_mm=208 fault=0 closest=208@90 edges=90..90 width=0 obstacle=0 clear=257/292
+[scan] forward_mm=185 fault=0 closest=182@75 edges=55..115 width=95 obstacle=1 clear=769/499
+[scan] forward_mm=186 fault=0 closest=173@85 edges=60..120 width=90 obstacle=1 clear=582/503
+[scan] forward_mm=176 fault=0 closest=172@75 edges=50..120 width=120 obstacle=1 clear=568/491
+# Wide run, no spread trim, 170 mm obstacle:
+[scan] forward_mm=176 fault=0 closest=172@75 edges=50..120 width=210 obstacle=1 clear=569/430
+[scan] forward_mm=169 fault=0 closest=166@70 edges=45..125 width=231 obstacle=1 clear=196/466
+[scan] forward_mm=166 fault=0 closest=160@70 edges=55..130 width=209 obstacle=1 clear=570/218
+[scan] forward_mm=176 fault=0 closest=169@65 edges=55..120 width=206 obstacle=1 clear=589/503
+# Final (wide run + 5 degree trim), 170 mm obstacle:
+[scan] forward_mm=172 fault=0 closest=169@70 edges=50..120 width=176 obstacle=1 clear=444/503
+[scan] forward_mm=163 fault=0 closest=160@75 edges=50..120 width=181 obstacle=1 clear=242/501
+[scan] forward_mm=169 fault=0 closest=169@90 edges=60..120 width=162 obstacle=1 clear=769/393
+# Final, 230 mm obstacle:
+[scan] forward_mm=198 fault=0 closest=195@70 edges=70..105 width=238 obstacle=1 clear=230/506
+[scan] forward_mm=211 fault=0 closest=208@90 edges=90..90 width=0 obstacle=0 clear=242/522
+[scan] forward_mm=208 fault=0 closest=209@90 edges=90..90 width=0 obstacle=0 clear=251/522
+[scan] forward_mm=192 fault=0 closest=192@75 edges=75..110 width=251 obstacle=1 clear=228/407
+[scan] forward_mm=176 fault=0 closest=176@90 edges=60..130 width=214 obstacle=1 clear=853/205
+[scan] forward_mm=169 fault=0 closest=169@90 edges=50..120 width=191 obstacle=1 clear=205/501
+# Host test:
+PASS  echo time to mm; past 4 m reads as 4000 (nothing there)
+PASS  median of three
+PASS  centred obstacle: closest point and edges at 85..95
+PASS  width: 10 degrees less 5 of beam spread each side = 0
+PASS  clearances: rays at 45 and 135 degrees
+PASS  run reaching right; a closer blocked run to the left is not it
+PASS  blocked across the sweep: edges at both ends, width 314 mm capped at 255
+PASS  slanted face 192 mm ahead: edges stay the blocked rays 85..95, width spans the rays within 242 mm (75..105), 190 mm x (30 - 2 x 5) degrees = 66 mm
+PASS  reach: 50 mm past the ray ahead, at least 200, 0 if not blocked
+PASS  single blocked ray: width 0
+PASS  clear ahead: no obstacle, even with blocked side rays
+PASS  the more open side, left on a tie
+PASS  one side under 250 mm: the other side
+PASS  both sides under 250 mm: no side (safe stop)
+PASS  packed profile 12, scan 20, avoidance status 8 bytes
+ALL PASS: 0 failure(s)

@@ -52,6 +52,8 @@ int main(void)
     const uint16_t off_centre[7] = {120u, 140u, 130u, 140u, 800u, 90u, 90u};
     const uint16_t one_ray[7] = {4000u, 4000u, 4000u, 150u,
                                  4000u, 4000u, 4000u};
+    const uint16_t slanted[7] = {235u, 210u, 195u, 192u,
+                                 190u, 212u, 238u};
     const uint16_t open[7] = {4000u, 4000u, 4000u, 4000u, 4000u, 4000u, 4000u};
     scan_profile_t p;
     uint16_t rays[SCAN_PROFILE_RAYS] = {0};
@@ -71,8 +73,8 @@ int main(void)
                    (1u == p.b_obstacle) && (85u == p.right_deg) &&
                    (95u == p.left_deg),
                "centred obstacle: closest point and edges at 85..95");
-    test_check(17u == p.width_mm,
-               "width: 100 mm x 10 degrees = 17 mm (arc length)");
+    test_check(0u == p.width_mm,
+               "width: 10 degrees less 5 of beam spread each side = 0");
     test_check((900u == p.right_mm) && (600u == p.left_mm),
                "clearances: rays at 45 and 135 degrees");
 
@@ -92,6 +94,21 @@ int main(void)
                    (200u == p.left_mm),
                "blocked across the sweep: edges at both ends, width "
                "314 mm capped at 255");
+
+    /* Bench 2026-11-24: a 180 mm flat face, stopped 192 mm away, read
+     * edges 90..100 and width 33 mm: its sides, seen at a slant, read past
+     * 200 mm. */
+    p = test_profile(slanted, 4000u, 4000u);
+    test_check((85u == p.right_deg) && (95u == p.left_deg) &&
+                   (190u == p.closest_mm) && (66u == p.width_mm),
+               "slanted face 192 mm ahead: edges stay the blocked rays "
+               "85..95, width spans the rays within 242 mm (75..105), "
+               "190 mm x (30 - 2 x 5) degrees = 66 mm");
+    test_check((200u == scan_profile_reach_mm(100u)) &&
+                   (242u == scan_profile_reach_mm(192u)) &&
+                   (0u == scan_profile_reach_mm(201u)),
+               "reach: 50 mm past the ray ahead, at least 200, 0 if not "
+               "blocked");
 
     p = test_profile(one_ray, 4000u, 4000u);
     test_check((0u == p.width_mm) && (1u == p.b_obstacle) &&

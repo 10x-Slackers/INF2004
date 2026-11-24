@@ -52,7 +52,7 @@ Application data uses only the bits its valid range needs (change requirement "M
 | 5 | `scan_profile_t.closest_mm`: closest point of the obstacle ahead | 20 to 4000 mm | 12 | `unsigned int` bit-field | Inside `ultrasonic_scan_t`, as above |
 | 5 | `.closest_deg`, `.right_deg`, `.left_deg`: servo angles of the closest point and the obstacle edges | 45 to 135° | 8 each | As above | As above |
 | 5 | `.b_obstacle`: ray ahead within 200 mm | 0 or 1 | 1 | As above | As above |
-| 5 | `.width_mm`: rough obstacle width, the arc between the edges at the closest distance | 0 to 255 mm (capped; 200 mm × 90° would be 314) | 8 | As above | As above |
+| 5 | `.width_mm`: rough obstacle width, the arc at the closest distance across the rays within 50 mm past the ray ahead (at least 200 mm), less 5° beam spread each side | 0 to 255 mm (capped; 200 mm × 90° would be 314) | 8 | As above | As above |
 | 5 | `.left_mm`, `.right_mm`: rays at 135° and 45°, the clearance each side | 20 to 4000 mm | 12 each | As above | As above |
 | 5 | `obstacle_avoidance_status_t.state`: idle, monitor, profile, bypass, stopped | 0 to 4 | 3 | `unsigned int` bit-field | Readers copy it with `obstacle_avoidance_get_status()`, under the avoidance mutex |
 | 5 | `.side`: none, left, right | 0 to 2 | 2 | As above | As above |

@@ -26,6 +26,8 @@
 #define SCAN_PROFILE_FAR_MM    4000u /* Nothing within the sensor's range. */
 #define SCAN_PROFILE_BLOCK_MM  200u  /* A ray this close hits an obstacle. */
 #define SCAN_PROFILE_CLEAR_MM  250u  /* A side this open can be passed. */
+#define SCAN_PROFILE_DEPTH_MM  50u   /* Same obstacle, past the ray ahead. */
+#define SCAN_PROFILE_EDGE_DEG  5u    /* Edge rays see this past the edge. */
 
 /* Servo angle of a ray. */
 #define SCAN_PROFILE_DEG(ray)                                                  \
@@ -37,8 +39,12 @@
 #define SCAN_PROFILE_RIGHT 2u
 
 /* Obstacle profile. The obstacle is the run of blocked rays around the ray
- * ahead; the edges are its outermost rays. The width is rough: the arc
- * between the edges at the closest distance, capped at 255 mm. The
+ * ahead; the edges are its outermost rays. The width is the arc at the
+ * closest distance across a wider run, the rays within
+ * scan_profile_reach_mm(): a flat face seen at a slant reads further at
+ * its sides, past SCAN_PROFILE_BLOCK_MM when the car stopped near it. The
+ * beam spread makes the outermost rays see SCAN_PROFILE_EDGE_DEG past
+ * each edge, so that much comes off each side. The
  * clearances are the outer rays, 45 degrees either side of ahead. */
 typedef struct
 {
@@ -55,6 +61,8 @@ typedef struct
 uint32_t scan_profile_mm(uint32_t echo_us);
 uint32_t scan_profile_median(uint32_t first, uint32_t second, uint32_t third);
 uint32_t scan_profile_arc_mm(uint32_t range_mm, uint32_t angle_deg);
+uint32_t scan_profile_width_mm(uint32_t range_mm, uint32_t angle_deg);
+uint32_t scan_profile_reach_mm(uint32_t ahead_mm);
 void scan_profile_build(const uint16_t * p_rays, scan_profile_t * p_profile);
 uint32_t scan_profile_side(uint32_t left_mm, uint32_t right_mm);
 

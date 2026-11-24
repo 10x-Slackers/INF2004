@@ -1,0 +1,20 @@
+S3-U22 to S3-U24 on the host at ca7a745: the Line Following and Barcode Decoder tasks against a modelled car.
+cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 -DAPP_TEST=0 -I testing/subsystem3/host/stub app_program/subsystem3/line_following.c app_program/subsystem3/barcode_decoder.c app_program/subsystem3/code39.c testing/subsystem3/host/test_faults.c -o /tmp/test_faults && /tmp/test_faults
+
+PASS  left black for 297 mm: no fault yet
+PASS  left black past 300 mm: braked, lost, fault
+PASS  the next start clears the fault and b_lost
+PASS  right stuck, left crossing lines: fault past 300 mm
+PASS  120 mm runs on alternate sides through junctions: no fault
+PASS  both black past 300 mm: fault
+PASS  all white for 90 mm: searching
+PASS  the heading never moves: braked and lost after 6 s
+PASS  first read empty, then 2 per ms: no fault
+PASS  no samples for 100 ms: fault
+PASS  90 samples in 100 ms: still the fault
+PASS  100 samples in 100 ms: fault cleared
+PASS  all white for 240 mm over a barcode: reading, no search
+PASS  the barcode has ended, 300 mm all white: no search
+PASS  all white for 80 mm past the barcode: searching
+PASS  stopped on a barcode, the odometer dips 80 um: still reading
+ALL PASS

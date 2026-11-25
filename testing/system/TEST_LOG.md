@@ -1,6 +1,6 @@
 # System — test log
 
-Tests of the whole car on the course against the requirements, one case per point of the Week 13 demo rubric plus a full run. Run the set before a demo or hand-in.
+Tests of the whole car on the course against the requirements, one case per point of the Week 13 demo rubric, plus a full run. Run the set before a demo or hand-in.
 
 Methods and how to record results: `testing/README.md`. A system test whose result has to be seen (the car moving, stopping, rejoining the line) needs a video as well as the console log (`videos/README.md`).
 
@@ -26,3 +26,11 @@ Every case uses the normal build with the broker set in `config/wifi_secrets.h`,
 
 | Date | Test ID | Commit | Tester | Result | Log / evidence | Notes |
 |---|---|---|---|---|---|---|
+| 2026-11-25 | SYS-11 | `b721ac5` (#71) | commit2main | PASS (partial) | `logs/2026-11-25_sys11_dashboard.txt`, `logs/2026-11-25_sys11_console.txt` | Full course, started from the dashboard, nobody touched the car. The console log stops at START (USB out); the dashboard log covers the run. Ended with the dashboard's Stop, not a lift, so SYS-10 is recorded from the INT-05 and INT-10 session. `b721ac5` lacks the upside-down check that the final code has; that check needs the car turned over, which this run never did. Two short avoids near the end were a chair beside the course, moved during the run. The `ENCODER` fault (missed encoder phase, the car keeps driving) came and went all run |
+| 2026-11-25 | SYS-01, SYS-02, SYS-05 | `b721ac5` (#71) | commit2main | PASS | `logs/2026-11-25_sys11_dashboard.txt` | In SYS-11: `Barcode F: right`, then `FOLLOW → TURN`, `TURN → FOLLOW` at the junction, the right branch taken |
+| 2026-11-25 | SYS-03 | `b721ac5` (#71) | commit2main | PASS | `logs/2026-11-25_sys11_dashboard.txt` | In SYS-11: hump 12 mm by ruler, car reported 12 mm (`Hump measured`, and the run summary) |
+| 2026-11-25 | SYS-04 | `b721ac5` (#71) | commit2main | PASS | `logs/2026-11-25_sys11_dashboard.txt` | In SYS-11: followed the course to the end without help |
+| 2026-11-25 | SYS-06, SYS-08 | `b721ac5` (#71) | commit2main | PASS | `logs/2026-11-25_sys11_dashboard.txt` | In SYS-11: `FOLLOW → AVOID` at the 120 mm box, `Bypass complete`, `AVOID → FOLLOW` and rejoined the line |
+| 2026-11-25 | SYS-07 | `b721ac5` (#71) | commit2main | PASS | Observed by tester | In SYS-11: box 120 mm by ruler, width 122 mm on the dashboard's Obstacle panel (2 mm off). Neither saved log holds the width (the console log ends at START; the dashboard's event log has no obstacle line), so only a video of the run can show it |
+| 2026-11-25 | SYS-09 | `b721ac5` (#71) | commit2main | PASS | `logs/2026-11-25_sys11_dashboard.txt` | In SYS-11: telemetry and events all run; four single missed heartbeats, no `WIFI` fault |
+| 2026-11-25 | SYS-10 | `dbb28bd` (#70) | commit2main | PASS (partial) | `../integration/logs/2026-11-25_int05_int10_stall_lift.txt` | Same session as INT-05 and INT-10, not in the SYS-11 run. Picked up while following the line: twice `[imu] FAULT: tilt`, `[safety] stop, cause 0x1`, `FOLLOW -> SAFE_STOP: safety latched`, and twice `FAULT: lifted` with the same stop; after one of those, turning it over also set `FAULT: upside down`. Mostly picked up and tilted, not turned fully over; the time to stop was not measured and the dashboard was not logged |

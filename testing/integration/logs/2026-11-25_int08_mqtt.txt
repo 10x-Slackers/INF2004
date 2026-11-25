@@ -1,0 +1,13 @@
+mqtt: connected to 172.20.10.14
+mqtt: subscribe to csc13/cmd, err=0
+mqtt: subscribe to csc13/map, err=0
+[s1] barcode map A-Z (0 ignore .. 4 U-turn): 00000000000000000000000000
+[vc] READY -> FOLLOW: MQTT START
+[barcode] letter=F command=0
+[imu] motion: accelerating
+[imu] FAULT: tilt
+[safety] stop, cause 0x1
+[vc] FOLLOW -> SAFE_STOP: safety latched
+[vc] max hump 0 mm
+[imu] motion: steady
+[imu] motion: braking

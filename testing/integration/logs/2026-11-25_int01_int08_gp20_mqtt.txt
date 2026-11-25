@@ -1,0 +1,116 @@
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+wifi: joining "<hotspot>" ...
+wifi: link status -> joined AP, waiting for IP (1)
+[imu] calibrated: offsets x=22 y=52 z=-195 mg
+[vc] INIT -> READY: IMU calibrated
+wifi: link status -> joined AP, no IP yet (2)
+wifi: link up, ip=172.20.10.13
+mqtt: connected to 172.20.10.14
+mqtt: subscribe to csc13/cmd, err=0
+mqtt: subscribe to csc13/map, err=0
+[s1] barcode map A-Z (0 ignore .. 4 U-turn): 00000000000000000000000000
+[vc] READY -> FOLLOW: MQTT START
+[vc] FOLLOW -> SAFE_STOP: MQTT STOP
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 5 mm
+[imu] motion: braking
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 10 mm
+[safety] cleared
+[vc] SAFE_STOP -> INIT: MQTT RESET
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: MQTT START
+[imu] motion: accelerating
+[imu] motion: steady
+[vc] FOLLOW -> SAFE_STOP: MQTT STOP
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: accelerating
+[imu] hump: peak 24 mm
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: braking
+[imu] hump: peak 14 mm
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: accelerating
+[imu] hump: peak 33 mm
+[imu] motion: steady
+[safety] cleared
+[vc] SAFE_STOP -> INIT: GP20
+[vc] INIT -> READY: IMU calibrated
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+wifi: joining "<hotspot>" ...
+wifi: link status -> joined AP, waiting for IP (1)
+[imu] calibrated: offsets x=26 y=50 z=-196 mg
+[vc] INIT -> READY: IMU calibrated
+wifi: link status -> joined AP, no IP yet (2)
+[vc] READY -> FOLLOW: GP20
+[imu] motion: accelerating
+[imu] motion: steady
+wifi: link up, ip=172.20.10.13
+[vc] FOLLOW -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+mqtt: connected to 172.20.10.14
+mqtt: subscribe to csc13/cmd, err=0
+mqtt: subscribe to csc13/map, err=0
+[s1] barcode map A-Z (0 ignore .. 4 U-turn): 00000000000000000000000000
+[safety] cleared
+[vc] SAFE_STOP -> INIT: GP20
+[vc] INIT -> READY: IMU calibrated
+[vc] READY -> FOLLOW: GP20
+[vc] FOLLOW -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: accelerating
+[imu] hump: peak 28 mm
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: accelerating
+[imu] hump: peak 10 mm
+[imu] motion: steady

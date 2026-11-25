@@ -1,0 +1,46 @@
+05:35:02 SAFE_STOP → READY
+05:35:02 Fault cleared: ENCODER
+05:35:04 Car restarted
+05:35:10 Sent Start
+05:35:11 READY → FOLLOW
+05:35:12 Fault: ENCODER
+05:35:16 Barcode F: right
+05:35:19 FOLLOW → TURN
+05:35:19 Fault cleared: ENCODER
+05:35:20 Fault: ENCODER
+05:35:21 1 heartbeats missed
+05:35:21 TURN → FOLLOW
+05:35:21 Fault cleared: ENCODER
+05:35:21 Fault: ENCODER
+05:35:23 FOLLOW → AVOID
+05:35:24 1 heartbeats missed
+05:35:29 Fault cleared: ENCODER
+05:35:30 Fault: ENCODER
+05:35:30 Fault cleared: ENCODER
+05:35:30 1 heartbeats missed
+05:35:30 Fault: ENCODER
+05:35:33 Fault cleared: ENCODER
+05:35:33 Fault: ENCODER
+05:35:35 Fault cleared: ENCODER
+05:35:36 Fault: ENCODER
+05:35:37 Fault cleared: ENCODER
+05:35:37 Fault: ENCODER
+05:35:37 Fault cleared: ENCODER
+05:35:37 Fault: ENCODER
+05:35:38 Fault cleared: ENCODER
+05:35:39 AVOID → FOLLOW
+05:35:39 Bypass complete
+05:35:39 Fault: ENCODER
+05:35:45 Hump measured, highest this run 12 mm
+05:35:48 FOLLOW → AVOID
+05:35:48 1 heartbeats missed
+05:35:50 AVOID → FOLLOW
+05:35:50 Fault cleared: ENCODER
+05:35:50 FOLLOW → AVOID
+05:35:53 AVOID → FOLLOW
+05:35:53 Fault: ENCODER
+05:36:07 Sent Stop
+05:36:07 FOLLOW → SAFE_STOP
+05:36:07 Run ended: highest hump this run 12 mm, faults: ENCODER
+05:36:24 1 heartbeats missed
+05:36:29 1 heartbeats missed

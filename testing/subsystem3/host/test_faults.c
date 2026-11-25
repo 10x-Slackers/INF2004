@@ -8,8 +8,8 @@
  * Runs the real Line Following and Barcode Decoder tasks. The kernel calls
  * come from stub/ and the stubs below; tk_slp_tsk() is one 10 ms wake-up
  * and leaves the task when the wake-ups asked for are used up (or the car
- * has gone the distance asked for), so a task's
- * local variables start again on every run. The car is a model: each
+ * has gone the distance asked for), so a task's local variables start
+ * again on every run. The car is a model: each
  * wake-up moves the odometer by the wheel speeds last commanded, and the
  * heading never moves. Build and run as in S3-U22 to S3-U24 of
  * testing/subsystem3/TEST_LOG.md.

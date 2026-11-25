@@ -109,12 +109,12 @@ void subsystem3_test(void)
     subsystem3_symbol(widths, S3_TEST_A, false);
     /* The sensor missed a narrow bar: it and its spaces read as one. */
     widths[S3_TEST_MISSED - 1u] = 3u * S3_TEST_NARROW;
-    for (element = S3_TEST_MISSED; element < (CODE39_ELEMENTS - 2u); element++)
+    for (element = S3_TEST_MISSED; element < CODE39_MISSED; element++)
     {
         widths[element] = widths[element + 2u];
     }
     TEST_CHECK("S3-U25",
-               S3_TEST_LETTER_A == code39_decode(widths, CODE39_ELEMENTS - 2u),
+               S3_TEST_LETTER_A == code39_decode(widths, CODE39_MISSED),
                "guesses *A* with a narrow bar missed");
     subsystem3_symbol(&widths[2], S3_TEST_A, false);
     widths[0] = S3_TEST_NARROW; /* A speck, then white, before *A*. */

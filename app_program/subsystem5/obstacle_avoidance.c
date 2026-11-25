@@ -34,7 +34,7 @@
 #define OBSTACLE_AVOIDANCE_RETRY_MM 180u
 #define OBSTACLE_AVOIDANCE_OUT      0u /* Legs of the bypass. */
 #define OBSTACLE_AVOIDANCE_PASS     1u
-#define OBSTACLE_AVOIDANCE_BACK     2u
+#define OBSTACLE_AVOIDANCE_IN       2u
 /* One bypass step: a turn towards the bypass side (+1) or back (-1), or,
  * with no turn (0), a move forward along leg. The first turn is
  * obstacle_avoidance_face()'s, which checks the diagonal. */
@@ -47,7 +47,7 @@ typedef struct
 static const obstacle_avoidance_step_t g_steps[OBSTACLE_AVOIDANCE_STEPS] = {
     {1, 0u},  {0, OBSTACLE_AVOIDANCE_OUT},
     {-1, 0u}, {0, OBSTACLE_AVOIDANCE_PASS},
-    {-1, 0u}, {0, OBSTACLE_AVOIDANCE_BACK}, /* Back: out plus OVER_MM. */
+    {-1, 0u}, {0, OBSTACLE_AVOIDANCE_IN}, /* In: out plus OVER_MM. */
     {1, 0u}};
 
 static ID gh_mutex = 0;
@@ -490,7 +490,7 @@ static bool obstacle_avoidance_path(const scan_profile_t * p_profile,
 /*!
  * @brief Bypass step 1: turn towards side and check the diagonal, which
  * the servo cannot see. If it is short, turn round to the other side and
- * check it. Neither turns back to the original heading.
+ * check it. If neither is clear, turn back to the original heading.
  *
  * @return The side faced, or SCAN_PROFILE_NONE if neither is clear,
  *         cancelled or stopped.
@@ -536,7 +536,7 @@ static uint32_t obstacle_avoidance_face(const scan_profile_t * p_profile,
 static bool obstacle_avoidance_bypass(const scan_profile_t * p_profile)
 {
     uint32_t side = scan_profile_side(p_profile->left_mm, p_profile->right_mm);
-    uint32_t legs[3] = {0u}; /* OBSTACLE_AVOIDANCE_OUT, _PASS, _BACK. */
+    uint32_t legs[3] = {0u}; /* OBSTACLE_AVOIDANCE_OUT, _PASS, _IN. */
     uint32_t step = 1u;      /* Step 1, the turn, is face(). */
 
     (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
@@ -548,7 +548,7 @@ static bool obstacle_avoidance_bypass(const scan_profile_t * p_profile)
     legs[OBSTACLE_AVOIDANCE_OUT] = obstacle_avoidance_diagonal(p_profile, side);
     /* Longer than out, so heading error from the turns cannot leave the car
      * short of the line; the line sensors end it at the line. */
-    legs[OBSTACLE_AVOIDANCE_BACK] =
+    legs[OBSTACLE_AVOIDANCE_IN] =
         legs[OBSTACLE_AVOIDANCE_OUT] + OBSTACLE_AVOIDANCE_OVER_MM;
     /* Axle travel along the line until the back clears the obstacle, its
      * length taken as the distance between its blocked edges, less what
@@ -587,7 +587,6 @@ static bool obstacle_avoidance_try(void)
     ultrasonic_scan_t scan = {0};
     bool b_blocked = false;
 
-    obstacle_avoidance_set(OBSTACLE_AVOIDANCE_PROFILE, 0u);
     if ((obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan)) &&
         (scan.profile.b_obstacle))
     {

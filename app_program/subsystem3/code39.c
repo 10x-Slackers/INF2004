@@ -60,7 +60,7 @@ uint32_t code39_decode(const uint16_t * p_widths, uint32_t count)
     {
         letter = code39_symbol(&p_widths[first]);
     }
-    if ((0u == letter) && ((CODE39_ELEMENTS - 2u) == count))
+    if ((0u == letter) && (CODE39_MISSED == count))
     {
         letter = code39_missed(p_widths);
     }
@@ -69,7 +69,7 @@ uint32_t code39_decode(const uint16_t * p_widths, uint32_t count)
 
 /*!
  * @brief Put a narrow bar, as wide as the narrowest bar read, back in the
- * middle of each space of 27 widths in turn.
+ * middle of each space of CODE39_MISSED widths in turn.
  *
  * @return The letter if exactly one reads, else 0.
  */
@@ -82,23 +82,27 @@ static uint32_t code39_missed(const uint16_t * p_widths)
     uint32_t space = 0u;
     uint32_t element = 0u;
 
-    for (element = 0u; element < (CODE39_ELEMENTS - 2u); element += 2u)
+    for (element = 0u; element < CODE39_MISSED; element += 2u)
     {
         bar = (p_widths[element] < bar) ? p_widths[element] : bar;
     }
-    for (space = 1u; space < (CODE39_ELEMENTS - 2u); space += 2u)
+    for (space = 1u; space < CODE39_MISSED; space += 2u)
     {
-        for (element = 0u; element < (CODE39_ELEMENTS - 2u); element++)
+        letter = 0u;
+        if (p_widths[space] > bar) /* Room for the bar. */
         {
-            /* Past the space, two places on. */
-            widths[element + ((element > space) ? 2u : 0u)] = p_widths[element];
+            for (element = 0u; element < CODE39_MISSED; element++)
+            {
+                /* Past the space, two places on. */
+                widths[element + ((element > space) ? 2u : 0u)] =
+                    p_widths[element];
+            }
+            widths[space] = (uint16_t)((p_widths[space] - bar) / 2u);
+            widths[space + 1u] = bar;
+            widths[space + 2u] =
+                (uint16_t)(p_widths[space] - bar - widths[space]);
+            letter = code39_symbol(widths);
         }
-        /* Underflows only for a space narrower than the bar, which then
-         * reads as nothing: it is skipped below. */
-        widths[space] = (uint16_t)((p_widths[space] - bar) / 2u);
-        widths[space + 1u] = bar;
-        widths[space + 2u] = (uint16_t)(p_widths[space] - bar - widths[space]);
-        letter = (p_widths[space] > bar) ? code39_symbol(widths) : 0u;
         if ((0u != letter) && (letter != found))
         {
             /* A second, different letter: too uncertain. */

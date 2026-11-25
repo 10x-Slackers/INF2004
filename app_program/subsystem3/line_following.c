@@ -16,8 +16,8 @@
  * Barcodes lie on straights, so while the barcode sensor is over one the car
  * holds the heading it had when the barcode was recognised (the wobble hold
  * heading if holding), and a sensor hit turns it at most TURN_MIN. It also
- * slows to CODE_MM_S, so the narrow bars read black. All white
- * is counted from the start again where the barcode ends.
+ * slows to CODE_MM_S, so the narrow bars read black. All white does not
+ * count towards a lost line until the barcode ends.
  */
 
 #include "line_following.h"
@@ -58,7 +58,6 @@
 #define LINE_FOLLOWING_HOLD_GAIN    50
 #define LINE_FOLLOWING_HOLD_EXIT_MM 40u
 #define LINE_FOLLOWING_HOLD_LOST_MM 120u
-#define LINE_FOLLOWING_CODE_LOST_MM 300u /* Over a barcode, 141 mm long. */
 /* Over a barcode, at most this fast, so the narrow bars read black. */
 #define LINE_FOLLOWING_CODE_MM_S     80u
 #define LINE_FOLLOWING_HOLD_BEND_DEG 8
@@ -232,22 +231,16 @@ void line_following_task(INT stacd, void * p_exinf)
             straight_deg =
                 g_wobble.b_hold ? g_wobble.hold_deg : motion.heading_deg;
         }
-        else if ((!barcode.b_reading) && b_straight)
+        if (barcode.b_reading)
         {
-            /* The barcode has ended and the shorter limits apply: all white
-             * counts from here, or the distance held straight over it
-             * would look lost at once. */
+            /* A car held straight runs centred over the barcode: all white
+             * counts only from where it ends. */
             g_search.from_mm = motion.distance_mm;
-        }
-        else
-        {
-            /* Still over a barcode, or still not. */
         }
         b_straight = (barcode.b_reading);
         line_following_watch(bits, &motion,
-                             b_straight ? LINE_FOLLOWING_CODE_LOST_MM
-                             : b_hold   ? LINE_FOLLOWING_HOLD_LOST_MM
-                                        : LINE_FOLLOWING_LOST_MM);
+                             b_hold ? LINE_FOLLOWING_HOLD_LOST_MM
+                                    : LINE_FOLLOWING_LOST_MM);
         line_following_drive(bits, &motion, b_straight, straight_deg);
         g_line.b_searching = (g_line.b_following) && (0u != g_search.phase);
         (void)tk_unl_mtx(gh_mutex);
@@ -326,11 +319,12 @@ static void line_following_drive(uint32_t bits,
                                  const motion_control_status_t * p_motion,
                                  bool b_straight, uint32_t straight_deg)
 {
-    /* Both are at most 500: the casts keep them. */
-    int32_t const speed = (int32_t)((b_straight && (g_steer.speed_mm_s >
-                                                    LINE_FOLLOWING_CODE_MM_S))
-                                        ? LINE_FOLLOWING_CODE_MM_S
-                                        : g_steer.speed_mm_s);
+    int32_t speed = (int32_t)g_steer.speed_mm_s; /* 9 bits: fits. */
+
+    if (b_straight && (speed > (int32_t)LINE_FOLLOWING_CODE_MM_S))
+    {
+        speed = (int32_t)LINE_FOLLOWING_CODE_MM_S;
+    }
 
     if ((g_line.b_following) && (0u == g_search.phase) &&
         (b_straight || (g_wobble.b_hold)) && (0u == bits))

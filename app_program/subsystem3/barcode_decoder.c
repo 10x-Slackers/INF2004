@@ -19,7 +19,7 @@
 #include "../subsystem2/motion_control.h"
 
 /* ADC counts: white reads ~170, black ~4080 (S3-U10). Low, so narrow bars
- * count (S3-U14; at 1000 the car missed some), with hysteresis between. */
+ * count (S3-U14), with hysteresis between. */
 #define BARCODE_BLACK       600u
 #define BARCODE_WHITE       400u
 #define BARCODE_END         30000u /* um: 30 mm, over 3 wide bars. */
@@ -236,22 +236,19 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
  */
 static void barcode_decoder_end(uint32_t odometer_mm)
 {
-    uint32_t letter = 0u;
-    uint32_t index = 0u;
+    /* Extra elements after a barcode (a crossing line, the edge of the
+     * print) are ignored: only the first 31 are kept. */
+    uint32_t const letter = code39_decode(g_widths, g_code.elements);
+    /* 1..26 for A..Z; 0 for a misread or a digit, which have no action.
+     * (uint32_t): a character constant is a small positive number. */
+    uint32_t const index =
+        ((letter >= (uint32_t)'A') && (letter <= (uint32_t)'Z'))
+            ? ((letter - (uint32_t)'A') + 1u)
+            : 0u;
     uint32_t command = BARCODE_DECODER_NONE;
 #if APP_TEST
     uint32_t element = 0u;
-#endif
 
-    /* Extra elements after a barcode (a crossing line, the edge of the
-     * print) are ignored: only the first 31 are kept. */
-    letter = code39_decode(g_widths, g_code.elements);
-    /* 1..26 for A..Z; 0 for a misread or a digit, which have no action.
-     * (uint32_t): a character constant is a small positive number. */
-    index = ((letter >= (uint32_t)'A') && (letter <= (uint32_t)'Z'))
-                ? ((letter - (uint32_t)'A') + 1u)
-                : 0u;
-#if APP_TEST
     /* Bench evidence for S3-U14: what the sensor measured, in 0.1 mm. */
     if (g_code.elements >= CODE39_PER_CHR)
     {

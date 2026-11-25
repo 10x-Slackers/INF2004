@@ -3,19 +3,23 @@
  * @brief Host test of subsystem 3's sensor fault checks: a line sensor
  * stuck on black, the time limit on the lost-line search, and barcode ADC
  * samples that stop. Also that the end of a barcode does not start a
- * search, and a dip in the odometer does not end one.
+ * search, a dip in the odometer does not end one, a barcode sensor that
+ * stops over a barcode still lets a lost line start a search, and a missed
+ * bar that cannot be put back is not guessed as another letter.
  *
  * Runs the real Line Following and Barcode Decoder tasks. The kernel calls
  * come from stub/ and the stubs below; tk_slp_tsk() is one 10 ms wake-up
- * and leaves the task when the wake-ups asked for are used up, so a task's
- * local variables start again on every run. The car is a model: each
+ * and leaves the task when the wake-ups asked for are used up (or the car
+ * has gone the distance asked for), so a task's local variables start
+ * again on every run. The car is a model: each
  * wake-up moves the odometer by the wheel speeds last commanded, and the
- * heading never moves. Build and run as in S3-U22 to S3-U24 of
+ * heading never moves. Build and run as in S3-U22 to S3-U24 and S3-U27 of
  * testing/subsystem3/TEST_LOG.md.
  */
 
 #include "../../../app_program/subsystem3/subsystem3.h"
 #include "../../../app_program/subsystem3/drv_barcode.h"
+#include "../../../app_program/subsystem3/code39.h"
 #include "../../../app_program/subsystem2/motion_control.h"
 #include <setjmp.h>
 #include <stdio.h>
@@ -28,6 +32,7 @@
 static jmp_buf g_task_exit;
 static jmp_buf g_barcode_exit; /* Barcode task run inside a line wake-up. */
 static uint32_t g_wakes;       /* Wake-ups left before the task is left. */
+static uint32_t g_stop_um;     /* Or once the odometer reaches this; 0 none. */
 static uint32_t g_bits;        /* What the line sensors read. */
 static uint32_t g_adc;         /* Samples per barcode read. */
 static int32_t g_left_mm_s;    /* Wheel speeds last commanded. */
@@ -94,7 +99,7 @@ ER tk_slp_tsk(TMO tmout)
         gb_decoded = true;
         test_move();
     }
-    else if (0u == g_wakes)
+    else if ((0u == g_wakes) || ((0u != g_stop_um) && (g_um >= g_stop_um)))
     {
         longjmp(g_task_exit, 1);
     }
@@ -231,11 +236,13 @@ static void test_start(void)
     (void)line_following_start(TEST_SPEED_MM_S);
 }
 
-/* Follow for mm with the sensors at bits (1.5 mm per wake-up, however the
- * car steers). */
+/* Follow for mm with the sensors at bits, by the odometer: the car slows
+ * over a barcode. A car that stopped gives up after 2 wake-ups per mm. */
 static void test_follow(uint32_t bits, uint32_t mm)
 {
-    test_line(bits, (mm * 2u) / 3u);
+    g_stop_um = g_um + (mm * 1000u);
+    test_line(bits, 2u * mm);
+    g_stop_um = 0u;
 }
 
 /* True if line following gave up with the line sensor fault. */
@@ -303,7 +310,7 @@ static void test_search_limit(void)
     uint32_t wakes = 0u;
 
     test_start();
-    test_follow(0u, 90u);
+    test_line(0u, 60u); /* 90 mm at 1.5 mm a wake-up; the search is timed. */
     line_following_get(&line);
     test_check(line.b_searching, "all white for 90 mm: searching");
     for (wakes = 0u; (wakes < 1000u) && (line.b_searching); wakes++)
@@ -381,6 +388,46 @@ static void test_barcode_rollback(void)
                "stopped on a barcode, the odometer dips 80 um: still reading");
 }
 
+/* After that, the barcode sensor stops with the car over the barcode:
+ * b_reading stays set, and a lost line must still start a search. */
+static void test_barcode_stalls(void)
+{
+    line_following_t line = {0};
+    barcode_decoder_t barcode = {0};
+
+    g_adc = 0u; /* No more samples: the decoder stays mid-barcode. */
+    gb_both = true;
+    line_following_stop(); /* Still searching from test_barcode_end(). */
+    test_start();
+    test_follow(0u, 290u);
+    line_following_get(&line);
+    barcode_decoder_get(&barcode);
+    test_check((barcode.b_reading) && (!line.b_searching),
+               "barcode sensor stopped, 290 mm all white: no search yet");
+    test_follow(0u, 20u);
+    line_following_get(&line);
+    test_check(line.b_searching,
+               "barcode sensor stopped, past 300 mm all white: searching");
+    gb_both = false;
+}
+
+/* *M* in um as the sensor reads it, bars 2 mm narrow and spaces 2 mm wide,
+ * without the first bar of the stop: the narrow gap and the wide space
+ * either side of it read as one 17 mm space, which no put-back bar turns
+ * into M again. With a bar put back in another wide space only two wide
+ * spaces are left, and the widest narrow one (5.1 mm) once counted as the
+ * third: W. */
+static void test_barcode_guess(void)
+{
+    static const uint16_t widths[CODE39_MISSED] = {
+        1000u, 11000u, 1000u, 5000u, 7000u, 5000u, 7000u, 5000u,  1000u,
+        5000u, 7000u,  5100u, 7000u, 5000u, 1000u, 5000u, 1000u,  11000u,
+        1000u, 17000u, 1000u, 5000u, 7000u, 5000u, 7000u, 5000u,  1000u};
+
+    test_check(0u == code39_decode(widths, CODE39_MISSED),
+               "*M* missing a bar that cannot be put back: no letter");
+}
+
 int main(void)
 {
     (void)line_following_init();
@@ -390,6 +437,8 @@ int main(void)
     test_barcode_samples();
     test_barcode_end();      /* These two after the sample counts: they would */
     test_barcode_rollback(); /* leave its 100 ms window part used. */
+    test_barcode_stalls();   /* Goes on from the rollback's barcode. */
+    test_barcode_guess();
     printf("%s\n", (0 == g_failures) ? "ALL PASS" : "FAILED");
     return (0 == g_failures) ? 0 : 1;
 }

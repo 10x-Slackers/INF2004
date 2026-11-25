@@ -145,7 +145,7 @@ uint32_t scan_profile_side(uint32_t left_mm, uint32_t right_mm)
     }
     else
     {
-        /* Neither side is open: no reverse, the caller stops. */
+        /* Neither side is open: the caller backs off and retries once. */
     }
     return side;
 }

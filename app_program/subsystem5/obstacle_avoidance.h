@@ -7,7 +7,8 @@
  * profiles the obstacle with the servo, taking the clearance each side from
  * its 45 degree readings, and drives round it on the more open side, ending
  * on the original line and heading, then watches again. With no open side
- * it stops and stays stopped (no reverse). Units: docs/OBSTACLE_AVOIDANCE.md.
+ * it backs off a few cm and tries once more, then stops and stays stopped.
+ * Units: docs/OBSTACLE_AVOIDANCE.md.
  */
 
 #ifndef OBSTACLE_AVOIDANCE_H
@@ -19,7 +20,7 @@
 /* status.state */
 #define OBSTACLE_AVOIDANCE_IDLE    0u /* Not started, or cancelled. */
 #define OBSTACLE_AVOIDANCE_MONITOR 1u /* Watching the range ahead. */
-#define OBSTACLE_AVOIDANCE_PROFILE 2u /* Stopped, scanning the obstacle. */
+#define OBSTACLE_AVOIDANCE_PROFILE 2u /* Scanning, or backing off to scan. */
 #define OBSTACLE_AVOIDANCE_BYPASS  3u /* Driving round it. */
 #define OBSTACLE_AVOIDANCE_STOPPED 4u /* Safe stop, until the next start. */
 

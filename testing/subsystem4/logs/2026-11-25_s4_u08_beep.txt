@@ -1,0 +1,30 @@
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+wifi: joining "<hotspot>" ...
+wifi: link status -> joined AP, waiting for IP (1)
+wifi: link status -> joined AP, no IP yet (2)
+wifi: link up, ip=172.20.10.13
+mqtt: connected to 172.20.10.14
+mqtt: subscribe to csc13/cmd, err=0
+mqtt: subscribe to csc13/map, err=0
+[s1] barcode map A-Z (0 ignore .. 4 U-turn): 00000000000000000000000000
+[imu] calibrated: offsets x=27 y=54 z=-197 mg
+[vc] INIT -> READY: IMU calibrated
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+wifi: joining "<hotspot>" ...
+wifi: link status -> joined AP, waiting for IP (1)
+[imu] calibrated: offsets x=23 y=51 z=-197 mg
+[vc] INIT -> READY: IMU calibrated
+wifi: link status -> joined AP, no IP yet (2)
+wifi: link up, ip=172.20.10.13

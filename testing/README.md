@@ -6,8 +6,9 @@ Test records for the project, used as evidence in the write-up and tribunals.
 |---|---|
 | `subsystemN/` | `TEST_LOG.md` (cases and results), `logs/` (saved console output, photos), `host/` (host test programs), kept by the subsystem's owner |
 | `integration/` | Tests across two or more subsystems, usually one per interface in `TEAM.md` section 5 |
+| `system/` | Tests of the whole car on the course against the requirements, one per demo rubric point, kept by the whole team |
 
-Test IDs are `S1-U01`, `S2-U01`, … for a subsystem and `INT-01`, … for integration. Number cases in order and give a new case the next free number.
+Test IDs are `S1-U01`, `S2-U01`, … for a subsystem, `INT-01`, … for integration and `SYS-01`, … for system. Number cases in order and give a new case the next free number.
 
 ## Kinds of test
 
@@ -20,3 +21,7 @@ Test IDs are `S1-U01`, `S2-U01`, … for a subsystem and `INT-01`, … for integ
 Add a row to the *Results* table: date, test ID, commit (with the pull request number if it was on a branch, as `1a2b3c4 (#42)`), who ran it, PASS / FAIL / PARTIAL, the log file if any, and a note. To save console output, run `cat /dev/ttyACM0 | tee testing/subsystemN/logs/YYYY-MM-DD_<what>.txt` (macOS: `/dev/cu.usbmodem*`) and then reset the Pico.
 
 Add a new row for a re-run rather than overwriting an earlier result. Fixing a typo or a wrong reference in an old row is fine.
+
+## Videos
+
+A manual test whose result has to be seen (the car moving, stopping, rejoining the line) also needs a short video: upload it to YouTube as **Unlisted**, list it in `videos/README.md`, and put the link in the *Log / evidence* column of the result row. `videos/README.md` explains how. Never commit video files.

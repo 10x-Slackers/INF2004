@@ -1,0 +1,350 @@
+[bar] min=153 max=202 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=204 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=204 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=204 fault=0
+[bar] min=150 max=202 fault=0
+[bar] min=141 max=206 fault=0
+[bar] min=152 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=149 max=204 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=148 max=203 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=148 max=207 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=151 max=206 fault=0
+[bar] min=150 max=208 fault=0
+[imu] motion: braking
+[imu] motion: steady
+[bar] min=150 max=208 fault=0
+[imu] motion: accelerating
+[imu] motion: steady
+[bar] min=150 max=207 fault=0
+[bar] min=167 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=152 max=207 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=148 max=205 fault=0
+[bar] min=150 max=200 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=150 max=203 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=203 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=152 max=204 fault=0
+[bar] min=151 max=208 fault=0
+[bar] min=150 max=209 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=150 max=207 fault=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[imu] motion: accelerating
+[line] left=1 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=2 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[imu] motion: steady
+[bar] min=4081 max=4089 fault=0
+[imu] motion: braking
+[imu] motion: steady
+[bar] min=150 max=205 fault=0
+[imu] motion: braking
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[imu] motion: steady
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=150 max=205 fault=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=204 fault=0
+[bar] min=152 max=206 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=151 max=206 fault=0
+[bar] min=150 max=204 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=153 max=206 fault=0
+[bar] min=151 max=208 fault=0
+[line] put the car on the line, starting in 5 s
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=90 deg=1
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=101 deg=1
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=138 deg=4
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=144 deg=3
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=188 deg=2
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=197 deg=3
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=257 deg=3
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=263 deg=4
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=320 deg=6
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=333 deg=5
+[line] left=1 right=1 junction=1 last=2 following=1 searching=0 lost=0 stuck=0 mm=339 deg=4
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=345 deg=3
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=363 deg=5
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=372 deg=6
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=384 deg=6
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=417 deg=5
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=426 deg=5
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=516 deg=6
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=534 deg=4
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=546 deg=2
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=573 deg=355
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=576 deg=354
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=588 deg=352
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=591 deg=352
+[line] left=1 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=635 deg=333
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=637 deg=330
+[line] left=1 right=1 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=657 deg=325
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=663 deg=325
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=718 deg=291
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=720 deg=289
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: braking
+[imu] hump: peak 5 mm
+[imu] motion: steady
+[line] left=0 right=0 junction=0 last=1 following=1 searching=1 lost=0 stuck=0 mm=833 deg=278
+[imu] motion: braking
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 17 mm
+[imu] motion: accelerating
+[imu] motion: steady
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=1057 deg=327
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 21 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] FAULT: lifted
+[imu] motion: braking
+[imu] motion: steady
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=1201 deg=245
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=1203 deg=247
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=1213 deg=246
+[imu] motion: accelerating
+[line] left=1 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=1217 deg=246
+[line] left=0 right=0 junction=0 last=1 following=1 searching=0 lost=0 stuck=0 mm=1220 deg=246
+[imu] motion: steady
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=1237 deg=247
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=1257 deg=246
+[line] left=0 right=1 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=1290 deg=245
+[line] left=0 right=0 junction=0 last=2 following=1 searching=0 lost=0 stuck=0 mm=1299 deg=244
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[TEST] === test run start ===
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U05 PASS  boots idle with the motors braked
+[TEST] S2-U06 PASS  out-of-range commands are rejected
+[TEST] S2-U07 PASS  a rejected command does not start the motors
+[TEST] S2-U08 PASS  12-byte packed status and telemetry
+[TEST] S2-U09 PASS  control step runs and takes under 1 ms
+[TEST] S2-U16 PASS  a latched safety stop refuses every command
+[TEST] S2-U17 PASS  commands are accepted again after the latch is released
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+[motion] bench: tap GP21 to start
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+[TEST] S3-U02 PASS  packed line state 8 bytes
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+[TEST] S3-U05 PASS  line following boots stopped
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+[TEST] S3-U11 PASS  decodes *A* read either way
+[TEST] S3-U20 PASS  decodes *Z*
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+[TEST] S3-U25 PASS  guesses *A* with a narrow bar missed
+[TEST] S3-U26 PASS  reads *A* after a speck
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+[TEST] subsystem3 SUMMARY 13 passed, 0 failed
+[line] bench: hold GP21 for 1 s to follow the line
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=166 max=186 fault=0
+[bar] min=163 max=191 fault=0
+[bar] min=137 max=217 fault=0
+[imu] calibrated: offsets x=22 y=56 z=-193 mg
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[bar] min=145 max=211 fault=0
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U13 PASS  no IMU fault on a still board
+[TEST] S4-U12 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U16 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] S5-U01 PASS  avoidance boots idle
+[bar] min=144 max=213 fault=0
+[TEST] S5-U02 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=569 fault=0
+[TEST] S5-U03 PASS  packed status 8, scan 20, profile 12 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[TEST] === test run end ===
+[bar] min=144 max=211 fault=0
+[bar] min=145 max=211 fault=0
+[bar] min=145 max=211 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=147 max=207 fault=0
+[bar] min=148 max=207 fault=0
+[bar] min=151 max=208 fault=0
+[bar] min=148 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=148 max=205 fault=0
+[bar] min=148 max=209 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=148 max=205 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=148 max=207 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=148 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=203 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=152 max=208 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=148 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=204 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=153 max=204 fault=0
+[bar] min=148 max=207 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=203 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=204 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=151 max=204 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=151 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=204 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0

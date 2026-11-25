@@ -1,0 +1,1154 @@
+[bar] min=160 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=150 max=202 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=152 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=151 max=204 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=148 max=205 fault=0
+[bar] min=150 max=209 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=154 max=206 fault=0
+[bar] min=150 max=203 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=204 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=149 max=195 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=148 max=208 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=149 max=204 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=153 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=153 max=207 fault=0
+[bar] min=151 max=207 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=204 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=152 max=208 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=205 fault=0
+[bar] min=4080 max=4090 fault=0
+[bar] min=4078 max=4090 fault=0
+[bar] min=4081 max=4088 fault=0
+[bar] min=4074 max=4095 fault=0
+[bar] min=4078 max=4085 fault=0
+[bar] min=4076 max=4085 fault=0
+[bar] min=4081 max=4088 fault=0
+[bar] min=4081 max=4085 fault=0
+[bar] min=4080 max=4087 fault=0
+[bar] min=4067 max=4086 fault=0
+[bar] min=4069 max=4092 fault=0
+[bar] min=4080 max=4086 fault=0
+[bar] min=4068 max=4088 fault=0
+[bar] min=4073 max=4091 fault=0
+[bar] min=4067 max=4084 fault=0
+[bar] min=4066 max=4086 fault=0
+[bar] min=4080 max=4085 fault=0
+[bar] min=4078 max=4090 fault=0
+[bar] min=4080 max=4085 fault=0
+[bar] min=4062 max=4094 fault=0
+[bar] min=4065 max=4089 fault=0
+[bar] min=4077 max=4095 fault=0
+[bar] min=4067 max=4093 fault=0
+[bar] min=4082 max=4095 fault=0
+[bar] min=4074 max=4087 fault=0
+[bar] min=4081 max=4085 fault=0
+[bar] min=4077 max=4095 fault=0
+[bar] min=4081 max=4095 fault=0
+[bar] min=4080 max=4085 fault=0
+[bar] min=4079 max=4085 fault=0
+[bar] min=4078 max=4095 fault=0
+[bar] min=4077 max=4095 fault=0
+[bar] min=4077 max=4095 fault=0
+[bar] min=4080 max=4093 fault=0
+[bar] min=4078 max=4086 fault=0
+[bar] min=4078 max=4086 fault=0
+[bar] min=4078 max=4086 fault=0
+[bar] min=4075 max=4085 fault=0
+[bar] min=4075 max=4094 fault=0
+[bar] min=4078 max=4086 fault=0
+[bar] min=4078 max=4084 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4065 max=4094 fault=0
+[bar] min=4079 max=4084 fault=0
+[bar] min=4073 max=4090 fault=0
+[bar] min=4074 max=4086 fault=0
+[bar] min=4080 max=4090 fault=0
+[bar] min=4076 max=4086 fault=0
+[bar] min=4078 max=4086 fault=0
+[bar] min=4075 max=4088 fault=0
+[bar] min=4080 max=4090 fault=0
+[bar] min=4072 max=4094 fault=0
+[bar] min=4078 max=4085 fault=0
+[bar] min=4074 max=4088 fault=0
+[bar] min=4079 max=4087 fault=0
+[bar] min=4078 max=4088 fault=0
+[bar] min=4080 max=4089 fault=0
+[bar] min=4081 max=4088 fault=0
+[bar] min=4078 max=4085 fault=0
+[bar] min=4072 max=4095 fault=0
+[bar] min=4077 max=4094 fault=0
+[bar] min=4078 max=4085 fault=0
+[bar] min=4064 max=4089 fault=0
+[bar] min=4079 max=4090 fault=0
+[bar] min=4065 max=4085 fault=0
+[bar] min=4081 max=4095 fault=0
+[bar] min=4067 max=4091 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4066 max=4095 fault=0
+[bar] min=4081 max=4091 fault=0
+[bar] min=4080 max=4089 fault=0
+[bar] min=4079 max=4088 fault=0
+[bar] min=4077 max=4092 fault=0
+[bar] min=4078 max=4086 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4080 max=4086 fault=0
+[bar] min=4077 max=4086 fault=0
+[bar] min=4074 max=4087 fault=0
+[bar] min=4068 max=4095 fault=0
+[bar] min=4073 max=4089 fault=0
+[bar] min=4065 max=4089 fault=0
+[bar] min=4077 max=4085 fault=0
+[bar] min=4079 max=4089 fault=0
+[bar] min=4075 max=4086 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4070 max=4086 fault=0
+[bar] min=4081 max=4085 fault=0
+[bar] min=4070 max=4091 fault=0
+[bar] min=4077 max=4091 fault=0
+[bar] min=4069 max=4090 fault=0
+[bar] min=4070 max=4090 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4081 max=4086 fault=0
+[bar] min=4071 max=4086 fault=0
+[bar] min=4072 max=4093 fault=0
+[bar] min=4080 max=4089 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4078 max=4095 fault=0
+[bar] min=4067 max=4085 fault=0
+[bar] min=4078 max=4086 fault=0
+[bar] min=4075 max=4089 fault=0
+[bar] min=4063 max=4085 fault=0
+[bar] min=4075 max=4086 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4081 max=4086 fault=0
+[bar] min=4078 max=4088 fault=0
+[bar] min=4071 max=4091 fault=0
+[bar] min=4079 max=4085 fault=0
+[bar] min=4080 max=4092 fault=0
+[bar] min=4080 max=4088 fault=0
+[bar] min=4075 max=4086 fault=0
+[bar] min=4077 max=4090 fault=0
+[bar] min=4080 max=4090 fault=0
+[bar] min=4080 max=4088 fault=0
+[bar] min=4079 max=4091 fault=0
+[bar] min=4079 max=4089 fault=0
+[bar] min=4078 max=4088 fault=0
+[bar] min=4080 max=4084 fault=0
+[bar] min=4076 max=4094 fault=0
+[bar] min=4080 max=4088 fault=0
+[bar] min=4078 max=4095 fault=0
+[bar] min=4080 max=4090 fault=0
+[bar] min=4077 max=4085 fault=0
+[bar] min=4072 max=4095 fault=0
+[bar] min=4070 max=4090 fault=0
+[bar] min=4081 max=4092 fault=0
+[bar] min=4067 max=4093 fault=0
+[bar] min=4078 max=4088 fault=0
+[bar] min=4070 max=4086 fault=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4078 max=4094 fault=0
+[imu] motion: braking
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[imu] motion: steady
+[imu] motion: accelerating
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4080 max=4086 fault=0
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[imu] motion: steady
+[bar] min=4080 max=4085 fault=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4080 max=4088 fault=0
+[bar] min=4081 max=4085 fault=0
+[bar] min=4081 max=4091 fault=0
+[bar] min=4080 max=4086 fault=0
+[bar] min=4081 max=4088 fault=0
+[bar] min=4067 max=4087 fault=0
+[bar] min=4080 max=4085 fault=0
+[bar] min=4076 max=4095 fault=0
+[bar] min=4081 max=4086 fault=0
+[bar] min=4079 max=4095 fault=0
+[bar] min=4081 max=4086 fault=0
+[bar] min=4081 max=4092 fault=0
+[bar] min=4081 max=4093 fault=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[TEST] === test run start ===
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U05 PASS  boots idle with the motors braked
+[TEST] S2-U06 PASS  out-of-range commands are rejected
+[TEST] S2-U07 PASS  a rejected command does not start the motors
+[TEST] S2-U08 PASS  12-byte packed status and telemetry
+[TEST] S2-U09 PASS  control step runs and takes under 1 ms
+[TEST] S2-U16 PASS  a latched safety stop refuses every command
+[TEST] S2-U17 PASS  commands are accepted again after the latch is released
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+[motion] bench: tap GP21 to start
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+[TEST] S3-U02 PASS  packed line state 8 bytes
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+[TEST] S3-U05 PASS  line following boots stopped
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+[TEST] S3-U11 PASS  decodes *A* read either way
+[TEST] S3-U20 PASS  decodes *Z*
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+[TEST] S3-U25 PASS  guesses *A* with a narrow bar missed
+[TEST] S3-U26 PASS  reads *A* after a speck
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+[TEST] subsystem3 SUMMARY 13 passed, 0 failed
+[line] bench: hold GP21 for 1 s to follow the line
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4081 max=4095 fault=0
+[bar] min=4081 max=4093 fault=0
+[bar] min=4059 max=4095 fault=0
+[imu] calibrated: offsets x=21 y=59 z=-195 mg
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[bar] min=4083 max=4090 fault=0
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U13 PASS  no IMU fault on a still board
+[TEST] S4-U12 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U16 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] S5-U01 PASS  avoidance boots idle
+[bar] min=4081 max=4091 fault=0
+[TEST] S5-U02 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=599 fault=0
+[TEST] S5-U03 PASS  packed status 8, scan 20, profile 12 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[TEST] === test run end ===
+[bar] min=4081 max=4091 fault=0
+[bar] min=4069 max=4095 fault=0
+[bar] min=4070 max=4095 fault=0
+[bar] min=4078 max=4093 fault=0
+[bar] min=4080 max=4085 fault=0
+[bar] min=4081 max=4086 fault=0
+[bar] min=4073 max=4086 fault=0
+[bar] min=4070 max=4088 fault=0
+[bar] min=4073 max=4086 fault=0
+[bar] min=4076 max=4088 fault=0
+[bar] min=4068 max=4084 fault=0
+[bar] min=4069 max=4086 fault=0
+[bar] min=4077 max=4086 fault=0
+[bar] min=4070 max=4092 fault=0
+[bar] min=4074 max=4092 fault=0
+[bar] min=4081 max=4085 fault=0
+[bar] min=4076 max=4095 fault=0
+[bar] min=4069 max=4086 fault=0
+[bar] min=4081 max=4088 fault=0
+[bar] min=4075 max=4085 fault=0
+[bar] min=4079 max=4092 fault=0
+[bar] min=4067 max=4092 fault=0
+[bar] min=4067 max=4084 fault=0
+[bar] min=4065 max=4086 fault=0
+[bar] min=4074 max=4093 fault=0
+[bar] min=4067 max=4088 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4078 max=4089 fault=0
+[bar] min=4068 max=4086 fault=0
+[bar] min=4073 max=4092 fault=0
+[bar] min=4072 max=4093 fault=0
+[bar] min=4079 max=4095 fault=0
+[bar] min=4081 max=4088 fault=0
+[bar] min=4081 max=4095 fault=0
+[bar] min=4077 max=4086 fault=0
+[bar] min=4081 max=4090 fault=0
+[bar] min=4065 max=4090 fault=0
+[bar] min=4073 max=4095 fault=0
+[bar] min=4071 max=4087 fault=0
+[bar] min=4074 max=4090 fault=0
+[bar] min=4081 max=4085 fault=0
+[bar] min=4081 max=4086 fault=0
+[bar] min=4081 max=4086 fault=0
+[bar] min=4079 max=4085 fault=0
+[bar] min=4078 max=4086 fault=0
+[bar] min=4075 max=4088 fault=0
+[bar] min=4064 max=4086 fault=0
+[bar] min=4066 max=4085 fault=0
+[motion] bench: drive +-100, forward/backward 300, left 90, right 90, left 180, forward 300 at 200, left 180, forward 300
+[trace] 26900 0 8
+[trace] 26920 8 48
+[trace] 26940 40 48
+[trace] 26960 64 40
+[trace] 26980 64 56
+[trace] 27000 56 56
+[trace] 27020 72 72
+[trace] 27040 72 72
+[trace] 27060 72 80
+[trace] 27080 72 88
+[trace] 27100 88 88
+[trace] 27120 80 88
+[trace] 27140 88 88
+[trace] 27160 80 96
+[trace] 27180 88 88
+[trace] 27200 88 88
+[trace] 27220 96 88
+[trace] 27240 80 96
+[trace] 27260 96 96
+[trace] 27280 96 96
+[bar] min=148 max=4085 fault=0
+[trace] 27300 88 96
+[trace] 27320 104 96
+[trace] 27340 96 96
+[trace] 27360 96 96
+[trace] 27380 96 96
+[trace] 27400 88 104
+[trace] 27420 104 104
+[trace] 27440 96 96
+[trace] 27460 96 96
+[trace] 27480 104 88
+[trace] 27500 96 88
+[trace] 27520 88 88
+[trace] 27540 88 88
+[trace] 27560 96 88
+[trace] 27580 88 88
+[trace] 27600 96 88
+[trace] 27620 112 96
+[trace] 27640 104 96
+[trace] 27660 96 96
+[trace] 27680 96 88
+[trace] 27700 96 96
+[trace] 27720 104 112
+[trace] 27740 96 104
+[trace] 27760 104 96
+[trace] 27780 104 104
+[bar] min=4067 max=4089 fault=0
+[trace] 27800 112 112
+[trace] 27820 104 96
+[trace] 27840 104 104
+[trace] 27860 104 96
+[trace] 27880 104 104
+[trace] 27900 104 112
+[trace] 27920 112 104
+[trace] 27940 96 96
+[trace] 27960 104 104
+[trace] 27980 104 104
+[trace] 28000 104 112
+[trace] 28020 104 104
+[trace] 28040 104 104
+[imu] motion: climbing
+[trace] 28060 96 104
+[trace] 28080 96 112
+[trace] 28100 104 96
+[trace] 28120 96 104
+[trace] 28140 96 112
+[imu] motion: descending
+[trace] 28160 96 104
+[trace] 28180 104 96
+[trace] 28200 96 112
+[trace] 28220 112 104
+[trace] 28240 104 96
+[trace] 28260 96 112
+[trace] 28280 104 112
+[bar] min=4078 max=4085 fault=0
+[trace] 28300 104 112
+[trace] 28320 112 104
+[trace] 28340 96 112
+[trace] 28360 104 112
+[trace] 28380 104 112
+[trace] 28400 96 112
+[trace] 28420 112 112
+[trace] 28440 104 104
+[trace] 28460 104 112
+[trace] 28480 96 120
+[trace] 28500 104 112
+[trace] 28520 112 128
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=146 deg=2
+[trace] 28540 112 128
+[trace] 28560 112 112
+[trace] 28580 112 128
+[trace] 28600 104 128
+[trace] 28620 112 128
+[trace] 28640 112 112
+[trace] 28660 104 112
+[trace] 28680 112 120
+[trace] 28700 112 120
+[trace] 28720 112 112
+[trace] 28740 104 104
+[trace] 28760 104 112
+[trace] 28780 112 104
+[bar] min=150 max=4084 fault=0
+[trace] 28800 104 104
+[trace] 28820 120 112
+[trace] 28840 104 96
+[trace] 28860 112 104
+[trace] 28880 104 112
+[motion] state=1 cmd=5 faults=0 heading=3 dist_mm=183 counts=2245,2319 speed=104,112 max_tick_us=487
+[bar] min=4081 max=4086 fault=0
+[bar] min=4081 max=4093 fault=0
+[bar] min=4073 max=4094 fault=0
+[bar] min=4081 max=4093 fault=0
+[bar] min=4078 max=4091 fault=0
+[bar] min=4063 max=4089 fault=0
+[trace] 31910 0 -16
+[trace] 31930 0 -48
+[trace] 31950 0 -48
+[trace] 31970 -8 -48
+[trace] 31990 -32 -40
+[trace] 32010 -24 -40
+[trace] 32030 -40 -40
+[trace] 32050 -40 -56
+[trace] 32070 -48 -56
+[trace] 32090 -64 -64
+[trace] 32110 -56 -64
+[trace] 32130 -56 -64
+[trace] 32150 -64 -72
+[trace] 32170 -72 -72
+[trace] 32190 -72 -72
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=199 deg=1
+[trace] 32210 -72 -72
+[trace] 32230 -72 -80
+[trace] 32250 -72 -80
+[trace] 32270 -88 -88
+[trace] 32290 -80 -80
+[bar] min=4078 max=4095 fault=0
+[trace] 32310 -64 -80
+[trace] 32330 -80 -88
+[trace] 32350 -80 -88
+[trace] 32370 -80 -88
+[trace] 32390 -80 -88
+[trace] 32410 -80 -80
+[trace] 32430 -80 -80
+[trace] 32450 -88 -96
+[trace] 32470 -88 -88
+[trace] 32490 -80 -96
+[trace] 32510 -88 -104
+[trace] 32530 -88 -88
+[trace] 32550 -88 -104
+[trace] 32570 -96 -112
+[trace] 32590 -104 -112
+[trace] 32610 -96 -112
+[trace] 32630 -88 -112
+[trace] 32650 -104 -120
+[trace] 32670 -96 -112
+[trace] 32690 -96 -120
+[trace] 32710 -96 -112
+[trace] 32730 -88 -104
+[trace] 32750 -96 -112
+[trace] 32770 -104 -104
+[trace] 32790 -96 -112
+[bar] min=4069 max=4091 fault=0
+[trace] 32810 -88 -104
+[trace] 32830 -80 -96
+[trace] 32850 -96 -112
+[trace] 32870 -96 -104
+[trace] 32890 -96 -104
+[trace] 32910 -96 -96
+[trace] 32930 -88 -96
+[trace] 32950 -96 -104
+[trace] 32970 -104 -104
+[trace] 32990 -96 -104
+[trace] 33010 -96 -104
+[trace] 33030 -88 -88
+[trace] 33050 -104 -104
+[trace] 33070 -96 -88
+[trace] 33090 -88 -96
+[trace] 33110 -96 -96
+[trace] 33130 -88 -88
+[trace] 33150 -96 -104
+[trace] 33170 -104 -104
+[trace] 33190 -104 -112
+[trace] 33210 -96 -96
+[trace] 33230 -96 -96
+[trace] 33250 -96 -104
+[trace] 33270 -88 -96
+[trace] 33290 -96 -96
+[bar] min=4072 max=4095 fault=0
+[trace] 33310 -96 -96
+[trace] 33330 -96 -96
+[trace] 33350 -96 -104
+[trace] 33370 -104 -96
+[trace] 33390 -96 -104
+[trace] 33410 -88 -96
+[imu] motion: steady
+[imu] hump: peak 14 mm
+[trace] 33430 -96 -96
+[trace] 33450 -96 -88
+[trace] 33470 -104 -96
+[trace] 33490 -104 -88
+[trace] 33510 -96 -88
+[trace] 33530 -80 -72
+[imu] motion: accelerating
+[trace] 33550 -96 -80
+[trace] 33570 -80 -80
+[trace] 33590 -96 -96
+[trace] 33610 -96 -80
+[trace] 33630 -88 -80
+[trace] 33650 -96 -80
+[trace] 33670 -104 -80
+[trace] 33690 -88 -88
+[trace] 33710 -96 -88
+[trace] 33730 -88 -80
+[trace] 33750 -88 -80
+[trace] 33770 -88 -80
+[trace] 33790 -96 -80
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=359 deg=357
+[bar] min=4062 max=4092 fault=0
+[trace] 33810 -80 -80
+[trace] 33830 -88 -80
+[trace] 33850 -88 -80
+[trace] 33870 -96 -96
+[trace] 33890 -88 -88
+[motion] state=1 cmd=5 faults=0 heading=357 dist_mm=369 counts=54,65530 speed=-88,-88 max_tick_us=487
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=371 deg=357
+[imu] motion: steady
+[bar] min=149 max=204 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=148 max=208 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=152 max=209 fault=0
+[trace] 36920 0 16
+[trace] 36940 0 40
+[trace] 36960 0 48
+[trace] 36980 0 40
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=372 deg=358
+[trace] 37000 0 40
+[trace] 37020 0 40
+[trace] 37040 8 48
+[trace] 37060 40 56
+[trace] 37080 72 56
+[trace] 37100 56 64
+[trace] 37120 96 64
+[trace] 37140 88 80
+[trace] 37160 88 80
+[trace] 37180 96 80
+[trace] 37200 96 88
+[trace] 37220 104 88
+[trace] 37240 96 88
+[trace] 37260 104 80
+[trace] 37280 96 88
+[bar] min=163 max=4092 fault=0
+[trace] 37300 104 88
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=394 deg=358
+[trace] 37320 128 104
+[trace] 37340 104 96
+[trace] 37360 104 96
+[trace] 37380 104 88
+[trace] 37400 104 96
+[trace] 37420 104 88
+[trace] 37440 104 88
+[trace] 37460 104 88
+[trace] 37480 104 96
+[trace] 37500 96 96
+[trace] 37520 104 96
+[trace] 37540 96 96
+[trace] 37560 96 96
+[trace] 37580 96 88
+[trace] 37600 96 80
+[trace] 37620 104 88
+[trace] 37640 96 80
+[trace] 37660 104 88
+[trace] 37680 96 80
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=428 deg=356
+[trace] 37700 104 88
+[trace] 37720 104 96
+[trace] 37740 104 88
+[trace] 37760 96 96
+[trace] 37780 104 96
+[bar] min=150 max=208 fault=0
+[trace] 37800 104 96
+[trace] 37820 104 104
+[trace] 37840 96 96
+[trace] 37860 104 96
+[trace] 37880 104 96
+[trace] 37900 104 104
+[trace] 37920 104 112
+[trace] 37940 104 104
+[trace] 37960 104 96
+[trace] 37980 96 96
+[trace] 38000 96 104
+[trace] 38020 112 112
+[trace] 38040 104 112
+[trace] 38060 96 96
+[trace] 38080 104 104
+[trace] 38100 96 104
+[trace] 38120 104 104
+[trace] 38140 96 96
+[trace] 38160 96 104
+[trace] 38180 96 112
+[trace] 38200 104 96
+[trace] 38220 104 112
+[trace] 38240 104 104
+[trace] 38260 96 104
+[trace] 38280 96 96
+[bar] min=4079 max=4092 fault=0
+[trace] 38300 112 112
+[trace] 38320 104 112
+[trace] 38340 104 104
+[imu] motion: climbing
+[trace] 38360 104 96
+[trace] 38380 96 112
+[trace] 38400 104 104
+[trace] 38420 104 112
+[trace] 38440 104 96
+[trace] 38460 104 104
+[trace] 38480 104 104
+[trace] 38500 96 104
+[trace] 38520 112 120
+[imu] motion: descending
+[trace] 38540 104 104
+[trace] 38560 104 104
+[trace] 38580 104 104
+[trace] 38600 112 104
+[trace] 38620 112 120
+[trace] 38640 104 112
+[trace] 38660 112 112
+[trace] 38680 112 120
+[trace] 38700 104 120
+[trace] 38720 120 128
+[trace] 38740 104 128
+[trace] 38760 104 128
+[trace] 38780 112 120
+[bar] min=4069 max=4084 fault=0
+[trace] 38800 120 128
+[trace] 38820 112 120
+[trace] 38840 112 120
+[trace] 38860 104 112
+[trace] 38880 112 104
+[trace] 38900 112 112
+[trace] 38920 120 112
+[trace] 38940 120 112
+[trace] 38960 104 104
+[trace] 38980 112 104
+[trace] 39000 112 112
+[trace] 39020 104 112
+[trace] 39040 104 96
+[trace] 39060 112 112
+[trace] 39080 112 104
+[trace] 39100 104 96
+[trace] 39120 112 112
+[trace] 39140 112 96
+[trace] 39160 104 112
+[trace] 39180 112 104
+[trace] 39200 112 104
+[trace] 39220 112 112
+[trace] 39240 112 96
+[trace] 39260 104 104
+[trace] 39280 104 104
+[bar] min=4074 max=4090 fault=0
+[trace] 39300 112 104
+[trace] 39320 120 112
+[trace] 39340 104 104
+[trace] 39360 112 112
+[trace] 39380 112 104
+[trace] 39400 112 104
+[trace] 39420 112 112
+[trace] 39440 112 96
+[trace] 39460 104 112
+[trace] 39480 104 104
+[trace] 39500 104 96
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=612 deg=357
+[trace] 39520 120 120
+[trace] 39540 112 104
+[trace] 39560 104 104
+[trace] 39580 112 104
+[trace] 39600 104 104
+[trace] 39620 112 112
+[trace] 39640 112 112
+[trace] 39660 104 112
+[trace] 39680 104 96
+[trace] 39700 104 96
+[imu] motion: steady
+[imu] hump: peak 10 mm
+[trace] 39720 112 96
+[trace] 39740 96 96
+[trace] 39760 112 96
+[trace] 39780 104 96
+[bar] min=150 max=205 fault=0
+[trace] 39800 104 96
+[trace] 39820 112 96
+[trace] 39840 104 96
+[trace] 39860 104 88
+[trace] 39880 96 96
+[trace] 39900 112 104
+[trace] 39920 112 96
+[trace] 39940 96 88
+[trace] 39960 96 96
+[trace] 39980 96 80
+[trace] 40000 88 88
+[trace] 40020 80 80
+[trace] 40040 80 80
+[trace] 40060 80 80
+[trace] 40080 72 64
+[trace] 40100 64 80
+[trace] 40120 72 64
+[trace] 40140 56 64
+[trace] 40160 48 56
+[trace] 40180 0 48
+[trace] 40200 0 40
+[motion] state=2 cmd=1 faults=0 heading=357 dist_mm=671 counts=3774,3701 speed=0,40 max_tick_us=611
+[bar] min=150 max=205 fault=0
+[bar] min=151 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=151 max=206 fault=0
+[bar] min=149 max=204 fault=0
+[bar] min=150 max=205 fault=0
+[trace] 43230 0 0
+[trace] 43250 -8 -48
+[trace] 43270 0 -64
+[trace] 43290 -8 -40
+[bar] min=150 max=206 fault=0
+[trace] 43310 -32 -32
+[trace] 43330 -32 -40
+[trace] 43350 -32 -48
+[trace] 43370 -40 -48
+[trace] 43390 -40 -56
+[trace] 43410 -48 -64
+[trace] 43430 -56 -64
+[trace] 43450 -56 -64
+[trace] 43470 -64 -64
+[trace] 43490 -72 -72
+[trace] 43510 -72 -80
+[trace] 43530 -72 -64
+[trace] 43550 -80 -80
+[trace] 43570 -80 -72
+[trace] 43590 -88 -80
+[trace] 43610 -88 -80
+[trace] 43630 -80 -80
+[trace] 43650 -88 -72
+[trace] 43670 -88 -80
+[trace] 43690 -88 -80
+[trace] 43710 -96 -80
+[trace] 43730 -96 -80
+[trace] 43750 -88 -88
+[trace] 43770 -88 -80
+[trace] 43790 -96 -80
+[bar] min=151 max=208 fault=0
+[trace] 43810 -88 -88
+[trace] 43830 -88 -80
+[trace] 43850 -96 -80
+[trace] 43870 -96 -80
+[trace] 43890 -88 -88
+[trace] 43910 -96 -80
+[trace] 43930 -88 -80
+[trace] 43950 -96 -80
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=724 deg=356
+[trace] 43970 -80 -64
+[trace] 43990 -88 -64
+[trace] 44010 -88 -72
+[trace] 44030 -88 -72
+[trace] 44050 -88 -80
+[trace] 44070 -96 -72
+[trace] 44090 -96 -80
+[trace] 44110 -88 -88
+[trace] 44130 -80 -80
+[trace] 44150 -88 -80
+[trace] 44170 -96 -96
+[trace] 44190 -88 -88
+[trace] 44210 -88 -88
+[trace] 44230 -88 -88
+[trace] 44250 -96 -96
+[trace] 44270 -96 -96
+[trace] 44290 -96 -88
+[bar] min=150 max=4089 fault=0
+[trace] 44310 -88 -96
+[trace] 44330 -88 -96
+[trace] 44350 -88 -96
+[trace] 44370 -88 -96
+[trace] 44390 -88 -96
+[trace] 44410 -88 -96
+[trace] 44430 -88 -96
+[trace] 44450 -88 -96
+[trace] 44470 -88 -80
+[trace] 44490 -88 -88
+[trace] 44510 -88 -88
+[trace] 44530 -88 -88
+[trace] 44550 -88 -96
+[trace] 44570 -96 -88
+[trace] 44590 -96 -88
+[trace] 44610 -88 -88
+[trace] 44630 -80 -96
+[trace] 44650 -96 -96
+[trace] 44670 -96 -96
+[imu] motion: climbing
+[trace] 44690 -88 -88
+[trace] 44710 -96 -88
+[trace] 44730 -88 -88
+[trace] 44750 -96 -104
+[trace] 44770 -96 -112
+[trace] 44790 -96 -96
+[bar] min=4080 max=4095 fault=0
+[trace] 44810 -88 -80
+[trace] 44830 -88 -88
+[trace] 44850 -96 -96
+[trace] 44870 -96 -96
+[trace] 44890 -88 -96
+[trace] 44910 -88 -96
+[trace] 44930 -80 -88
+[trace] 44950 -96 -96
+[trace] 44970 -88 -96
+[trace] 44990 -96 -104
+[trace] 45010 -96 -104
+[trace] 45030 -88 -96
+[trace] 45050 -88 -104
+[trace] 45070 -104 -112
+[trace] 45090 -104 -112
+[trace] 45110 -96 -112
+[trace] 45130 -104 -104
+[trace] 45150 -112 -112
+[trace] 45170 -104 -112
+[trace] 45190 -112 -104
+[imu] motion: descending
+[trace] 45210 -96 -112
+[trace] 45230 -96 -104
+[trace] 45250 -104 -96
+[trace] 45270 -112 -112
+[trace] 45290 -96 -96
+[bar] min=4080 max=4095 fault=0
+[trace] 45310 -104 -104
+[trace] 45330 -96 -80
+[trace] 45350 -96 -104
+[trace] 45370 -112 -96
+[trace] 45390 -112 -96
+[trace] 45410 -96 -96
+[trace] 45430 -96 -80
+[trace] 45450 -104 -96
+[trace] 45470 -104 -96
+[trace] 45490 -112 -96
+[trace] 45510 -104 -96
+[trace] 45530 -96 -96
+[trace] 45550 -104 -96
+[trace] 45570 -104 -88
+[trace] 45590 -104 -96
+[trace] 45610 -96 -96
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=892 deg=356
+[trace] 45630 -88 -88
+[trace] 45650 -104 -104
+[trace] 45670 -96 -104
+[trace] 45690 -104 -104
+[trace] 45710 -96 -96
+[trace] 45730 -88 -88
+[trace] 45750 -104 -104
+[trace] 45770 -96 -104
+[trace] 45790 -96 -88
+[bar] min=4064 max=4089 fault=0
+[trace] 45810 -96 -96
+[trace] 45830 -96 -96
+[imu] motion: steady
+[imu] hump: peak 11 mm
+[trace] 45850 -104 -104
+[trace] 45870 -96 -88
+[trace] 45890 -96 -104
+[trace] 45910 -88 -104
+[trace] 45930 -88 -96
+[trace] 45950 -104 -96
+[trace] 45970 -96 -96
+[trace] 45990 -104 -96
+[trace] 46010 -104 -96
+[trace] 46030 -88 -88
+[trace] 46050 -96 -88
+[trace] 46070 -96 -80
+[trace] 46090 -96 -88
+[trace] 46110 -96 -88
+[trace] 46130 -88 -80
+[trace] 46150 -88 -80
+[trace] 46170 -96 -88
+[trace] 46190 -88 -88
+[trace] 46210 -96 -80
+[trace] 46230 -80 -80
+[trace] 46250 -88 -88
+[trace] 46270 -72 -80
+[trace] 46290 -80 -72
+[bar] min=4077 max=4085 fault=0
+[trace] 46310 -80 -80
+[trace] 46330 -64 -64
+[trace] 46350 -64 -72
+[trace] 46370 -72 -64
+[trace] 46390 -64 -72
+[trace] 46410 -64 -64
+[trace] 46430 -56 -56
+[trace] 46450 -48 -48
+[trace] 46470 -8 -56
+[trace] 46490 0 -48
+[motion] state=2 cmd=2 faults=0 heading=357 dist_mm=972 counts=39,65503 speed=0,-48 max_tick_us=611
+[bar] min=153 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=203 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[trace] 49520 0 8
+[trace] 49540 0 48
+[trace] 49560 0 48
+[trace] 49580 0 48
+[trace] 49600 0 48
+[trace] 49620 0 48
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=975 deg=359
+[trace] 49640 -8 40
+[trace] 49660 0 56
+[trace] 49680 0 56
+[trace] 49700 -48 56
+[trace] 49720 -80 48
+[trace] 49740 -48 56
+[trace] 49760 -72 56
+[trace] 49780 -88 64
+[bar] min=4077 max=4086 fault=0
+[trace] 49800 -80 64
+[trace] 49820 -88 72
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=985 deg=9
+[trace] 49840 -88 72
+[trace] 49860 -96 72
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=988 deg=13
+[trace] 49880 -96 80
+[trace] 49900 -96 72
+[trace] 49920 -104 72
+[trace] 49940 -96 72
+[trace] 49960 -104 80
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=997 deg=21
+[trace] 49980 -104 80
+[trace] 50000 -112 96
+[trace] 50020 -112 96
+[trace] 50040 -104 96
+[trace] 50060 -104 88
+[trace] 50080 -96 88
+[trace] 50100 -104 88
+[trace] 50120 -112 88
+[trace] 50140 -104 88
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1013 deg=38
+[trace] 50160 -104 88
+[trace] 50180 -112 104
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1017 deg=42
+[trace] 50200 -96 96
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1019 deg=43
+[trace] 50220 -112 104
+[trace] 50240 -112 96
+[trace] 50260 -96 96
+[trace] 50280 -96 88
+[bar] min=4080 max=4083 fault=0
+[trace] 50300 -104 96
+[trace] 50320 -112 96
+[trace] 50340 -104 88
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1032 deg=56
+[trace] 50360 -96 96
+[trace] 50380 -96 104
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1035 deg=60
+[trace] 50400 -96 96
+[trace] 50420 -112 112
+[trace] 50440 -96 96
+[trace] 50460 -96 88
+[trace] 50480 -88 96
+[trace] 50500 -88 88
+[trace] 50520 -88 96
+[trace] 50540 -88 88
+[trace] 50560 -80 88
+[trace] 50580 -64 80
+[trace] 50600 -72 64
+[trace] 50620 -80 72
+[trace] 50640 -64 64
+[trace] 50660 -64 64
+[trace] 50680 -64 64
+[trace] 50700 -48 64
+[trace] 50720 -64 64
+[trace] 50740 -8 56
+[trace] 50760 0 32
+[motion] state=2 cmd=3 faults=0 heading=87 dist_mm=1062 counts=64462,1079 speed=0,32 max_tick_us=611
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=209 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=154 max=207 fault=0
+[trace] 53790 0 -8
+[bar] min=149 max=208 fault=0
+[trace] 53810 16 -40
+[trace] 53830 32 -48
+[trace] 53850 40 -40
+[trace] 53870 24 -32
+[trace] 53890 24 -40
+[trace] 53910 32 -32
+[trace] 53930 32 -40
+[trace] 53950 48 -40
+[trace] 53970 48 -48
+[trace] 53990 56 -48
+[trace] 54010 64 -48
+[trace] 54030 56 -56
+[trace] 54050 64 -72
+[trace] 54070 64 -72
+[trace] 54090 72 -80
+[trace] 54110 72 -72
+[trace] 54130 80 -64
+[trace] 54150 80 -80
+[trace] 54170 72 -72
+[trace] 54190 72 -80
+[trace] 54210 80 -64
+[trace] 54230 72 -72
+[trace] 54250 72 -72
+[trace] 54270 80 -80
+[trace] 54290 88 -72
+[bar] min=4075 max=4084 fault=0
+[trace] 54310 72 -72
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1094 deg=54
+[trace] 54330 64 -64
+[trace] 54350 80 -72
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1097 deg=51
+[trace] 54370 72 -64
+[trace] 54390 80 -80
+[trace] 54410 80 -80
+[trace] 54430 72 -72
+[trace] 54450 88 -88
+[trace] 54470 88 -88
+[trace] 54490 88 -80
+[trace] 54510 88 -80
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1111 deg=38
+[trace] 54530 80 -80
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1113 deg=36
+[trace] 54550 80 -80
+[trace] 54570 88 -88
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1116 deg=32
+[trace] 54590 80 -80
+[trace] 54610 96 -96
+[trace] 54630 88 -88
+[trace] 54650 88 -96
+[trace] 54670 96 -88
+[trace] 54690 96 -96
+[trace] 54710 96 -80
+[trace] 54730 80 -72
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1132 deg=17
+[trace] 54750 80 -80
+[trace] 54770 88 -80
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=1135 deg=13
+[trace] 54790 80 -72
+[bar] min=4077 max=4086 fault=0
+[trace] 54810 72 -72
+[trace] 54830 64 -80
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=1140 deg=8
+[trace] 54850 72 -72
+[trace] 54870 64 -72
+[trace] 54890 64 -64
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1145 deg=4
+[trace] 54910 64 -64
+[trace] 54930 48 -64
+[trace] 54950 72 -64
+[trace] 54970 56 -56
+[trace] 54990 56 -56
+[trace] 55010 16 -48
+[motion] state=2 cmd=4 faults=0 heading=356 dist_mm=1152 counts=44,65499 speed=16,-48 max_tick_us=611
+[line] left=0 right=0 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=1152 deg=356
+[bar] min=148 max=207 fault=0
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[TEST] === test run start ===
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U05 PASS  boots idle with the motors braked
+[TEST] S2-U06 PASS  out-of-range commands are rejected
+[TEST] S2-U07 PASS  a rejected command does not start the motors
+[TEST] S2-U08 PASS  12-byte packed status and telemetry
+[TEST] S2-U09 PASS  control step runs and takes under 1 ms
+[TEST] S2-U16 PASS  a latched safety stop refuses every command
+[TEST] S2-U17 PASS  commands are accepted again after the latch is released
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+[motion] bench: tap GP21 to start
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+[TEST] S3-U02 PASS  packed line state 8 bytes
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+[TEST] S3-U05 PASS  line following boots stopped
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+[TEST] S3-U11 PASS  decodes *A* read either way
+[TEST] S3-U20 PASS  decodes *Z*
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+[TEST] S3-U25 PASS  guesses *A* with a narrow bar missed
+[TEST] S3-U26 PASS  reads *A* after a speck
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+[TEST] subsystem3 SUMMARY 13 passed, 0 failed
+[line] bench: hold GP21 for 1 s to follow the line
+[line] left=0 right=0 junction=0 last=0 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=162 max=188 fault=0
+[bar] min=164 max=191 fault=0
+[bar] min=139 max=189 fault=0
+[imu] calibrated: offsets x=24 y=56 z=-194 mg
+[TEST] S4-U05 PASS  start-up calibration ends within 3 s
+[bar] min=144 max=212 fault=0
+[TEST] S4-U01 PASS  GY-511 answers on I2C0 and readings arrive
+[TEST] S4-U06 PASS  a reading every 10 ms (45..55 in 500 ms)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U13 PASS  no IMU fault on a still board
+[TEST] S4-U12 PASS  packed hump record keeps 0..63 mm and a wrapping count
+[TEST] S4-U16 PASS  motion is steady on a still board
+[TEST] subsystem4 SUMMARY 8 passed, 0 failed
+[TEST] S5-U01 PASS  avoidance boots idle
+[bar] min=144 max=211 fault=0
+[TEST] S5-U02 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=571 fault=0
+[TEST] S5-U03 PASS  packed status 8, scan 20, profile 12 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[avoid] bench: press GP20 for a profile scan, hold it 1 s to avoid while driving 1500 mm
+[TEST] === test run end ===
+[bar] min=146 max=212 fault=0
+[bar] min=147 max=208 fault=0
+[bar] min=146 max=211 fault=0
+[bar] min=148 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=207 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=154 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=208 fault=0

@@ -1,0 +1,86 @@
+[bar] min=4079 max=4095 fault=0
+[bar] min=4080 max=4091 fault=0
+[bar] min=4067 max=4095 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4066 max=4090 fault=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4080 max=4091 fault=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4076 max=4095 fault=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4068 max=4094 fault=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4078 max=4088 fault=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4078 max=4090 fault=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4080 max=4090 fault=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4077 max=4088 fault=0
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4078 max=4089 fault=0
+[imu] motion: climbing
+[line] left=1 right=1 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[line] left=1 right=1 junction=1 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4077 max=4095 fault=0
+[bar] min=4073 max=4094 fault=0
+[bar] min=4079 max=4088 fault=0
+[imu] motion: descending
+[bar] min=4080 max=4086 fault=0
+[bar] min=4080 max=4085 fault=0
+[bar] min=4081 max=4086 fault=0
+[bar] min=4067 max=4085 fault=0
+[bar] min=4076 max=4094 fault=0
+[bar] min=4069 max=4084 fault=0
+[bar] min=4066 max=4095 fault=0
+[bar] min=4078 max=4085 fault=0
+[bar] min=4071 max=4089 fault=0
+[bar] min=4080 max=4093 fault=0
+[bar] min=4077 max=4088 fault=0
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4075 max=4086 fault=0
+[bar] min=149 max=208 fault=0
+[imu] motion: steady
+[imu] hump: peak 47 mm
+[bar] min=149 max=201 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=153 max=206 fault=0
+[bar] min=149 max=208 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=150 max=204 fault=0
+[bar] min=148 max=207 fault=0
+[bar] min=148 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=149 max=206 fault=0
+[bar] min=149 max=207 fault=0
+[bar] min=150 max=214 fault=0
+[bar] min=149 max=205 fault=0
+[bar] min=149 max=204 fault=0
+[bar] min=153 max=206 fault=0
+[bar] min=150 max=208 fault=0
+[bar] min=153 max=206 fault=0
+[bar] min=150 max=206 fault=0
+[bar] min=150 max=204 fault=0
+[bar] min=150 max=206 fault=0

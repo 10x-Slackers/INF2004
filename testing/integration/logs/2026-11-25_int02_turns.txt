@@ -1,0 +1,139 @@
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 4 mm
+[safety] cleared
+[vc] SAFE_STOP -> INIT: MQTT RESET
+[vc] INIT -> READY: IMU calibrated
+[s1] barcode map A-Z (0 ignore .. 4 U-turn): 00000200000000000000000000
+[vc] READY -> FOLLOW: GP20
+[barcode] letter=F command=2
+[vc] barcode 2 pending
+[imu] motion: accelerating
+[imu] motion: steady
+[vc] FOLLOW -> TURN: junction
+[imu] motion: braking
+[imu] motion: steady
+[vc] TURN -> FOLLOW: turn done
+[vc] FOLLOW -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: accelerating
+[imu] hump: peak 46 mm
+[imu] FAULT: tilt
+[imu] motion: braking
+[imu] motion: steady
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+wifi: joining "<hotspot>" ...
+wifi: link status -> joined AP, waiting for IP (1)
+[imu] calibrated: offsets x=24 y=58 z=-199 mg
+[vc] INIT -> READY: IMU calibrated
+wifi: link status -> joined AP, no IP yet (2)
+wifi: link up, ip=172.20.10.13
+mqtt: connected to 172.20.10.14
+mqtt: subscribe to csc13/cmd, err=0
+mqtt: subscribe to csc13/map, err=0
+[s1] barcode map A-Z (0 ignore .. 4 U-turn): 00000300000000000000000000
+[s1] barcode map A-Z (0 ignore .. 4 U-turn): 00000300000000000000000000
+[vc] READY -> FOLLOW: GP20
+[barcode] letter=F command=3
+[vc] barcode 3 pending
+[vc] FOLLOW -> TURN: junction
+[vc] TURN -> FOLLOW: turn done
+[vc] FOLLOW -> AVOID: obstacle
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: accelerating
+[imu] hump: peak 26 mm
+[avoid] obstacle: width 0 mm, closest 179 mm at 90 deg, clear left 280 mm, right 178 mm
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 11 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[vc] AVOID -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 26 mm
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: climbing
+[imu] motion: descending
+[imu] motion: steady
+[imu] hump: peak 14 mm
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: braking
+[imu] motion: steady
+[imu] motion: accelerating
+[imu] motion: steady
+[s1] barcode map A-Z (0 ignore .. 4 U-turn): 00000400000000000000000000
+[safety] cleared
+[vc] SAFE_STOP -> INIT: GP20
+[vc] INIT -> READY: IMU calibrated
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+wifi: joining "<hotspot>" ...
+wifi: link status -> joined AP, waiting for IP (1)
+[imu] calibrated: offsets x=26 y=60 z=-198 mg
+[vc] INIT -> READY: IMU calibrated
+wifi: link status -> joined AP, no IP yet (2)
+wifi: link up, ip=172.20.10.13
+mqtt: connected to 172.20.10.14
+mqtt: subscribe to csc13/cmd, err=0
+mqtt: subscribe to csc13/map, err=0
+[s1] barcode map A-Z (0 ignore .. 4 U-turn): 00000400000000000000000000
+[s1] barcode map A-Z (0 ignore .. 4 U-turn): 00000400000000000000000000
+[vc] READY -> FOLLOW: GP20
+[barcode] letter=F command=4
+[vc] barcode 4 pending
+[vc] FOLLOW -> TURN: junction
+[vc] TURN -> FOLLOW: turn done
+[vc] FOLLOW -> SAFE_STOP: GP20
+[safety] stop, cause 0x8
+[vc] max hump 0 mm
+[imu] motion: braking
+[imu] motion: steady

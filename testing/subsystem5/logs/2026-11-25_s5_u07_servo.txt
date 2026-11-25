@@ -1,0 +1,215 @@
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[bar] min=165 max=187 fault=0
+[bar] min=165 max=187 fault=0
+[bar] min=167 max=187 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=99[imu] x=0 y=-2 z=995 mg pitch=0 roll=0 (0.1 deg) h=0 mm
+[bar] min=166 max=187 fault=0
+[bar] min=167 max=188 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[bar] min=161 max=187 fault=0
+[bar] min=165 max=188 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[bar] min=165 max=188 fault=0
+[bar] min=165 max=188 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[bar] min=166 max=188 fault=0
+[bar] min=165 max=187 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[bar] min=165 max=187 fault=0
+[bar] min=165 max=187 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[bar] min=166 max=188 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[bar] min=165 max=187 fault=0
+[bar] min=166 max=187 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[bar] min=168 max=187 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[bar] min=165 max=187 fault=0
+[bar] min=166 max=186 fault=0
+[bar] min=164 max=188 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[bar] min=162 max=187 fault=0
+[bar] min=166 max=188 fault=0
+[bar] min=165 max=188 fault=0
+[bar] min=163 max=187 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=2132 deg=1
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[imu] motion: climbing
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2132 counts=3055,11957 speed=0,0 max_tick_us=994
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=2132 deg=1
+[imu] motion: accelerating
+[imu] motion: steady
+[imu] motion: braking
+[bar] min=4075 max=4092 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11962 speed=0,0 max_tick_us=994
+[line] left=0 right=1 junction=0 last=2 following=0 searching=0 lost=0 stuck=0 mm=2133 deg=1
+[line] left=0 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=2133 deg=1
+[bar] min=168 max=187 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11952 speed=0,0 max_tick_us=994
+[imu] motion: braking
+[bar] min=4080 max=4086 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11952 speed=0,0 max_tick_us=994
+[imu] motion: steady
+[imu] [imu] x=0 y=104 z=965 mg pitch=-23 roll=-11 (0.1 deg) h=2 mm
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11952 speed=0,0 max_tick_us=994
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11952 speed=0,0 max_tick_us=994
+[bar] min=4078 max=4093 fault=0
+[bar] min=4081 max=4091 fault=0
+[bar] min=4076 max=4084 fault=0
+[bar] min=4081 max=4090 fault=0
+[bar] min=4080 max=4091 fault=0
+[bar] min=4078 max=4088 fault=0
+[bar] min=4072 max=4085 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11952 speed=0,0 max_tick_us=994
+[bar] min=4080 max=4088 fault=0
+[bar] min=4075 max=4086 fault=0
+[bar] min=4076 max=4084 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11952 speed=0,0 max_tick_us=994
+[bar] min=4077 max=4085 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11952 speed=0,0 max_tick_us=994
+[bar] min=4080 max=4086 fault=0
+[bar] min=4081 max=4089 fault=0
+994
+[bar] min=4069 max=4084 fault=0
+[bar] min=4079 max=4090 fault=0
+[bar] min=4081 max=4092 fault=0
+[bar] min=4080 max=4084 fault=0
+[bar] min=4081 max=4090 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11952 speed=0,0 max_tick_us=994
+[bar] min=4065 max=4086 fault=0
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11952 speed=0,0 max_tick_us=994
+[motion] state=2 cmd=1 faults=0 heading=1 dist_mm=2133 counts=3055,11952 speed=0,0 max_tick_us=994
+[bar] min=4080 max=4086 fault=0
+[bar] min=4078 max=4084 fault=0
+microT-Kernel Version 3.00
+=== micro T-Kernel on Raspberry Pi Pico W (spec 0x6300, product 0x0003) ===
+dual-core (SMP) build, usermain on core 0
+all subsystems started
+[TEST] === test run start ===
+[TEST] subsystem1 SUMMARY 0 passed, 0 failed
+wifi: cyw43_utk_task starting (proc 1)
+wifi: cyw43_init() ...
+wifi: cyw43_init() returned, bringing interface up ...
+[TEST] S2-U05 PASS  boots idle with the motors braked
+[TEST] S2-U06 PASS  out-of-range commands are rejected
+[TEST] S2-U07 PASS  a rejected command does not start the motors
+[TEST] S2-U08 PASS  12-byte packed status and telemetry
+[TEST] S2-U09 PASS  control step runs and takes under 1 ms
+[TEST] S2-U16 PASS  a latched safety stop refuses every command
+[TEST] S2-U17 PASS  commands are accepted again after the latch is released
+[TEST] subsystem2 SUMMARY 7 passed, 0 failed
+[motion] bench: tap GP21 to start
+[TEST] S3-U01 PASS  the line sensors are sampled within 100 ms
+[TEST] S3-U07 PASS  a sample every 10 ms (10..12 in 100 ms)
+[TEST] S3-U02 PASS  packed line state 8 bytes
+[TEST] S3-U04 PASS  line following rejects speeds out of range
+[TEST] S3-U05 PASS  line following boots stopped
+[TEST] S3-U08 PASS  barcode ADC position 2 ksample/s (180..240 in 100 ms)
+[TEST] S3-U09 PASS  packed raw barcode level 8 bytes
+[TEST] S3-U11 PASS  decodes *A* read either way
+[TEST] S3-U20 PASS  decodes *Z*
+[TEST] S3-U12 PASS  rejects a 4-wide letter and a misread *A*
+[TEST] S3-U25 PASS  guesses *A* with a narrow bar missed
+[TEST] S3-U26 PASS  reads *A* after a speck
+[TEST] S3-U13 PASS  packed barcode 8 bytes
+[TEST] subsystem3 SUMMARY 13 passed, 0 failed
+[line] bench: hold GP21 for 1 s to follow the line
+[line] left=1 right=0 junction=0 last=1 following=0 searching=0 lost=0 stuck=0 mm=0 deg=0
+[bar] min=4077 max=4085 fault=0
+[bar] min=4081 max=4092 fault=0
+[bar] min=4086 max=4095 fault=0
+[bar] min=4077 max=4090 fault=0
+[imu] calibrated: offsets x=24 y=58 z=-190 mg
+../app_program/subsystem4/subsystem4_test.c:56)
+[TEST] S4-U02 PASS  flat: z ~ +1000 mg, x and y ~ 0
+[TEST] S4-U04 PASS  packed reading keeps -2048..2047 per axis in 8 bytes
+[TEST] S4-U13 PASS  no IMU fault on a still board
+[TEST] S4-U12 PASS  packed hu[imu] x=-2 y=-1 z=991 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=4078 max=4091 fault=0
+[TEST] S5-U02 PASS  a forward scan finishes within 500 ms
+[scan] forward_mm=691 fault=0
+[TEST] S5-U03 PASS  packed status 8, scan 20, profile 12 bytes
+[TEST] subsystem5 SUMMARY 3 passed, 0 failed
+[avoid] bench: press GP20 for a profile scan, hold it 1 [imu] x=-4 y=2 z=999 mg pitch=0 roll=-1 (0.1 deg) h=0 mm
+[bar] min=4078 max=4095 fault=0
+[bar] min=4075 max=4095 fault=0
+[avoid] last run: 0 records
+[bar] min=4074 max=4090 fault=0
+[bar] min=4079 max=4095 fault=0
+[bar] min=4066 max=4095 fault=0
+[bar] min=4076 max=4089 fault=0
+[bar] min=4079 max=4092 fault=0
+[bar] min=4064 max=4085 fault=0
+[bar] min=4076 max=4085 fault=0
+[bar] min=4077 max=4091 fault=0
+[bar] min=4067 max=4090 fault=0
+[bar] min=4080 max=4090 fault=0
+[bar] min=4064 max=4084 fault=0
+[bar] min=4080 max=4093 fault=0
+[bar] min=4066 max=4091 fault=0
+[bar] min=4078 max=4088 fault=0
+[bar] min=4066 max=4086 fault=0
+[bar] min=4072 max=4088 fault=0
+[bar] min=4072 max=4095 fault=0
+[bar] min=4077 max=4085 fault=0
+[scan] forward_mm=507 fault=0 closest=507@90 edges=90..90 width=0 obstacle=0 clear=562/424
+[avoid] t=0 ms state=0 faults=0x0 side=0 step=0 bypasses=0 right_mm=0 left_mm=0 motion=0
+[bar] min=4079 max=4094 fault=0
+[bar] min=4080 max=4090 fault=0
+[bar] min=4079 max=4089 fault=0
+[bar] min=4070 max=4086 fault=0
+[bar] min=4080 max=4090 fault=0
+[bar] min=4077 max=4085 fault=0
+[bar] min=4080 max=4088 fault=0
+[bar] min=4064 max=4086 fault=0
+[bar] min=4078 max=4092 fault=0
+[bar] min=4077 max=4086 fault=0
+[bar] min=4067 max=4086 fault=0
+[bar] min=4080 max=4084 fault=0
+[bar] min=4073 max=4087 fault=0
+[bar] min=4075 max=4085 fault=0
+[bar] min=4075 max=4086 fault=0
+[bar] min=4067 max=4086 fault=0
+[bar] min=4080 max=4091 fault=0
+[bar] min=4078 max=4086 fault=0
+[bar] min=4078 max=4088 fault=0
+[bar] min=4079 max=4086 fault=0
+[bar] min=4076 max=4085 fault=0
+[bar] min=4077 max=4086 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4080 max=4089 fault=0
+[bar] min=4067 max=4095 fault=0
+[bar] min=4078 max=4085 fault=0
+[bar] min=4074 max=4095 fault=0
+[bar] min=4067 max=4083 fault=0
+[bar] min=4079 max=4095 fault=0
+[bar] min=4072 max=4084 fault=0
+[bar] min=4074 max=4095 fault=0
+[bar] min=4077 max=4085 fault=0
+[bar] min=4078 max=4090 fault=0
+[bar] min=4078 max=4086 fault=0
+[bar] min=4066 max=4095 fault=0
+[bar] min=4074 max=4092 fault=0
+[bar] min=4078 max=4085 fault=0
+[bar] min=4074 max=4085 fault=0
+[bar] min=4066 max=4088 fault=0
+[bar] min=4080 max=4086 fault=0
+[bar] min=4080 max=4090 fault=0
+[bar] min=4070 max=4086 fault=0
+[bar] min=4074 max=4092 fault=0
+[bar] min=4080 max=4095 fault=0
+[bar] min=4080 max=4089 fault=0
+[bar] min=4079 max=4095 fault=0
+[bar] min=4072 max=4090 fault=0
+[bar] min=4078 max=4089 fault=0
+[bar] min=4069 max=4085 fault=0
+[bar] min=4078 max=4092 fault=0
+[bar] min=4080 max=4089 fault=0
+[bar] min=4066 max=4095 fault=0
+[bar] min=4067 max=4086 fault=0
+[bar] min=4080 max=4094 fault=0

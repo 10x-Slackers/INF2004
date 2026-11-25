@@ -32,7 +32,8 @@
 /* Both sides blocked: back off until the obstacle is this far ahead, still
  * within SCAN_PROFILE_BLOCK_MM for the profile, and scan again once. */
 #define OBSTACLE_AVOIDANCE_RETRY_MM 180u
-#define OBSTACLE_AVOIDANCE_OUT      0u /* Legs of the bypass. */
+#define OBSTACLE_AVOIDANCE_BACK_MM  80u /* Blind: at most this far back. */
+#define OBSTACLE_AVOIDANCE_OUT      0u  /* Legs of the bypass. */
 #define OBSTACLE_AVOIDANCE_PASS     1u
 #define OBSTACLE_AVOIDANCE_IN       2u
 /* One bypass step: a turn towards the bypass side (+1) or back (-1), or,
@@ -80,7 +81,7 @@ static bool obstacle_avoidance_path(const scan_profile_t * p_profile,
 static uint32_t obstacle_avoidance_face(const scan_profile_t * p_profile,
                                         uint32_t side);
 static bool obstacle_avoidance_bypass(const scan_profile_t * p_profile);
-static bool obstacle_avoidance_try(void);
+static bool obstacle_avoidance_try(bool b_retry);
 static bool obstacle_avoidance_back(void);
 static void obstacle_avoidance_avoid(void);
 
@@ -580,9 +581,12 @@ static bool obstacle_avoidance_bypass(const scan_profile_t * p_profile)
 /*!
  * @brief Profile the obstacle and drive round it.
  *
+ * @param[in] b_retry After backing off: no obstacle seen also counts as
+ *                    blocked, or the car would drive up to it and back off
+ *                    again for ever.
  * @return True if both sides are blocked, back at the original heading.
  */
-static bool obstacle_avoidance_try(void)
+static bool obstacle_avoidance_try(bool b_retry)
 {
     ultrasonic_scan_t scan = {0};
     bool b_blocked = false;
@@ -597,33 +601,48 @@ static bool obstacle_avoidance_try(void)
                    scan.profile.right_mm);
         b_blocked = obstacle_avoidance_bypass(&scan.profile);
     }
+    else
+    {
+        b_blocked = b_retry && (obstacle_avoidance_active());
+    }
     return b_blocked;
 }
 
 /*!
- * @brief Back off until the obstacle is OBSTACLE_AVOIDANCE_RETRY_MM ahead:
- * stopped too close, the side rays may hit the obstacle itself. Blind, as
- * nothing reads behind the car, but only a few cm.
+ * @brief Back off until the obstacle is OBSTACLE_AVOIDANCE_RETRY_MM ahead,
+ * at most OBSTACLE_AVOIDANCE_BACK_MM: stopped too close, the side rays may
+ * hit the obstacle itself. Blind, as nothing reads behind the car.
  *
  * @return False if cancelled or stopped.
  */
 static bool obstacle_avoidance_back(void)
 {
     ultrasonic_scan_t scan = {0};
+    uint32_t back_mm = 0u;
 
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_PROFILE, 0u);
-    return (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan)) &&
-           ((scan.forward_mm >= OBSTACLE_AVOIDANCE_RETRY_MM) ||
-            (obstacle_avoidance_move(
-                0, (int32_t)scan.forward_mm -
-                       (int32_t)OBSTACLE_AVOIDANCE_RETRY_MM)));
+    if (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan))
+    {
+        back_mm = (scan.forward_mm < OBSTACLE_AVOIDANCE_RETRY_MM)
+                      ? (OBSTACLE_AVOIDANCE_RETRY_MM - scan.forward_mm)
+                      : 0u;
+        back_mm = (back_mm > OBSTACLE_AVOIDANCE_BACK_MM)
+                      ? OBSTACLE_AVOIDANCE_BACK_MM
+                      : back_mm;
+        if (0u != back_mm)
+        {
+            /* At most BACK_MM, so the cast keeps it. */
+            (void)obstacle_avoidance_move(0, -(int32_t)back_mm);
+        }
+    }
+    return obstacle_avoidance_active();
 }
 
 /*!
  * @brief Stop and profile the obstacle and the clearance each side, then
  * drive round it. With both sides blocked, back off and try once more;
- * still blocked is a safe stop. Back to watching afterwards, or at once if
- * the obstacle has gone.
+ * still blocked, or the obstacle no longer seen, is a safe stop. Back to
+ * watching afterwards, or at once if the obstacle has gone.
  */
 static void obstacle_avoidance_avoid(void)
 {
@@ -644,8 +663,8 @@ static void obstacle_avoidance_avoid(void)
     {
         obstacle_avoidance_stop(APP_FAULT_AVOID_MOTION);
     }
-    else if ((obstacle_avoidance_try()) && (obstacle_avoidance_back()) &&
-             (obstacle_avoidance_try()))
+    else if ((obstacle_avoidance_try(false)) && (obstacle_avoidance_back()) &&
+             (obstacle_avoidance_try(true)))
     {
         obstacle_avoidance_stop(APP_FAULT_AVOID_BLOCKED);
     }

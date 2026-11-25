@@ -16,8 +16,9 @@
  * Barcodes lie on straights, so while the barcode sensor is over one the car
  * holds the heading it had when the barcode was recognised (the wobble hold
  * heading if holding), and a sensor hit turns it at most TURN_MIN. It also
- * slows to CODE_MM_S, so the narrow bars read black. All white does not
- * count towards a lost line until the barcode ends.
+ * slows to CODE_MM_S, so the narrow bars read black. Over it all white is
+ * lost only after CODE_LOST_MM, and counts from the start again where the
+ * barcode ends.
  */
 
 #include "line_following.h"
@@ -58,6 +59,7 @@
 #define LINE_FOLLOWING_HOLD_GAIN    50
 #define LINE_FOLLOWING_HOLD_EXIT_MM 40u
 #define LINE_FOLLOWING_HOLD_LOST_MM 120u
+#define LINE_FOLLOWING_CODE_LOST_MM 300u /* Over a barcode, 141 mm long. */
 /* Over a barcode, at most this fast, so the narrow bars read black. */
 #define LINE_FOLLOWING_CODE_MM_S     80u
 #define LINE_FOLLOWING_HOLD_BEND_DEG 8
@@ -231,16 +233,24 @@ void line_following_task(INT stacd, void * p_exinf)
             straight_deg =
                 g_wobble.b_hold ? g_wobble.hold_deg : motion.heading_deg;
         }
-        if (barcode.b_reading)
+        else if ((!barcode.b_reading) && b_straight)
         {
-            /* A car held straight runs centred over the barcode: all white
-             * counts only from where it ends. */
+            /* The barcode has ended and the shorter limits apply: all white
+             * counts from here, or the distance held straight over it
+             * would look lost at once. */
             g_search.from_mm = motion.distance_mm;
         }
+        else
+        {
+            /* Still over a barcode, or still not. */
+        }
         b_straight = (barcode.b_reading);
+        /* Over a barcode, still a limit: b_reading stays set if the
+         * barcode sensor stops. */
         line_following_watch(bits, &motion,
-                             b_hold ? LINE_FOLLOWING_HOLD_LOST_MM
-                                    : LINE_FOLLOWING_LOST_MM);
+                             b_straight ? LINE_FOLLOWING_CODE_LOST_MM
+                             : b_hold   ? LINE_FOLLOWING_HOLD_LOST_MM
+                                        : LINE_FOLLOWING_LOST_MM);
         line_following_drive(bits, &motion, b_straight, straight_deg);
         g_line.b_searching = (g_line.b_following) && (0u != g_search.phase);
         (void)tk_unl_mtx(gh_mutex);

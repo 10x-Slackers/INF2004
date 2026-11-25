@@ -3,7 +3,8 @@
  * @brief Host test of subsystem 3's sensor fault checks: a line sensor
  * stuck on black, the time limit on the lost-line search, and barcode ADC
  * samples that stop. Also that the end of a barcode does not start a
- * search, and a dip in the odometer does not end one.
+ * search, a dip in the odometer does not end one, and a barcode sensor
+ * that stops over a barcode still lets a lost line start a search.
  *
  * Runs the real Line Following and Barcode Decoder tasks. The kernel calls
  * come from stub/ and the stubs below; tk_slp_tsk() is one 10 ms wake-up
@@ -385,6 +386,29 @@ static void test_barcode_rollback(void)
                "stopped on a barcode, the odometer dips 80 um: still reading");
 }
 
+/* After that, the barcode sensor stops with the car over the barcode:
+ * b_reading stays set, and a lost line must still start a search. */
+static void test_barcode_stalls(void)
+{
+    line_following_t line = {0};
+    barcode_decoder_t barcode = {0};
+
+    g_adc = 0u; /* No more samples: the decoder stays mid-barcode. */
+    gb_both = true;
+    line_following_stop(); /* Still searching from test_barcode_end(). */
+    test_start();
+    test_follow(0u, 290u);
+    line_following_get(&line);
+    barcode_decoder_get(&barcode);
+    test_check((barcode.b_reading) && (!line.b_searching),
+               "barcode sensor stopped, 290 mm all white: no search yet");
+    test_follow(0u, 20u);
+    line_following_get(&line);
+    test_check(line.b_searching,
+               "barcode sensor stopped, past 300 mm all white: searching");
+    gb_both = false;
+}
+
 int main(void)
 {
     (void)line_following_init();
@@ -394,6 +418,7 @@ int main(void)
     test_barcode_samples();
     test_barcode_end();      /* These two after the sample counts: they would */
     test_barcode_rollback(); /* leave its 100 ms window part used. */
+    test_barcode_stalls();   /* Goes on from the rollback's barcode. */
     printf("%s\n", (0 == g_failures) ? "ALL PASS" : "FAILED");
     return (0 == g_failures) ? 0 : 1;
 }

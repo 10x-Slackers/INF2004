@@ -24,3 +24,16 @@ Newest at the bottom.
 
 | Date | Subsystem | Test ID / demo | Commit | Student ID | Link | Notes |
 |---|---|---|---|---|---|---|
+| 2026-11-25 | System | SYS-02 | `dbb28bd` (#70) | 2503999 | [link](TODO) | Barcode decode on the dashboard: `Barcode F: ignored` |
+| 2026-11-25 | System | SYS-02 | `dbb28bd` (#70) | 2503999 | [link](TODO) | Barcode decode, dashboard and car in one shot |
+| 2026-11-25 | 5 | S5-U07 | `dbb28bd` (#70) | 2503999 | [link](TODO) | Ultrasonic scan: the servo turns the sensor each way and back |
+| 2026-11-25 | 4 | S4-U10 | `dbb28bd` (#70) | 2503999 | [link](TODO) | Hump on the car: bench drives over an 11 mm hump |
+| 2026-11-25 | 5 | S5-U09 | `dbb28bd` (#70) | 2503999 | [link](TODO) | Obstacle bypass on open floor |
+| 2026-11-25 | 5 | S5-U10 | `dbb28bd` (#70) | 2503999 | [link](TODO) | No open side: the car stays still |
+| 2026-11-25 | Integration | INT-01 | `dbb28bd` (#70) | 2503999 | [link](TODO) | GP20 start, stop and reset on the line |
+| 2026-11-25 | Integration | INT-02 | `dbb28bd` (#70) | 2503999 | [link](TODO) | Barcode right turn |
+| 2026-11-25 | 4 | S4-U08 | `dbb28bd` (#70) | 2503999 | [link](TODO) | Calibration beep |
+| 2026-11-25 | Integration | INT-02 | `dbb28bd` (#70) | 2503999 | [link](TODO) | Barcode straight on |
+| 2026-11-25 | Integration | INT-02 | `dbb28bd` (#70) | 2503999 | [link](TODO) | Barcode U-turn |
+| 2026-11-25 | Integration, System | INT-05, INT-09, INT-10, SYS-10 | `dbb28bd` (#70) | 2503999 | [link](TODO) | Wheel stall and lift stop |
+| 2026-11-25 | System | SYS-11 | `b721ac5` (#71) | 2503999 | [link](TODO) | Full course run, started from the dashboard |

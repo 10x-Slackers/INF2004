@@ -209,8 +209,8 @@ stateDiagram-v2
 
 - **Monitor** asks for forward readings while the car follows the line.
 - **Profile** stops line following, brakes, then asks for a profile scan with the car still: a coarse sweep every 15°, then a fine sweep every 5° outward from straight ahead while the rays are blocked. The result is the obstacle's edges, width and closest point, and the clearance 45° left and right.
-- **Bypass** picks the more open side with at least 250 mm (left on a tie), checks along the first diagonal that the path is clear (if not, trying the other side once if the scan found it open), then drives seven encoder-based steps around the obstacle back to the original heading, just beside the line. Each straight step watches the range ahead and stops within 200 mm.
-- Reverse is disabled: nothing verifies clearance behind the car. No safe forward route means Safe Stop (FR7).
+- **Bypass** picks the more open side with at least 250 mm (left on a tie), checks along the first diagonal that the path is clear (if not, trying the other side once), then drives seven encoder-based steps around the obstacle back to the original heading, just beside the line. Each straight step watches the range ahead and stops within 200 mm.
+- With no safe forward route, the car reverses until the obstacle is 180 mm ahead (a few centimetres, blind: nothing checks behind the car) and tries once more. Still no route means Safe Stop (FR7).
 
 Details: [OBSTACLE_AVOIDANCE.md](OBSTACLE_AVOIDANCE.md#how-it-works).
 

@@ -6,6 +6,11 @@
  * checked against the Code 39 table on Wikipedia. *X* with a letter, digit,
  * '-', '.' or space has exactly 6 wide bars and 3 wide spaces, which sets
  * the narrow/wide split; $ / + % (no wide bars) are not decoded.
+ *
+ * Two misreads are guessed at, only where the answer is certain: a speck
+ * before the barcode (*X* is read exactly from any bar of the widths), and
+ * one narrow bar the sensor missed (put back in each space in turn, taken
+ * only if exactly one letter then reads).
  */
 
 #include "code39.h"
@@ -27,6 +32,8 @@ static const uint16_t g_patterns[] = {
     0x085u, 0x184u, 0x0C4u, 0x0A8u, 0x0A2u, 0x08Au, 0x02Au, 0x094u};
 static const char g_letters[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%*";
 
+static uint32_t code39_symbol(const uint16_t * p_widths);
+static uint32_t code39_missed(const uint16_t * p_widths);
 static uint32_t code39_one_way(const uint16_t * p_widths,
                                const uint32_t * p_threshold);
 static uint32_t code39_char(const uint16_t * p_widths,
@@ -35,16 +42,82 @@ static uint32_t code39_split(const uint16_t * p_widths, uint32_t first,
                              uint32_t wide);
 
 /*!
- * @brief Decode *X*, read in either direction. Bars and spaces are split
- * into narrow and wide separately, as the sensor's spot makes bars read
- * narrower and spaces wider: below the 6th widest bar and the 3rd widest
- * space, so one bar stretched by a turn cannot move the split.
+ * @brief Decode *X*, guessing at a speck or a missed bar (see the file
+ * comment).
  *
- * @param[in] p_widths CODE39_ELEMENTS widths in any one unit, in the order
- *                     the sensor saw them, first bar first.
+ * @param[in] p_widths count widths in any one unit, in the order the
+ *                     sensor saw them, first bar first.
+ * @param[in] count    Widths, up to CODE39_KEPT.
  * @return The character X, or 0 if the widths are not a valid *X*.
  */
-uint32_t code39_decode(const uint16_t * p_widths)
+uint32_t code39_decode(const uint16_t * p_widths, uint32_t count)
+{
+    uint32_t letter = 0u;
+    uint32_t first = 0u;
+
+    for (first = 0u; (0u == letter) && ((first + CODE39_ELEMENTS) <= count);
+         first += 2u)
+    {
+        letter = code39_symbol(&p_widths[first]);
+    }
+    if ((0u == letter) && ((CODE39_ELEMENTS - 2u) == count))
+    {
+        letter = code39_missed(p_widths);
+    }
+    return letter;
+}
+
+/*!
+ * @brief Put a narrow bar, as wide as the narrowest bar read, back in the
+ * middle of each space of 27 widths in turn.
+ *
+ * @return The letter if exactly one reads, else 0.
+ */
+static uint32_t code39_missed(const uint16_t * p_widths)
+{
+    uint16_t widths[CODE39_ELEMENTS] = {0};
+    uint16_t bar = UINT16_MAX;
+    uint32_t letter = 0u;
+    uint32_t found = 0u;
+    uint32_t space = 0u;
+    uint32_t element = 0u;
+
+    for (element = 0u; element < (CODE39_ELEMENTS - 2u); element += 2u)
+    {
+        bar = (p_widths[element] < bar) ? p_widths[element] : bar;
+    }
+    for (space = 1u; space < (CODE39_ELEMENTS - 2u); space += 2u)
+    {
+        for (element = 0u; element < (CODE39_ELEMENTS - 2u); element++)
+        {
+            /* Past the space, two places on. */
+            widths[element + ((element > space) ? 2u : 0u)] = p_widths[element];
+        }
+        /* Underflows only for a space narrower than the bar, which then
+         * reads as nothing: it is skipped below. */
+        widths[space] = (uint16_t)((p_widths[space] - bar) / 2u);
+        widths[space + 1u] = bar;
+        widths[space + 2u] = (uint16_t)(p_widths[space] - bar - widths[space]);
+        letter = (p_widths[space] > bar) ? code39_symbol(widths) : 0u;
+        if ((0u != letter) && (letter != found))
+        {
+            /* A second, different letter: too uncertain. */
+            found = (0u == found) ? letter : UINT32_MAX;
+        }
+    }
+    return (UINT32_MAX == found) ? 0u : found;
+}
+
+/*!
+ * @brief Decode *X* from exactly CODE39_ELEMENTS widths, read in either
+ * direction. Bars and spaces are split into narrow and wide separately, as
+ * the sensor's spot makes bars read narrower and spaces wider: below the
+ * 6th widest bar and the 3rd widest space, so one bar stretched by a turn
+ * cannot move the split.
+ *
+ * @return The character X, or 0.
+ */
+static uint32_t code39_symbol(const uint16_t * p_widths)
 {
     uint16_t reversed[CODE39_ELEMENTS] = {0};
     uint32_t threshold[2] = {0u, 0u}; /* Bars [0], spaces [1]. */

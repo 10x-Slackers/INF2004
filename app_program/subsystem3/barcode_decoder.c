@@ -5,7 +5,7 @@
  * Each sample is placed along the track by interpolating the distance
  * rolled across its 10 ms block, in um. A barcode starts at the first black
  * after white and ends at a white run longer than BARCODE_END; its bars
- * and spaces then go to code39_decode().
+ * and spaces then go to code39_decode(), which guesses at a misread.
  *
  * If the ADC or DMA stops, no barcode is ever seen, so the task counts the
  * samples of every BARCODE_CHECK_WAKES wake-ups: APP_FAULT_BARCODE_SENSOR is
@@ -19,9 +19,9 @@
 #include "../subsystem2/motion_control.h"
 
 /* ADC counts: white reads ~170, black ~4080 (S3-U10). Low, so narrow bars
- * count (S3-U14), with hysteresis between. */
-#define BARCODE_BLACK       1000u
-#define BARCODE_WHITE       600u
+ * count (S3-U14; at 1000 the car missed some), with hysteresis between. */
+#define BARCODE_BLACK       600u
+#define BARCODE_WHITE       400u
 #define BARCODE_END         30000u /* um: 30 mm, over 3 wide bars. */
 #define BARCODE_CHECK_WAKES 10u    /* 100 ms: 200 samples are due. */
 #define BARCODE_CHECK_MIN   100u   /* Fewer samples in that time: a fault. */
@@ -41,11 +41,11 @@ static barcode_decoder_t g_barcode = {0};
 static barcode_decoder_raw_t g_raw = {0};
 
 /* Barcode Decoder task only: the barcode being read, and the ADC check. */
-static uint16_t g_widths[CODE39_ELEMENTS] = {0};
+static uint16_t g_widths[CODE39_KEPT] = {0};
 static uint32_t g_run_start = 0u; /* um, as motion_control_distance_um(). */
 static struct
 {
-    unsigned int elements : 5; /* Widths kept, 0..CODE39_ELEMENTS (29). */
+    unsigned int elements : 5; /* Widths kept, 0..CODE39_KEPT (31). */
     bool b_black : 1;
     bool b_in_code : 1;
 } g_code = {0};
@@ -211,7 +211,7 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
         {
             g_code.b_in_code = false; /* A bar this long is not a barcode. */
         }
-        if ((g_code.b_in_code) && (g_code.elements < CODE39_ELEMENTS))
+        if ((g_code.b_in_code) && (g_code.elements < CODE39_KEPT))
         {
             /* In a barcode, width is at most BARCODE_END: it fits. */
             g_widths[g_code.elements] = (uint16_t)width;
@@ -236,20 +236,22 @@ static void barcode_decoder_sample(uint32_t level, uint32_t pos,
  */
 static void barcode_decoder_end(uint32_t odometer_mm)
 {
-    /* Extra elements after a barcode (a crossing line, the edge of the
-     * print) are ignored: only the first 29 are kept. */
-    uint32_t const letter =
-        (g_code.elements >= CODE39_ELEMENTS) ? code39_decode(g_widths) : 0u;
-    /* 1..26 for A..Z; 0 for a misread or a digit, which have no action.
-     * (uint32_t): a character constant is a small positive number. */
-    uint32_t const index =
-        ((letter >= (uint32_t)'A') && (letter <= (uint32_t)'Z'))
-            ? ((letter - (uint32_t)'A') + 1u)
-            : 0u;
+    uint32_t letter = 0u;
+    uint32_t index = 0u;
     uint32_t command = BARCODE_DECODER_NONE;
 #if APP_TEST
     uint32_t element = 0u;
+#endif
 
+    /* Extra elements after a barcode (a crossing line, the edge of the
+     * print) are ignored: only the first 31 are kept. */
+    letter = code39_decode(g_widths, g_code.elements);
+    /* 1..26 for A..Z; 0 for a misread or a digit, which have no action.
+     * (uint32_t): a character constant is a small positive number. */
+    index = ((letter >= (uint32_t)'A') && (letter <= (uint32_t)'Z'))
+                ? ((letter - (uint32_t)'A') + 1u)
+                : 0u;
+#if APP_TEST
     /* Bench evidence for S3-U14: what the sensor measured, in 0.1 mm. */
     if (g_code.elements >= CODE39_PER_CHR)
     {

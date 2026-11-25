@@ -7,7 +7,8 @@
  *
  * Runs the real Line Following and Barcode Decoder tasks. The kernel calls
  * come from stub/ and the stubs below; tk_slp_tsk() is one 10 ms wake-up
- * and leaves the task when the wake-ups asked for are used up, so a task's
+ * and leaves the task when the wake-ups asked for are used up (or the car
+ * has gone the distance asked for), so a task's
  * local variables start again on every run. The car is a model: each
  * wake-up moves the odometer by the wheel speeds last commanded, and the
  * heading never moves. Build and run as in S3-U22 to S3-U24 of
@@ -28,6 +29,7 @@
 static jmp_buf g_task_exit;
 static jmp_buf g_barcode_exit; /* Barcode task run inside a line wake-up. */
 static uint32_t g_wakes;       /* Wake-ups left before the task is left. */
+static uint32_t g_stop_um;     /* Or once the odometer reaches this; 0 none. */
 static uint32_t g_bits;        /* What the line sensors read. */
 static uint32_t g_adc;         /* Samples per barcode read. */
 static int32_t g_left_mm_s;    /* Wheel speeds last commanded. */
@@ -94,7 +96,7 @@ ER tk_slp_tsk(TMO tmout)
         gb_decoded = true;
         test_move();
     }
-    else if (0u == g_wakes)
+    else if ((0u == g_wakes) || ((0u != g_stop_um) && (g_um >= g_stop_um)))
     {
         longjmp(g_task_exit, 1);
     }
@@ -231,11 +233,13 @@ static void test_start(void)
     (void)line_following_start(TEST_SPEED_MM_S);
 }
 
-/* Follow for mm with the sensors at bits (1.5 mm per wake-up, however the
- * car steers). */
+/* Follow for mm with the sensors at bits, by the odometer: the car slows
+ * over a barcode. A car that stopped gives up after 2 wake-ups per mm. */
 static void test_follow(uint32_t bits, uint32_t mm)
 {
-    test_line(bits, (mm * 2u) / 3u);
+    g_stop_um = g_um + (mm * 1000u);
+    test_line(bits, 2u * mm);
+    g_stop_um = 0u;
 }
 
 /* True if line following gave up with the line sensor fault. */
@@ -303,7 +307,7 @@ static void test_search_limit(void)
     uint32_t wakes = 0u;
 
     test_start();
-    test_follow(0u, 90u);
+    test_line(0u, 60u); /* 90 mm at 1.5 mm a wake-up; the search is timed. */
     line_following_get(&line);
     test_check(line.b_searching, "all white for 90 mm: searching");
     for (wakes = 0u; (wakes < 1000u) && (line.b_searching); wakes++)

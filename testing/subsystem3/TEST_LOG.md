@@ -32,6 +32,8 @@ Methods and how to record results: `testing/README.md`.
 | S3-U22 | Sensor fault checks on the real tasks with a modelled car: a line sensor black for over 300 mm stops the car with `APP_FAULT_LINE_SENSOR` and the next start clears it, 120 mm runs on alternate sides do not; a search whose heading never moves fails after 6 s; under 100 barcode samples in 100 ms sets `APP_FAULT_BARCODE_SENSOR`, 100 clears it | FR2, FR3, FR11 | host | `cc -std=c99 -Wall -Wextra -Werror -pedantic -O2 -DAPP_TEST=0 -I testing/subsystem3/host/stub app_program/subsystem3/line_following.c app_program/subsystem3/barcode_decoder.c app_program/subsystem3/code39.c testing/subsystem3/host/test_faults.c -o /tmp/test_faults && /tmp/test_faults` | `ALL PASS` |
 | S3-U23 | The end of a barcode does not start a search: on the real tasks with a modelled car, both line sensors white over a 200 mm barcode beside the line, then on past it | FR2, FR3 | host | As S3-U22 | `ALL PASS`: no search while over the barcode or when it ends (300 mm of all white by then); searching 80 mm of all white past its end |
 | S3-U24 | A dip in the odometer does not end a barcode: on the real decoder task with a modelled car stopped on a space of a barcode, the distance steps back 80 µm (a wheel rocking back two edges) | FR3, I5 | host | As S3-U22 | `ALL PASS`: `b_reading` stays set |
+| S3-U25 | A missed narrow bar is guessed back | FR3 | auto | `TEST=1` image, read the console | `S3-U25 PASS`: synthetic `*A*` with one narrow bar and its two spaces merged into one space (27 widths) gives A |
+| S3-U26 | A speck before a barcode is skipped | FR3 | auto | As above | `S3-U26 PASS`: a narrow bar and an 18 mm space, then synthetic `*A*` (31 widths), give A |
 
 ## Results
 

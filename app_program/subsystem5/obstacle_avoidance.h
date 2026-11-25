@@ -7,7 +7,8 @@
  * profiles the obstacle with the servo, taking the clearance each side from
  * its 45 degree readings, and drives round it on the more open side, ending
  * on the original line and heading, then watches again. With no open side
- * it stops and stays stopped (no reverse). Units: docs/OBSTACLE_AVOIDANCE.md.
+ * it backs off a few cm and tries once more, then stops and stays stopped.
+ * Units: docs/OBSTACLE_AVOIDANCE.md.
  */
 
 #ifndef OBSTACLE_AVOIDANCE_H

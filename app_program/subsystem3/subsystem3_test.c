@@ -15,22 +15,23 @@
 #include "../subsystem2/motion_control.h"
 
 #if APP_TEST
-#define S3_TEST_WAIT_MS     100u  /* Ten sampling periods. */
-#define S3_TEST_NARROW      3000u /* 3 mm in um, as the decoder measures. */
-#define S3_TEST_WIDE        9000u
-#define S3_TEST_A           0x109u /* Code 39 patterns, 1 = wide. */
-#define S3_TEST_Z           0x0D0u
-#define S3_TEST_BAD         0x1E0u /* 4 wide: no character. */
-#define S3_TEST_START       0x094u /* '*' */
-#define S3_TEST_LETTER_A    0x41u  /* 'A' as code39_decode() returns it. */
-#define S3_TEST_LETTER_Z    0x5Au  /* 'Z' */
-#define S3_TEST_FIRST_GAP   9u
-#define S3_BENCH_POLL_MS    10u /* Waits 2 kernel ticks: a poll every 20 ms. */
-#define S3_BENCH_STEP_MS    20u
-#define S3_BENCH_BUTTON     21u   /* Robo Pico button, low when pressed. */
-#define S3_BENCH_HOLD_MS    1000u /* Subsystem 2 takes taps under 0.5 s. */
-#define S3_BENCH_GO_MS      5000u /* Time to put the car on the line. */
-#define S3_BENCH_RUN_MS     15000u
+#define S3_TEST_WAIT_MS   100u  /* Ten sampling periods. */
+#define S3_TEST_NARROW    3000u /* 3 mm in um, as the decoder measures. */
+#define S3_TEST_WIDE      9000u
+#define S3_TEST_A         0x109u /* Code 39 patterns, 1 = wide. */
+#define S3_TEST_Z         0x0D0u
+#define S3_TEST_BAD       0x1E0u /* 4 wide: no character. */
+#define S3_TEST_START     0x094u /* '*' */
+#define S3_TEST_LETTER_A  0x41u  /* 'A' as code39_decode() returns it. */
+#define S3_TEST_LETTER_Z  0x5Au  /* 'Z' */
+#define S3_TEST_FIRST_GAP 9u
+#define S3_TEST_MISSED    8u /* Last bar of the start, between narrow spaces. */
+#define S3_BENCH_POLL_MS  10u /* Waits 2 kernel ticks: a poll every 20 ms. */
+#define S3_BENCH_STEP_MS  20u
+#define S3_BENCH_BUTTON   21u   /* Robo Pico button, low when pressed. */
+#define S3_BENCH_HOLD_MS  1000u /* Subsystem 2 takes taps under 0.5 s. */
+#define S3_BENCH_GO_MS    5000u /* Time to put the car on the line. */
+#define S3_BENCH_RUN_MS   15000u
 #define S3_BENCH_SPEED_MM_S 150u
 #define S3_BENCH_RAW_POLLS  25u /* Print the barcode level every 0.5 s. */
 #define S3_BENCH_AXLE_MM   115u /* As the Vehicle Controller's junction move. */
@@ -51,8 +52,9 @@ void subsystem3_test(void)
 {
     line_following_t line = {0};
     barcode_decoder_raw_t raw = {0};
-    uint16_t widths[CODE39_ELEMENTS] = {0};
+    uint16_t widths[CODE39_KEPT] = {0};
     uint32_t letter = 0u;
+    uint32_t element = 0u;
     uint32_t count = 0u;
     uint32_t samples = 0u;
 
@@ -87,21 +89,38 @@ void subsystem3_test(void)
                "barcode ADC position 2 ksample/s (180..240 in 100 ms)");
     TEST_CHECK("S3-U09", 8u == sizeof(raw), "packed raw barcode level 8 bytes");
     subsystem3_symbol(widths, S3_TEST_A, false);
-    letter = code39_decode(widths);
+    letter = code39_decode(widths, CODE39_ELEMENTS);
     subsystem3_symbol(widths, S3_TEST_A, true);
     TEST_CHECK("S3-U11",
                (S3_TEST_LETTER_A == letter) &&
-                   (S3_TEST_LETTER_A == code39_decode(widths)),
+                   (S3_TEST_LETTER_A == code39_decode(widths, CODE39_ELEMENTS)),
                "decodes *A* read either way");
     subsystem3_symbol(widths, S3_TEST_Z, false);
-    TEST_CHECK("S3-U20", S3_TEST_LETTER_Z == code39_decode(widths),
+    TEST_CHECK("S3-U20",
+               S3_TEST_LETTER_Z == code39_decode(widths, CODE39_ELEMENTS),
                "decodes *Z*");
     subsystem3_symbol(widths, S3_TEST_BAD, false);
-    letter = code39_decode(widths);
+    letter = code39_decode(widths, CODE39_ELEMENTS);
     subsystem3_symbol(widths, S3_TEST_A, false);
     widths[S3_TEST_FIRST_GAP] = S3_TEST_WIDE; /* A wide gap: misread. */
-    TEST_CHECK("S3-U12", (0u == letter) && (0u == code39_decode(widths)),
+    TEST_CHECK("S3-U12",
+               (0u == letter) && (0u == code39_decode(widths, CODE39_ELEMENTS)),
                "rejects a 4-wide letter and a misread *A*");
+    subsystem3_symbol(widths, S3_TEST_A, false);
+    /* The sensor missed a narrow bar: it and its spaces read as one. */
+    widths[S3_TEST_MISSED - 1u] = 3u * S3_TEST_NARROW;
+    for (element = S3_TEST_MISSED; element < (CODE39_ELEMENTS - 2u); element++)
+    {
+        widths[element] = widths[element + 2u];
+    }
+    TEST_CHECK("S3-U25",
+               S3_TEST_LETTER_A == code39_decode(widths, CODE39_ELEMENTS - 2u),
+               "guesses *A* with a narrow bar missed");
+    subsystem3_symbol(&widths[2], S3_TEST_A, false);
+    widths[0] = S3_TEST_NARROW; /* A speck, then white, before *A*. */
+    widths[1] = 2u * S3_TEST_WIDE;
+    TEST_CHECK("S3-U26", S3_TEST_LETTER_A == code39_decode(widths, CODE39_KEPT),
+               "reads *A* after a speck");
     TEST_CHECK("S3-U13", 8u == sizeof(barcode_decoder_t),
                "packed barcode 8 bytes");
     TEST_SUMMARY("subsystem3");

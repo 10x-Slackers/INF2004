@@ -29,11 +29,11 @@ stateDiagram-v2
 
 | State     | What happens                                                                                                                                                                                             |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| INIT      | Waits for the IMU's calibration (`s4_get_tilt()`, `cal`)                                                                                                                                         |
+| INIT      | Waits for the IMU's calibration (`s4_get_tilt()`, `b_cal`)                                                                                                                                       |
 | READY     | Car stopped. Barcodes read now are ignored                                                                                                                                                               |
 | FOLLOW    | `line_following_start(VC_SPEED_MM_S)` and `obstacle_avoidance_start()`. A newly validated barcode becomes the pending command; a later one replaces it. While the line follower pivots to find a lost line (`b_searching`), avoidance is cancelled, so the sweep is not taken for an obstacle ahead, and started again once the line is found                                                              |
 | AVOID     | Avoidance has already stopped line following and drives the car until it is back to `MONITOR`, stopped on the original line. Each cycle a line sensor sees black, it calls `obstacle_avoidance_line()`, which ends the return diagonal on the line                                                                   |
-| TURN      | Stops line following, cancels avoidance, sets the cruise speed to `VC_MOVE_MM_S`, rolls forward `VC_AXLE_MM` onto the junction, then turns for the pending command: A or Z left 90°, B or F right 90°, C none, D left 180°. Each move must finish in 5 s |
+| TURN      | Stops line following, cancels avoidance, sets the cruise speed to `VC_MOVE_MM_S`, rolls forward `VC_AXLE_MM` onto the junction, then turns for the pending command: left 90°, right 90°, none for straight on, or left 180° for a U-turn. Which letter gives which command is the table sent from the supervisor dashboard ([TELEMETRY.md](TELEMETRY.md#map-78-bits)). Each move must finish in 5 s |
 | SAFE_STOP | Entered whenever the Safety Monitor is latched, from any state; the controller's own stops latch it too. Cancels avoidance and stops line following (which brakes). GP20 clears the latch and returns to INIT, which moves on to READY as soon as the IMU is calibrated, so a stop taken before calibration cannot skip it; a second press starts again (FR11). Tilt and upside-down faults stay latched until reset, so the car stays here; an IMU sensor fault is cleared by the press, and INIT then waits for the IMU to calibrate again, so the car comes back here if the sensor still does not work; a lifted fault clears about 1 s after the lift, so a car picked up after calibration needs one press to clear before the press that starts it |
 
 A barcode validated during TURN or AVOID becomes the pending command once FOLLOW resumes. A junction is acted on at its first sample (`b_junction` rising), and only in FOLLOW with a command pending: one crossed during a bypass or a turn is not taken later, unless, after a bypass, the sensors are still on it when FOLLOW resumes.
@@ -84,6 +84,7 @@ Every state change prints its cause, for example:
 
 ```
 [vc] READY -> FOLLOW: GP20
+[barcode] letter=A command=1
 [vc] barcode 1 pending
 [vc] FOLLOW -> TURN: junction
 [vc] TURN -> FOLLOW: turn done
@@ -91,6 +92,8 @@ Every state change prints its cause, for example:
 [safety] stop, cause 0x8
 [vc] max hump 12 mm
 ```
+
+The Barcode Decoder prints `[barcode] letter=… command=…` for every barcode read (`-` for a misread, command 0 for a letter with no action), and Obstacle Avoidance prints each profile it acts on: `[avoid] obstacle: width 176 mm, closest 78 mm at 90 deg, clear left 300 mm, right 1200 mm`.
 
 A supervisor command that is acted on is its own cause: `MQTT START`, `MQTT STOP` or `MQTT RESET` in place of `GP20`.
 

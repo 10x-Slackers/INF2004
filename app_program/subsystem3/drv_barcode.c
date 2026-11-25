@@ -8,6 +8,10 @@
  *
  * The kernel powers the ADC up at boot, and makes GP26 an analog input
  * (DEVCONF_ADC_PIN_INIT_0). Nothing opens the kernel's "adca" device.
+ *
+ * Registers: RP2040 datasheet, "ADC and Temperature Sensor" and "DMA"; the
+ * same addresses and bits are in the Pico SDK's hardware/regs/adc.h and
+ * dma.h.
  */
 
 #include "drv_barcode.h"
@@ -35,8 +39,9 @@
      (11u << 11) | (36u << 15))
 
 /* The ring must be aligned to its size for the DMA to wrap it. */
-static volatile uint16_t g_ring[DRV_BARCODE_RING] __attribute__((aligned(512)));
-static uint8_t g_read; /* Next ring index to hand out; wraps at 256. */
+static volatile uint16_t g_ring[DRV_BARCODE_RING]
+    __attribute__((aligned(512))) = {0};
+static uint8_t g_read = 0u; /* Next ring index to hand out; wraps at 256. */
 #if DRV_BARCODE_RING != 256u
 #error "g_read must wrap at DRV_BARCODE_RING"
 #endif

@@ -51,7 +51,7 @@ static volatile struct
     unsigned int released : 3; /* Cycles GP20 released, up to VC_RELEASED. */
     unsigned int pending : 3;  /* BARCODE_DECODER_... for the junction. */
     bool b_turning : 1;        /* TURN: past the roll forward, turning. */
-} g_vc;
+} g_vc = {0};
 
 /* The fields must hold their limits. */
 #if (VC_MOVE_CYCLES >= 1023u) || (VC_RELEASED > 7u)
@@ -74,9 +74,8 @@ ER vehicle_controller_start(void)
 {
     app_pull_up(VC_BUTTON);
 
-    /* FP is the kernel's generic task pointer type. */
     return app_start_cyclic(
-        app_start_task((FP)vehicle_controller_task, VC_PRI, 0u, "vc"),
+        app_start_task(vehicle_controller_task, VC_PRI, 0u, "vc"),
         VC_PERIOD_MS);
 }
 
@@ -127,11 +126,11 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
         /* Barcodes and junctions are taken only while ready or following,
          * so one seen during a turn or a bypass waits for FOLLOW. */
         b_barcode = (barcode.count != barcodes);
-        b_junction = (0u != line.b_junction) && (!b_was_junction);
+        b_junction = (line.b_junction) && (!b_was_junction);
         if ((VC_READY == g_vc.state) || (VC_FOLLOW == g_vc.state))
         {
             barcodes = barcode.count;
-            b_was_junction = (0u != line.b_junction);
+            b_was_junction = (line.b_junction);
         }
         b_moving = (g_vc.state >= VC_FOLLOW) && (g_vc.state <= VC_TURN);
 
@@ -147,7 +146,7 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
         {
             vc_enter(VC_SAFE_STOP, "avoidance stopped");
         }
-        else if (b_moving && (0u != line.b_lost))
+        else if (b_moving && (line.b_lost))
         {
             vc_enter(VC_SAFE_STOP, "line lost");
         }
@@ -163,7 +162,7 @@ static void vehicle_controller_task(INT stacd, void * p_exinf)
             vc_enter(VC_FOLLOW, "MQTT START");
         }
         else if ((0u != (commands & S1_CMD_RESET)) &&
-                 (VC_SAFE_STOP == g_vc.state) && safety_monitor_clear())
+                 (VC_SAFE_STOP == g_vc.state) && (safety_monitor_clear()))
         {
             vc_enter(VC_INIT, "MQTT RESET"); /* READY once calibrated. */
         }
@@ -191,14 +190,14 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
                     uint32_t avoid_state,
                     const motion_control_status_t * p_motion)
 {
-    bool const b_searching = (0u != p_line->b_searching);
+    bool const b_searching = (p_line->b_searching);
     s4_tilt_t tilt = {0};
 
     switch (g_vc.state)
     {
         case VC_INIT:
             s4_get_tilt(&tilt);
-            if (0u != tilt.cal)
+            if (tilt.b_cal)
             {
                 vc_enter(VC_READY, "IMU calibrated");
             }
@@ -215,8 +214,7 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
             if (b_barcode)
             {
                 g_vc.pending = command;
-                /* (UB *): tm_printf() takes unsigned chars. */
-                tm_printf((UB *)"[vc] barcode %u pending\n", g_vc.pending);
+                APP_PRINTF("[vc] barcode %u pending\n", g_vc.pending);
             }
             /* Pause avoidance while the line follower pivots: the sweep
              * would see the sides as obstacles ahead. */
@@ -285,11 +283,11 @@ static void vc_step(bool b_press, bool b_barcode, bool b_junction,
 static void vc_enter(vc_state_t state, const char * p_cause)
 {
     s4_hump_t hump = {0};
+    /* state only ever holds a vc_state_t. */
     vc_state_t const previous = (vc_state_t)g_vc.state;
 
-    /* (UB *): tm_printf() takes unsigned chars. */
-    tm_printf((UB *)"[vc] %s -> %s: %s\n", g_names[g_vc.state], g_names[state],
-              p_cause);
+    APP_PRINTF("[vc] %s -> %s: %s\n", g_names[g_vc.state], g_names[state],
+               p_cause);
     g_vc.state = state;
     g_vc.cycles = 0u;
     switch (state)
@@ -320,7 +318,7 @@ static void vc_enter(vc_state_t state, const char * p_cause)
             safety_monitor_stop(SAFETY_MONITOR_CONTROLLER); /* If ours. */
             line_following_stop();                          /* Stop steering. */
             s4_get_hump(&hump);
-            tm_printf((UB *)"[vc] max hump %u mm\n", hump.max);
+            APP_PRINTF("[vc] max hump %u mm\n", hump.max);
             break;
 
         default:

@@ -29,11 +29,11 @@
 #define DRV_MOTION_LEFT_ENCODER_SIGN  (-1)
 #define DRV_MOTION_RIGHT_ENCODER_SIGN 1
 
-/* Decoder state of one wheel, used only by the ISR. */
+/* Decoder state of one wheel: set by init, then used only by the ISR. */
 typedef struct
 {
-    unsigned int phase : 2;      /* A * 2 + B */
-    unsigned int b_backward : 1; /* Last valid step was backwards. */
+    unsigned int phase : 2; /* A * 2 + B */
+    bool b_backward : 1;    /* Last valid step was backwards. */
 } drv_motion_wheel_t;
 
 /* Index: old phase * 4 + new phase. Forward order is 0, 1, 3, 2. */
@@ -55,13 +55,13 @@ static const int8_t g_decode[16] = {0,
                                     0};
 
 /* Written only by the ISR. 8 and 16-bit loads are atomic on Cortex-M0+. */
-static volatile uint16_t g_left_count;
-static volatile uint16_t g_right_count;
-static volatile uint8_t g_skipped;
+static volatile uint16_t g_left_count = 0u;
+static volatile uint16_t g_right_count = 0u;
+static volatile uint8_t g_skipped = 0u;
 
-static volatile drv_motion_wheel_t g_left_wheel;
-static volatile drv_motion_wheel_t g_right_wheel;
-static ID gh_mutex;
+static volatile drv_motion_wheel_t g_left_wheel = {0};
+static volatile drv_motion_wheel_t g_right_wheel = {0};
+static ID gh_mutex = 0;
 
 static uint32_t drv_motion_phase(uint32_t levels, uint32_t pin_a,
                                  uint32_t pin_b);
@@ -69,7 +69,7 @@ static void drv_motion_count(volatile uint16_t * p_count,
                              volatile drv_motion_wheel_t * p_wheel,
                              uint32_t phase, int32_t sign);
 static void drv_motion_output(uint32_t slice, int32_t duty);
-static void drv_motion_edge(uint32_t pins);
+static void drv_motion_edge_isr(uint32_t pins);
 
 /*!
  * @brief Set up 20 kHz PWM with both motors braked, the encoder inputs and
@@ -111,7 +111,7 @@ bool drv_motion_init(void)
 
     mutex.mtxatr = TA_INHERIT;
     gh_mutex = tk_cre_mtx(&mutex);
-    return (app_gpio_register(DRV_MOTION_ENCODER_PINS, drv_motion_edge)) &&
+    return (app_gpio_register(DRV_MOTION_ENCODER_PINS, drv_motion_edge_isr)) &&
            (gh_mutex > 0);
 }
 
@@ -183,12 +183,12 @@ static void drv_motion_count(volatile uint16_t * p_count,
     if (DRV_MOTION_SKIP == step)
     {
         /* Two edges since the last read: assume the same direction. */
-        step = (0u != p_wheel->b_backward) ? -2 : 2;
+        step = (p_wheel->b_backward) ? -2 : 2;
         g_skipped++;
     }
     else if (0 != step)
     {
-        p_wheel->b_backward = (step < 0) ? 1u : 0u;
+        p_wheel->b_backward = (step < 0);
     }
     else
     {
@@ -221,7 +221,7 @@ static void drv_motion_output(uint32_t slice, int32_t duty)
 /*!
  * @brief Encoder edge callback, from the GPIO interrupt (app_main.c).
  */
-static void drv_motion_edge(uint32_t pins)
+static void drv_motion_edge_isr(uint32_t pins)
 {
     uint32_t levels = 0u;
 

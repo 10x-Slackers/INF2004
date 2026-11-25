@@ -34,7 +34,7 @@
         {
             "label": "Flash",
             "type": "shell",
-            "command": "picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2",
+            "command": "picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2",
             "dependsOn": "Build",
             "problemMatcher": []
         }

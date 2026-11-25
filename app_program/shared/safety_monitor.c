@@ -19,10 +19,9 @@ static void safety_monitor_task(INT stacd, void * p_exinf);
  */
 ER safety_monitor_start(void)
 {
-    /* FP is the kernel's generic task pointer type. */
-    return app_start_cyclic(app_start_task((FP)safety_monitor_task,
-                                           SAFETY_MONITOR_PRI, 0u, "safety"),
-                            SAFETY_MONITOR_PERIOD_MS);
+    return app_start_cyclic(
+        app_start_task(safety_monitor_task, SAFETY_MONITOR_PRI, 0u, "safety"),
+        SAFETY_MONITOR_PERIOD_MS);
 }
 
 /*!
@@ -36,8 +35,7 @@ void safety_monitor_stop(uint32_t cause)
     /* One locked step, so two tasks cannot both see it unlatched. */
     if (!motion_control_latch(true))
     {
-        /* (UB *): tm_printf() takes unsigned chars. */
-        tm_printf((UB *)"[safety] stop, cause 0x%x\n", cause);
+        APP_PRINTF("[safety] stop, cause 0x%x\n", cause);
     }
 }
 
@@ -62,8 +60,7 @@ bool safety_monitor_clear(void)
     }
     if (b_clear)
     {
-        /* (UB *): tm_printf() takes unsigned chars. */
-        tm_printf((UB *)"[safety] cleared\n");
+        APP_PRINTF("[safety] cleared\n");
     }
     return b_clear;
 }

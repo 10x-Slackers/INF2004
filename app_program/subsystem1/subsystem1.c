@@ -29,8 +29,12 @@
 #if MQTT_UTK_MAP_BYTES != PAYLOAD_MAP_BYTES
 #error "MQTT_UTK_MAP_BYTES does not match the map payload"
 #endif
+#endif /* TM_MQTT */
 
-static ID gh_s1_queue; /* Message buffer: Telemetry task to Wi-Fi service. */
+ID gh_s1_command_flag = 0;
+#if TM_MQTT
+static ID gh_s1_queue =
+    0; /* Message buffer: Telemetry task to Wi-Fi service. */
 
 static void s1_telemetry_task(INT stacd, void * p_exinf);
 static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
@@ -39,14 +43,12 @@ static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
 static void s1_send(uint8_t * p_message, uint8_t topic, uint32_t bytes);
 #endif /* TM_MQTT */
 
-ID gh_s1_command_flag;
-
 /*!
  * @brief Create the command flag and, with MQTT, the message queue.
  */
 ER subsystem1_init(void)
 {
-    T_CFLG flag = {0};
+    T_CFLG const flag = {0};
 #if TM_MQTT
     T_CMBF queue = {0};
 
@@ -66,16 +68,70 @@ ER subsystem1_init(void)
 ER subsystem1_start(void)
 {
 #if TM_MQTT
-    return app_start_cyclic(app_start_task((FP)s1_telemetry_task,
-                                           S1_PRI_TELEMETRY, 0u,
-                                           "s1_telemetry"),
-                            S1_PERIOD_MS);
+    return app_start_cyclic(
+        app_start_task(s1_telemetry_task, S1_PRI_TELEMETRY, 0u, "s1_telemetry"),
+        S1_PERIOD_MS);
 #else
     return E_OK;
 #endif
 }
 
 #if TM_MQTT
+/*!
+ * @brief Give the Wi-Fi service the next queued message to publish.
+ *
+ * @return The message's length in bytes; negative if the queue is empty.
+ */
+int32_t mqtt_utk_app_take(uint8_t * p_message)
+{
+    return tk_rcv_mbf(gh_s1_queue, p_message, TMO_POL);
+}
+
+/*!
+ * @brief The Wi-Fi service received a command byte: pass its command bits
+ * to the Vehicle Controller.
+ */
+void mqtt_utk_app_command(uint8_t command)
+{
+    (void)tk_set_flg(gh_s1_command_flag, command & S1_CMD_ALL);
+}
+
+/*!
+ * @brief The Wi-Fi service received a barcode map: give the Barcode Decoder
+ * its new action for each letter.
+ */
+void mqtt_utk_app_map(const uint8_t * p_map)
+{
+    uint8_t actions[BARCODE_DECODER_LETTERS] = {0};
+    char digits[BARCODE_DECODER_LETTERS + 1u] = {0}; /* Ends in a 0. */
+    uint32_t letter = 0u;
+
+    payload_unpack_map(p_map, actions);
+    barcode_decoder_set_actions(actions);
+    for (letter = 0u; letter < BARCODE_DECODER_LETTERS; letter++)
+    {
+        /* (char): an action is 0..7, so a digit '0'..'7'. */
+        digits[letter] = (char)('0' + actions[letter]);
+    }
+    /* One call, as the console is slow. */
+    APP_PRINTF("[s1] barcode map A-Z (0 ignore .. 4 U-turn): %s\n", digits);
+}
+
+/*!
+ * @brief The broker connection came up or went down.
+ */
+void mqtt_utk_app_online(bool b_online)
+{
+    if (b_online)
+    {
+        app_fault_clear(APP_FAULT_WIFI);
+    }
+    else
+    {
+        app_fault_set(APP_FAULT_WIFI);
+    }
+}
+
 /*!
  * @brief Telemetry task: every 200 ms queue telemetry and motion; a scan
  * when avoidance has finished a profile; a heartbeat every fifth cycle.
@@ -117,12 +173,14 @@ static void s1_telemetry_task(INT stacd, void * p_exinf)
 
         if (0u == cycles)
         {
-            /* Most significant byte first, like every payload. */
+            /* Most significant byte first, like every payload. (uint8_t):
+             * each is one byte of the 16-bit count. */
             message[1] = (uint8_t)(heartbeats >> 8);
             message[2] = (uint8_t)(heartbeats & 0xFFu);
             s1_send(message, MQTT_UTK_TOPIC_HEARTBEAT, S1_HEARTBEAT_BYTES);
             heartbeats++;
         }
+        /* (uint8_t): the remainder is 0..4. */
         cycles = (uint8_t)((cycles + 1u) % S1_HEARTBEAT_CYCLES);
     }
 }
@@ -152,10 +210,10 @@ static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
     s4_get_hump(&hump);
 
     telemetry.state = vehicle_controller_state();
-    telemetry.latched = motion_control_latched() ? 1u : 0u;
+    telemetry.b_latched = motion_control_latched();
     telemetry.line = line.bits;
-    telemetry.junction = line.b_junction;
-    telemetry.following = line.b_following;
+    telemetry.b_junction = line.b_junction;
+    telemetry.b_following = line.b_following;
     telemetry.barcode = barcode.command;
     telemetry.barcodes = barcode.count;
     telemetry.motion_class = motion_class.cls;
@@ -163,7 +221,7 @@ static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
     telemetry.roll = tilt.roll;
     telemetry.hump_max = hump.max;
     telemetry.humps = hump.count;
-    telemetry.on_hump = hump.on;
+    telemetry.b_on_hump = hump.b_on;
     telemetry.avoid_state = p_avoid->state;
     telemetry.avoid_side = p_avoid->side;
     telemetry.bypasses = p_avoid->bypasses;
@@ -185,63 +243,8 @@ static void s1_pack_telemetry(const obstacle_avoidance_status_t * p_avoid,
 static void s1_send(uint8_t * p_message, uint8_t topic, uint32_t bytes)
 {
     p_message[0] = topic;
+    /* (INT): at most MQTT_UTK_MSG_MAX, checked above. */
     (void)tk_snd_mbf(gh_s1_queue, p_message, (INT)(1u + bytes), TMO_POL);
-}
-
-/*!
- * @brief Give the Wi-Fi service the next queued message to publish.
- *
- * @return The message's length in bytes; negative if the queue is empty.
- */
-int32_t mqtt_utk_app_take(uint8_t * p_message)
-{
-    return tk_rcv_mbf(gh_s1_queue, p_message, TMO_POL);
-}
-
-/*!
- * @brief The Wi-Fi service received a command byte: pass its command bits
- * to the Vehicle Controller.
- */
-void mqtt_utk_app_command(uint8_t command)
-{
-    (void)tk_set_flg(gh_s1_command_flag, command & S1_CMD_ALL);
-}
-
-/*!
- * @brief The Wi-Fi service received a barcode map: give the Barcode Decoder
- * its new action for each letter.
- */
-void mqtt_utk_app_map(const uint8_t * p_map)
-{
-    uint8_t actions[BARCODE_DECODER_LETTERS] = {0};
-    char digits[BARCODE_DECODER_LETTERS + 1u] = {0}; /* Ends in '\0'. */
-    uint32_t letter = 0u;
-
-    payload_unpack_map(p_map, actions);
-    barcode_decoder_set_actions(actions);
-    for (letter = 0u; letter < BARCODE_DECODER_LETTERS; letter++)
-    {
-        digits[letter] = (char)('0' + actions[letter]);
-    }
-    /* One call, as the console is slow. (UB *): tm_printf() takes unsigned
-     * chars. */
-    tm_printf((UB *)"[s1] barcode map A-Z (0 ignore .. 4 U-turn): %s\n",
-              digits);
-}
-
-/*!
- * @brief The broker connection came up or went down.
- */
-void mqtt_utk_app_online(bool b_online)
-{
-    if (b_online)
-    {
-        app_fault_clear(APP_FAULT_WIFI);
-    }
-    else
-    {
-        app_fault_set(APP_FAULT_WIFI);
-    }
 }
 #endif /* TM_MQTT */
 

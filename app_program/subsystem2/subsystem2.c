@@ -10,7 +10,7 @@
 #define SUBSYSTEM2_TICK_MAX 0xffffu
 
 /* Longest control step in us. Written only by the motion task. */
-static volatile uint16_t g_max_tick_us;
+static volatile uint16_t g_max_tick_us = 0u;
 
 static void subsystem2_motion_task(INT stacd, void * p_exinf);
 
@@ -35,8 +35,7 @@ ER subsystem2_init(void)
  */
 ER subsystem2_start(void)
 {
-    /* FP is the kernel's generic task pointer type. */
-    return app_start_cyclic(app_start_task((FP)subsystem2_motion_task,
+    return app_start_cyclic(app_start_task(subsystem2_motion_task,
                                            S2_PRI_MOTION, TP_PRC1, "s2_motion"),
                             MOTION_CONTROL_PERIOD_MS);
 }

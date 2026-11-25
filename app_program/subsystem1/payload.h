@@ -9,24 +9,24 @@
 #ifndef PAYLOAD_H
 #define PAYLOAD_H
 
+#include <stdbool.h>
 #include <stdint.h>
 #include "../subsystem3/barcode_decoder.h"
 #include "../subsystem5/scan_profile.h"
 
-#define PAYLOAD_TELEMETRY_BYTES 12u  /* 96 bits. */
-#define PAYLOAD_SCAN_BYTES      9u   /* 68 bits. */
-#define PAYLOAD_MAP_BYTES       10u  /* 78 bits. */
-#define PAYLOAD_PITCH_OFFSET    1024 /* Added to pitch and roll when sent. */
+#define PAYLOAD_TELEMETRY_BYTES 12u /* 96 bits. */
+#define PAYLOAD_SCAN_BYTES      9u  /* 68 bits. */
+#define PAYLOAD_MAP_BYTES       10u /* 78 bits. */
 
 /* The telemetry fields in payload order, each in the bits it is sent in.
  * docs/TELEMETRY.md names the source of each. */
 typedef struct
 {
     unsigned int state : 3;
-    unsigned int latched : 1;
+    bool b_latched : 1;
     unsigned int line : 2;
-    unsigned int junction : 1;
-    unsigned int following : 1;
+    bool b_junction : 1;
+    bool b_following : 1;
     unsigned int barcode : 3;
     unsigned int barcodes : 4;
     unsigned int motion_class : 3;
@@ -34,7 +34,7 @@ typedef struct
     signed int roll : 11;
     unsigned int hump_max : 6;
     unsigned int humps : 4;
-    unsigned int on_hump : 1;
+    bool b_on_hump : 1;
     unsigned int avoid_state : 3;
     unsigned int avoid_side : 2;
     unsigned int bypasses : 4;

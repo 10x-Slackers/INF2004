@@ -5,8 +5,9 @@
  */
 
 #include "subsystem4.h"
+#include "task_imu.h"
 
-ID gh_s4_mutex;
+ID gh_s4_mutex = 0;
 
 /*!
  * @brief Create the mutex that guards the IMU records.
@@ -27,8 +28,7 @@ ER subsystem4_init(void)
  */
 ER subsystem4_start(void)
 {
-    /* FP is the kernel's generic task pointer type. */
-    ID const h_task = app_start_task((FP)s4_imu_task, S4_PRI_IMU, 0u, "s4_imu");
+    ID const h_task = app_start_task(s4_imu_task, S4_PRI_IMU, 0u, "s4_imu");
 
     return (h_task < E_OK) ? h_task : E_OK;
 }

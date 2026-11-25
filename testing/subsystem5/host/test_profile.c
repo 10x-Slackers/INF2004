@@ -70,7 +70,7 @@ int main(void)
 
     p = test_profile(centred, 900u, 600u);
     test_check((100u == p.closest_mm) && (90u == p.closest_deg) &&
-                   (1u == p.b_obstacle) && (85u == p.right_deg) &&
+                   (p.b_obstacle) && (85u == p.right_deg) &&
                    (95u == p.left_deg),
                "centred obstacle: closest point and edges at 85..95");
     test_check(0u == p.width_mm,
@@ -111,12 +111,12 @@ int main(void)
                "blocked");
 
     p = test_profile(one_ray, 4000u, 4000u);
-    test_check((0u == p.width_mm) && (1u == p.b_obstacle) &&
+    test_check((0u == p.width_mm) && (p.b_obstacle) &&
                    (90u == p.right_deg) && (90u == p.left_deg),
                "single blocked ray: width 0");
 
     p = test_profile(open, 100u, 100u);
-    test_check((0u == p.b_obstacle) && (4000u == p.closest_mm) &&
+    test_check((!p.b_obstacle) && (4000u == p.closest_mm) &&
                    (0u == p.width_mm) && (90u == p.right_deg) &&
                    (90u == p.left_deg),
                "clear ahead: no obstacle, even with blocked side rays");

@@ -28,8 +28,15 @@
 #define OBSTACLE_AVOIDANCE_LINE_MM  115u /* Line sensors ahead of axle. */
 #define OBSTACLE_AVOIDANCE_EARLY_MM 100u /* Line watched this far early. */
 #define OBSTACLE_AVOIDANCE_RETURN   6u   /* Step of the return diagonal. */
-#define OBSTACLE_AVOIDANCE_OUT      0u   /* Legs of the bypass. */
+#define OBSTACLE_AVOIDANCE_OVER_MM  150u /* Return runs on to find the line. */
+/* Both sides blocked: back off until the obstacle is this far ahead, still
+ * within SCAN_PROFILE_BLOCK_MM for the profile, and scan again once. */
+#define OBSTACLE_AVOIDANCE_RETRY_MM 180u
+#define OBSTACLE_AVOIDANCE_BACK_MM  80u /* Blind: at most this far back. */
+#define OBSTACLE_AVOIDANCE_OUT      0u  /* Legs of the bypass. */
 #define OBSTACLE_AVOIDANCE_PASS     1u
+#define OBSTACLE_AVOIDANCE_IN       2u
+#define OBSTACLE_AVOIDANCE_LEGS     3u
 /* One bypass step: a turn towards the bypass side (+1) or back (-1), or,
  * with no turn (0), a move forward along leg. The first turn is
  * obstacle_avoidance_face()'s, which checks the diagonal. */
@@ -42,19 +49,19 @@ typedef struct
 static const obstacle_avoidance_step_t g_steps[OBSTACLE_AVOIDANCE_STEPS] = {
     {1, 0u},  {0, OBSTACLE_AVOIDANCE_OUT},
     {-1, 0u}, {0, OBSTACLE_AVOIDANCE_PASS},
-    {-1, 0u}, {0, OBSTACLE_AVOIDANCE_OUT}, /* Back: as long as out. */
+    {-1, 0u}, {0, OBSTACLE_AVOIDANCE_IN}, /* In: out plus OVER_MM. */
     {1, 0u}};
 
-static ID gh_mutex;
-static ID gh_task;
-static obstacle_avoidance_status_t g_status;
+static ID gh_mutex = 0;
+static ID gh_task = 0;
+static obstacle_avoidance_status_t g_status = {0};
 /* Return diagonal, under gh_mutex: where the line is watched for. */
 static struct
 {
     unsigned int start_mm : 24; /* Motion distance_mm at its start. */
     unsigned int from_mm : 9;   /* Watched from this far along it. */
     bool b_found : 1;           /* Line seen; rolling the axle onto it. */
-} g_watch;
+} g_watch = {0};
 
 static void obstacle_avoidance_task(INT stacd, void * p_exinf);
 static bool obstacle_avoidance_running(uint32_t state);
@@ -64,7 +71,7 @@ static bool obstacle_avoidance_active(void);
 static uint32_t obstacle_avoidance_ms(void);
 static bool obstacle_avoidance_scan(uint32_t mode, ultrasonic_scan_t * p_scan);
 static bool obstacle_avoidance_still(void);
-static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm);
+static bool obstacle_avoidance_move(int32_t turn_deg, int32_t distance_mm);
 static uint32_t obstacle_avoidance_diagonal(const scan_profile_t * p_profile,
                                             uint32_t side);
 static bool obstacle_avoidance_turn(uint32_t side, int32_t turns);
@@ -74,6 +81,9 @@ static bool obstacle_avoidance_path(const scan_profile_t * p_profile,
                                     uint32_t side);
 static uint32_t obstacle_avoidance_face(const scan_profile_t * p_profile,
                                         uint32_t side);
+static bool obstacle_avoidance_bypass(const scan_profile_t * p_profile);
+static bool obstacle_avoidance_try(bool b_retry);
+static bool obstacle_avoidance_back(void);
 static void obstacle_avoidance_avoid(void);
 
 /*!
@@ -96,9 +106,8 @@ bool obstacle_avoidance_init(void)
  */
 ID obstacle_avoidance_start_task(void)
 {
-    /* FP is the kernel's generic task pointer type. */
-    gh_task = app_start_task((FP)obstacle_avoidance_task, S5_PRI_AVOID, 0,
-                             "s5_avoid");
+    gh_task =
+        app_start_task(obstacle_avoidance_task, S5_PRI_AVOID, 0u, "s5_avoid");
     return gh_task;
 }
 
@@ -150,8 +159,8 @@ void obstacle_avoidance_line(void)
         (OBSTACLE_AVOIDANCE_RETURN == g_status.step) && (!g_watch.b_found) &&
         (MOTION_CONTROL_RUNNING == motion.state) &&
         (MOTION_CONTROL_CMD_FORWARD == motion.command) &&
-        (((motion.distance_mm - g_watch.start_mm) &
-          MOTION_CONTROL_DISTANCE_MASK) >= g_watch.from_mm))
+        (motion_control_mm_since(g_watch.start_mm, motion.distance_mm) >=
+         g_watch.from_mm))
     {
         g_watch.b_found = true;
         (void)motion_control_move_forward(OBSTACLE_AVOIDANCE_LINE_MM);
@@ -322,12 +331,13 @@ static bool obstacle_avoidance_still(void)
 
 /*!
  * @brief Turn the car (positive is left) or, with no turn, drive forward
- * by distance_mm, and wait for the move to finish. A forward move keeps reading
- * the range and stops within SCAN_PROFILE_BLOCK_MM of anything ahead.
+ * by distance_mm (back if negative), and wait for the move to finish. A
+ * forward move keeps reading the range and stops within
+ * SCAN_PROFILE_BLOCK_MM of anything ahead.
  *
  * @return False if cancelled or stopped.
  */
-static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
+static bool obstacle_avoidance_move(int32_t turn_deg, int32_t distance_mm)
 {
     motion_control_status_t status = {0};
     ultrasonic_scan_t scan = {0};
@@ -341,9 +351,15 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
     {
         /* Cancelled or stopped. */
     }
-    else if (0 == turn_deg)
+    else if (distance_mm > 0)
     {
-        (void)motion_control_move_forward(distance_mm);
+        /* Positive here, so the cast keeps it. */
+        (void)motion_control_move_forward((uint32_t)distance_mm);
+    }
+    else if (distance_mm < 0)
+    {
+        /* Negative here, so -distance_mm is positive and fits. */
+        (void)motion_control_move_backward((uint32_t)(-distance_mm));
     }
     else if (turn_deg > 0)
     {
@@ -352,15 +368,16 @@ static bool obstacle_avoidance_move(int32_t turn_deg, uint32_t distance_mm)
     else
     {
         /* Negative here, so -turn_deg is positive and fits. */
-        (void)motion_control_turn_right((uint32_t)-turn_deg);
+        (void)motion_control_turn_right((uint32_t)(-turn_deg));
     }
     (void)tk_unl_mtx(gh_mutex);
 
     start_ms = obstacle_avoidance_ms();
     do
     {
-        if (0 != turn_deg)
+        if (distance_mm <= 0)
         {
+            /* A turn, or back: nothing to read ahead. */
             tk_dly_tsk(OBSTACLE_AVOIDANCE_POLL_MS);
         }
         else if ((obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan)) &&
@@ -422,7 +439,7 @@ static bool obstacle_avoidance_turn(uint32_t side, int32_t turns)
     return obstacle_avoidance_move(
         ((SCAN_PROFILE_LEFT == side) ? turns : -turns) *
             OBSTACLE_AVOIDANCE_TURN_DEG,
-        0u);
+        0);
 }
 
 /*!
@@ -433,16 +450,17 @@ static bool obstacle_avoidance_turn(uint32_t side, int32_t turns)
 static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
                                     const uint32_t * p_legs)
 {
-    const obstacle_avoidance_step_t * p_step = &g_steps[step];
+    const obstacle_avoidance_step_t * const p_step = &g_steps[step];
     motion_control_status_t motion = {0};
     uint32_t const ahead_mm =
         OBSTACLE_AVOIDANCE_LINE_MM + OBSTACLE_AVOIDANCE_EARLY_MM;
 
     if (OBSTACLE_AVOIDANCE_RETURN == (step + 1u))
     {
-        /* The sensors should reach the line LINE_MM before
-         * the end. The diagonal is under 330 mm, so from_mm is under 115;
-         * its 9 bits leave room for a larger GAP_MM or HALF_MM. */
+        /* The sensors should reach the line LINE_MM before the car has
+         * come back as far as it went out. That is under 330 mm, so
+         * from_mm is under 115; its 9 bits leave room for a larger GAP_MM
+         * or HALF_MM. */
         motion_control_get_status(&motion);
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_watch.start_mm = motion.distance_mm;
@@ -453,9 +471,10 @@ static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
         (void)tk_unl_mtx(gh_mutex);
     }
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, step + 1u);
+    /* (int32_t): a leg is under 600 mm. */
     return (0 != p_step->turn)
                ? obstacle_avoidance_turn(side, p_step->turn)
-               : obstacle_avoidance_move(0, p_legs[p_step->leg]);
+               : obstacle_avoidance_move(0, (int32_t)p_legs[p_step->leg]);
 }
 
 /*!
@@ -475,17 +494,15 @@ static bool obstacle_avoidance_path(const scan_profile_t * p_profile,
 
 /*!
  * @brief Bypass step 1: turn towards side and check the diagonal, which
- * the servo cannot see. If it is short, turn round to the other side,
- * if the scan found that one open, and check it. Neither is a safe stop,
- * turned back to the original heading.
+ * the servo cannot see. If it is short, turn round to the other side and
+ * check it. If neither is clear, turn back to the original heading.
  *
- * @return The side faced, or SCAN_PROFILE_NONE if cancelled or stopped.
+ * @return The side faced, or SCAN_PROFILE_NONE if neither is clear,
+ *         cancelled or stopped.
  */
 static uint32_t obstacle_avoidance_face(const scan_profile_t * p_profile,
                                         uint32_t side)
 {
-    uint32_t const other_mm =
-        (SCAN_PROFILE_LEFT == side) ? p_profile->right_mm : p_profile->left_mm;
     bool b_clear = false;
 
     if (SCAN_PROFILE_NONE != side)
@@ -493,8 +510,7 @@ static uint32_t obstacle_avoidance_face(const scan_profile_t * p_profile,
         obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, 1u);
         b_clear = (obstacle_avoidance_turn(side, 1)) &&
                   (obstacle_avoidance_path(p_profile, side));
-        if ((!b_clear) && (obstacle_avoidance_active()) &&
-            (other_mm >= SCAN_PROFILE_CLEAR_MM))
+        if ((!b_clear) && (obstacle_avoidance_active()))
         {
             side = (SCAN_PROFILE_LEFT == side) ? SCAN_PROFILE_RIGHT
                                                : SCAN_PROFILE_LEFT;
@@ -509,26 +525,131 @@ static uint32_t obstacle_avoidance_face(const scan_profile_t * p_profile,
             /* Does nothing if cancelled or stopped meanwhile. */
             (void)obstacle_avoidance_turn(side, -1);
         }
-        obstacle_avoidance_stop(APP_FAULT_AVOID_BLOCKED);
         side = SCAN_PROFILE_NONE;
     }
     return side;
 }
 
 /*!
- * @brief Stop, profile the obstacle and the clearance each side, and drive
- * round it on the more open side: out on a diagonal, straight past, and
- * back on a diagonal to the original line (cut short where the line sensors
- * find it, obstacle_avoidance_line()) and heading. Back to watching if the
- * obstacle has gone.
+ * @brief Drive round the obstacle on the more open side: out on a diagonal,
+ * straight past, and back on a diagonal to the original line (cut short
+ * where the line sensors find it, obstacle_avoidance_line()) and heading.
+ *
+ * @param[in] p_profile The obstacle and the clearance each side.
+ * @return True if both sides are blocked, back at the original heading.
+ */
+static bool obstacle_avoidance_bypass(const scan_profile_t * p_profile)
+{
+    uint32_t side = scan_profile_side(p_profile->left_mm, p_profile->right_mm);
+    uint32_t legs[OBSTACLE_AVOIDANCE_LEGS] = {0u};
+    uint32_t step = 1u; /* Step 1, the turn, is face(). */
+
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+    g_status.side = side;
+    g_status.left_mm = p_profile->left_mm;
+    g_status.right_mm = p_profile->right_mm;
+    (void)tk_unl_mtx(gh_mutex);
+    side = obstacle_avoidance_face(p_profile, side);
+    legs[OBSTACLE_AVOIDANCE_OUT] = obstacle_avoidance_diagonal(p_profile, side);
+    /* Longer than out, so heading error from the turns cannot leave the car
+     * short of the line; the line sensors end it at the line. */
+    legs[OBSTACLE_AVOIDANCE_IN] =
+        legs[OBSTACLE_AVOIDANCE_OUT] + OBSTACLE_AVOIDANCE_OVER_MM;
+    /* Axle travel along the line until the back clears the obstacle, its
+     * length taken as the distance between its blocked edges, less what
+     * the diagonal covers. At least 240 against at most 163: no
+     * underflow. */
+    legs[OBSTACLE_AVOIDANCE_PASS] =
+        OBSTACLE_AVOIDANCE_FRONT_MM + p_profile->closest_mm +
+        scan_profile_width_mm(p_profile->closest_mm,
+                              p_profile->left_deg - p_profile->right_deg) +
+        OBSTACLE_AVOIDANCE_REAR_MM + OBSTACLE_AVOIDANCE_GAP_MM -
+        ((legs[OBSTACLE_AVOIDANCE_OUT] * OBSTACLE_AVOIDANCE_COS_TURN) / 1000u);
+    (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+    g_status.side = side; /* Faced, after any turn round. */
+    (void)tk_unl_mtx(gh_mutex);
+    while ((SCAN_PROFILE_NONE != side) && (step < OBSTACLE_AVOIDANCE_STEPS) &&
+           (obstacle_avoidance_step(side, step, legs)))
+    {
+        step++;
+    }
+    if (OBSTACLE_AVOIDANCE_STEPS == step)
+    {
+        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
+        g_status.bypasses++;
+        (void)tk_unl_mtx(gh_mutex);
+    }
+    return (SCAN_PROFILE_NONE == side) && (obstacle_avoidance_active());
+}
+
+/*!
+ * @brief Profile the obstacle and drive round it.
+ *
+ * @param[in] b_retry After backing off: no obstacle seen also counts as
+ *                    blocked, or the car would drive up to it and back off
+ *                    again for ever.
+ * @return True if both sides are blocked, back at the original heading.
+ */
+static bool obstacle_avoidance_try(bool b_retry)
+{
+    ultrasonic_scan_t scan = {0};
+    bool b_blocked = false;
+
+    if ((obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan)) &&
+        (scan.profile.b_obstacle))
+    {
+        APP_PRINTF("[avoid] obstacle: width %u mm, closest %u mm at %u deg, "
+                   "clear left %u mm, right %u mm\n",
+                   scan.profile.width_mm, scan.profile.closest_mm,
+                   scan.profile.closest_deg, scan.profile.left_mm,
+                   scan.profile.right_mm);
+        b_blocked = obstacle_avoidance_bypass(&scan.profile);
+    }
+    else
+    {
+        b_blocked = b_retry && (obstacle_avoidance_active());
+    }
+    return b_blocked;
+}
+
+/*!
+ * @brief Back off until the obstacle is OBSTACLE_AVOIDANCE_RETRY_MM ahead,
+ * at most OBSTACLE_AVOIDANCE_BACK_MM: stopped too close, the side rays may
+ * hit the obstacle itself. Blind, as nothing reads behind the car.
+ *
+ * @return False if cancelled or stopped.
+ */
+static bool obstacle_avoidance_back(void)
+{
+    ultrasonic_scan_t scan = {0};
+    uint32_t back_mm = 0u;
+
+    obstacle_avoidance_set(OBSTACLE_AVOIDANCE_PROFILE, 0u);
+    if (obstacle_avoidance_scan(ULTRASONIC_SCAN_FORWARD, &scan))
+    {
+        back_mm = (scan.forward_mm < OBSTACLE_AVOIDANCE_RETRY_MM)
+                      ? (OBSTACLE_AVOIDANCE_RETRY_MM - scan.forward_mm)
+                      : 0u;
+        back_mm = (back_mm > OBSTACLE_AVOIDANCE_BACK_MM)
+                      ? OBSTACLE_AVOIDANCE_BACK_MM
+                      : back_mm;
+        if (0u != back_mm)
+        {
+            /* At most BACK_MM, so the cast keeps it. */
+            (void)obstacle_avoidance_move(0, -(int32_t)back_mm);
+        }
+    }
+    return obstacle_avoidance_active();
+}
+
+/*!
+ * @brief Stop and profile the obstacle and the clearance each side, then
+ * drive round it. With both sides blocked, back off and try once more;
+ * still blocked, or the obstacle no longer seen, is a safe stop. Back to
+ * watching afterwards, or at once if the obstacle has gone.
  */
 static void obstacle_avoidance_avoid(void)
 {
-    ultrasonic_scan_t scan = {0};
-    uint32_t side = SCAN_PROFILE_NONE;
-    uint32_t legs[2] = {0u}; /* OBSTACLE_AVOIDANCE_OUT, _PASS. */
-    uint32_t step = 0u;
-
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_PROFILE, 0u);
     (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     if (OBSTACLE_AVOIDANCE_PROFILE == g_status.state)
@@ -546,52 +667,14 @@ static void obstacle_avoidance_avoid(void)
     {
         obstacle_avoidance_stop(APP_FAULT_AVOID_MOTION);
     }
-    else if ((obstacle_avoidance_scan(ULTRASONIC_SCAN_PROFILE, &scan)) &&
-             (0u != scan.profile.b_obstacle))
+    else if ((obstacle_avoidance_try(false)) && (obstacle_avoidance_back()) &&
+             (obstacle_avoidance_try(true)))
     {
-        side = scan_profile_side(scan.profile.left_mm, scan.profile.right_mm);
-        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
-        g_status.side = side;
-        g_status.left_mm = scan.profile.left_mm;
-        g_status.right_mm = scan.profile.right_mm;
-        (void)tk_unl_mtx(gh_mutex);
-        side = obstacle_avoidance_face(&scan.profile, side);
-        legs[OBSTACLE_AVOIDANCE_OUT] =
-            obstacle_avoidance_diagonal(&scan.profile, side);
-        /* Axle travel along the line until the back clears the obstacle,
-         * taken as 1.5 times as long as its blocked edges are apart, less what
-         * the diagonal covers. At least 240 against at most 163: no
-         * underflow. */
-        legs[OBSTACLE_AVOIDANCE_PASS] =
-            OBSTACLE_AVOIDANCE_FRONT_MM + scan.profile.closest_mm +
-            ((3u * scan_profile_width_mm(scan.profile.closest_mm,
-                                         scan.profile.left_deg -
-                                             scan.profile.right_deg)) /
-             2u) +
-            OBSTACLE_AVOIDANCE_REAR_MM + OBSTACLE_AVOIDANCE_GAP_MM -
-            ((legs[OBSTACLE_AVOIDANCE_OUT] * OBSTACLE_AVOIDANCE_COS_TURN) /
-             1000u);
-        (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
-        g_status.side = side; /* Faced, after any turn round. */
-        (void)tk_unl_mtx(gh_mutex);
-        /* Step 1, the turn, is done. */
-        for (step = 1u;
-             (SCAN_PROFILE_NONE != side) && (step < OBSTACLE_AVOIDANCE_STEPS) &&
-             (obstacle_avoidance_step(side, step, legs));
-             step++)
-        {
-            /* Each step runs in the loop test. */
-        }
-        if (OBSTACLE_AVOIDANCE_STEPS == step)
-        {
-            (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
-            g_status.bypasses++;
-            (void)tk_unl_mtx(gh_mutex);
-        }
+        obstacle_avoidance_stop(APP_FAULT_AVOID_BLOCKED);
     }
     else
     {
-        /* Cancelled, stopped, or the obstacle has gone. */
+        /* Passed, cancelled, stopped, or the obstacle has gone. */
     }
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_MONITOR, 0u);
 }

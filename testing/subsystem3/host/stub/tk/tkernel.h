@@ -15,6 +15,7 @@ typedef int32_t ER;
 typedef int32_t INT;
 typedef int32_t TMO;
 typedef uint32_t UW;
+typedef uint8_t UB;
 typedef uint32_t RELTIM;
 typedef int32_t PRI;
 typedef void (*FP)(void);

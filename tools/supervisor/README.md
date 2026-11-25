@@ -5,7 +5,7 @@ A page on the laptop that shows what the car is doing and sends it Start, Stop, 
 ## Run it
 
 1. On the laptop, start the broker: `mosquitto -c tools/supervisor/mosquitto.conf`. This config lets the car connect from the network; Mosquitto's default accepts only the laptop itself.
-2. Put the laptop's address on that network in `MQTT_BROKER_IP` of `config/wifi_secrets.h` (copied from `wifi_secrets.example.h`), then build and flash with `make -C build_make NET=lwip MQTT=1`.
+2. Put the laptop's address on that network in `MQTT_BROKER_IP` of `config/wifi_secrets.h` (copied from `wifi_secrets.example.h`), then build and flash with `make -C build_make`.
 3. Start the dashboard and open <http://127.0.0.1:8000>:
 
    ```sh
@@ -22,7 +22,7 @@ Or run steps 1 and 3 in containers, with nothing to install but Podman or Docker
 - **The state**, large and coloured, with how long the car has been in it and what to do next. Start works only in READY, Reset only in SAFE_STOP; Stop in READY, FOLLOW, AVOID and TURN, and Esc sends it. The buttons are off while the car is offline (no heartbeat for 2.5 s) or the broker is away, and a line under them says so: a command sent then would be lost, not queued.
 - **Line** (FR2, FR3): the two IR sensors over the tape, junction, the last barcode, the last letter read and the count.
 - **Motion** (FR4): wheel speeds, distance, heading, the current move and the encoder counts.
-- **Terrain** (FR5, FR10): pitch, roll, motion class, the number of humps and the highest since the car was powered on. Dimmed while the state is INIT (the IMU is not calibrated yet) or the `IMU_SENSOR` fault is set, because the values are not measurements then.
+- **Terrain** (FR5, FR10): pitch, roll, motion class, the highest hump of the run and the number of humps since the car was powered on. Dimmed while the state is INIT (the IMU is not calibrated yet) or the `IMU_SENSOR` fault is set, because the values are not measurements then.
 - **Obstacle** (FR6, FR7): the range ahead and the last profile as a sketch (servo angles, 90° straight ahead, out to 0.6 m), with the avoidance state, side and clearances. A range of 4000 mm reads "clear"; while the `NO_ECHO` fault is set it reads "no echo" and the sketch draws no ray, because the last scan missed an echo and the path is not known to be clear. Before the first scan the range reads "–".
 - **Faults** (FR11): every active `APP_FAULT_...` and the safety latch.
 - **Barcode actions**: what the car does at a junction after each barcode letter, A to Z: ignore, left, right, straight or U-turn. The car starts with every letter ignored. Change the letters, then **Send to car**; until then the page keeps your edits and reads "Not sent yet". **Ignore all** resets every letter, to send the same way. The broker keeps the last table sent and gives it to the car whenever it connects, so a car that is off or restarts still gets it ([TELEMETRY.md](../../docs/TELEMETRY.md#map-78-bits)); restarting the broker drops it.

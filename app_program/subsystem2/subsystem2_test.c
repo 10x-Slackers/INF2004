@@ -11,16 +11,16 @@
 #include "../test_report.h"
 
 #if APP_TEST
-#define S2_TEST_WAIT_MS 200 /* 20 control periods. */
+#define S2_TEST_WAIT_MS 200u /* 20 control periods. */
 #define S2_TEST_TICK_US 1000u
-#define S2_BENCH_BUTTON 21u  /* Robo Pico button, low when pressed. */
-#define S2_BENCH_GO_MS  5000 /* Time to put the car down after a press. */
+#define S2_BENCH_BUTTON 21u   /* Robo Pico button, low when pressed. */
+#define S2_BENCH_GO_MS  5000u /* Time to put the car down after a press. */
 /* A tap is under 0.5 s; a hold from 1 s is subsystem 3's. */
 #define S2_BENCH_TAP_POLLS 25u
-#define S2_BENCH_PAUSE_MS  3000 /* Still after each step, to measure it. */
+#define S2_BENCH_PAUSE_MS  3000u /* Still after each step, to measure it. */
 #define S2_BENCH_DRIVE_MS  2000u
-#define S2_BENCH_POLL_MS   10 /* Waits 2 kernel ticks: a line every 20 ms. */
-#define S2_BENCH_STATUS_MS 1000
+#define S2_BENCH_POLL_MS   10u /* Waits 2 kernel ticks: a line every 20 ms. */
+#define S2_BENCH_STATUS_MS 1000u
 #define S2_BENCH_MM_S      100
 #define S2_BENCH_FAST_MM_S 200u
 #define S2_BENCH_MOVE_MM   300u
@@ -77,8 +77,7 @@ void subsystem2_test(void)
     motion_control_stop();
     TEST_SUMMARY("subsystem2");
 
-    /* FP is the kernel's generic task pointer type. */
-    (void)app_start_task((FP)subsystem2_bench_task, S2_PRI_BENCH, TP_PRC1,
+    (void)app_start_task(subsystem2_bench_task, S2_PRI_BENCH, TP_PRC1,
                          "s2_bench");
 }
 
@@ -90,13 +89,12 @@ static void subsystem2_bench_report(void)
     motion_control_status_t status = {0};
 
     motion_control_get_status(&status);
-    /* (UB *): tm_printf() takes unsigned chars. */
-    tm_printf((UB *)"[motion] state=%u cmd=%u faults=%u heading=%u "
-                    "dist_mm=%u counts=%u,%u speed=%d,%d max_tick_us=%u\n",
-              status.state, status.command, app_faults() & APP_FAULT_MOTION,
-              status.heading_deg, status.distance_mm, status.left_count,
-              status.right_count, status.left_speed, status.right_speed,
-              subsystem2_max_tick_us());
+    APP_PRINTF("[motion] state=%u cmd=%u faults=%u heading=%u "
+               "dist_mm=%u counts=%u,%u speed=%d,%d max_tick_us=%u\n",
+               status.state, status.command, app_faults() & APP_FAULT_MOTION,
+               status.heading_deg, status.distance_mm, status.left_count,
+               status.right_count, status.left_speed, status.right_speed,
+               subsystem2_max_tick_us());
 }
 
 /*!
@@ -121,9 +119,8 @@ static void subsystem2_bench_run(bool b_drive, int32_t left, int32_t right)
         tk_dly_tsk(S2_BENCH_POLL_MS);
         motion_control_get_status(&status);
         (void)tk_get_otm(&now);
-        /* (UB *): tm_printf() takes unsigned chars. */
-        tm_printf((UB *)"[trace] %u %d %d\n", now.lo, status.left_speed,
-                  status.right_speed);
+        APP_PRINTF("[trace] %u %d %d\n", now.lo, status.left_speed,
+                   status.right_speed);
     } while ((MOTION_CONTROL_RUNNING == status.state) &&
              ((!b_drive) || ((now.lo - start_ms) < S2_BENCH_DRIVE_MS)));
     subsystem2_bench_report();
@@ -146,8 +143,7 @@ static void subsystem2_bench_task(INT stacd, void * p_exinf)
     (void)p_exinf;
 
     app_pull_up(S2_BENCH_BUTTON);
-    /* (UB *): tm_printf() takes unsigned chars. */
-    tm_printf((UB *)"[motion] bench: tap GP21 to start\n");
+    APP_PRINTF("[motion] bench: tap GP21 to start\n");
     while (polls >= S2_BENCH_TAP_POLLS)
     {
         polls = 0u;
@@ -163,10 +159,9 @@ static void subsystem2_bench_task(INT stacd, void * p_exinf)
         }
     }
     tk_dly_tsk(S2_BENCH_GO_MS);
-    /* (UB *): tm_printf() takes unsigned chars. */
-    tm_printf((UB *)"[motion] bench: drive +-100, forward/backward 300, "
-                    "left 90, right 90, left 180, forward 300 at 200, "
-                    "left 180, forward 300\n");
+    APP_PRINTF("[motion] bench: drive +-100, forward/backward 300, "
+               "left 90, right 90, left 180, forward 300 at 200, "
+               "left 180, forward 300\n");
     subsystem2_bench_run(true, S2_BENCH_MM_S, S2_BENCH_MM_S);
     subsystem2_bench_run(true, -S2_BENCH_MM_S, -S2_BENCH_MM_S);
     (void)motion_control_move_forward(S2_BENCH_MOVE_MM);
@@ -188,7 +183,7 @@ static void subsystem2_bench_task(INT stacd, void * p_exinf)
     subsystem2_bench_run(false, 0, 0);
     (void)motion_control_move_forward(S2_BENCH_MOVE_MM);
     subsystem2_bench_run(false, 0, 0);
-    tm_printf((UB *)"[motion] bench done\n"); /* (UB *): as above. */
+    APP_PRINTF("[motion] bench done\n");
     for (;;)
     {
         subsystem2_bench_report();

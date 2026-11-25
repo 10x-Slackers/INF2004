@@ -1,7 +1,8 @@
 /** @file drv_hcsr04.h
  *
  * @brief HC-SR04 ultrasonic range sensor: TRIG on GP0, ECHO (level
- * shifted) on GP1. Call only from the scan task, which owns the sensor.
+ * shifted) on GP1. Call only from the scan task, which owns the sensor,
+ * and from its init.
  */
 
 #ifndef DRV_HCSR04_H

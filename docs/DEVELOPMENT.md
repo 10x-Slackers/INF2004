@@ -11,7 +11,7 @@ Run from the repository root, inside the Dev Container or with the SDK and compi
 | Build      | `make -C build_make -j$(nproc)`                                                                              |
 | Test build | `make -C build_make TEST=1 -j$(nproc)`                                                                       |
 | Clean      | `make -C build_make clean`                                                                                   |
-| Flash      | Hold **BOOTSEL** while plugging in USB, then `picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi.uf2` |
+| Flash      | Hold **BOOTSEL** while plugging in USB, then `picotool load -v -x build_make/mtk3pico_smp1_usb_cdc_wifi_lwip_mqtt.uf2` |
 | Console    | `screen /dev/ttyACM0 115200`                                                                                 |
 
 The same steps exist as the VS Code tasks `Build`, `Build (tests)`, `Build (crash report)`, `Clean` and `Flash` (`Flash` runs the default `Build` first).
@@ -20,13 +20,13 @@ Check that both the normal and the `TEST=1` build still succeed without new warn
 
 ### Building with MQTT
 
-1. Copy the credentials template and fill in the network and broker:
+The normal build includes the network stack, the MQTT client and the Telemetry task, and needs the Wi-Fi network and broker. Copy the credentials template and fill it in once:
 
-   ```sh
-   cp config/wifi_secrets.example.h config/wifi_secrets.h
-   ```
+```sh
+cp config/wifi_secrets.example.h config/wifi_secrets.h
+```
 
-2. Build with `make -C build_make NET=lwip MQTT=1 -j$(nproc)`.
+The test build leaves the network out, as does `make -C build_make NET=none -j$(nproc)`, which needs no credentials; that image has no telemetry and ignores every barcode.
 
 The broker set-up and the supervisor dashboard are in [TELEMETRY.md](TELEMETRY.md#supervisor-dashboard).
 
@@ -75,8 +75,7 @@ static void subsystem5_range_task(INT stacd, void * p_exinf)
 
 ER subsystem5_start(void)
 {
-    /* FP is the kernel's generic task pointer type. */
-    return app_start_cyclic(app_start_task((FP)subsystem5_range_task,
+    return app_start_cyclic(app_start_task(subsystem5_range_task,
                                            S5_PRI_RANGE, 0, "s5_range"),
                             S5_RANGE_MS);
 }
@@ -86,7 +85,7 @@ The third argument of `app_start_task()` pins the task to a core: `TP_PRC1` (cor
 
 ### Things to know
 
-- **Stacks are `APP_TASK_STACK_SIZE` bytes** (`app.h`). Raise it for a task with deep call chains or large locals.
+- **Stacks are `APP_TASK_STACK_SIZE` bytes** (`app_main.c`). Raise it for a task with deep call chains or large locals.
 - **`tk_dly_tsk` is a relative delay.** The period becomes the delay plus the work time, so it drifts. For a fixed rate, use a cyclic handler: `app_start_cyclic()` in `app.h` wakes a task every period.
 - **The tick is 10 ms** (`CNF_TIMER_PERIOD` in `config/config.h`). A relative wait also gets one extra tick, so `tk_dly_tsk(10)` waits 10 to 20 ms, about 20 ms in a periodic loop.
 - **There is no FPU.** Floating point is software-emulated; keep it out of fast loops.
@@ -129,13 +128,13 @@ The build does not use the Pico SDK's CMake system or runtime. It compiles selec
 
 ## Console output
 
-Print with `tm_printf`:
+Print with `APP_PRINTF` (`app.h`), which calls the kernel's `tm_printf` with the cast its format argument needs:
 
 ```c
-tm_printf((UB *)"[line] pos=%d\n", pos);
+APP_PRINTF("[line] pos=%d\n", pos);
 ```
 
-- `tm_printf` is atomic per call, not per line. Build a whole line with `tm_sprintf` into a buffer and emit it with one `tm_printf`, or another task's output can land in the middle.
+- `tm_printf` is atomic per call, not per line. Build a whole line with `tm_sprintf` into a buffer and emit it with one `APP_PRINTF`, or another task's output can land in the middle.
 - Over USB the console is a ring buffer drained by the kernel's USB task. Nothing is visible until the host has opened the port, and output written just before a crash is lost; build with `CRASH_REPORT=1` to see it on UART0.
 - Do not print from interrupt handlers or tight control loops.
 

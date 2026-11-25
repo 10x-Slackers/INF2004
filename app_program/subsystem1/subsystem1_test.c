@@ -5,7 +5,6 @@
  * (testing/subsystem1/host/), so there are no on-target checks.
  */
 
-#include "subsystem1.h"
 #include "../test_report.h"
 
 #if APP_TEST

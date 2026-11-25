@@ -20,7 +20,7 @@
 /* status.state */
 #define OBSTACLE_AVOIDANCE_IDLE    0u /* Not started, or cancelled. */
 #define OBSTACLE_AVOIDANCE_MONITOR 1u /* Watching the range ahead. */
-#define OBSTACLE_AVOIDANCE_PROFILE 2u /* Stopped, scanning the obstacle. */
+#define OBSTACLE_AVOIDANCE_PROFILE 2u /* Scanning, or backing off to scan. */
 #define OBSTACLE_AVOIDANCE_BYPASS  3u /* Driving round it. */
 #define OBSTACLE_AVOIDANCE_STOPPED 4u /* Safe stop, until the next start. */
 

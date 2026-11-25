@@ -249,8 +249,8 @@ void line_following_task(INT stacd, void * p_exinf)
          * barcode sensor stops. */
         line_following_watch(bits, &motion,
                              b_straight ? LINE_FOLLOWING_CODE_LOST_MM
-                             : b_hold   ? LINE_FOLLOWING_HOLD_LOST_MM
-                                        : LINE_FOLLOWING_LOST_MM);
+                                        : (b_hold ? LINE_FOLLOWING_HOLD_LOST_MM
+                                                  : LINE_FOLLOWING_LOST_MM));
         line_following_drive(bits, &motion, b_straight, straight_deg);
         g_line.b_searching = (g_line.b_following) && (0u != g_search.phase);
         (void)tk_unl_mtx(gh_mutex);

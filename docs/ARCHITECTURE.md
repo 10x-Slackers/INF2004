@@ -200,7 +200,7 @@ stateDiagram-v2
     PROFILE --> MONITOR: nothing straight ahead
     PROFILE --> BYPASS: a side open
     PROFILE --> PROFILE: no side open, first time: back off up to 80 mm
-    PROFILE --> STOPPED: no side open again, or nothing ahead after backing off / no echo / not still
+    PROFILE --> STOPPED: no side open again, or nothing ahead after backing off / no echo / not still / reverse failed
     BYPASS --> MONITOR: bypass done
     BYPASS --> PROFILE: both paths blocked, first time: back off
     BYPASS --> STOPPED: both paths blocked again / path blocked on the way / move failed

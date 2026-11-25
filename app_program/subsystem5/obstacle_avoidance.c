@@ -36,6 +36,7 @@
 #define OBSTACLE_AVOIDANCE_OUT      0u  /* Legs of the bypass. */
 #define OBSTACLE_AVOIDANCE_PASS     1u
 #define OBSTACLE_AVOIDANCE_IN       2u
+#define OBSTACLE_AVOIDANCE_LEGS     3u
 /* One bypass step: a turn towards the bypass side (+1) or back (-1), or,
  * with no turn (0), a move forward along leg. The first turn is
  * obstacle_avoidance_face()'s, which checks the diagonal. */
@@ -437,7 +438,7 @@ static bool obstacle_avoidance_turn(uint32_t side, int32_t turns)
     return obstacle_avoidance_move(
         ((SCAN_PROFILE_LEFT == side) ? turns : -turns) *
             OBSTACLE_AVOIDANCE_TURN_DEG,
-        0u);
+        0);
 }
 
 /*!
@@ -455,9 +456,10 @@ static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
 
     if (OBSTACLE_AVOIDANCE_RETURN == (step + 1u))
     {
-        /* The sensors should reach the line LINE_MM before
-         * the end. The diagonal is under 330 mm, so from_mm is under 115;
-         * its 9 bits leave room for a larger GAP_MM or HALF_MM. */
+        /* The sensors should reach the line LINE_MM before the car has
+         * come back as far as it went out. That is under 330 mm, so
+         * from_mm is under 115; its 9 bits leave room for a larger GAP_MM
+         * or HALF_MM. */
         motion_control_get_status(&motion);
         (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
         g_watch.start_mm = motion.distance_mm;
@@ -537,8 +539,8 @@ static uint32_t obstacle_avoidance_face(const scan_profile_t * p_profile,
 static bool obstacle_avoidance_bypass(const scan_profile_t * p_profile)
 {
     uint32_t side = scan_profile_side(p_profile->left_mm, p_profile->right_mm);
-    uint32_t legs[3] = {0u}; /* OBSTACLE_AVOIDANCE_OUT, _PASS, _IN. */
-    uint32_t step = 1u;      /* Step 1, the turn, is face(). */
+    uint32_t legs[OBSTACLE_AVOIDANCE_LEGS] = {0u};
+    uint32_t step = 1u; /* Step 1, the turn, is face(). */
 
     (void)tk_loc_mtx(gh_mutex, TMO_FEVR);
     g_status.side = side;

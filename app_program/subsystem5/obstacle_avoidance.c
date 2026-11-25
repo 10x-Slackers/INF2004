@@ -353,6 +353,7 @@ static bool obstacle_avoidance_move(int32_t turn_deg, int32_t distance_mm)
     }
     else if (distance_mm > 0)
     {
+        /* Positive here, so the cast keeps it. */
         (void)motion_control_move_forward((uint32_t)distance_mm);
     }
     else if (distance_mm < 0)
@@ -470,6 +471,7 @@ static bool obstacle_avoidance_step(uint32_t side, uint32_t step,
         (void)tk_unl_mtx(gh_mutex);
     }
     obstacle_avoidance_set(OBSTACLE_AVOIDANCE_BYPASS, step + 1u);
+    /* (int32_t): a leg is under 600 mm. */
     return (0 != p_step->turn)
                ? obstacle_avoidance_turn(side, p_step->turn)
                : obstacle_avoidance_move(0, (int32_t)p_legs[p_step->leg]);

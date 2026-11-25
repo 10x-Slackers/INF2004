@@ -21,6 +21,7 @@
 #define CODE39_BARS_WIDE   6u /* Wide bars and spaces in *X*. */
 #define CODE39_SPACES_WIDE 3u
 #define CODE39_START       0x2Au /* '*', the start and stop character. */
+#define CODE39_FIRST_SPACE 1u    /* Bars are at the even places. */
 /* The narrowest wide element is over 1/CODE39_STEP wider than the widest
  * narrow one, or the widths have no split. The smallest step in a barcode
  * read on the car is 1.4 times. */
@@ -90,7 +91,7 @@ static uint32_t code39_missed(const uint16_t * p_widths)
     {
         bar = (p_widths[element] < bar) ? p_widths[element] : bar;
     }
-    for (space = 1u; space < CODE39_MISSED; space += 2u)
+    for (space = CODE39_FIRST_SPACE; space < CODE39_MISSED; space += 2u)
     {
         letter = 0u;
         if (p_widths[space] > bar) /* Room for the bar. */
@@ -101,6 +102,7 @@ static uint32_t code39_missed(const uint16_t * p_widths)
                 widths[element + ((element > space) ? 2u : 0u)] =
                     p_widths[element];
             }
+            /* (uint16_t), both: part of p_widths[space], itself 16 bits. */
             widths[space] = (uint16_t)((p_widths[space] - bar) / 2u);
             widths[space + 1u] = bar;
             widths[space + 2u] =

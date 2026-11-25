@@ -61,7 +61,7 @@
 #define LINE_FOLLOWING_HOLD_LOST_MM 120u
 #define LINE_FOLLOWING_CODE_LOST_MM 300u /* Over a barcode, 141 mm long. */
 /* Over a barcode, at most this fast, so the narrow bars read black. */
-#define LINE_FOLLOWING_CODE_MM_S     80u
+#define LINE_FOLLOWING_CODE_MM_S     80 /* Signed, as the speed steered. */
 #define LINE_FOLLOWING_HOLD_BEND_DEG 8
 #define LINE_FOLLOWING_HOLD_OFF_DEG  15
 
@@ -331,9 +331,9 @@ static void line_following_drive(uint32_t bits,
 {
     int32_t speed = (int32_t)g_steer.speed_mm_s; /* 9 bits: fits. */
 
-    if (b_straight && (speed > (int32_t)LINE_FOLLOWING_CODE_MM_S))
+    if (b_straight && (speed > LINE_FOLLOWING_CODE_MM_S))
     {
-        speed = (int32_t)LINE_FOLLOWING_CODE_MM_S;
+        speed = LINE_FOLLOWING_CODE_MM_S;
     }
 
     if ((g_line.b_following) && (0u == g_search.phase) &&

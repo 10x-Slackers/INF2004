@@ -266,6 +266,18 @@ int main(void)
     test_check((0 == g_tilt.pitch) && (0 == g_tilt.roll),
                "fully inverted reads 0 pitch and roll (why tilt misses it)");
 
+    /* Picked up gently, turned over across 300 ms, then held: too quick
+     * for tilt (0.5 s), no push for lifted. Only upside down stops it. */
+    test_reset();
+    for (i = 0; i <= 30; i++)
+    {
+        test_roll(180.0 * i / 30.0, 1);
+    }
+    test_feed(0, 0, -TEST_G_MG, 100);
+    test_check((0u != (g_faults & APP_FAULT_UPSIDE_DOWN)) &&
+                   (0u == (g_faults & (APP_FAULT_TILT | APP_FAULT_LIFTED))),
+               "turned over across 300 ms: upside-down fault, tilt missed it");
+
     /* Slow lift: turned over nose first across 2 s, then held. Z goes
      * below 0 past 90 degrees, at sample 100. */
     test_reset();

@@ -34,6 +34,7 @@ Methods and how to record results: `testing/README.md`.
 | S3-U24 | A dip in the odometer does not end a barcode: on the real decoder task with a modelled car stopped on a space of a barcode, the distance steps back 80 µm (a wheel rocking back two edges) | FR3, I5 | host | As S3-U22 | `ALL PASS`: `b_reading` stays set |
 | S3-U25 | A missed narrow bar is guessed back | FR3 | auto | `TEST=1` image, read the console | `S3-U25 PASS`: synthetic `*A*` with one narrow bar and its two spaces merged into one space (27 widths) gives A |
 | S3-U26 | A speck before a barcode is skipped | FR3 | auto | As above | `S3-U26 PASS`: a narrow bar and an 18 mm space, then synthetic `*A*` (31 widths), give A |
+| S3-U27 | A missed bar that cannot be put back is not guessed as another letter: `*M*` as the sensor reads it (bars 2 mm narrow, spaces 2 mm wide) without the first bar of the stop, so the gap and the wide space either side read as one space (27 widths) | FR3 | host | As S3-U22 | `ALL PASS`: no letter |
 
 ## Results
 

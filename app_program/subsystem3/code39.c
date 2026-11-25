@@ -7,7 +7,7 @@
  * '-', '.' or space has exactly 6 wide bars and 3 wide spaces, which sets
  * the narrow/wide split; $ / + % (no wide bars) are not decoded.
  *
- * Two misreads are guessed at, only where the answer is certain: a speck
+ * Two misreads are guessed at, only where a single letter fits: a speck
  * before the barcode (*X* is read exactly from any bar of the widths), and
  * one narrow bar the sensor missed (put back in each space in turn, taken
  * only if exactly one letter then reads).
@@ -21,6 +21,10 @@
 #define CODE39_BARS_WIDE   6u /* Wide bars and spaces in *X*. */
 #define CODE39_SPACES_WIDE 3u
 #define CODE39_START       0x2Au /* '*', the start and stop character. */
+/* The narrowest wide element is over 1/CODE39_STEP wider than the widest
+ * narrow one, or the widths have no split. The smallest step in a barcode
+ * read on the car is 1.4 times. */
+#define CODE39_STEP 4u
 
 /* Patterns, first element in the most significant of 9 bits, 1 = wide,
  * in the order of g_letters. */
@@ -205,7 +209,10 @@ static uint32_t code39_char(const uint16_t * p_widths,
  *
  * @param[in] first 0 for bars, 1 for spaces.
  * @param[in] wide  How many of that kind are wide.
- * @return Halfway between the narrowest wide and the widest narrow one.
+ * @return Halfway between the narrowest wide and the widest narrow one, or
+ *         UINT32_MAX (nothing is wide) if they are under CODE39_STEP apart:
+ *         the widths then do not have that many wide ones, and the split
+ *         would fall between two narrow ones.
  */
 static uint32_t code39_split(const uint16_t * p_widths, uint32_t first,
                              uint32_t wide)
@@ -226,7 +233,10 @@ static uint32_t code39_split(const uint16_t * p_widths, uint32_t first,
         count++;
     }
     /* (uint32_t): the sum of two 16-bit widths needs 17 bits. */
-    return ((uint32_t)sorted[wide - 1u] + sorted[wide]) / 2u;
+    return ((uint32_t)sorted[wide - 1u] >
+            ((uint32_t)sorted[wide] + (sorted[wide] / CODE39_STEP)))
+               ? (((uint32_t)sorted[wide - 1u] + sorted[wide]) / 2u)
+               : UINT32_MAX;
 }
 
 /*** end of file ***/

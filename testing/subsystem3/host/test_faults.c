@@ -3,8 +3,9 @@
  * @brief Host test of subsystem 3's sensor fault checks: a line sensor
  * stuck on black, the time limit on the lost-line search, and barcode ADC
  * samples that stop. Also that the end of a barcode does not start a
- * search, a dip in the odometer does not end one, and a barcode sensor
- * that stops over a barcode still lets a lost line start a search.
+ * search, a dip in the odometer does not end one, a barcode sensor that
+ * stops over a barcode still lets a lost line start a search, and a missed
+ * bar that cannot be put back is not guessed as another letter.
  *
  * Runs the real Line Following and Barcode Decoder tasks. The kernel calls
  * come from stub/ and the stubs below; tk_slp_tsk() is one 10 ms wake-up
@@ -12,12 +13,13 @@
  * has gone the distance asked for), so a task's local variables start
  * again on every run. The car is a model: each
  * wake-up moves the odometer by the wheel speeds last commanded, and the
- * heading never moves. Build and run as in S3-U22 to S3-U24 of
+ * heading never moves. Build and run as in S3-U22 to S3-U24 and S3-U27 of
  * testing/subsystem3/TEST_LOG.md.
  */
 
 #include "../../../app_program/subsystem3/subsystem3.h"
 #include "../../../app_program/subsystem3/drv_barcode.h"
+#include "../../../app_program/subsystem3/code39.h"
 #include "../../../app_program/subsystem2/motion_control.h"
 #include <setjmp.h>
 #include <stdio.h>
@@ -409,6 +411,23 @@ static void test_barcode_stalls(void)
     gb_both = false;
 }
 
+/* *M* in um as the sensor reads it, bars 2 mm narrow and spaces 2 mm wide,
+ * without the first bar of the stop: the narrow gap and the wide space
+ * either side of it read as one 17 mm space, which no put-back bar turns
+ * into M again. With a bar put back in another wide space only two wide
+ * spaces are left, and the widest narrow one (5.1 mm) once counted as the
+ * third: W. */
+static void test_barcode_guess(void)
+{
+    static const uint16_t widths[CODE39_MISSED] = {
+        1000u, 11000u, 1000u, 5000u, 7000u, 5000u, 7000u, 5000u,  1000u,
+        5000u, 7000u,  5100u, 7000u, 5000u, 1000u, 5000u, 1000u,  11000u,
+        1000u, 17000u, 1000u, 5000u, 7000u, 5000u, 7000u, 5000u,  1000u};
+
+    test_check(0u == code39_decode(widths, CODE39_MISSED),
+               "*M* missing a bar that cannot be put back: no letter");
+}
+
 int main(void)
 {
     (void)line_following_init();
@@ -419,6 +438,7 @@ int main(void)
     test_barcode_end();      /* These two after the sample counts: they would */
     test_barcode_rollback(); /* leave its 100 ms window part used. */
     test_barcode_stalls();   /* Goes on from the rollback's barcode. */
+    test_barcode_guess();
     printf("%s\n", (0 == g_failures) ? "ALL PASS" : "FAILED");
     return (0 == g_failures) ? 0 : 1;
 }
